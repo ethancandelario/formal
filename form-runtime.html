@@ -4,7 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Form Runtime</title>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -20,7 +23,12 @@
       --accent-2: #ca4f00;
       --danger: #861f41;
       --focus: #861f41;
+      --sidebar: #2f3033;
+      --sidebar-2: #383a3d;
+      --sidebar-line: #4a4d50;
       --shadow: 0 12px 28px rgba(31, 31, 31, 0.07);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --focus-ring: rgba(134, 31, 65, 0.28);
     }
 
     * {
@@ -29,14 +37,15 @@
 
     html,
     body {
-      min-height: 100%;
+      height: 100%;
     }
 
     body {
       margin: 0;
       color: var(--ink);
       background: var(--bg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
     }
 
     button,
@@ -50,49 +59,143 @@
       border: 0;
     }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      min-height: 58px;
-      display: grid;
-      grid-template-columns: 1fr;
-      align-items: center;
-      gap: 14px;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(14px);
+    #app {
+      min-height: 100vh;
     }
 
-    .actions {
+    .runtime-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+      position: relative;
+      transition: grid-template-columns 240ms var(--ease);
+    }
+
+    .runtime-shell.sidebar-collapsed {
+      grid-template-columns: 56px minmax(0, 1fr);
+    }
+
+    .runtime-sidebar {
+      min-width: 0;
+      color: #f7f5f2;
+      background: var(--sidebar);
+      border-right: 1px solid var(--sidebar-line);
+      padding: 14px 10px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      transition: padding 240ms var(--ease), border-color 180ms ease;
+    }
+
+    .runtime-sidebar-content {
+      min-width: 216px;
+      min-height: calc(100vh - 28px);
       display: flex;
-      justify-content: flex-end;
+      flex-direction: column;
+      gap: 16px;
+      transition: opacity 150ms ease, transform 240ms var(--ease);
+      will-change: opacity, transform;
+    }
+
+    .runtime-shell.sidebar-collapsed .runtime-sidebar {
+      padding-left: 8px;
+      padding-right: 8px;
+      border-right-color: var(--sidebar-line);
+      overflow: hidden;
+    }
+
+    .runtime-shell.sidebar-collapsed .runtime-sidebar-content {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-14px);
+    }
+
+    .runtime-sidebar-head {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-title {
+      color: #d7d2cb;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .sidebar-actions,
+    .runtime-sidebar-footer {
+      display: grid;
+      gap: 8px;
+    }
+
+    .runtime-sidebar-footer {
+      margin-top: auto;
+    }
+
+    .icon-button.sidebar-expand-button {
+      position: absolute;
+      top: 14px;
+      left: 8px;
+      z-index: 16;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-10px) scale(0.96);
+      box-shadow: 0 8px 18px rgba(31, 31, 31, 0.12);
+      background: var(--sidebar-2);
+      border-color: var(--sidebar-line);
+      color: #f4f2ef;
+      transition: opacity 150ms ease, transform 240ms var(--ease), background 160ms ease, border-color 160ms ease;
+    }
+
+    .icon-button.sidebar-expand-button:hover {
+      background: #424548;
+      border-color: #666a6d;
+      color: #ffffff;
+    }
+
+    .runtime-shell.sidebar-collapsed .sidebar-expand-button {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0) scale(1);
     }
 
     .button,
-    .icon-button {
-      min-height: 38px;
+    .icon-button,
+    .select {
+      min-height: 40px;
       border-radius: 8px;
       border: 1px solid var(--line);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       background: #ffffff;
       color: var(--ink);
-      padding: 0 12px;
+      padding: 0 10px;
       cursor: pointer;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1;
       transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
     }
 
     .button:hover,
-    .icon-button:hover {
+    .icon-button:hover,
+    .select:hover {
       background: var(--panel-2);
       border-color: #cbc5b6;
+    }
+
+    .button:focus-visible,
+    .icon-button:focus-visible,
+    .select:focus-visible,
+    .poll-option:focus-visible,
+    .meter-option:focus-visible,
+    .star-option:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 2px;
     }
 
     .button:active,
@@ -111,20 +214,95 @@
       border-color: #6f1936;
     }
 
-    .button:disabled {
+    .button:disabled,
+    .icon-button:disabled,
+    .select:disabled {
       opacity: 0.46;
       cursor: not-allowed;
       transform: none;
     }
 
+    .button.full,
+    .select {
+      width: 100%;
+    }
+
     .icon-button {
-      width: 38px;
+      width: 40px;
       padding: 0;
       flex: 0 0 auto;
     }
 
+    .runtime-sidebar .button,
+    .runtime-sidebar .icon-button,
+    .runtime-sidebar .select {
+      border-color: var(--sidebar-line);
+      color: #f4f2ef;
+      background: var(--sidebar-2);
+    }
+
+    .runtime-sidebar .button:hover,
+    .runtime-sidebar .icon-button:hover,
+    .runtime-sidebar .select:hover {
+      background: #424548;
+      border-color: #666a6d;
+    }
+
+    .runtime-sidebar .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .runtime-sidebar .button.primary:hover {
+      background: #6f1936;
+      border-color: #6f1936;
+    }
+
+    .runtime-sidebar .button.full:not(.primary) {
+      justify-content: flex-start;
+    }
+
+    .runtime-sidebar .button.full:not(.primary) i {
+      width: 16px;
+      text-align: center;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select {
+      appearance: none;
+      display: block;
+      height: 40px;
+      padding-right: 32px;
+      outline: none;
+    }
+
+    .select-icon {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d7d2cb;
+      pointer-events: none;
+    }
+
+    .select-label {
+      color: #d7d2cb;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
     .stage {
-      padding: 28px 18px 52px;
+      min-width: 0;
+      padding: 24px 16px 46px;
+      transition: padding 240ms var(--ease);
+    }
+
+    .runtime-shell.sidebar-collapsed .stage {
+      padding-left: 16px;
     }
 
     .capture {
@@ -138,51 +316,59 @@
     }
 
     .form-header {
-      padding: 28px 30px 24px;
+      padding: 24px 28px 22px;
       border-bottom: 1px solid var(--line);
       background: #ffffff;
     }
 
     .form-title {
       margin: 0;
-      font-size: 30px;
+      font-size: 28px;
       line-height: 1.18;
     }
 
     .form-description {
-      margin: 10px 0 0;
+      margin: 8px 0 0;
       color: var(--muted);
       line-height: 1.55;
+      font-size: 14px;
     }
 
     .fields {
       display: grid;
-      gap: 14px;
-      padding: 18px;
+      gap: 12px;
+      padding: 16px;
     }
 
     .field {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #ffffff;
-      padding: 18px;
+      padding: 16px;
       display: grid;
-      gap: 12px;
+      gap: 10px;
+      animation: field-in 160ms var(--ease) both;
+      transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
+    }
+
+    .field:hover {
+      transform: translateY(-1px);
     }
 
     .field.invalid {
-      border-color: rgba(184, 50, 50, 0.65);
-      box-shadow: 0 0 0 3px rgba(184, 50, 50, 0.08);
+      border-color: rgba(134, 31, 65, 0.7);
+      box-shadow: 0 0 0 3px rgba(134, 31, 65, 0.08);
     }
 
     .field-head {
       display: grid;
-      gap: 5px;
+      gap: 4px;
     }
 
     .field-label {
       font-weight: 750;
       line-height: 1.35;
+      font-size: 15px;
     }
 
     .required-mark {
@@ -193,7 +379,7 @@
     .field-help {
       color: var(--muted);
       line-height: 1.5;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .control,
@@ -203,13 +389,15 @@
       border-radius: 8px;
       background: var(--panel-2);
       color: var(--ink);
-      padding: 10px 12px;
-      min-height: 42px;
+      padding: 9px 10px;
+      min-height: 40px;
+      font-size: 14px;
       outline: none;
+      transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
     }
 
     .textarea {
-      min-height: 112px;
+      min-height: 104px;
       resize: vertical;
       line-height: 1.5;
     }
@@ -223,20 +411,21 @@
 
     .choice-list {
       display: grid;
-      gap: 9px;
+      gap: 8px;
     }
 
     .choice-row {
       display: flex;
       align-items: flex-start;
-      gap: 9px;
+      gap: 8px;
       color: var(--ink);
       line-height: 1.45;
+      font-size: 14px;
     }
 
     .choice-row input {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       margin-top: 1px;
       accent-color: var(--accent);
       flex: 0 0 auto;
@@ -247,7 +436,7 @@
     .star-grid {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
     }
 
@@ -260,17 +449,32 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 0 12px;
+      gap: 7px;
+      padding: 0 10px;
       background: var(--panel-2);
       color: var(--ink);
       cursor: pointer;
+      font-size: 14px;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .poll-option:hover,
+    .meter-option:hover,
+    .star-option:hover {
+      transform: translateY(-1px);
+      border-color: #cbc5b6;
+      background: #ffffff;
     }
 
     .meter-option,
     .star-option {
-      width: 42px;
+      width: 40px;
+      min-height: 40px;
       padding: 0;
+    }
+
+    .poll-option {
+      min-height: 40px;
     }
 
     .poll-option.selected,
@@ -279,22 +483,25 @@
       border-color: var(--accent);
       background: var(--accent-soft);
       color: var(--accent);
+      box-shadow: 0 4px 12px rgba(134, 31, 65, 0.08);
     }
 
-    .star-option.selected svg {
-      fill: currentColor;
+    .star-option.selected i {
+      font-weight: 900;
     }
 
     .range-wrap {
       display: grid;
       grid-template-columns: auto minmax(160px, 1fr) auto auto;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       color: var(--muted);
+      font-size: 14px;
     }
 
     .range-wrap input[type="range"] {
       width: 100%;
+      min-height: 40px;
       accent-color: var(--accent);
     }
 
@@ -309,7 +516,7 @@
       display: grid;
       grid-template-columns: minmax(220px, 300px) minmax(220px, 1fr);
       align-items: center;
-      gap: 18px;
+      gap: 16px;
     }
 
     .radar-chart {
@@ -322,6 +529,8 @@
       height: auto;
       display: block;
       margin: 0 auto;
+      overflow: visible;
+      touch-action: none;
     }
 
     .radar-grid polygon,
@@ -342,37 +551,77 @@
       font-size: 11px;
     }
 
-    .radar-controls {
-      display: grid;
-      gap: 10px;
+    .radar-hit {
+      fill: none;
+      stroke: transparent;
+      stroke-width: 24;
+      cursor: pointer;
+      pointer-events: stroke;
     }
 
-    .radar-row {
+    .radar-handle {
+      fill: #ffffff;
+      stroke: var(--accent);
+      stroke-width: 2.4;
+      cursor: grab;
+      filter: drop-shadow(0 3px 6px rgba(31, 31, 31, 0.14));
+      transition: fill 140ms ease, stroke-width 140ms ease;
+    }
+
+    .radar-handle:hover,
+    .radar-handle:focus {
+      fill: var(--accent-soft);
+      stroke-width: 3;
+      outline: none;
+    }
+
+    .radar-handle:active {
+      cursor: grabbing;
+    }
+
+    .radar-values {
       display: grid;
-      grid-template-columns: minmax(80px, 0.9fr) minmax(120px, 1fr) auto;
+      gap: 7px;
+    }
+
+    .radar-value-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: 10px;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
+      min-height: 36px;
+      padding: 6px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
     }
 
-    .radar-row span {
+    .radar-value-row span {
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .radar-row input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent);
-    }
-
     .radar-value {
-      min-width: 34px;
-      text-align: right;
+      min-width: 36px;
+      text-align: center;
       color: var(--ink);
       font-weight: 750;
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 2px 8px;
+    }
+
+    .field-error {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .link-preview {
@@ -387,7 +636,7 @@
 
     .image-preview {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .image-preview img {
@@ -403,18 +652,19 @@
       place-items: center;
       color: var(--muted);
       text-align: center;
-      padding: 24px;
+      padding: 22px;
+      animation: field-in 160ms var(--ease) both;
     }
 
     .empty-inner {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       justify-items: center;
     }
 
     .empty-icon {
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       border-radius: 8px;
       display: grid;
       place-items: center;
@@ -434,29 +684,70 @@
       border: 0;
     }
 
+    @keyframes field-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.985);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     @media (max-width: 780px) {
-      .actions {
-        justify-content: flex-start;
+      .runtime-shell,
+      .runtime-shell.sidebar-collapsed {
+        grid-template-columns: 1fr;
+      }
+
+      .runtime-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--sidebar-line);
+        display: grid;
+        grid-template-rows: 1fr;
+        overflow: hidden;
+        transition: grid-template-rows 260ms var(--ease), padding 240ms var(--ease), border-color 180ms ease;
+      }
+
+      .runtime-sidebar-content {
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .runtime-shell.sidebar-collapsed .runtime-sidebar {
+        grid-template-rows: 0fr;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+        overflow: hidden;
       }
 
       .stage {
-        padding: 14px 10px 36px;
+        padding: 12px 10px 34px;
+      }
+
+      .runtime-shell.sidebar-collapsed .stage {
+        padding: 60px 10px 34px;
       }
 
       .form-header {
-        padding: 22px 18px;
+        padding: 20px 16px;
       }
 
       .form-title {
-        font-size: 24px;
+        font-size: 23px;
       }
 
       .fields {
-        padding: 12px;
+        padding: 10px;
       }
 
       .field {
-        padding: 14px;
+        padding: 12px;
       }
 
       .range-wrap {
@@ -467,38 +758,32 @@
         grid-template-columns: 1fr;
       }
 
-      .radar-row {
-        grid-template-columns: 1fr;
-        gap: 6px;
+      .radar-value-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: 1ms !important;
       }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="actions">
-      <label class="button" for="schemaFile"><i data-lucide="upload"></i><span>Load JSON</span></label>
-      <input class="sr-only" id="schemaFile" type="file" accept="application/json,.json">
-      <button class="button" type="button" id="resetButton" disabled><i data-lucide="rotate-ccw"></i><span>Reset</span></button>
-      <button class="button" type="button" data-export="png" disabled><i data-lucide="image"></i><span>PNG</span></button>
-      <button class="button" type="button" data-export="jpg" disabled><i data-lucide="file-image"></i><span>JPG</span></button>
-      <button class="button primary" type="button" data-export="pdf" disabled><i data-lucide="file-text"></i><span>PDF</span></button>
-    </div>
-  </header>
+  <div id="app"></div>
 
-  <main class="stage">
-    <section class="capture" id="capture"></section>
-  </main>
+  <script type="module">
+    import { h, render } from "https://esm.sh/preact@10.23.1";
+    import { useEffect, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
+    import htm from "https://esm.sh/htm@3.1.1";
 
-  <script>
-    const STORAGE_KEY = "formal.runtime.schema";
-    const capture = document.getElementById("capture");
-    const schemaFile = document.getElementById("schemaFile");
-    const resetButton = document.getElementById("resetButton");
-
-    let schema = null;
-    let values = {};
-    let invalidIds = new Set();
+    const html = htm.bind(h);
+    const BUILDER_STORAGE_KEY = "formal.builder.schema";
 
     const fieldTypes = {
       short_answer: { label: "Short answer" },
@@ -516,6 +801,34 @@
       link: { label: "Link" }
     };
 
+    function uid() {
+      return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function sanitizeId(value) {
+      const clean = String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_");
+      return clean || uid();
+    }
+
+    function uniqueId(value, seen) {
+      const base = sanitizeId(value);
+      let next = base;
+      let count = 2;
+      while (seen.has(next)) {
+        next = base + "_" + count;
+        count += 1;
+      }
+      seen.add(next);
+      return next;
+    }
+
+    function normalizeRadarAxes(axes) {
+      const fallback = ["Clarity", "Impact", "Effort", "Confidence", "Risk"];
+      const source = Array.isArray(axes) ? axes : fallback;
+      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
+      return normalized.length ? normalized : fallback;
+    }
+
     function defaultSchema() {
       return {
         version: 1,
@@ -523,21 +836,6 @@
         description: "",
         fields: []
       };
-    }
-
-    function normalizeSchema(input) {
-      const next = defaultSchema();
-      next.version = Number(input?.version) || 1;
-      next.title = String(input?.title || "Untitled form");
-      next.description = String(input?.description || "");
-      const seenIds = new Set();
-      next.fields = Array.isArray(input?.fields)
-        ? input.fields.map(normalizeField).map((field) => {
-          field.id = uniqueId(field.id, seenIds);
-          return field;
-        })
-        : [];
-      return next;
     }
 
     function normalizeField(raw) {
@@ -580,273 +878,66 @@
       return next;
     }
 
-    function uid() {
-      return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
-    }
-
-    function sanitizeId(value) {
-      const clean = String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_");
-      return clean || uid();
-    }
-
-    function uniqueId(value, seen) {
-      const base = sanitizeId(value);
-      let next = base;
-      let count = 2;
-      while (seen.has(next)) {
-        next = base + "_" + count;
-        count += 1;
-      }
-      seen.add(next);
+    function normalizeSchema(input) {
+      const next = defaultSchema();
+      next.version = Number(input?.version) || 1;
+      next.title = String(input?.title || "Untitled form");
+      next.description = String(input?.description || "");
+      const seenIds = new Set();
+      next.fields = Array.isArray(input?.fields)
+        ? input.fields.map(normalizeField).map((field) => {
+          field.id = uniqueId(field.id, seenIds);
+          return field;
+        })
+        : [];
       return next;
     }
 
-    function normalizeRadarAxes(axes) {
-      const fallback = ["Clarity", "Impact", "Effort", "Confidence", "Risk"];
-      const source = Array.isArray(axes) ? axes : fallback;
-      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
-      return normalized.length ? normalized : fallback;
-    }
+    function initialValuesFor(schema) {
+      const values = {};
+      schema.fields.forEach((field) => {
+        if (field.type === "linear_scale") {
+          const min = Number(field.settings?.min ?? 1);
+          const max = Number(field.settings?.max ?? 10);
+          values[field.id] = Math.round(min + (max - min) / 2);
+        }
 
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[char]);
+        if (field.type === "radar") {
+          const axes = normalizeRadarAxes(field.settings?.axes);
+          const min = Number(field.settings?.min ?? 0);
+          const max = Number(field.settings?.max ?? 5);
+          values[field.id] = axes.map(() => Math.round(min + (max - min) / 2));
+        }
+      });
+      return values;
     }
 
     function safeFileName(value) {
       return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "filled-form";
     }
 
-    function setSchema(nextSchema) {
-      schema = normalizeSchema(nextSchema);
-      values = {};
-      invalidIds = new Set();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(schema));
-      render();
+    function normalizeUrl(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      if (/^https?:\/\//i.test(text)) return text;
+      return "https://" + text;
     }
 
-    function render() {
-      document.title = schema?.title ? schema.title + " - Form Runtime" : "Form Runtime";
-      document.querySelectorAll("[data-export]").forEach((button) => button.disabled = !schema);
-      resetButton.disabled = !schema;
-
-      if (!schema) {
-        capture.innerHTML = `
-          <div class="empty">
-            <div class="empty-inner">
-              <span class="empty-icon"><i data-lucide="file-json"></i></span>
-              <strong>No schema loaded</strong>
-            </div>
-          </div>
-        `;
-        if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
-        return;
-      }
-
-      capture.innerHTML = `
-        <div class="form-header">
-          <h1 class="form-title">${escapeHtml(schema.title)}</h1>
-          ${schema.description ? `<p class="form-description">${escapeHtml(schema.description)}</p>` : ""}
-        </div>
-        <div class="fields">
-          ${schema.fields.map(renderField).join("") || `<div class="empty"><strong>Blank form</strong></div>`}
-        </div>
-      `;
-
-      if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
     }
 
-    function renderField(field) {
-      const invalid = invalidIds.has(field.id) ? " invalid" : "";
-      return `
-        <section class="field${invalid}" data-field-wrap="${field.id}">
-          <div class="field-head">
-            <label class="field-label" for="${field.id}">${escapeHtml(field.label)}${field.required ? `<span class="required-mark">*</span>` : ""}</label>
-            ${field.description ? `<div class="field-help">${escapeHtml(field.description)}</div>` : ""}
-          </div>
-          ${renderControl(field)}
-        </section>
-      `;
-    }
-
-    function renderControl(field) {
-      const value = values[field.id];
-      const required = field.required ? " required" : "";
-      const placeholder = escapeHtml(field.placeholder || "");
-
-      switch (field.type) {
-        case "short_answer":
-          return `<input class="control" id="${field.id}" data-field="${field.id}" type="text" value="${escapeHtml(value || "")}" placeholder="${placeholder}"${required}>`;
-        case "long_answer":
-          return `<textarea class="textarea" id="${field.id}" data-field="${field.id}" placeholder="${placeholder}"${required}>${escapeHtml(value || "")}</textarea>`;
-        case "email":
-          return `<input class="control" id="${field.id}" data-field="${field.id}" type="email" value="${escapeHtml(value || "")}" placeholder="${placeholder}"${required}>`;
-        case "number":
-          return `<input class="control" id="${field.id}" data-field="${field.id}" type="number" value="${escapeHtml(value ?? "")}" placeholder="${placeholder}"${required}>`;
-        case "multiple_choice":
-          return renderChoice(field, "radio");
-        case "checkbox":
-          return renderChoice(field, "checkbox");
-        case "poll":
-          return renderPoll(field);
-        case "mood_meter":
-          return renderMood(field);
-        case "linear_scale":
-          return renderScale(field);
-        case "star_rating":
-          return renderStars(field);
-        case "radar":
-          return renderRadar(field);
-        case "image_upload":
-          return renderImageUpload(field);
-        case "link":
-          return renderLink(field);
-        default:
-          return `<input class="control" id="${field.id}" data-field="${field.id}" type="text" value="${escapeHtml(value || "")}">`;
-      }
-    }
-
-    function renderChoice(field, kind) {
-      const selected = kind === "checkbox" ? values[field.id] || [] : values[field.id];
-      return `
-        <div class="choice-list" role="group" aria-labelledby="${field.id}">
-          ${field.options.map((option, index) => {
-            const checked = kind === "checkbox" ? selected.includes(option) : selected === option;
-            return `
-              <label class="choice-row">
-                <input data-field="${field.id}" type="${kind}" name="${field.id}" value="${escapeHtml(option)}" ${checked ? "checked" : ""}>
-                <span>${escapeHtml(option)}</span>
-              </label>
-            `;
-          }).join("")}
-        </div>
-      `;
-    }
-
-    function renderPoll(field) {
-      const selected = values[field.id];
-      return `
-        <div class="poll-grid" role="group" aria-labelledby="${field.id}">
-          ${field.options.map((option) => `
-            <button class="poll-option${selected === option ? " selected" : ""}" type="button" data-choice-button="${field.id}" data-value="${escapeHtml(option)}">${escapeHtml(option)}</button>
-          `).join("")}
-        </div>
-      `;
-    }
-
-    function renderMood(field) {
-      const icons = ["angry", "frown", "meh", "smile", "laugh"];
-      const selected = Number(values[field.id] || 0);
-      return `
-        <div class="meter-grid" role="group" aria-labelledby="${field.id}">
-          <span>${escapeHtml(field.settings?.minLabel || "Low")}</span>
-          ${icons.map((icon, index) => {
-            const rating = index + 1;
-            return `<button class="meter-option${selected === rating ? " selected" : ""}" type="button" data-rating-button="${field.id}" data-value="${rating}" title="${rating}" aria-label="${rating}"><i data-lucide="${icon}"></i></button>`;
-          }).join("")}
-          <span>${escapeHtml(field.settings?.maxLabel || "High")}</span>
-        </div>
-      `;
-    }
-
-    function renderScale(field) {
-      const min = Number(field.settings?.min ?? 1);
-      const max = Number(field.settings?.max ?? 10);
-      const value = values[field.id] ?? Math.round((min + max) / 2);
-      if (values[field.id] === undefined) values[field.id] = value;
-      return `
-        <div class="range-wrap">
-          <span>${escapeHtml(field.settings?.minLabel || String(min))}</span>
-          <input id="${field.id}" data-field="${field.id}" type="range" min="${min}" max="${max}" value="${escapeHtml(value)}">
-          <span>${escapeHtml(field.settings?.maxLabel || String(max))}</span>
-          <output class="range-value" data-range-value="${field.id}">${escapeHtml(value)}</output>
-        </div>
-      `;
-    }
-
-    function renderStars(field) {
-      const max = Math.max(1, Math.min(10, Number(field.settings?.max || 5)));
-      const selected = Number(values[field.id] || 0);
-      return `
-        <div class="star-grid" role="group" aria-labelledby="${field.id}">
-          ${Array.from({ length: max }, (_, index) => {
-            const rating = index + 1;
-            return `<button class="star-option${selected >= rating ? " selected" : ""}" type="button" data-rating-button="${field.id}" data-value="${rating}" title="${rating}" aria-label="${rating}"><i data-lucide="star"></i></button>`;
-          }).join("")}
-        </div>
-      `;
-    }
-
-    function renderRadar(field) {
-      const axes = normalizeRadarAxes(field.settings?.axes);
-      const min = Number(field.settings?.min ?? 0);
-      const max = Number(field.settings?.max ?? 5);
-      const radarValues = ensureRadarValues(field);
-      return `
-        <div class="radar-wrap">
-          <div class="radar-chart" data-radar-chart="${field.id}">
-            ${renderRadarSvg(axes, radarValues, min, max)}
-          </div>
-          <div class="radar-controls">
-            ${axes.map((axis, index) => `
-              <label class="radar-row">
-                <span>${escapeHtml(axis)}</span>
-                <input type="range" min="${min}" max="${max}" step="1" value="${escapeHtml(radarValues[index])}" data-radar-field="${field.id}" data-radar-axis="${index}">
-                <output class="radar-value" data-radar-value="${field.id}-${index}">${escapeHtml(radarValues[index])}</output>
-              </label>
-            `).join("")}
-          </div>
-        </div>
-      `;
-    }
-
-    function ensureRadarValues(field) {
-      const axes = normalizeRadarAxes(field.settings?.axes);
-      const min = Number(field.settings?.min ?? 0);
-      const max = Number(field.settings?.max ?? 5);
-      const midpoint = Math.round(min + (max - min) / 2);
-      const existing = Array.isArray(values[field.id]) ? values[field.id] : [];
-      const next = axes.map((_, index) => Number.isFinite(Number(existing[index])) ? Number(existing[index]) : midpoint);
-      values[field.id] = next;
-      return next;
-    }
-
-    function renderRadarSvg(axes, radarValues, min, max) {
-      const labels = normalizeRadarAxes(axes);
-      const center = 150;
-      const radius = 92;
-      const safeMin = Number.isFinite(min) ? min : 0;
-      const safeMax = Number.isFinite(max) && max > safeMin ? max : safeMin + 1;
-      const polygon = radarPoints(radarValues, safeMin, safeMax, center, radius);
-      const axisLines = labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius);
-        return `<line x1="${center}" y1="${center}" x2="${point.x}" y2="${point.y}"></line>`;
-      }).join("");
-      const rings = [0.25, 0.5, 0.75, 1].map((scale) => {
-        const points = labels.map((_, index) => {
-          const point = radarPoint(index, labels.length, center, radius * scale);
-          return `${point.x},${point.y}`;
-        }).join(" ");
-        return `<polygon points="${points}"></polygon>`;
-      }).join("");
-      const labelNodes = labels.map((label, index) => {
-        const point = radarPoint(index, labels.length, center, radius + 24);
-        const anchor = Math.abs(point.x - center) < 8 ? "middle" : point.x > center ? "start" : "end";
-        return `<text class="radar-label" x="${point.x}" y="${point.y}" text-anchor="${anchor}" dominant-baseline="middle">${escapeHtml(label)}</text>`;
-      }).join("");
-
-      return `
-        <svg viewBox="0 0 300 300" role="img" aria-label="Radar chart">
-          <g class="radar-grid">${rings}${axisLines}</g>
-          <polygon class="radar-fill" points="${polygon}"></polygon>
-          ${labelNodes}
-        </svg>
-      `;
+    function radarPoint(index, count, center, radius) {
+      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
+      return {
+        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
+        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+      };
     }
 
     function radarPoints(values, min, max, center, radius) {
@@ -858,300 +949,635 @@
       }).join(" ");
     }
 
-    function radarPoint(index, count, center, radius) {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
-      return {
-        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
-        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function radarValueFromPointer(event, index, count, min, max, center, radius) {
+      const svg = event.currentTarget.ownerSVGElement || event.currentTarget.closest("svg");
+      const matrix = svg?.getScreenCTM();
+      if (!svg || !matrix) return null;
+
+      const pointer = svg.createSVGPoint();
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      const local = pointer.matrixTransform(matrix.inverse());
+      const edge = radarPoint(index, count, center, radius);
+      const axisX = edge.x - center;
+      const axisY = edge.y - center;
+      const pointerX = local.x - center;
+      const pointerY = local.y - center;
+      const lengthSquared = axisX * axisX + axisY * axisY || 1;
+      const scaled = clamp((pointerX * axisX + pointerY * axisY) / lengthSquared, 0, 1);
+
+      return clamp(Math.round(min + scaled * (max - min)), min, max);
+    }
+
+    function RadarChart({ axes, values, min, max, onValue }) {
+      const labels = normalizeRadarAxes(axes);
+      const center = 150;
+      const radius = 92;
+      const range = Math.max(1, max - min);
+      const current = labels.map((_, index) => {
+        const value = Array.isArray(values) && Number.isFinite(Number(values[index])) ? Number(values[index]) : min;
+        return clamp(value, min, max);
+      });
+      const polygon = radarPoints(current, min, max, center, radius);
+      const handlePoints = current.map((value, index) => {
+        const scaled = clamp((value - min) / range, 0, 1);
+        return { ...radarPoint(index, labels.length, center, radius * scaled), value };
+      });
+
+      function commitValue(index, nextValue) {
+        if (!onValue) return;
+        const next = [...current];
+        next[index] = clamp(nextValue, min, max);
+        onValue(next);
+      }
+
+      function updateFromPointer(event, index) {
+        const nextValue = radarValueFromPointer(event, index, labels.length, min, max, center, radius);
+        if (nextValue === null) return;
+        commitValue(index, nextValue);
+      }
+
+      function handlePointerDown(event, index) {
+        if (!onValue) return;
+        event.preventDefault();
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+        updateFromPointer(event, index);
+      }
+
+      function handlePointerMove(event, index) {
+        if (!onValue || (event.buttons & 1) !== 1) return;
+        updateFromPointer(event, index);
+      }
+
+      function handleKeyDown(event, index) {
+        if (!onValue) return;
+        const step = 1;
+        const page = Math.max(step, Math.round((max - min) / 4));
+        const keys = {
+          ArrowUp: current[index] + step,
+          ArrowRight: current[index] + step,
+          ArrowDown: current[index] - step,
+          ArrowLeft: current[index] - step,
+          PageUp: current[index] + page,
+          PageDown: current[index] - page,
+          Home: min,
+          End: max
+        };
+        if (!(event.key in keys)) return;
+        event.preventDefault();
+        commitValue(index, keys[event.key]);
+      }
+
+      return html`
+        <svg viewBox="0 0 300 300" role="group" aria-label="Radar chart">
+          <g class="radar-grid">
+            ${[0.25, 0.5, 0.75, 1].map((scale) => html`
+              <polygon points=${labels.map((_, index) => {
+                const point = radarPoint(index, labels.length, center, radius * scale);
+                return `${point.x},${point.y}`;
+              }).join(" ")} />
+            `)}
+            ${labels.map((_, index) => {
+              const point = radarPoint(index, labels.length, center, radius);
+              return html`<line x1=${center} y1=${center} x2=${point.x} y2=${point.y} />`;
+            })}
+          </g>
+          <polygon class="radar-fill" points=${polygon} />
+          ${labels.map((_, index) => {
+            const point = radarPoint(index, labels.length, center, radius);
+            return html`
+              <line
+                class="radar-hit"
+                x1=${center}
+                y1=${center}
+                x2=${point.x}
+                y2=${point.y}
+                aria-hidden="true"
+                focusable="false"
+                onPointerDown=${(event) => handlePointerDown(event, index)}
+                onPointerMove=${(event) => handlePointerMove(event, index)}
+              />
+            `;
+          })}
+          ${handlePoints.map((point, index) => html`
+            <circle
+              class="radar-handle"
+              cx=${point.x}
+              cy=${point.y}
+              r="6"
+              role="slider"
+              tabIndex="0"
+              aria-label=${labels[index]}
+              aria-valuemin=${min}
+              aria-valuemax=${max}
+              aria-valuenow=${point.value}
+              onPointerDown=${(event) => handlePointerDown(event, index)}
+              onPointerMove=${(event) => handlePointerMove(event, index)}
+              onKeyDown=${(event) => handleKeyDown(event, index)}
+            >
+              <title>${labels[index]}: ${point.value}</title>
+            </circle>
+          `)}
+          ${labels.map((label, index) => {
+            const point = radarPoint(index, labels.length, center, radius + 24);
+            const anchor = Math.abs(point.x - center) < 8 ? "middle" : point.x > center ? "start" : "end";
+            return html`<text class="radar-label" x=${point.x} y=${point.y} text-anchor=${anchor} dominant-baseline="middle">${label}</text>`;
+          })}
+        </svg>
+      `;
+    }
+
+    function FieldShell({ field, invalid, children }) {
+      const labelId = field.id + "_label";
+      const helpId = field.description ? field.id + "_help" : null;
+      const errorId = invalid ? field.id + "_error" : null;
+      return html`
+        <section class=${`field${invalid ? " invalid" : ""}`} data-field-wrap=${field.id} aria-invalid=${invalid ? "true" : null} aria-describedby=${[helpId, errorId].filter(Boolean).join(" ") || null}>
+          <div class="field-head">
+            <label class="field-label" id=${labelId} for=${field.id}>${field.label}${field.required ? html`<span class="required-mark">*</span>` : null}</label>
+            ${field.description ? html`<div class="field-help" id=${helpId}>${field.description}</div>` : null}
+          </div>
+          ${children}
+          ${invalid ? html`<div class="field-error" id=${errorId} role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span>Required field</span></div>` : null}
+        </section>
+      `;
+    }
+
+    function RuntimeField({ field, value, invalid, onValue }) {
+      const describedBy = [field.description ? field.id + "_help" : null, invalid ? field.id + "_error" : null].filter(Boolean).join(" ") || null;
+      const common = {
+        id: field.id,
+        class: "control",
+        "aria-invalid": invalid ? "true" : null,
+        "aria-required": field.required ? "true" : null,
+        "aria-describedby": describedBy
       };
-    }
-
-    function renderImageUpload(field) {
-      const image = values[field.id];
-      return `
-        <div class="image-preview">
-          <input class="control" id="${field.id}" data-image-field="${field.id}" type="file" accept="image/*">
-          ${image?.dataUrl ? `<img src="${escapeHtml(image.dataUrl)}" alt="${escapeHtml(image.name || field.label)}">` : ""}
-        </div>
-      `;
-    }
-
-    function renderLink(field) {
-      const value = String(values[field.id] || "");
-      const href = normalizeUrl(value);
-      return `
-        <input class="control" id="${field.id}" data-field="${field.id}" data-link-input="${field.id}" type="url" value="${escapeHtml(value)}" placeholder="${escapeHtml(field.placeholder || "https://example.com")}">
-        <div data-link-preview="${field.id}">
-          ${href ? `<a class="link-preview" href="${escapeHtml(href)}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i><span>${escapeHtml(value)}</span></a>` : ""}
-        </div>
-      `;
-    }
-
-    function normalizeUrl(value) {
-      const text = String(value || "").trim();
-      if (!text) return "";
-      if (/^https?:\/\//i.test(text)) return text;
-      return "https://" + text;
-    }
-
-    document.addEventListener("input", (event) => {
-      if (event.target.dataset.radarField) {
-        const fieldId = event.target.dataset.radarField;
-        const field = schema?.fields.find((item) => item.id === fieldId);
-        if (!field) return;
-        const index = Number(event.target.dataset.radarAxis);
-        const radarValues = ensureRadarValues(field);
-        radarValues[index] = Number(event.target.value);
-        values[fieldId] = radarValues;
-        const output = document.querySelector(`[data-radar-value="${CSS.escape(fieldId + "-" + index)}"]`);
-        if (output) output.textContent = event.target.value;
-        const chart = document.querySelector(`[data-radar-chart="${CSS.escape(fieldId)}"]`);
-        if (chart) {
-          chart.innerHTML = renderRadarSvg(normalizeRadarAxes(field.settings?.axes), radarValues, Number(field.settings?.min ?? 0), Number(field.settings?.max ?? 5));
+      const textareaCommon = { ...common, class: "textarea" };
+      switch (field.type) {
+        case "short_answer":
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+        case "long_answer":
+          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
+        case "email":
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="email" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+        case "number":
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="number" value=${value ?? ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+        case "multiple_choice":
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="choice-list" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                ${field.options.map((option) => html`
+                  <label class="choice-row" key=${option}>
+                    <input type="radio" name=${field.id} value=${option} checked=${value === option} onChange=${() => onValue(option)} />
+                    <span>${option}</span>
+                  </label>
+                `)}
+              </div>
+            </${FieldShell}>
+          `;
+        case "checkbox":
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="choice-list" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                ${field.options.map((option) => {
+                  const selected = Array.isArray(value) ? value : [];
+                  return html`
+                    <label class="choice-row" key=${option}>
+                      <input type="checkbox" value=${option} checked=${selected.includes(option)} onChange=${(event) => {
+                        const next = event.currentTarget.checked ? [...selected, option] : selected.filter((item) => item !== option);
+                        onValue(next);
+                      }} />
+                      <span>${option}</span>
+                    </label>
+                  `;
+                })}
+              </div>
+            </${FieldShell}>
+          `;
+        case "poll":
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="poll-grid" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                ${field.options.map((option) => html`
+                  <button class=${`poll-option${value === option ? " selected" : ""}`} type="button" key=${option} onClick=${() => onValue(option)}>${option}</button>
+                `)}
+              </div>
+            </${FieldShell}>
+          `;
+        case "mood_meter": {
+          const icons = ["fa-face-angry", "fa-face-frown", "fa-face-meh", "fa-face-smile", "fa-face-laugh"];
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="meter-grid" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                <span>${field.settings?.minLabel || "Low"}</span>
+                ${icons.map((icon, index) => {
+                  const rating = index + 1;
+                  return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><i class=${`fa-regular ${icon}`}></i></button>`;
+                })}
+                <span>${field.settings?.maxLabel || "High"}</span>
+              </div>
+            </${FieldShell}>
+          `;
         }
-        invalidIds.delete(fieldId);
-        const wrap = document.querySelector(`[data-field-wrap="${CSS.escape(fieldId)}"]`);
-        if (wrap) wrap.classList.remove("invalid");
-        return;
-      }
-
-      const fieldId = event.target.dataset.field;
-      if (!fieldId) return;
-      const field = schema?.fields.find((item) => item.id === fieldId);
-      if (!field) return;
-
-      if (field.type === "checkbox") {
-        values[fieldId] = [...document.querySelectorAll(`input[name="${CSS.escape(fieldId)}"]:checked`)].map((input) => input.value);
-      } else {
-        values[fieldId] = event.target.value;
-      }
-
-      if (event.target.type === "range") {
-        const output = document.querySelector(`[data-range-value="${CSS.escape(fieldId)}"]`);
-        if (output) output.textContent = event.target.value;
-      }
-
-      if (event.target.dataset.linkInput) {
-        const preview = document.querySelector(`[data-link-preview="${CSS.escape(fieldId)}"]`);
-        const href = normalizeUrl(event.target.value);
-        if (preview) {
-          preview.innerHTML = href ? `<a class="link-preview" href="${escapeHtml(href)}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i><span>${escapeHtml(event.target.value)}</span></a>` : "";
-          if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+        case "linear_scale": {
+          const min = Number(field.settings?.min ?? 1);
+          const max = Number(field.settings?.max ?? 10);
+          const current = value ?? Math.round(min + (max - min) / 2);
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="range-wrap">
+                <span>${field.settings?.minLabel || String(min)}</span>
+                <input id=${field.id} type="range" min=${min} max=${max} value=${current} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy} onInput=${(event) => onValue(Number(event.currentTarget.value))} />
+                <span>${field.settings?.maxLabel || String(max)}</span>
+                <output class="range-value">${current}</output>
+              </div>
+            </${FieldShell}>
+          `;
         }
+        case "star_rating": {
+          const max = Math.max(1, Math.min(10, Number(field.settings?.max || 5)));
+          const selected = Number(value || 0);
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="star-grid" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                ${Array.from({ length: max }, (_, index) => {
+                  const rating = index + 1;
+                  return html`<button class=${`star-option${selected >= rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><i class="fa-regular fa-star"></i></button>`;
+                })}
+              </div>
+            </${FieldShell}>
+          `;
+        }
+        case "radar": {
+          const axes = normalizeRadarAxes(field.settings?.axes);
+          const min = Number(field.settings?.min ?? 0);
+          const max = Number(field.settings?.max ?? 5);
+          const midpoint = Math.round(min + (max - min) / 2);
+          const current = axes.map((_, index) => Array.isArray(value) && Number.isFinite(Number(value[index])) ? Number(value[index]) : midpoint);
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="radar-wrap" role="group" aria-labelledby=${field.id + "_label"} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+                <div class="radar-chart"><${RadarChart} axes=${axes} values=${current} min=${min} max=${max} onValue=${onValue} /></div>
+                <div class="radar-values" aria-live="polite">
+                  ${axes.map((axis, index) => html`
+                    <div class="radar-value-row" key=${index}>
+                      <span>${axis}</span>
+                      <output class="radar-value">${current[index]}</output>
+                    </div>
+                  `)}
+                </div>
+              </div>
+            </${FieldShell}>
+          `;
+        }
+        case "image_upload":
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <div class="image-preview">
+                <input ...${common} type="file" accept="image/*" onChange=${async (event) => {
+                  const file = event.currentTarget.files?.[0];
+                  if (!file) return;
+                  onValue({ name: file.name, type: file.type, dataUrl: await readFileAsDataUrl(file) });
+                }} />
+                ${value?.dataUrl ? html`<img src=${value.dataUrl} alt=${value.name || field.label} />` : null}
+              </div>
+            </${FieldShell}>
+          `;
+        case "link": {
+          const text = String(value || "");
+          const href = normalizeUrl(text);
+          return html`
+            <${FieldShell} field=${field} invalid=${invalid}>
+              <input ...${common} type="url" value=${text} placeholder=${field.placeholder || "https://example.com"} onInput=${(event) => onValue(event.currentTarget.value)} />
+              ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${text}</span></a>` : null}
+            </${FieldShell}>
+          `;
+        }
+        default:
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
       }
-
-      invalidIds.delete(fieldId);
-      const wrap = document.querySelector(`[data-field-wrap="${CSS.escape(fieldId)}"]`);
-      if (wrap) wrap.classList.remove("invalid");
-    });
-
-    document.addEventListener("change", async (event) => {
-      const imageField = event.target.dataset.imageField;
-      if (imageField) {
-        const file = event.target.files?.[0];
-        if (!file) return;
-        const dataUrl = await readFileAsDataUrl(file);
-        values[imageField] = { name: file.name, type: file.type, dataUrl };
-        invalidIds.delete(imageField);
-        render();
-      }
-    });
-
-    document.addEventListener("click", (event) => {
-      const choice = event.target.closest("[data-choice-button]");
-      if (choice) {
-        values[choice.dataset.choiceButton] = choice.dataset.value;
-        invalidIds.delete(choice.dataset.choiceButton);
-        render();
-        return;
-      }
-
-      const rating = event.target.closest("[data-rating-button]");
-      if (rating) {
-        values[rating.dataset.ratingButton] = Number(rating.dataset.value);
-        invalidIds.delete(rating.dataset.ratingButton);
-        render();
-        return;
-      }
-    });
-
-    function readFileAsDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
     }
 
-    schemaFile.addEventListener("change", async (event) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
+    function decodeSchemaToken(token) {
+      const base64 = String(token || "").replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64 + "=".repeat((4 - base64.length % 4) % 4);
+      const binary = atob(padded);
+      const bytes = new Uint8Array(binary.length);
+      for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index);
+      }
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+
+    function schemaTokenFromPath() {
+      const segment = window.location.pathname.replace(/\/+$/g, "").split("/").pop() || "";
+      if (!segment || segment.includes(".") || segment.length < 16) return "";
+      return segment;
+    }
+
+    function inlineSchemaFromLocation() {
       try {
-        const text = await file.text();
-        setSchema(JSON.parse(text));
-      } catch (error) {
-        window.alert("That JSON file could not be loaded.");
-        console.error(error);
-      } finally {
-        event.target.value = "";
-      }
-    });
+        const params = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.slice(1));
+        const token = params.get("s") || hashParams.get("s") || schemaTokenFromPath();
+        if (token) return decodeSchemaToken(token);
 
-    resetButton.addEventListener("click", () => {
-      if (!schema) return;
-      values = {};
-      invalidIds = new Set();
-      render();
-    });
-
-    document.querySelectorAll("[data-export]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        if (!schema) return;
-        const ok = validateRequired();
-        if (!ok) return;
-        await exportFilledForm(button.dataset.export);
-      });
-    });
-
-    function validateRequired() {
-      invalidIds = new Set();
-      if (!schema) return false;
-
-      schema.fields.forEach((field) => {
-        if (!field.required) return;
-        const value = values[field.id];
-        const emptyArray = Array.isArray(value) && value.length === 0;
-        const emptyObject = typeof value === "object" && value && !Array.isArray(value) && !value.dataUrl;
-        if (value === undefined || value === null || value === "" || emptyArray || emptyObject) {
-          invalidIds.add(field.id);
-        }
-      });
-
-      if (invalidIds.size) {
-        render();
-        const first = document.querySelector(".field.invalid");
-        if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
-        return false;
-      }
-
-      return true;
-    }
-
-    async function exportFilledForm(kind) {
-      const buttons = document.querySelectorAll("[data-export]");
-      buttons.forEach((button) => button.disabled = true);
-      try {
-        if (document.fonts?.ready) await document.fonts.ready;
-        const canvas = await html2canvas(capture, {
-          scale: 2,
-          backgroundColor: "#f7f5f2",
-          useCORS: true,
-          logging: false
-        });
-
-        if (kind === "pdf") {
-          exportPdf(canvas);
-        } else {
-          const mime = kind === "jpg" ? "image/jpeg" : "image/png";
-          const dataUrl = canvas.toDataURL(mime, 0.94);
-          downloadDataUrl(dataUrl, safeFileName(schema.title) + "." + kind);
-        }
-      } finally {
-        buttons.forEach((button) => button.disabled = !schema);
-      }
-    }
-
-    function exportPdf(canvas) {
-      const pdfCtor = window.jspdf?.jsPDF;
-      if (!pdfCtor) {
-        window.alert("PDF export library did not load.");
-        return;
-      }
-
-      const pdf = new pdfCtor("p", "pt", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const margin = 28;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      const imgData = canvas.toDataURL("image/png");
-
-      let position = margin;
-      let remaining = imgHeight;
-      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-      remaining -= pageHeight - margin * 2;
-
-      while (remaining > 0) {
-        pdf.addPage();
-        position = margin - (imgHeight - remaining);
-        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-        remaining -= pageHeight - margin * 2;
-      }
-
-      pdf.save(safeFileName(schema.title) + ".pdf");
-    }
-
-    function downloadDataUrl(dataUrl, fileName) {
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-
-    async function bootstrap() {
-      const params = new URLSearchParams(window.location.search);
-      const schemaUrl = params.get("schema");
-
-      if (window.FORM_SCHEMA) {
-        setSchema(window.FORM_SCHEMA);
-        return;
-      }
-
-      if (schemaUrl) {
-        try {
-          const response = await fetch(schemaUrl);
-          if (!response.ok) throw new Error("Unable to load schema");
-          setSchema(await response.json());
-          return;
-        } catch (error) {
-          console.error(error);
-          window.alert("The schema URL could not be loaded.");
-        }
-      }
-
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          setSchema(JSON.parse(saved));
-          return;
-        }
+        const legacySchema = hashParams.get("schema");
+        return legacySchema ? JSON.parse(legacySchema) : null;
       } catch (error) {
         console.warn(error);
+        return null;
       }
-
-      render();
     }
 
-    document.addEventListener("dragover", (event) => {
-      event.preventDefault();
-    });
+    function RuntimeApp() {
+      const [schema, setSchemaState] = useState(null);
+      const [values, setValues] = useState({});
+      const [invalidIds, setInvalidIds] = useState(new Set());
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+      const [exportFormat, setExportFormat] = useState("pdf");
+      const [exporting, setExporting] = useState(false);
+      const captureRef = useRef(null);
 
-    document.addEventListener("drop", async (event) => {
-      event.preventDefault();
-      const file = [...event.dataTransfer.files].find((item) => item.type === "application/json" || item.name.endsWith(".json"));
-      if (!file) return;
-      try {
-        setSchema(JSON.parse(await file.text()));
-      } catch (error) {
-        window.alert("That JSON file could not be loaded.");
-        console.error(error);
+      function setLoadedSchema(nextSchema) {
+        const normalized = normalizeSchema(nextSchema);
+        setSchemaState(normalized);
+        setValues(initialValuesFor(normalized));
+        setInvalidIds(new Set());
       }
-    });
 
-    bootstrap();
+      useEffect(() => {
+        document.title = schema?.title ? schema.title + " - Form Runtime" : "Form Runtime";
+      }, [schema?.title]);
+
+      useEffect(() => {
+        async function bootstrap() {
+          const params = new URLSearchParams(window.location.search);
+          const schemaUrl = params.get("schema");
+          const previewMode = params.get("preview") === "1";
+
+          if (window.FORM_SCHEMA) {
+            setLoadedSchema(window.FORM_SCHEMA);
+            return;
+          }
+
+          const inlineSchema = inlineSchemaFromLocation();
+          if (inlineSchema) {
+            setLoadedSchema(inlineSchema);
+            return;
+          }
+
+          if (previewMode) {
+            try {
+              const builderSchema = localStorage.getItem(BUILDER_STORAGE_KEY);
+              if (builderSchema) {
+                setLoadedSchema(JSON.parse(builderSchema));
+                return;
+              }
+            } catch (error) {
+              console.warn(error);
+            }
+          }
+
+          if (schemaUrl) {
+            try {
+              const response = await fetch(schemaUrl);
+              if (!response.ok) throw new Error("Unable to load schema");
+              setLoadedSchema(await response.json());
+              return;
+            } catch (error) {
+              console.error(error);
+              window.alert("The schema URL could not be loaded.");
+            }
+          }
+
+          setSchemaState(null);
+          setValues({});
+          setInvalidIds(new Set());
+        }
+
+        bootstrap();
+      }, []);
+
+      useEffect(() => {
+        function prevent(event) {
+          event.preventDefault();
+        }
+
+        async function drop(event) {
+          event.preventDefault();
+          const file = [...event.dataTransfer.files].find((item) => item.type === "application/json" || item.name.endsWith(".json"));
+          if (!file) return;
+          try {
+            setLoadedSchema(JSON.parse(await file.text()));
+          } catch (error) {
+            window.alert("That JSON file could not be loaded.");
+            console.error(error);
+          }
+        }
+
+        document.addEventListener("dragover", prevent);
+        document.addEventListener("drop", drop);
+        return () => {
+          document.removeEventListener("dragover", prevent);
+          document.removeEventListener("drop", drop);
+        };
+      }, []);
+
+      async function importSchema(event) {
+        const file = event.currentTarget.files?.[0];
+        if (!file) return;
+        try {
+          setLoadedSchema(JSON.parse(await file.text()));
+        } catch (error) {
+          window.alert("That JSON file could not be loaded.");
+          console.error(error);
+        } finally {
+          event.currentTarget.value = "";
+        }
+      }
+
+      function updateValue(id, value) {
+        setValues((current) => ({ ...current, [id]: value }));
+        setInvalidIds((current) => {
+          const next = new Set(current);
+          next.delete(id);
+          return next;
+        });
+      }
+
+      function resetForm() {
+        if (!schema) return;
+        setValues(initialValuesFor(schema));
+        setInvalidIds(new Set());
+      }
+
+      function validateRequired() {
+        if (!schema) return false;
+        const invalid = new Set();
+        schema.fields.forEach((field) => {
+          if (!field.required) return;
+          const value = values[field.id];
+          const emptyArray = Array.isArray(value) && value.length === 0;
+          const emptyObject = typeof value === "object" && value && !Array.isArray(value) && !value.dataUrl;
+          if (value === undefined || value === null || value === "" || emptyArray || emptyObject) invalid.add(field.id);
+        });
+        setInvalidIds(invalid);
+        if (invalid.size) {
+          setTimeout(() => document.querySelector(".field.invalid")?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
+          return false;
+        }
+        return true;
+      }
+
+      async function exportFilledForm(kind) {
+        if (!schema || exporting || !captureRef.current || !validateRequired()) return;
+
+        setExporting(true);
+        try {
+          if (document.fonts?.ready) await document.fonts.ready;
+          const canvas = await html2canvas(captureRef.current, {
+            scale: 2,
+            backgroundColor: "#f7f5f2",
+            useCORS: true,
+            logging: false
+          });
+
+          if (kind === "pdf") {
+            exportPdf(canvas);
+          } else {
+            const mime = kind === "jpg" ? "image/jpeg" : "image/png";
+            const dataUrl = canvas.toDataURL(mime, 0.94);
+            downloadDataUrl(dataUrl, safeFileName(schema.title) + "." + kind);
+          }
+        } finally {
+          setExporting(false);
+        }
+      }
+
+      function exportPdf(canvas) {
+        const pdfCtor = window.jspdf?.jsPDF;
+        if (!pdfCtor) {
+          window.alert("PDF export library did not load.");
+          return;
+        }
+
+        const pdf = new pdfCtor("p", "pt", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const margin = 28;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        const imgData = canvas.toDataURL("image/png");
+
+        let position = margin;
+        let remaining = imgHeight;
+        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+        remaining -= pageHeight - margin * 2;
+
+        while (remaining > 0) {
+          pdf.addPage();
+          position = margin - (imgHeight - remaining);
+          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+          remaining -= pageHeight - margin * 2;
+        }
+
+        pdf.save(safeFileName(schema.title) + ".pdf");
+      }
+
+      function downloadDataUrl(dataUrl, fileName) {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+
+      const exportIcon = exportFormat === "pdf"
+        ? "fa-regular fa-file-lines"
+        : exportFormat === "jpg"
+          ? "fa-regular fa-file-image"
+          : "fa-regular fa-image";
+
+      return html`
+        <div class=${`runtime-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
+          <button class="icon-button sidebar-expand-button" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-hidden=${!sidebarCollapsed} tabIndex=${sidebarCollapsed ? 0 : -1} onClick=${() => setSidebarCollapsed(false)}>
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <aside class="runtime-sidebar" aria-label="Runtime actions" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
+            <div class="runtime-sidebar-content">
+              <div>
+                <div class="runtime-sidebar-head">
+                  <div class="sidebar-title">Runtime</div>
+                  <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
+                    <i class="fa-solid fa-chevron-left"></i>
+                  </button>
+                </div>
+                <div class="sidebar-actions">
+                  <label class="button full" for="schemaFile"><i class="fa-regular fa-folder-open"></i><span>Open schema</span></label>
+                  <input class="sr-only" id="schemaFile" type="file" accept="application/json,.json" onChange=${importSchema} />
+                  <button class="button full" type="button" disabled=${!schema} onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i><span>Reset answers</span></button>
+                </div>
+              </div>
+
+              <div class="runtime-sidebar-footer">
+                <label class="select-label" for="exportFormat">Save as</label>
+                <div class="select-wrap">
+                  <select class="select" id="exportFormat" value=${exportFormat} disabled=${!schema || exporting} onChange=${(event) => setExportFormat(event.currentTarget.value)}>
+                    <option value="pdf">PDF</option>
+                    <option value="png">PNG</option>
+                    <option value="jpg">JPG</option>
+                  </select>
+                  <i class="select-icon fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </div>
+                <button class="button primary full" type="button" data-export disabled=${!schema || exporting} onClick=${() => exportFilledForm(exportFormat)}>
+                  <i class=${exportIcon}></i><span>${exporting ? "Preparing" : "Download"}</span>
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          <main class="stage">
+            <section class="capture" ref=${captureRef}>
+              ${schema ? html`
+                <div class="form-header">
+                  <h1 class="form-title">${schema.title}</h1>
+                  ${schema.description ? html`<p class="form-description">${schema.description}</p>` : null}
+                </div>
+                <div class="fields">
+                  ${schema.fields.length
+                    ? schema.fields.map((field) => html`
+                      <${RuntimeField}
+                        key=${field.id}
+                        field=${field}
+                        value=${values[field.id]}
+                        invalid=${invalidIds.has(field.id)}
+                        onValue=${(value) => updateValue(field.id, value)}
+                      />
+                    `)
+                    : html`<div class="empty"><strong>Blank form</strong></div>`}
+                </div>
+              ` : html`
+                <div class="empty">
+                  <div class="empty-inner">
+                    <span class="empty-icon"><i class="fa-regular fa-file-code"></i></span>
+                    <strong>No schema loaded</strong>
+                  </div>
+                </div>
+              `}
+            </section>
+          </main>
+        </div>
+      `;
+    }
+
+    render(html`<${RuntimeApp} />`, document.getElementById("app"));
   </script>
 </body>
 </html>
