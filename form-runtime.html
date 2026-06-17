@@ -21,8 +21,14 @@
       --accent: #861f41;
       --accent-soft: #f3e8ed;
       --accent-2: #ca4f00;
-      --danger: #861f41;
+      --success: #2e7d32;
+      --warning: #946200;
+      --danger: #b3261e;
+      --success-soft: rgba(46, 125, 50, 0.12);
+      --warning-soft: rgba(148, 98, 0, 0.12);
+      --danger-soft: rgba(179, 38, 30, 0.12);
       --focus: #861f41;
+      --form-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --sidebar: #2f3033;
       --sidebar-2: #383a3d;
       --sidebar-line: #4a4d50;
@@ -303,6 +309,9 @@
     .stage {
       min-width: 0;
       padding: 24px 16px 46px;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: var(--form-font-family);
       transition: padding 240ms var(--ease);
     }
 
@@ -854,6 +863,36 @@
       overflow-wrap: anywhere;
     }
 
+    .field.spacer-field {
+      border: 0;
+      background: transparent;
+      padding: 0 16px;
+      box-shadow: none;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .field.spacer-field:hover {
+      transform: none;
+    }
+
+    .spacer-preview {
+      min-height: 8px;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      user-select: none;
+    }
+
+    .spacer-line {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
     .empty {
       min-height: 360px;
       display: grid;
@@ -1018,6 +1057,21 @@
     const DEFAULT_RADAR_MAX = 5;
     const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
     const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
+    const DEFAULT_THEME = {
+      bg: "#f7f5f2",
+      panel: "#ffffff",
+      panel2: "#f4f2ef",
+      ink: "#1f1f1f",
+      muted: "#5f6366",
+      line: "#d7d2cb",
+      accent: "#861f41",
+      accent2: "#ca4f00",
+      accentSoft: "#f3e8ed",
+      success: "#2e7d32",
+      warning: "#946200",
+      danger: "#b3261e",
+      fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    };
     const RADAR_AXIS_SNAP_ENTER_PX = 8;
     const RADAR_AXIS_SNAP_EXIT_PX = 14;
     const RADAR_RING_SNAP_ENTER_PX = 5;
@@ -1039,11 +1093,112 @@
       radar: { label: "Radar" },
       media_upload: { label: "Media upload" },
       media: { label: "Media" },
+      spacer: { label: "Spacer" },
       link: { label: "Link" }
     };
 
     function uid() {
       return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function cleanColor(value, fallback) {
+      const text = String(value || "").trim();
+      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
+    }
+
+    function cleanFontFamily(value) {
+      const text = String(value || "").trim();
+      if (!text) return DEFAULT_THEME.fontFamily;
+      return /^[a-zA-Z0-9_\-\s"',.()]+$/.test(text) ? text : DEFAULT_THEME.fontFamily;
+    }
+
+    function unquoteFontName(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      return text.replace(/^['"]|['"]$/g, "").trim();
+    }
+
+    function fontNameFromStack(value) {
+      const first = cleanFontFamily(value).split(",")[0] || "";
+      const name = unquoteFontName(first);
+      return /^(ui-sans-serif|system-ui|-apple-system|BlinkMacSystemFont)$/i.test(name) ? "System UI" : name || "Roboto";
+    }
+
+    function googleFontParam(family) {
+      return encodeURIComponent(String(family || "").trim()).replace(/%20/g, "+");
+    }
+
+    function googleFontFamilyFromStack(value) {
+      const family = fontNameFromStack(value);
+      return family && family !== "System UI" ? family : "";
+    }
+
+    function ensureGoogleFontLoaded(value) {
+      const family = googleFontFamilyFromStack(value);
+      if (!family) return;
+      const id = `google-font-${family.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+      if (document.getElementById(id)) return;
+      const link = document.createElement("link");
+      link.id = id;
+      link.rel = "stylesheet";
+      link.href = `https://fonts.googleapis.com/css2?family=${googleFontParam(family)}:wght@400;500;700;900&display=swap`;
+      document.head.appendChild(link);
+    }
+
+    function normalizeTheme(input = {}) {
+      const theme = { ...DEFAULT_THEME, ...(input || {}) };
+      return {
+        bg: cleanColor(theme.bg, DEFAULT_THEME.bg),
+        panel: cleanColor(theme.panel, DEFAULT_THEME.panel),
+        panel2: cleanColor(theme.panel2, DEFAULT_THEME.panel2),
+        ink: cleanColor(theme.ink, DEFAULT_THEME.ink),
+        muted: cleanColor(theme.muted, DEFAULT_THEME.muted),
+        line: cleanColor(theme.line, DEFAULT_THEME.line),
+        accent: cleanColor(theme.accent, DEFAULT_THEME.accent),
+        accent2: cleanColor(theme.accent2, DEFAULT_THEME.accent2),
+        accentSoft: cleanColor(theme.accentSoft, DEFAULT_THEME.accentSoft),
+        success: cleanColor(theme.success, DEFAULT_THEME.success),
+        warning: cleanColor(theme.warning, DEFAULT_THEME.warning),
+        danger: cleanColor(theme.danger, DEFAULT_THEME.danger),
+        fontFamily: cleanFontFamily(theme.fontFamily)
+      };
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
+      const value = parseInt(clean, 16);
+      const r = (value >> 16) & 255;
+      const g = (value >> 8) & 255;
+      const b = value & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function themeStyle(schema) {
+      const theme = normalizeTheme(schema?.settings?.theme);
+      return [
+        `--bg: ${theme.bg}`,
+        `--panel: ${theme.panel}`,
+        `--panel-2: ${theme.panel2}`,
+        `--ink: ${theme.ink}`,
+        `--muted: ${theme.muted}`,
+        `--line: ${theme.line}`,
+        `--accent: ${theme.accent}`,
+        `--accent-2: ${theme.accent2}`,
+        `--accent-soft: ${theme.accentSoft}`,
+        `--success: ${theme.success}`,
+        `--warning: ${theme.warning}`,
+        `--danger: ${theme.danger}`,
+        `--success-soft: ${hexToRgba(theme.success, 0.12)}`,
+        `--warning-soft: ${hexToRgba(theme.warning, 0.12)}`,
+        `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
+        `--focus: ${theme.accent}`,
+        `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
+        `--form-font-family: ${theme.fontFamily}`
+      ].join("; ");
     }
 
     function sanitizeId(value) {
@@ -1115,8 +1270,32 @@
     function defaultSchema() {
       return {
         version: 4,
+        settings: { theme: clone(DEFAULT_THEME) },
         fields: []
       };
+    }
+
+    function normalizeSpacerSettings(field) {
+      const settings = field?.settings || {};
+      const height = Number(settings.height);
+      const thickness = Number(settings.lineThickness);
+      const style = ["solid", "dashed", "dotted"].includes(settings.lineStyle) ? settings.lineStyle : "solid";
+      return {
+        height: Number.isFinite(height) ? Math.max(0, Math.min(240, Math.round(height))) : 32,
+        showLine: Boolean(settings.showLine),
+        lineStyle: style,
+        lineThickness: Number.isFinite(thickness) ? Math.max(1, Math.min(12, Math.round(thickness))) : 1
+      };
+    }
+
+    function spacerStyle(settings) {
+      const normalized = normalizeSpacerSettings({ settings });
+      return `height: ${normalized.height}px;`;
+    }
+
+    function spacerLineStyle(settings) {
+      const normalized = normalizeSpacerSettings({ settings });
+      return `border-top-width: ${normalized.lineThickness}px; border-top-style: ${normalized.lineStyle};`;
     }
 
     function normalizeField(raw) {
@@ -1178,12 +1357,22 @@
         next.settings = mediaSettings(next);
       }
 
+      if (type === "spacer") {
+        next.required = false;
+        next.label = "";
+        next.description = "";
+        next.placeholder = "";
+        next.options = [];
+        next.settings = normalizeSpacerSettings(next);
+      }
+
       return next;
     }
 
     function normalizeSchema(input) {
       const next = defaultSchema();
       next.version = 4;
+      next.settings = { theme: normalizeTheme(input?.settings?.theme) };
       const seenIds = new Set();
       next.fields = Array.isArray(input?.fields)
         ? input.fields.map(normalizeField).map((field) => {
@@ -2065,6 +2254,16 @@
               </div>
             </${FieldShell}>
           `;
+        case "spacer": {
+          const settings = normalizeSpacerSettings(field);
+          return html`
+            <section class="field spacer-field" data-field-wrap=${field.id} aria-hidden="true">
+              <div class="spacer-preview" style=${spacerStyle(settings)}>
+                ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
+              </div>
+            </section>
+          `;
+        }
         case "media":
           return html`
             <${FieldShell} field=${field} invalid=${false}>
@@ -2136,6 +2335,10 @@
 
       useEffect(() => {
         document.title = schema ? schemaDisplayName(schema) + " - Form Runtime" : "Form Runtime";
+      }, [schema]);
+
+      useEffect(() => {
+        if (schema) ensureGoogleFontLoaded(normalizeTheme(schema?.settings?.theme).fontFamily);
       }, [schema]);
 
       useEffect(() => {
@@ -2244,7 +2447,7 @@
         if (!schema) return false;
         const invalid = new Set();
         schema.fields.forEach((field) => {
-          if (!field.required || field.type === "headline" || field.type === "media") return;
+          if (!field.required || field.type === "headline" || field.type === "media" || field.type === "spacer") return;
           const value = values[field.id];
           const emptyArray = Array.isArray(value) && value.length === 0;
           const emptyMediaObject = field.type === "media_upload" && typeof value === "object" && value && !Array.isArray(value) && !value.dataUrl;
@@ -2266,7 +2469,7 @@
           if (document.fonts?.ready) await document.fonts.ready;
           const canvas = await html2canvas(captureRef.current, {
             scale: 2,
-            backgroundColor: "#f7f5f2",
+            backgroundColor: normalizeTheme(schema?.settings?.theme).bg,
             useCORS: true,
             logging: false
           });
@@ -2367,7 +2570,7 @@
             </div>
           </aside>
 
-          <main class="stage">
+          <main class="stage" style=${schema ? themeStyle(schema) : ""}>
             <section class="capture" ref=${captureRef}>
               ${schema ? html`
                 <div class="fields">

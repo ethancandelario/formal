@@ -23,10 +23,16 @@
       --accent: #861f41;
       --accent-2: #ca4f00;
       --accent-soft: #f3e8ed;
-      --danger: #861f41;
+      --success: #2e7d32;
+      --warning: #946200;
+      --danger: #b3261e;
+      --success-soft: rgba(46, 125, 50, 0.12);
+      --warning-soft: rgba(148, 98, 0, 0.12);
+      --danger-soft: rgba(179, 38, 30, 0.12);
       --shadow: 0 12px 28px rgba(31, 31, 31, 0.07);
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --focus-ring: rgba(134, 31, 65, 0.28);
+      --form-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * {
@@ -42,7 +48,7 @@
       margin: 0;
       background: var(--bg);
       color: var(--ink);
-      font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--form-font-family);
       font-size: 15px;
     }
 
@@ -233,6 +239,461 @@
       font-weight: 700;
     }
 
+    .sidebar-section {
+      display: grid;
+      gap: 10px;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(215, 210, 203, 0.16);
+    }
+
+    .sidebar-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .sidebar-section-title {
+      color: #d7d2cb;
+      font-size: 11.5px;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .palette-group {
+      display: grid;
+      gap: 8px;
+      padding-top: 10px;
+      margin-top: 2px;
+      border-top: 1px solid rgba(215, 210, 203, 0.12);
+    }
+
+    .palette-group:first-of-type {
+      padding-top: 0;
+      margin-top: 0;
+      border-top: 0;
+    }
+
+    .palette-group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #bfc3c6;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .palette-group-title::after {
+      content: "";
+      height: 1px;
+      flex: 1 1 auto;
+      background: rgba(215, 210, 203, 0.10);
+    }
+
+    .sidebar-settings {
+      display: grid;
+      gap: 12px;
+    }
+
+    .theme-color-groups {
+      display: grid;
+      gap: 10px;
+    }
+
+    .theme-color-group {
+      display: grid;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(215, 210, 203, 0.10);
+    }
+
+    .theme-color-group:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .theme-color-group-title {
+      color: #bfc3c6;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .theme-color-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .theme-color-token {
+      width: 100%;
+      min-height: 38px;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 7px;
+      padding: 5px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: var(--sidebar-2);
+      color: #f4f2ef;
+      cursor: pointer;
+      text-align: left;
+      transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .theme-color-token:hover,
+    .theme-color-token:focus-visible {
+      background: #424548;
+      border-color: #666a6d;
+    }
+
+    .theme-color-token:focus-visible,
+    .sidebar-control:focus-visible,
+    .font-picker-button:focus-visible,
+    .modal-close-button:focus-visible,
+    .theme-modal input:focus-visible,
+    .theme-modal button:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.34);
+      outline-offset: 2px;
+    }
+
+    .theme-swatch {
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 7px;
+      background: var(--swatch-color);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .theme-color-label {
+      min-width: 0;
+      color: #f4f2ef;
+      font-size: 12px;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .theme-color-value {
+      color: #bfc3c6;
+      font-size: 11.5px;
+      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
+    }
+
+    .sidebar-control {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 7px;
+      background: var(--sidebar-2);
+      color: #f4f2ef;
+      padding: 6px 7px;
+      font: inherit;
+      font-size: 12.5px;
+      outline: none;
+      transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .sidebar-control:hover,
+    .sidebar-control:focus {
+      background: #303235;
+      border-color: #666a6d;
+    }
+
+    .font-picker-button {
+      width: 100%;
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: var(--sidebar-2);
+      color: #f4f2ef;
+      cursor: pointer;
+      text-align: left;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .font-picker-button:hover {
+      background: #424548;
+      border-color: #666a6d;
+    }
+
+    .font-picker-summary {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .font-picker-name {
+      font-size: 12.5px;
+      font-weight: 750;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .font-picker-preview {
+      color: #bfc3c6;
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .theme-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(18, 18, 20, 0.56);
+      backdrop-filter: blur(6px);
+    }
+
+    .theme-modal {
+      width: min(92vw, 460px);
+      max-height: min(88vh, 720px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 10px;
+      background: #2f3033;
+      color: #f4f2ef;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      overflow: hidden;
+    }
+
+    .theme-modal.wide {
+      width: min(92vw, 620px);
+    }
+
+    .theme-modal-head,
+    .theme-modal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid var(--sidebar-line);
+      background: #303235;
+    }
+
+    .theme-modal-foot {
+      border-top: 1px solid var(--sidebar-line);
+      border-bottom: 0;
+      justify-content: flex-end;
+    }
+
+    .theme-modal-title {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .theme-modal-subtitle {
+      margin: 2px 0 0;
+      color: #bfc3c6;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .theme-modal-body {
+      min-height: 0;
+      display: grid;
+      gap: 14px;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    .theme-modal-picker {
+      display: grid;
+      justify-items: center;
+      min-height: 220px;
+    }
+
+    .theme-color-picker-ui {
+      width: 220px;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+    }
+
+    .theme-picker-fallback {
+      min-height: 58px;
+      display: grid;
+      place-items: center;
+      color: #bfc3c6;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .color-input-grid,
+    .rgb-input-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .rgb-input-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .theme-modal-field {
+      display: grid;
+      gap: 5px;
+    }
+
+    .theme-modal-field label {
+      color: #d7d2cb;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .theme-modal input {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #383a3d;
+      color: #f4f2ef;
+      padding: 8px 9px;
+      outline: none;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .theme-modal input:hover,
+    .theme-modal input:focus {
+      background: #303235;
+      border-color: #666a6d;
+    }
+
+    .theme-modal .button {
+      border-color: var(--sidebar-line);
+      background: #383a3d;
+      color: #f4f2ef;
+    }
+
+    .theme-modal .button:hover {
+      background: #424548;
+      border-color: #666a6d;
+      color: #ffffff;
+    }
+
+    .theme-modal .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .theme-modal .button.primary:hover {
+      background: #6f1936;
+      border-color: #6f1936;
+      color: #ffffff;
+    }
+
+    .modal-close-button {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #383a3d;
+      color: #f4f2ef;
+      cursor: pointer;
+    }
+
+    .font-search-wrap {
+      display: grid;
+      gap: 6px;
+    }
+
+    .font-option-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .font-option-card {
+      width: 100%;
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #383a3d;
+      color: #f4f2ef;
+      cursor: pointer;
+      text-align: left;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .font-option-card:hover,
+    .font-option-card.selected {
+      background: #424548;
+      border-color: #777c80;
+    }
+
+    .font-option-card.selected {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+    }
+
+    .font-option-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .font-option-status {
+      color: #bfc3c6;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+
+    .font-option-title {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .font-option-sample {
+      color: #d7d2cb;
+      font-size: 18px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .font-option-empty {
+      min-height: 80px;
+      display: grid;
+      place-items: center;
+      color: #bfc3c6;
+      border: 1px dashed var(--sidebar-line);
+      border-radius: 8px;
+      font-size: 12.5px;
+    }
+
+    .sidebar-property {
+      display: grid;
+      gap: 6px;
+    }
+
+    .sidebar-property label {
+      color: #d7d2cb;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
     .palette {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -299,6 +760,7 @@
       overflow: auto;
       padding: 20px;
       background: var(--bg);
+      font-family: var(--form-font-family);
       transition: padding 240ms var(--ease);
     }
 
@@ -760,6 +1222,27 @@
       line-height: 1.45;
     }
 
+    .spacer-preview {
+      min-height: 8px;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      user-select: none;
+    }
+
+    .spacer-line {
+      width: 100%;
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .field-card-body .spacer-preview {
+      margin: 2px 0;
+    }
+
     .empty-state {
       min-height: 260px;
       display: grid;
@@ -931,6 +1414,12 @@
       color: var(--danger);
     }
 
+    .icon-button.danger:hover {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
     .sidebar .icon-button {
       border-color: var(--sidebar-line);
       color: #f4f2ef;
@@ -939,6 +1428,25 @@
 
     .sidebar .icon-button:hover {
       background: #424548;
+    }
+
+    .sidebar-theme-reset {
+      width: 100%;
+      justify-content: flex-start;
+      border-color: var(--sidebar-line);
+      background: var(--sidebar-2);
+      color: #f4f2ef;
+    }
+
+    .sidebar-theme-reset i,
+    .sidebar-theme-reset span {
+      color: inherit;
+    }
+
+    .sidebar-theme-reset:hover {
+      background: #424548;
+      border-color: #666a6d;
+      color: #ffffff;
     }
 
     .custom-radar-icon,
@@ -1039,7 +1547,10 @@
       }
 
       .sidebar-title,
-      .palette-label {
+      .palette-label,
+      .palette-group-title,
+      .sidebar-section-title,
+      .sidebar-settings {
         display: none;
       }
 
@@ -1115,8 +1626,17 @@
       }
 
       .palette-label,
-      .sidebar-title {
+      .sidebar-title,
+      .sidebar-section-title {
         display: block;
+      }
+
+      .palette-group-title {
+        display: flex;
+      }
+
+      .sidebar-settings {
+        display: grid;
       }
 
       .canvas-shell {
@@ -1149,6 +1669,7 @@
 <body>
   <div id="app"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.23.1";
     import { useEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
@@ -1162,23 +1683,50 @@
     const DEFAULT_RADAR_MAX = 5;
     const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
     const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
+    const DEFAULT_THEME = {
+      bg: "#f7f5f2",
+      panel: "#ffffff",
+      panel2: "#f4f2ef",
+      ink: "#1f1f1f",
+      muted: "#5f6366",
+      line: "#d7d2cb",
+      accent: "#861f41",
+      accent2: "#ca4f00",
+      accentSoft: "#f3e8ed",
+      success: "#2e7d32",
+      warning: "#946200",
+      danger: "#b3261e",
+      fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    };
+    const GOOGLE_FONT_METADATA_URL = "https://cdn.jsdelivr.net/npm/google-font-metadata@6.0.7/data/api-response.json";
+    const GOOGLE_FONT_PREVIEW_LIMIT = 36;
+    const SYSTEM_FONT_OPTION = { family: "System UI", stack: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', system: true };
+    let googleFontCatalogPromise = null;
+    const THEME_COLOR_GROUPS = [
+      { title: "Surfaces", fields: [["bg", "Background"], ["panel", "Panel"], ["panel2", "Soft panel"], ["line", "Lines"]] },
+      { title: "Text", fields: [["ink", "Text"], ["muted", "Muted text"]] },
+      { title: "Brand", fields: [["accent", "Accent"], ["accent2", "Secondary accent"], ["accentSoft", "Accent soft"]] },
+      { title: "Semantic", fields: [["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]] }
+    ];
+    const THEME_COLOR_FIELDS = THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), []);
 
     const fieldTypes = [
-      { type: "headline", name: "Headline", icon: "lucide-heading", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top" } } },
-      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer" } },
-      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response" } },
-      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"] } },
-      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"] } },
-      { type: "email", name: "Email", icon: "fa-regular fa-envelope", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com" } },
-      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", defaults: { label: "Number", description: "", required: false, placeholder: "0" } },
-      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"] } },
-      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } } },
-      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } } },
-      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5 } } },
-      { type: "radar", name: "Radar", icon: "radar-graph", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT } } },
-      { type: "media_upload", name: "Media upload", icon: "lucide-upload", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf" } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } } },
-      { type: "link", name: "Link", icon: "fa-solid fa-link", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" } }
+      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer" } },
+      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response" } },
+      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"] } },
+      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"] } },
+      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com" } },
+      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0" } },
+      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"] } },
+      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } } },
+      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } } },
+      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5 } } },
+      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT } } },
+      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf" } } },
+      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top" } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } } },
+      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "Spacer", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1 } } }
     ];
 
     function uid() {
@@ -1203,6 +1751,7 @@
         version: 4,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        settings: { theme: clone(DEFAULT_THEME) },
         fields: [fieldFromType("headline")]
       };
     }
@@ -1222,6 +1771,194 @@
       }
       seen.add(next);
       return next;
+    }
+
+    function cleanColor(value, fallback) {
+      const text = String(value || "").trim();
+      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
+    }
+
+    function cleanFontFamily(value) {
+      const text = String(value || "").trim();
+      if (!text) return DEFAULT_THEME.fontFamily;
+      return /^[a-zA-Z0-9_\-\s"',.()]+$/.test(text) ? text : DEFAULT_THEME.fontFamily;
+    }
+
+    function unquoteFontName(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      return text.replace(/^['"]|['"]$/g, "").trim();
+    }
+
+    function fontNameFromStack(value) {
+      const first = cleanFontFamily(value).split(",")[0] || "";
+      const name = unquoteFontName(first);
+      return /^(ui-sans-serif|system-ui|-apple-system|BlinkMacSystemFont)$/i.test(name) ? "System UI" : name || "Roboto";
+    }
+
+    function fontOptionByFamily(value) {
+      const stack = cleanFontFamily(value);
+      const family = fontNameFromStack(stack);
+      return { family, name: family, stack, system: family === "System UI" };
+    }
+
+    function googleFontFallback(category) {
+      const clean = String(category || "").toLowerCase();
+      if (clean.includes("serif") && !clean.includes("sans")) return 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
+      if (clean.includes("mono")) return 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace';
+      if (clean.includes("display") || clean.includes("handwriting")) return 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      return 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    }
+
+    function quoteFontName(value) {
+      return `"${String(value || "").replace(/["\\]/g, "").trim()}"`;
+    }
+
+    function googleFontStack(family, category) {
+      return `${quoteFontName(family)}, ${googleFontFallback(category)}`;
+    }
+
+    function googleFontParam(family) {
+      return encodeURIComponent(String(family || "").trim()).replace(/%20/g, "+");
+    }
+
+    function googleFontFamilyFromStack(value) {
+      const family = fontNameFromStack(value);
+      return family && family !== "System UI" ? family : "";
+    }
+
+    function ensureGoogleFontLoaded(value) {
+      const family = googleFontFamilyFromStack(value);
+      if (!family) return;
+      const id = `google-font-${family.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+      if (document.getElementById(id)) return;
+      const link = document.createElement("link");
+      link.id = id;
+      link.rel = "stylesheet";
+      link.href = `https://fonts.googleapis.com/css2?family=${googleFontParam(family)}:wght@400;500;700;900&display=swap`;
+      document.head.appendChild(link);
+    }
+
+    function normalizeGoogleFontCatalog(payload) {
+      const items = Array.isArray(payload) ? payload : Array.isArray(payload?.items) ? payload.items : [];
+      const seen = new Set();
+      return items
+        .map((item) => ({ family: String(item?.family || "").trim(), category: String(item?.category || "") }))
+        .filter((item) => {
+          if (!item.family || seen.has(item.family)) return false;
+          seen.add(item.family);
+          return true;
+        });
+    }
+
+    function fetchGoogleFontCatalog() {
+      if (!googleFontCatalogPromise) {
+        googleFontCatalogPromise = fetch(GOOGLE_FONT_METADATA_URL)
+          .then((response) => {
+            if (!response.ok) throw new Error("Unable to load Google Fonts metadata");
+            return response.json();
+          })
+          .then(normalizeGoogleFontCatalog);
+      }
+      return googleFontCatalogPromise;
+    }
+
+    function normalizeTheme(input = {}) {
+      const theme = { ...DEFAULT_THEME, ...(input || {}) };
+      return {
+        bg: cleanColor(theme.bg, DEFAULT_THEME.bg),
+        panel: cleanColor(theme.panel, DEFAULT_THEME.panel),
+        panel2: cleanColor(theme.panel2, DEFAULT_THEME.panel2),
+        ink: cleanColor(theme.ink, DEFAULT_THEME.ink),
+        muted: cleanColor(theme.muted, DEFAULT_THEME.muted),
+        line: cleanColor(theme.line, DEFAULT_THEME.line),
+        accent: cleanColor(theme.accent, DEFAULT_THEME.accent),
+        accent2: cleanColor(theme.accent2, DEFAULT_THEME.accent2),
+        accentSoft: cleanColor(theme.accentSoft, DEFAULT_THEME.accentSoft),
+        success: cleanColor(theme.success, DEFAULT_THEME.success),
+        warning: cleanColor(theme.warning, DEFAULT_THEME.warning),
+        danger: cleanColor(theme.danger, DEFAULT_THEME.danger),
+        fontFamily: cleanFontFamily(theme.fontFamily)
+      };
+    }
+
+    function themeStyle(schema) {
+      const theme = normalizeTheme(schema?.settings?.theme);
+      return [
+        `--bg: ${theme.bg}`,
+        `--panel: ${theme.panel}`,
+        `--panel-2: ${theme.panel2}`,
+        `--ink: ${theme.ink}`,
+        `--muted: ${theme.muted}`,
+        `--line: ${theme.line}`,
+        `--accent: ${theme.accent}`,
+        `--accent-2: ${theme.accent2}`,
+        `--accent-soft: ${theme.accentSoft}`,
+        `--success: ${theme.success}`,
+        `--warning: ${theme.warning}`,
+        `--danger: ${theme.danger}`,
+        `--success-soft: ${hexToRgba(theme.success, 0.12)}`,
+        `--warning-soft: ${hexToRgba(theme.warning, 0.12)}`,
+        `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
+        `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
+        `--form-font-family: ${theme.fontFamily}`
+      ].join("; ");
+    }
+
+    function hexToRgba(hex, alpha) {
+      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
+      const value = parseInt(clean, 16);
+      const r = (value >> 16) & 255;
+      const g = (value >> 8) & 255;
+      const b = value & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function clampByte(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return null;
+      return Math.max(0, Math.min(255, Math.round(number)));
+    }
+
+    function hexToRgb(hex) {
+      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
+      const value = parseInt(clean, 16);
+      return {
+        r: (value >> 16) & 255,
+        g: (value >> 8) & 255,
+        b: value & 255
+      };
+    }
+
+    function rgbToHex(r, g, b) {
+      return "#" + [r, g, b].map((value) => clampByte(value)).map((value) => value.toString(16).padStart(2, "0")).join("");
+    }
+
+    function hexCandidate(value) {
+      const text = String(value || "").trim();
+      const withHash = text.startsWith("#") ? text : "#" + text;
+      return /^#[0-9a-f]{6}$/i.test(withHash) ? withHash : "";
+    }
+
+    function normalizeSpacerSettings(field) {
+      const settings = field?.settings || {};
+      const height = clampMediaNumber(settings.height, 32, 0, 240);
+      const thickness = clampMediaNumber(settings.lineThickness, 1, 1, 12);
+      const styles = new Set(["solid", "dashed", "dotted"]);
+      return {
+        height,
+        showLine: Boolean(settings.showLine),
+        lineStyle: styles.has(settings.lineStyle) ? settings.lineStyle : "solid",
+        lineThickness: Math.round(thickness)
+      };
+    }
+
+    function spacerStyle(settings) {
+      return `height: ${settings.height}px;`;
+    }
+
+    function spacerLineStyle(settings) {
+      return `border-top-width: ${settings.lineThickness}px; border-top-style: ${settings.lineStyle};`;
     }
 
     function normalizeRadarAxes(axes) {
@@ -1322,6 +2059,14 @@
         next.settings = mediaSettings(next);
       }
 
+      if (next.type === "spacer") {
+        next.required = false;
+        next.description = "";
+        next.placeholder = "";
+        next.options = [];
+        next.settings = normalizeSpacerSettings(next);
+      }
+
       return next;
     }
 
@@ -1330,6 +2075,7 @@
       next.version = 4;
       next.createdAt = input?.createdAt || new Date().toISOString();
       next.updatedAt = input?.updatedAt || new Date().toISOString();
+      next.settings = { theme: normalizeTheme(input?.settings?.theme) };
       const seenIds = new Set();
       next.fields = Array.isArray(input?.fields)
         ? input.fields.map(normalizeField).map((field) => {
@@ -1350,7 +2096,9 @@
     }
 
     function formHasContent(schema) {
-      return (schema.fields || []).some((field) => {
+      const theme = normalizeTheme(schema?.settings?.theme);
+      const themeChanged = JSON.stringify(theme) !== JSON.stringify(DEFAULT_THEME);
+      return themeChanged || (schema.fields || []).some((field) => {
         if (field.type !== "headline") return true;
         return String(field.label || "").trim() !== "Untitled form" || String(field.description || "").trim();
       });
@@ -1721,6 +2469,15 @@
       `;
     }
 
+    function SpacerPreview({ field }) {
+      const settings = normalizeSpacerSettings(field);
+      return html`
+        <div class="spacer-preview" style=${spacerStyle(settings)} aria-hidden="true">
+          ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
+        </div>
+      `;
+    }
+
     function FieldPreview({ field }) {
       const options = field.options || [];
       switch (field.type) {
@@ -1767,32 +2524,318 @@
           return html`<div class="preview-line">Image, video, or audio file</div>`;
         case "media":
           return html`<${MediaPreview} field=${field} />`;
+        case "spacer":
+          return html`<${SpacerPreview} field=${field} />`;
         default:
           return html`<div class="preview-line"></div>`;
       }
     }
 
     function Palette({ onAdd }) {
+      const groups = [
+        ["Input elements", fieldTypes.filter((item) => item.category === "input")],
+        ["Design elements", fieldTypes.filter((item) => item.category === "design")]
+      ];
       return html`
-        <div class="palette">
-          ${fieldTypes.map((item) => html`
-            <button
-              class="palette-block"
-              type="button"
-              draggable=${true}
-              title=${item.name}
-              aria-label=${`Add ${item.name}`}
-              key=${item.type}
-              onClick=${() => onAdd(item.type)}
-              onDragStart=${(event) => {
-          event.dataTransfer.setData("text/plain", "new:" + item.type);
-          event.dataTransfer.effectAllowed = "copy";
-        }}
-            >
-              <span class="palette-icon"><${Icon} icon=${item.icon} /></span>
-              <span class="palette-label">${item.name}</span>
-            </button>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Blocks</div>
+          ${groups.map(([title, items]) => html`
+            <div class="palette-group" key=${title}>
+              <div class="palette-group-title">${title}</div>
+              <div class="palette">
+                ${items.map((item) => html`
+                  <button
+                    class="palette-block"
+                    type="button"
+                    draggable=${true}
+                    title=${item.name}
+                    aria-label=${`Add ${item.name}`}
+                    key=${item.type}
+                    onClick=${() => onAdd(item.type)}
+                    onDragStart=${(event) => {
+              event.dataTransfer.setData("text/plain", "new:" + item.type);
+              event.dataTransfer.effectAllowed = "copy";
+            }}
+                  >
+                    <span class="palette-icon"><${Icon} icon=${item.icon} /></span>
+                    <span class="palette-label">${item.name}</span>
+                  </button>
+                `)}
+              </div>
+            </div>
           `)}
+        </div>
+      `;
+    }
+
+    function ThemeColorControl({ item, value, onOpen }) {
+      const [, label] = item;
+      return html`
+        <button class="theme-color-token" type="button" onClick=${onOpen} title=${`Edit ${label}`} aria-label=${`Edit ${label}`}>
+          <span class="theme-swatch" style=${`--swatch-color: ${value};`} aria-hidden="true"></span>
+          <span class="theme-color-label">${label}</span>
+          <span class="theme-color-value">${value}</span>
+        </button>
+      `;
+    }
+
+    function IroColorPicker({ color, onChange, width = 220 }) {
+      const mountRef = useRef(null);
+      const pickerRef = useRef(null);
+      const changeRef = useRef(onChange);
+
+      useEffect(() => {
+        changeRef.current = onChange;
+      }, [onChange]);
+
+      useEffect(() => {
+        if (!mountRef.current || !window.iro) return;
+        mountRef.current.innerHTML = "";
+        const picker = new window.iro.ColorPicker(mountRef.current, {
+          width,
+          color,
+          borderWidth: 1,
+          borderColor: "#4a4d50"
+        });
+        picker.on("input:change", (picked) => {
+          changeRef.current(picked.hexString);
+        });
+        pickerRef.current = picker;
+        return () => {
+          if (mountRef.current) mountRef.current.innerHTML = "";
+          pickerRef.current = null;
+        };
+      }, []);
+
+      useEffect(() => {
+        if (!pickerRef.current) return;
+        const next = cleanColor(color, DEFAULT_THEME.accent);
+        if (pickerRef.current.color.hexString.toLowerCase() !== next.toLowerCase()) {
+          pickerRef.current.color.hexString = next;
+        }
+      }, [color]);
+
+      if (!window.iro) {
+        return html`<div class="theme-picker-fallback">Color picker unavailable. Use the color fields below.</div>`;
+      }
+
+      return html`<div class="theme-color-picker-ui" ref=${mountRef}></div>`;
+    }
+
+    function ColorPickerModal({ item, value, defaultValue, onChange, onClose }) {
+      const [, label] = item;
+      const [hexDraft, setHexDraft] = useState(value);
+      const [rgbDraft, setRgbDraft] = useState(hexToRgb(value));
+
+      useEffect(() => {
+        setHexDraft(value);
+        setRgbDraft(hexToRgb(value));
+      }, [value]);
+
+      useEffect(() => {
+        function handleKeyDown(event) {
+          if (event.key === "Escape") onClose();
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+      }, [onClose]);
+
+      function applyHex(raw) {
+        setHexDraft(raw);
+        const next = hexCandidate(raw);
+        if (next) onChange(next);
+      }
+
+      function updateRgb(channel, raw) {
+        const next = { ...rgbDraft, [channel]: raw };
+        setRgbDraft(next);
+        const r = clampByte(next.r);
+        const g = clampByte(next.g);
+        const b = clampByte(next.b);
+        if (r === null || g === null || b === null) return;
+        onChange(rgbToHex(r, g, b));
+      }
+
+      return html`
+        <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
+          <section class="theme-modal" role="dialog" aria-modal="true" aria-label=${`Edit ${label} color`} onMouseDown=${(event) => event.stopPropagation()}>
+            <div class="theme-modal-head">
+              <div>
+                <h2 class="theme-modal-title">${label}</h2>
+                <p class="theme-modal-subtitle">${value.toUpperCase()}</p>
+              </div>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="theme-modal-body">
+              <div class="theme-modal-picker">
+                <${IroColorPicker} color=${value} onChange=${onChange} width=${220} />
+              </div>
+              <div class="color-input-grid">
+                <div class="theme-modal-field">
+                  <label for="themeHexInput">Hex</label>
+                  <input id="themeHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(value)} />
+                </div>
+                <div class="rgb-input-grid">
+                  ${["r", "g", "b"].map((channel) => html`
+                    <div class="theme-modal-field" key=${channel}>
+                      <label for=${`themeRgb${channel}`}>${channel.toUpperCase()}</label>
+                      <input id=${`themeRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(value))} />
+                    </div>
+                  `)}
+                </div>
+              </div>
+            </div>
+            <div class="theme-modal-foot">
+              <button class="button" type="button" onClick=${() => onChange(defaultValue)}>Use default</button>
+              <button class="button primary" type="button" onClick=${onClose}>Done</button>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function FontPickerModal({ value, onChange, onClose }) {
+      const [query, setQuery] = useState("");
+      const [catalog, setCatalog] = useState([]);
+      const [catalogState, setCatalogState] = useState("loading");
+      const current = fontOptionByFamily(value);
+      const normalizedQuery = query.trim().toLowerCase();
+      const matchingFonts = useMemo(() => {
+        const source = catalog.length ? catalog : [];
+        const matches = normalizedQuery
+          ? source.filter((font) => font.family.toLowerCase().includes(normalizedQuery))
+          : source.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
+        const systemMatch = !normalizedQuery || SYSTEM_FONT_OPTION.family.toLowerCase().includes(normalizedQuery);
+        const options = systemMatch ? [SYSTEM_FONT_OPTION, ...matches] : matches;
+        return options.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
+      }, [catalog, normalizedQuery]);
+
+      useEffect(() => {
+        let cancelled = false;
+        setCatalogState("loading");
+        fetchGoogleFontCatalog()
+          .then((items) => {
+            if (cancelled) return;
+            setCatalog(items);
+            setCatalogState(items.length ? "ready" : "error");
+          })
+          .catch((error) => {
+            console.warn(error);
+            if (!cancelled) setCatalogState("error");
+          });
+        return () => {
+          cancelled = true;
+        };
+      }, []);
+
+      useEffect(() => {
+        matchingFonts.forEach((font) => {
+          if (!font.system) ensureGoogleFontLoaded(googleFontStack(font.family, font.category));
+        });
+      }, [matchingFonts]);
+
+      useEffect(() => {
+        ensureGoogleFontLoaded(value);
+      }, [value]);
+
+      useEffect(() => {
+        function handleKeyDown(event) {
+          if (event.key === "Escape") onClose();
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+      }, [onClose]);
+
+      return html`
+        <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
+          <section class="theme-modal wide" role="dialog" aria-modal="true" aria-label="Choose font" onMouseDown=${(event) => event.stopPropagation()}>
+            <div class="theme-modal-head">
+              <div>
+                <h2 class="theme-modal-title">Typeface</h2>
+                <p class="theme-modal-subtitle">Current: ${current.name}</p>
+              </div>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="theme-modal-body">
+              <div class="font-search-wrap">
+                <label class="sr-only" for="fontSearch">Search fonts</label>
+                <input id="fontSearch" value=${query} placeholder="Search Google Fonts" onInput=${(event) => setQuery(event.currentTarget.value)} />
+              </div>
+              <div class="font-option-list">
+                ${matchingFonts.length ? matchingFonts.map((font) => {
+                  const stack = font.system ? font.stack : googleFontStack(font.family, font.category);
+                  const selected = stack === current.stack;
+                  return html`
+                    <button
+                      class=${`font-option-card${selected ? " selected" : ""}`}
+                      type="button"
+                      key=${font.family}
+                      style=${`font-family: ${stack};`}
+                      onClick=${() => onChange(stack)}
+                    >
+                      <span class="font-option-title-row">
+                        <span class="font-option-title">${font.family}</span>
+                        ${selected ? html`<span class="font-option-status">Selected</span>` : null}
+                      </span>
+                      <span class="font-option-sample">The quick brown fox jumps over the lazy dog.</span>
+                    </button>
+                  `;
+                }) : html`<div class="font-option-empty">${catalogState === "loading" ? "Loading fonts…" : "No matching fonts."}</div>`}
+              </div>
+            </div>
+            <div class="theme-modal-foot">
+              <button class="button" type="button" onClick=${() => onChange(DEFAULT_THEME.fontFamily)}>Use default</button>
+              <button class="button primary" type="button" onClick=${onClose}>Done</button>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function SidebarSettings({ schema, onSchemaChange, onOpenColor, onOpenFont }) {
+      const theme = normalizeTheme(schema?.settings?.theme);
+      const currentFont = fontOptionByFamily(theme.fontFamily);
+      const patchTheme = (patch) => onSchemaChange({ settings: { ...(schema.settings || {}), theme: normalizeTheme({ ...theme, ...patch }) } });
+
+      return html`
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Settings</div>
+          <div class="sidebar-settings">
+            <div class="theme-color-groups">
+              ${THEME_COLOR_GROUPS.map((group) => html`
+                <div class="theme-color-group" key=${group.title}>
+                  <div class="theme-color-group-title">${group.title}</div>
+                  <div class="theme-color-list">
+                    ${group.fields.map((item) => {
+                      const [key] = item;
+                      return html`
+                        <${ThemeColorControl}
+                          key=${key}
+                          item=${item}
+                          value=${theme[key]}
+                          onOpen=${() => onOpenColor(item)}
+                        />
+                      `;
+                    })}
+                  </div>
+                </div>
+              `)}
+            </div>
+
+            <div class="sidebar-property">
+              <label>Typeface</label>
+              <button class="font-picker-button" type="button" onClick=${onOpenFont}>
+                <span class="font-picker-summary" style=${`font-family: ${currentFont.stack};`}>
+                  <span class="font-picker-name">${currentFont.name}</span>
+                  <span class="font-picker-preview">The quick brown fox</span>
+                </span>
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+            <button class="button sidebar-theme-reset" type="button" onClick=${() => patchTheme(clone(DEFAULT_THEME))}>
+              <i class="fa-solid fa-rotate-left"></i><span>Reset theme</span>
+            </button>
+          </div>
         </div>
       `;
     }
@@ -1830,7 +2873,7 @@
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
-            ${field.type === "headline" ? html`
+            ${["headline", "spacer"].includes(field.type) ? html`
               <${FieldPreview} field=${field} />
             ` : html`
               ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
@@ -1847,7 +2890,7 @@
         return html`
           <h2 class="panel-title"><i class="fa-solid fa-sliders"></i><span>Form Settings</span></h2>
           <div class="property-stack">
-            <div class="radar-mode-note">Select a block to edit its settings. The form headline is now a normal reorderable block.</div>
+            <div class="radar-mode-note">Select a block to edit its settings. Form-wide palette and font settings are in the sidebar.</div>
           </div>
         `;
       }
@@ -1856,18 +2899,20 @@
       return html`
         <h2 class="panel-title"><${Icon} icon=${meta.icon} /><span>${meta.name}</span></h2>
         <div class="property-stack">
-          <div class="property">
-            <label for="fieldLabel">${selectedField.type === "headline" ? "Heading" : "Label"}</label>
-            <input class="control" id="fieldLabel" value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
-          </div>
-          <div class="property">
-            <label for="fieldDescription">Description</label>
-            <textarea class="textarea" id="fieldDescription" value=${selectedField.description} onInput=${(event) => onFieldChange({ description: event.currentTarget.value })}></textarea>
-          </div>
+          ${selectedField.type !== "spacer" ? html`
+            <div class="property">
+              <label for="fieldLabel">${selectedField.type === "headline" ? "Heading" : "Label"}</label>
+              <input class="control" id="fieldLabel" value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
+            </div>
+            <div class="property">
+              <label for="fieldDescription">Description</label>
+              <textarea class="textarea" id="fieldDescription" value=${selectedField.description} onInput=${(event) => onFieldChange({ description: event.currentTarget.value })}></textarea>
+            </div>
+          ` : null}
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
-          ${!["headline", "media"].includes(selectedField.type) ? html`
+          ${!["headline", "media", "spacer"].includes(selectedField.type) ? html`
             <label class="toggle-row">
               <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
               <span>Required</span>
@@ -2270,6 +3315,37 @@
         `;
       }
 
+      if (field.type === "spacer") {
+        const settings = normalizeSpacerSettings(field);
+        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...settings, ...patch } });
+        return html`
+          <div class="property">
+            <label for="spacerHeight">Height</label>
+            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: Number(event.currentTarget.value) })} />
+          </div>
+          <label class="toggle-row">
+            <input type="checkbox" checked=${settings.showLine} onChange=${(event) => patchSettings({ showLine: event.currentTarget.checked })} />
+            <span>Show line</span>
+          </label>
+          ${settings.showLine ? html`
+            <div class="settings-grid">
+              <div class="property">
+                <label for="spacerLineThickness">Line thickness</label>
+                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: Number(event.currentTarget.value) })} />
+              </div>
+              <div class="property">
+                <label for="spacerLineStyle">Line style</label>
+                <select class="control" id="spacerLineStyle" value=${settings.lineStyle} onChange=${(event) => patchSettings({ lineStyle: event.currentTarget.value })}>
+                  <option value="solid">Solid</option>
+                  <option value="dashed">Dashed</option>
+                  <option value="dotted">Dotted</option>
+                </select>
+              </div>
+            </div>
+          ` : null}
+        `;
+      }
+
       return null;
     }
 
@@ -2279,6 +3355,8 @@
       const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
       const [dragOver, setDragOver] = useState(false);
       const [removingId, setRemovingId] = useState(null);
+      const [activeColorItem, setActiveColorItem] = useState(null);
+      const [fontPickerOpen, setFontPickerOpen] = useState(false);
       const fieldsRef = useRef(null);
       const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
 
@@ -2304,7 +3382,7 @@
       }, [schema.fields.length]);
 
       function updateSchema(patch) {
-        setSchema((current) => ({ ...current, ...patch }));
+        setSchema((current) => normalizeSchema({ ...current, ...patch }));
       }
 
       function updatePrimaryHeadline(patch) {
@@ -2449,9 +3527,23 @@
       }
 
       const formName = formDisplayName(schema);
+      const theme = normalizeTheme(schema?.settings?.theme);
+
+      useEffect(() => {
+        ensureGoogleFontLoaded(theme.fontFamily);
+      }, [theme.fontFamily]);
+
+      function patchTheme(patch) {
+        updateSchema({ settings: { ...(schema.settings || {}), theme: normalizeTheme({ ...theme, ...patch }) } });
+      }
+
+      function patchColor(key, value) {
+        patchTheme({ [key]: cleanColor(value, theme[key] || DEFAULT_THEME[key] || DEFAULT_THEME.accent) });
+      }
 
       return html`
-        <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
+        <div class="builder-root">
+          <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <header class="topbar">
             <div class="toolbar-actions">
               <button class="icon-button" type="button" title="New form" aria-label="New form" onClick=${newForm}><i class="fa-solid fa-plus"></i></button>
@@ -2483,16 +3575,17 @@
             <aside class="sidebar" aria-label="Form blocks" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
               <div class="sidebar-inner">
                 <div class="sidebar-head">
-                  <div class="sidebar-title">Blocks</div>
+                  <div class="sidebar-title">Form</div>
                   <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
                     <i class="fa-solid fa-chevron-left"></i>
                   </button>
                 </div>
                 <${Palette} onAdd=${addField} />
+                <${SidebarSettings} schema=${schema} onSchemaChange=${updateSchema} onOpenColor=${setActiveColorItem} onOpenFont=${() => setFontPickerOpen(true)} />
               </div>
             </aside>
 
-            <section class="canvas-shell" aria-label="Form canvas">
+            <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)}>
               <article class="form-page">
                 <div
                   class=${`fields-list${dragOver ? " drag-over" : ""}`}
@@ -2534,6 +3627,25 @@
             </aside>
           </main>
         </div>
+
+        ${activeColorItem ? html`
+          <${ColorPickerModal}
+            item=${activeColorItem}
+            value=${theme[activeColorItem[0]]}
+            defaultValue=${DEFAULT_THEME[activeColorItem[0]]}
+            onChange=${(value) => patchColor(activeColorItem[0], value)}
+            onClose=${() => setActiveColorItem(null)}
+          />
+        ` : null}
+
+        ${fontPickerOpen ? html`
+          <${FontPickerModal}
+            value=${theme.fontFamily}
+            onChange=${(value) => patchTheme({ fontFamily: value })}
+            onClose=${() => setFontPickerOpen(false)}
+          />
+        ` : null}
+      </div>
       `;
     }
 
