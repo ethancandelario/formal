@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Runtime</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f5f2;
+      --panel: #ffffff;
+      --panel-2: #f4f2ef;
+      --ink: #1f1f1f;
+      --muted: #5f6366;
+      --line: #d7d2cb;
+      --accent: #861f41;
+      --accent-soft: #f3e8ed;
+      --accent-2: #ca4f00;
+      --danger: #861f41;
+      --focus: #861f41;
+      --shadow: 0 12px 28px rgba(31, 31, 31, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      min-height: 58px;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .button,
+    .icon-button {
+      min-height: 38px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 0 12px;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .button:hover,
+    .icon-button:hover {
+      background: var(--panel-2);
+      border-color: #cbc5b6;
+    }
+
+    .button:active,
+    .icon-button:active {
+      transform: translateY(1px);
+    }
+
+    .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .button.primary:hover {
+      background: #6f1936;
+      border-color: #6f1936;
+    }
+
+    .button:disabled {
+      opacity: 0.46;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .icon-button {
+      width: 38px;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .stage {
+      padding: 28px 18px 52px;
+    }
+
+    .capture {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .form-header {
+      padding: 28px 30px 24px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .form-title {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.18;
+    }
+
+    .form-description {
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .fields {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .field {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .field.invalid {
+      border-color: rgba(184, 50, 50, 0.65);
+      box-shadow: 0 0 0 3px rgba(184, 50, 50, 0.08);
+    }
+
+    .field-head {
+      display: grid;
+      gap: 5px;
+    }
+
+    .field-label {
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .required-mark {
+      color: var(--accent-2);
+      margin-left: 3px;
+    }
+
+    .field-help {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .control,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      color: var(--ink);
+      padding: 10px 12px;
+      min-height: 42px;
+      outline: none;
+    }
+
+    .textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .control:focus,
+    .textarea:focus {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(134, 31, 65, 0.12);
+      background: #ffffff;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .choice-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .choice-row input {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .poll-grid,
+    .meter-grid,
+    .star-grid {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .poll-option,
+    .meter-option,
+    .star-option {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 12px;
+      background: var(--panel-2);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .meter-option,
+    .star-option {
+      width: 42px;
+      padding: 0;
+    }
+
+    .poll-option.selected,
+    .meter-option.selected,
+    .star-option.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .star-option.selected svg {
+      fill: currentColor;
+    }
+
+    .range-wrap {
+      display: grid;
+      grid-template-columns: auto minmax(160px, 1fr) auto auto;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+
+    .range-wrap input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .range-value {
+      color: var(--ink);
+      font-weight: 750;
+      min-width: 36px;
+      text-align: center;
+    }
+
+    .radar-wrap {
+      display: grid;
+      grid-template-columns: minmax(220px, 300px) minmax(220px, 1fr);
+      align-items: center;
+      gap: 18px;
+    }
+
+    .radar-chart {
+      min-width: 0;
+    }
+
+    .radar-chart svg {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .radar-grid polygon,
+    .radar-grid line {
+      fill: none;
+      stroke: #c9c4bd;
+      stroke-width: 1;
+    }
+
+    .radar-fill {
+      fill: rgba(134, 31, 65, 0.12);
+      stroke: var(--accent);
+      stroke-width: 2;
+    }
+
+    .radar-label {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+
+    .radar-controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    .radar-row {
+      display: grid;
+      grid-template-columns: minmax(80px, 0.9fr) minmax(120px, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .radar-row span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .radar-row input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .radar-value {
+      min-width: 34px;
+      text-align: right;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .link-preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      text-decoration: none;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .image-preview {
+      display: grid;
+      gap: 10px;
+    }
+
+    .image-preview img {
+      max-width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+    }
+
+    .empty {
+      min-height: 360px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px;
+    }
+
+    .empty-inner {
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .empty-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: #8b8f92;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 780px) {
+      .actions {
+        justify-content: flex-start;
+      }
+
+      .stage {
+        padding: 14px 10px 36px;
+      }
+
+      .form-header {
+        padding: 22px 18px;
+      }
+
+      .form-title {
+        font-size: 24px;
+      }
+
+      .fields {
+        padding: 12px;
+      }
+
+      .field {
+        padding: 14px;
+      }
+
+      .range-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .radar-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .radar-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="actions">
+      <label class="button" for="schemaFile"><i data-lucide="upload"></i><span>Load JSON</span></label>
+      <input class="sr-only" id="schemaFile" type="file" accept="application/json,.json">
+      <button class="button" type="button" id="resetButton" disabled><i data-lucide="rotate-ccw"></i><span>Reset</span></button>
+      <button class="button" type="button" data-export="png" disabled><i data-lucide="image"></i><span>PNG</span></button>
+      <button class="button" type="button" data-export="jpg" disabled><i data-lucide="file-image"></i><span>JPG</span></button>
+      <button class="button primary" type="button" data-export="pdf" disabled><i data-lucide="file-text"></i><span>PDF</span></button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="capture" id="capture"></section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "formal.runtime.schema";
+    const capture = document.getElementById("capture");
+    const schemaFile = document.getElementById("schemaFile");
+    const resetButton = document.getElementById("resetButton");
+
+    let schema = null;
+    let values = {};
+    let invalidIds = new Set();
+
+    const fieldTypes = {
+      short_answer: { label: "Short answer" },
+      long_answer: { label: "Long answer" },
+      multiple_choice: { label: "Multiple choice" },
+      checkbox: { label: "Checkbox" },
+      email: { label: "Email" },
+      number: { label: "Number" },
+      poll: { label: "Poll" },
+      mood_meter: { label: "Mood meter" },
+      linear_scale: { label: "Linear scale" },
+      star_rating: { label: "Star rating" },
+      radar: { label: "Radar" },
+      image_upload: { label: "Image upload" },
+      link: { label: "Link" }
+    };
+
+    function defaultSchema() {
+      return {
+        version: 1,
+        title: "Untitled form",
+        description: "",
+        fields: []
+      };
+    }
+
+    function normalizeSchema(input) {
+      const next = defaultSchema();
+      next.version = Number(input?.version) || 1;
+      next.title = String(input?.title || "Untitled form");
+      next.description = String(input?.description || "");
+      const seenIds = new Set();
+      next.fields = Array.isArray(input?.fields)
+        ? input.fields.map(normalizeField).map((field) => {
+          field.id = uniqueId(field.id, seenIds);
+          return field;
+        })
+        : [];
+      return next;
+    }
+
+    function normalizeField(raw) {
+      const type = fieldTypes[raw?.type] ? raw.type : "short_answer";
+      const next = {
+        id: sanitizeId(raw?.id || uid()),
+        type,
+        label: String(raw?.label || fieldTypes[type].label),
+        description: String(raw?.description || ""),
+        required: Boolean(raw?.required),
+        placeholder: String(raw?.placeholder || ""),
+        options: Array.isArray(raw?.options) ? raw.options.map(String) : [],
+        settings: { ...(raw?.settings || {}) }
+      };
+
+      if (!next.options.length && ["multiple_choice", "checkbox", "poll"].includes(type)) {
+        next.options = ["Option 1", "Option 2"];
+      }
+
+      if (type === "linear_scale") {
+        next.settings = { min: 1, max: 10, minLabel: "Low", maxLabel: "High", ...next.settings };
+      }
+
+      if (type === "mood_meter") {
+        next.settings = { minLabel: "Low", maxLabel: "High", ...next.settings };
+      }
+
+      if (type === "star_rating") {
+        next.settings = { max: 5, ...next.settings };
+      }
+
+      if (type === "radar") {
+        next.settings = { min: 0, max: 5, axes: ["Clarity", "Impact", "Effort", "Confidence", "Risk"], ...next.settings };
+        next.settings.min = Number.isFinite(Number(next.settings.min)) ? Number(next.settings.min) : 0;
+        next.settings.max = Number.isFinite(Number(next.settings.max)) ? Number(next.settings.max) : 5;
+        if (next.settings.max <= next.settings.min) next.settings.max = next.settings.min + 1;
+        next.settings.axes = normalizeRadarAxes(next.settings.axes);
+      }
+
+      return next;
+    }
+
+    function uid() {
+      return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function sanitizeId(value) {
+      const clean = String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_");
+      return clean || uid();
+    }
+
+    function uniqueId(value, seen) {
+      const base = sanitizeId(value);
+      let next = base;
+      let count = 2;
+      while (seen.has(next)) {
+        next = base + "_" + count;
+        count += 1;
+      }
+      seen.add(next);
+      return next;
+    }
+
+    function normalizeRadarAxes(axes) {
+      const fallback = ["Clarity", "Impact", "Effort", "Confidence", "Risk"];
+      const source = Array.isArray(axes) ? axes : fallback;
+      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
+      return normalized.length ? normalized : fallback;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function safeFileName(value) {
+      return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "filled-form";
+    }
+
+    function setSchema(nextSchema) {
+      schema = normalizeSchema(nextSchema);
+      values = {};
+      invalidIds = new Set();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(schema));
+      render();
+    }
+
+    function render() {
+      document.title = schema?.title ? schema.title + " - Form Runtime" : "Form Runtime";
+      document.querySelectorAll("[data-export]").forEach((button) => button.disabled = !schema);
+      resetButton.disabled = !schema;
+
+      if (!schema) {
+        capture.innerHTML = `
+          <div class="empty">
+            <div class="empty-inner">
+              <span class="empty-icon"><i data-lucide="file-json"></i></span>
+              <strong>No schema loaded</strong>
+            </div>
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+        return;
+      }
+
+      capture.innerHTML = `
+        <div class="form-header">
+          <h1 class="form-title">${escapeHtml(schema.title)}</h1>
+          ${schema.description ? `<p class="form-description">${escapeHtml(schema.description)}</p>` : ""}
+        </div>
+        <div class="fields">
+          ${schema.fields.map(renderField).join("") || `<div class="empty"><strong>Blank form</strong></div>`}
+        </div>
+      `;
+
+      if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+    }
+
+    function renderField(field) {
+      const invalid = invalidIds.has(field.id) ? " invalid" : "";
+      return `
+        <section class="field${invalid}" data-field-wrap="${field.id}">
+          <div class="field-head">
+            <label class="field-label" for="${field.id}">${escapeHtml(field.label)}${field.required ? `<span class="required-mark">*</span>` : ""}</label>
+            ${field.description ? `<div class="field-help">${escapeHtml(field.description)}</div>` : ""}
+          </div>
+          ${renderControl(field)}
+        </section>
+      `;
+    }
+
+    function renderControl(field) {
+      const value = values[field.id];
+      const required = field.required ? " required" : "";
+      const placeholder = escapeHtml(field.placeholder || "");
+
+      switch (field.type) {
+        case "short_answer":
+          return `<input class="control" id="${field.id}" data-field="${field.id}" type="text" value="${escapeHtml(value || "")}" placeholder="${placeholder}"${required}>`;
+        case "long_answer":
+          return `<textarea class="textarea" id="${field.id}" data-field="${field.id}" placeholder="${placeholder}"${required}>${escapeHtml(value || "")}</textarea>`;
+        case "email":
+          return `<input class="control" id="${field.id}" data-field="${field.id}" type="email" value="${escapeHtml(value || "")}" placeholder="${placeholder}"${required}>`;
+        case "number":
+          return `<input class="control" id="${field.id}" data-field="${field.id}" type="number" value="${escapeHtml(value ?? "")}" placeholder="${placeholder}"${required}>`;
+        case "multiple_choice":
+          return renderChoice(field, "radio");
+        case "checkbox":
+          return renderChoice(field, "checkbox");
+        case "poll":
+          return renderPoll(field);
+        case "mood_meter":
+          return renderMood(field);
+        case "linear_scale":
+          return renderScale(field);
+        case "star_rating":
+          return renderStars(field);
+        case "radar":
+          return renderRadar(field);
+        case "image_upload":
+          return renderImageUpload(field);
+        case "link":
+          return renderLink(field);
+        default:
+          return `<input class="control" id="${field.id}" data-field="${field.id}" type="text" value="${escapeHtml(value || "")}">`;
+      }
+    }
+
+    function renderChoice(field, kind) {
+      const selected = kind === "checkbox" ? values[field.id] || [] : values[field.id];
+      return `
+        <div class="choice-list" role="group" aria-labelledby="${field.id}">
+          ${field.options.map((option, index) => {
+            const checked = kind === "checkbox" ? selected.includes(option) : selected === option;
+            return `
+              <label class="choice-row">
+                <input data-field="${field.id}" type="${kind}" name="${field.id}" value="${escapeHtml(option)}" ${checked ? "checked" : ""}>
+                <span>${escapeHtml(option)}</span>
+              </label>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderPoll(field) {
+      const selected = values[field.id];
+      return `
+        <div class="poll-grid" role="group" aria-labelledby="${field.id}">
+          ${field.options.map((option) => `
+            <button class="poll-option${selected === option ? " selected" : ""}" type="button" data-choice-button="${field.id}" data-value="${escapeHtml(option)}">${escapeHtml(option)}</button>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderMood(field) {
+      const icons = ["angry", "frown", "meh", "smile", "laugh"];
+      const selected = Number(values[field.id] || 0);
+      return `
+        <div class="meter-grid" role="group" aria-labelledby="${field.id}">
+          <span>${escapeHtml(field.settings?.minLabel || "Low")}</span>
+          ${icons.map((icon, index) => {
+            const rating = index + 1;
+            return `<button class="meter-option${selected === rating ? " selected" : ""}" type="button" data-rating-button="${field.id}" data-value="${rating}" title="${rating}" aria-label="${rating}"><i data-lucide="${icon}"></i></button>`;
+          }).join("")}
+          <span>${escapeHtml(field.settings?.maxLabel || "High")}</span>
+        </div>
+      `;
+    }
+
+    function renderScale(field) {
+      const min = Number(field.settings?.min ?? 1);
+      const max = Number(field.settings?.max ?? 10);
+      const value = values[field.id] ?? Math.round((min + max) / 2);
+      if (values[field.id] === undefined) values[field.id] = value;
+      return `
+        <div class="range-wrap">
+          <span>${escapeHtml(field.settings?.minLabel || String(min))}</span>
+          <input id="${field.id}" data-field="${field.id}" type="range" min="${min}" max="${max}" value="${escapeHtml(value)}">
+          <span>${escapeHtml(field.settings?.maxLabel || String(max))}</span>
+          <output class="range-value" data-range-value="${field.id}">${escapeHtml(value)}</output>
+        </div>
+      `;
+    }
+
+    function renderStars(field) {
+      const max = Math.max(1, Math.min(10, Number(field.settings?.max || 5)));
+      const selected = Number(values[field.id] || 0);
+      return `
+        <div class="star-grid" role="group" aria-labelledby="${field.id}">
+          ${Array.from({ length: max }, (_, index) => {
+            const rating = index + 1;
+            return `<button class="star-option${selected >= rating ? " selected" : ""}" type="button" data-rating-button="${field.id}" data-value="${rating}" title="${rating}" aria-label="${rating}"><i data-lucide="star"></i></button>`;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderRadar(field) {
+      const axes = normalizeRadarAxes(field.settings?.axes);
+      const min = Number(field.settings?.min ?? 0);
+      const max = Number(field.settings?.max ?? 5);
+      const radarValues = ensureRadarValues(field);
+      return `
+        <div class="radar-wrap">
+          <div class="radar-chart" data-radar-chart="${field.id}">
+            ${renderRadarSvg(axes, radarValues, min, max)}
+          </div>
+          <div class="radar-controls">
+            ${axes.map((axis, index) => `
+              <label class="radar-row">
+                <span>${escapeHtml(axis)}</span>
+                <input type="range" min="${min}" max="${max}" step="1" value="${escapeHtml(radarValues[index])}" data-radar-field="${field.id}" data-radar-axis="${index}">
+                <output class="radar-value" data-radar-value="${field.id}-${index}">${escapeHtml(radarValues[index])}</output>
+              </label>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function ensureRadarValues(field) {
+      const axes = normalizeRadarAxes(field.settings?.axes);
+      const min = Number(field.settings?.min ?? 0);
+      const max = Number(field.settings?.max ?? 5);
+      const midpoint = Math.round(min + (max - min) / 2);
+      const existing = Array.isArray(values[field.id]) ? values[field.id] : [];
+      const next = axes.map((_, index) => Number.isFinite(Number(existing[index])) ? Number(existing[index]) : midpoint);
+      values[field.id] = next;
+      return next;
+    }
+
+    function renderRadarSvg(axes, radarValues, min, max) {
+      const labels = normalizeRadarAxes(axes);
+      const center = 150;
+      const radius = 92;
+      const safeMin = Number.isFinite(min) ? min : 0;
+      const safeMax = Number.isFinite(max) && max > safeMin ? max : safeMin + 1;
+      const polygon = radarPoints(radarValues, safeMin, safeMax, center, radius);
+      const axisLines = labels.map((_, index) => {
+        const point = radarPoint(index, labels.length, center, radius);
+        return `<line x1="${center}" y1="${center}" x2="${point.x}" y2="${point.y}"></line>`;
+      }).join("");
+      const rings = [0.25, 0.5, 0.75, 1].map((scale) => {
+        const points = labels.map((_, index) => {
+          const point = radarPoint(index, labels.length, center, radius * scale);
+          return `${point.x},${point.y}`;
+        }).join(" ");
+        return `<polygon points="${points}"></polygon>`;
+      }).join("");
+      const labelNodes = labels.map((label, index) => {
+        const point = radarPoint(index, labels.length, center, radius + 24);
+        const anchor = Math.abs(point.x - center) < 8 ? "middle" : point.x > center ? "start" : "end";
+        return `<text class="radar-label" x="${point.x}" y="${point.y}" text-anchor="${anchor}" dominant-baseline="middle">${escapeHtml(label)}</text>`;
+      }).join("");
+
+      return `
+        <svg viewBox="0 0 300 300" role="img" aria-label="Radar chart">
+          <g class="radar-grid">${rings}${axisLines}</g>
+          <polygon class="radar-fill" points="${polygon}"></polygon>
+          ${labelNodes}
+        </svg>
+      `;
+    }
+
+    function radarPoints(values, min, max, center, radius) {
+      const range = Math.max(1, max - min);
+      return values.map((value, index) => {
+        const scaled = Math.max(0, Math.min(1, (Number(value) - min) / range));
+        const point = radarPoint(index, values.length, center, radius * scaled);
+        return `${point.x},${point.y}`;
+      }).join(" ");
+    }
+
+    function radarPoint(index, count, center, radius) {
+      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
+      return {
+        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
+        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+      };
+    }
+
+    function renderImageUpload(field) {
+      const image = values[field.id];
+      return `
+        <div class="image-preview">
+          <input class="control" id="${field.id}" data-image-field="${field.id}" type="file" accept="image/*">
+          ${image?.dataUrl ? `<img src="${escapeHtml(image.dataUrl)}" alt="${escapeHtml(image.name || field.label)}">` : ""}
+        </div>
+      `;
+    }
+
+    function renderLink(field) {
+      const value = String(values[field.id] || "");
+      const href = normalizeUrl(value);
+      return `
+        <input class="control" id="${field.id}" data-field="${field.id}" data-link-input="${field.id}" type="url" value="${escapeHtml(value)}" placeholder="${escapeHtml(field.placeholder || "https://example.com")}">
+        <div data-link-preview="${field.id}">
+          ${href ? `<a class="link-preview" href="${escapeHtml(href)}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i><span>${escapeHtml(value)}</span></a>` : ""}
+        </div>
+      `;
+    }
+
+    function normalizeUrl(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      if (/^https?:\/\//i.test(text)) return text;
+      return "https://" + text;
+    }
+
+    document.addEventListener("input", (event) => {
+      if (event.target.dataset.radarField) {
+        const fieldId = event.target.dataset.radarField;
+        const field = schema?.fields.find((item) => item.id === fieldId);
+        if (!field) return;
+        const index = Number(event.target.dataset.radarAxis);
+        const radarValues = ensureRadarValues(field);
+        radarValues[index] = Number(event.target.value);
+        values[fieldId] = radarValues;
+        const output = document.querySelector(`[data-radar-value="${CSS.escape(fieldId + "-" + index)}"]`);
+        if (output) output.textContent = event.target.value;
+        const chart = document.querySelector(`[data-radar-chart="${CSS.escape(fieldId)}"]`);
+        if (chart) {
+          chart.innerHTML = renderRadarSvg(normalizeRadarAxes(field.settings?.axes), radarValues, Number(field.settings?.min ?? 0), Number(field.settings?.max ?? 5));
+        }
+        invalidIds.delete(fieldId);
+        const wrap = document.querySelector(`[data-field-wrap="${CSS.escape(fieldId)}"]`);
+        if (wrap) wrap.classList.remove("invalid");
+        return;
+      }
+
+      const fieldId = event.target.dataset.field;
+      if (!fieldId) return;
+      const field = schema?.fields.find((item) => item.id === fieldId);
+      if (!field) return;
+
+      if (field.type === "checkbox") {
+        values[fieldId] = [...document.querySelectorAll(`input[name="${CSS.escape(fieldId)}"]:checked`)].map((input) => input.value);
+      } else {
+        values[fieldId] = event.target.value;
+      }
+
+      if (event.target.type === "range") {
+        const output = document.querySelector(`[data-range-value="${CSS.escape(fieldId)}"]`);
+        if (output) output.textContent = event.target.value;
+      }
+
+      if (event.target.dataset.linkInput) {
+        const preview = document.querySelector(`[data-link-preview="${CSS.escape(fieldId)}"]`);
+        const href = normalizeUrl(event.target.value);
+        if (preview) {
+          preview.innerHTML = href ? `<a class="link-preview" href="${escapeHtml(href)}" target="_blank" rel="noreferrer"><i data-lucide="external-link"></i><span>${escapeHtml(event.target.value)}</span></a>` : "";
+          if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+        }
+      }
+
+      invalidIds.delete(fieldId);
+      const wrap = document.querySelector(`[data-field-wrap="${CSS.escape(fieldId)}"]`);
+      if (wrap) wrap.classList.remove("invalid");
+    });
+
+    document.addEventListener("change", async (event) => {
+      const imageField = event.target.dataset.imageField;
+      if (imageField) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const dataUrl = await readFileAsDataUrl(file);
+        values[imageField] = { name: file.name, type: file.type, dataUrl };
+        invalidIds.delete(imageField);
+        render();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const choice = event.target.closest("[data-choice-button]");
+      if (choice) {
+        values[choice.dataset.choiceButton] = choice.dataset.value;
+        invalidIds.delete(choice.dataset.choiceButton);
+        render();
+        return;
+      }
+
+      const rating = event.target.closest("[data-rating-button]");
+      if (rating) {
+        values[rating.dataset.ratingButton] = Number(rating.dataset.value);
+        invalidIds.delete(rating.dataset.ratingButton);
+        render();
+        return;
+      }
+    });
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    schemaFile.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        setSchema(JSON.parse(text));
+      } catch (error) {
+        window.alert("That JSON file could not be loaded.");
+        console.error(error);
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    resetButton.addEventListener("click", () => {
+      if (!schema) return;
+      values = {};
+      invalidIds = new Set();
+      render();
+    });
+
+    document.querySelectorAll("[data-export]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (!schema) return;
+        const ok = validateRequired();
+        if (!ok) return;
+        await exportFilledForm(button.dataset.export);
+      });
+    });
+
+    function validateRequired() {
+      invalidIds = new Set();
+      if (!schema) return false;
+
+      schema.fields.forEach((field) => {
+        if (!field.required) return;
+        const value = values[field.id];
+        const emptyArray = Array.isArray(value) && value.length === 0;
+        const emptyObject = typeof value === "object" && value && !Array.isArray(value) && !value.dataUrl;
+        if (value === undefined || value === null || value === "" || emptyArray || emptyObject) {
+          invalidIds.add(field.id);
+        }
+      });
+
+      if (invalidIds.size) {
+        render();
+        const first = document.querySelector(".field.invalid");
+        if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+        return false;
+      }
+
+      return true;
+    }
+
+    async function exportFilledForm(kind) {
+      const buttons = document.querySelectorAll("[data-export]");
+      buttons.forEach((button) => button.disabled = true);
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+        const canvas = await html2canvas(capture, {
+          scale: 2,
+          backgroundColor: "#f7f5f2",
+          useCORS: true,
+          logging: false
+        });
+
+        if (kind === "pdf") {
+          exportPdf(canvas);
+        } else {
+          const mime = kind === "jpg" ? "image/jpeg" : "image/png";
+          const dataUrl = canvas.toDataURL(mime, 0.94);
+          downloadDataUrl(dataUrl, safeFileName(schema.title) + "." + kind);
+        }
+      } finally {
+        buttons.forEach((button) => button.disabled = !schema);
+      }
+    }
+
+    function exportPdf(canvas) {
+      const pdfCtor = window.jspdf?.jsPDF;
+      if (!pdfCtor) {
+        window.alert("PDF export library did not load.");
+        return;
+      }
+
+      const pdf = new pdfCtor("p", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 28;
+      const imgWidth = pageWidth - margin * 2;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      const imgData = canvas.toDataURL("image/png");
+
+      let position = margin;
+      let remaining = imgHeight;
+      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+      remaining -= pageHeight - margin * 2;
+
+      while (remaining > 0) {
+        pdf.addPage();
+        position = margin - (imgHeight - remaining);
+        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+        remaining -= pageHeight - margin * 2;
+      }
+
+      pdf.save(safeFileName(schema.title) + ".pdf");
+    }
+
+    function downloadDataUrl(dataUrl, fileName) {
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    async function bootstrap() {
+      const params = new URLSearchParams(window.location.search);
+      const schemaUrl = params.get("schema");
+
+      if (window.FORM_SCHEMA) {
+        setSchema(window.FORM_SCHEMA);
+        return;
+      }
+
+      if (schemaUrl) {
+        try {
+          const response = await fetch(schemaUrl);
+          if (!response.ok) throw new Error("Unable to load schema");
+          setSchema(await response.json());
+          return;
+        } catch (error) {
+          console.error(error);
+          window.alert("The schema URL could not be loaded.");
+        }
+      }
+
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          setSchema(JSON.parse(saved));
+          return;
+        }
+      } catch (error) {
+        console.warn(error);
+      }
+
+      render();
+    }
+
+    document.addEventListener("dragover", (event) => {
+      event.preventDefault();
+    });
+
+    document.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      const file = [...event.dataTransfer.files].find((item) => item.type === "application/json" || item.name.endsWith(".json"));
+      if (!file) return;
+      try {
+        setSchema(JSON.parse(await file.text()));
+      } catch (error) {
+        window.alert("That JSON file could not be loaded.");
+        console.error(error);
+      }
+    });
+
+    bootstrap();
+  </script>
+</body>
+</html>

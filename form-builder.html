@@ -1,0 +1,1538 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Builder</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      --bg: #f7f5f2;
+      --panel: #ffffff;
+      --panel-2: #f4f2ef;
+      --ink: #1f1f1f;
+      --muted: #5f6366;
+      --line: #d7d2cb;
+      --sidebar: #2f3033;
+      --sidebar-2: #383a3d;
+      --sidebar-line: #4a4d50;
+      --accent: #861f41;
+      --accent-2: #ca4f00;
+      --accent-soft: #f3e8ed;
+      --danger: #861f41;
+      --focus: #861f41;
+      --shadow: 0 12px 28px rgba(31, 31, 31, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 58px minmax(0, 1fr);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .top-actions,
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .workspace {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 260px minmax(380px, 1fr) 330px;
+      overflow: hidden;
+    }
+
+    .shell.sidebar-collapsed .workspace {
+      grid-template-columns: 74px minmax(380px, 1fr) 330px;
+    }
+
+    .sidebar,
+    .inspector {
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      color: #f7f5f2;
+      border-right: 1px solid var(--sidebar-line);
+      padding: 16px 12px;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 0 2px;
+    }
+
+    .sidebar-title {
+      font-size: 12px;
+      color: #d7d2cb;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    .shell.sidebar-collapsed .sidebar-title,
+    .shell.sidebar-collapsed .palette-label {
+      display: none;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .shell.sidebar-collapsed .palette {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .palette-block {
+      cursor: grab;
+      user-select: none;
+      min-height: 92px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--sidebar-line);
+      background: var(--sidebar-2);
+      color: #ffffff;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 9px;
+      text-align: center;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+
+    .palette-block:hover,
+    .palette-block:focus-visible {
+      border-color: #666a6d;
+      background: #424548;
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .palette-block:active {
+      cursor: grabbing;
+      transform: translateY(0);
+    }
+
+    .palette-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #4a4d50;
+      background: #303235;
+      color: #ffffff;
+    }
+
+    .palette-label {
+      font-size: 12px;
+      line-height: 1.35;
+      color: #f4f2ef;
+    }
+
+    .canvas-shell {
+      min-height: 0;
+      overflow: auto;
+      padding: 24px;
+      background: var(--bg);
+    }
+
+    .form-page {
+      max-width: 840px;
+      margin: 0 auto 48px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .form-meta {
+      padding: 24px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .title-input,
+    .description-input {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-left: -10px;
+    }
+
+    .title-input {
+      font-size: 28px;
+      line-height: 1.2;
+      font-weight: 750;
+    }
+
+    .description-input {
+      min-height: 74px;
+      color: var(--muted);
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    .title-input:hover,
+    .description-input:hover,
+    .title-input:focus,
+    .description-input:focus,
+    .control:hover,
+    .control:focus,
+    .textarea:hover,
+    .textarea:focus {
+      border-color: var(--line);
+      outline: none;
+      background: #ffffff;
+    }
+
+    .fields-list {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      min-height: 280px;
+    }
+
+    .fields-list.drag-over {
+      outline: 2px dashed rgba(134, 31, 65, 0.35);
+      outline-offset: -10px;
+      background: rgba(134, 31, 65, 0.035);
+    }
+
+    .field-card {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 0;
+      box-shadow: 0 8px 20px rgba(31, 31, 31, 0.045);
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+      overflow: hidden;
+    }
+
+    .field-card.selected {
+      border-color: #9d8d95;
+      box-shadow: 0 10px 24px rgba(31, 31, 31, 0.08);
+    }
+
+    .field-card.dragging {
+      opacity: 0.6;
+      transform: scale(0.995);
+    }
+
+    .field-card-head {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 12px 0;
+    }
+
+    .drag-handle {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: transparent;
+      cursor: grab;
+    }
+
+    .field-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .field-tools {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .field-card-body {
+      padding: 10px 18px 18px 54px;
+    }
+
+    .field-label {
+      margin: 0 0 6px;
+      font-size: 17px;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+
+    .required-mark {
+      color: var(--accent-2);
+      margin-left: 3px;
+    }
+
+    .field-help {
+      margin: 0 0 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .preview-line,
+    .preview-box {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      border-radius: 8px;
+      color: #899089;
+    }
+
+    .preview-line {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+    }
+
+    .preview-box {
+      min-height: 88px;
+      padding: 10px 12px;
+    }
+
+    .choice-preview {
+      display: grid;
+      gap: 8px;
+    }
+
+    .choice-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+    }
+
+    .choice-dot,
+    .choice-square {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #8b938d;
+      flex: 0 0 auto;
+    }
+
+    .choice-dot {
+      border-radius: 999px;
+    }
+
+    .choice-square {
+      border-radius: 4px;
+    }
+
+    .pill-preview {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-preview span {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meter-preview,
+    .star-preview,
+    .scale-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .scale-track {
+      height: 8px;
+      min-width: 220px;
+      flex: 1 1 220px;
+      border-radius: 999px;
+      background: #b8b2aa;
+    }
+
+    .radar-preview {
+      display: grid;
+      grid-template-columns: 130px minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 12px;
+    }
+
+    .radar-preview svg {
+      width: 130px;
+      height: 130px;
+      display: block;
+    }
+
+    .radar-grid polygon,
+    .radar-grid line {
+      fill: none;
+      stroke: #c9c4bd;
+      stroke-width: 1;
+    }
+
+    .radar-fill {
+      fill: rgba(134, 31, 65, 0.12);
+      stroke: var(--accent);
+      stroke-width: 2;
+    }
+
+    .radar-axis-list {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .radar-axis-list span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty-state {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .inspector {
+      border-left: 1px solid var(--line);
+      background: #f4f2ef;
+      padding: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0 0 16px;
+    }
+
+    .property-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .property {
+      display: grid;
+      gap: 7px;
+    }
+
+    .property label,
+    .mini-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .control,
+    .textarea,
+    .select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 10px 11px;
+      min-height: 38px;
+    }
+
+    .textarea {
+      min-height: 84px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .toggle-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .option-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .button,
+    .icon-button {
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      background: #ffffff;
+      min-height: 38px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .button:hover,
+    .icon-button:hover {
+      background: var(--panel-2);
+      border-color: #cbc5b6;
+    }
+
+    .button:active,
+    .icon-button:active {
+      transform: translateY(1px);
+    }
+
+    .button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .button.primary:hover {
+      background: #6f1936;
+      border-color: #6f1936;
+    }
+
+    .button.ghost {
+      background: transparent;
+    }
+
+    .icon-button {
+      width: 38px;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+
+    .icon-button.danger {
+      color: var(--danger);
+    }
+
+    .sidebar .icon-button {
+      border-color: var(--sidebar-line);
+      color: #f4f2ef;
+      background: #383a3d;
+    }
+
+    .sidebar .icon-button:hover {
+      background: #424548;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .workspace,
+      .shell.sidebar-collapsed .workspace {
+        grid-template-columns: 82px minmax(360px, 1fr) 300px;
+      }
+
+      .sidebar-title,
+      .palette-label {
+        display: none;
+      }
+
+      .palette {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        min-height: auto;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+        position: static;
+      }
+
+      .top-actions {
+        justify-content: space-between;
+      }
+
+      .workspace,
+      .shell.sidebar-collapsed .workspace {
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+
+      .sidebar,
+      .inspector,
+      .canvas-shell {
+        overflow: visible;
+      }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--sidebar-line);
+      }
+
+      .palette,
+      .shell.sidebar-collapsed .palette {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .palette-label,
+      .sidebar-title {
+        display: block;
+      }
+
+      .canvas-shell {
+        padding: 14px;
+      }
+
+      .inspector {
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" id="shell">
+    <header class="topbar">
+      <div class="toolbar-actions">
+        <button class="button ghost" id="newFormButton" type="button"><i data-lucide="file-plus-2"></i><span>New</span></button>
+        <label class="button ghost" for="importSchema"><i data-lucide="upload"></i><span>Import JSON</span></label>
+        <input class="sr-only" id="importSchema" type="file" accept="application/json,.json">
+      </div>
+      <div class="top-actions">
+        <a class="button ghost" href="form-runtime.html" target="_blank" rel="noreferrer"><i data-lucide="play"></i><span>Runtime</span></a>
+        <button class="button primary" id="exportButton" type="button"><i data-lucide="download"></i><span>Export JSON</span></button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar" aria-label="Form blocks">
+        <div class="sidebar-head">
+          <div class="sidebar-title">Blocks</div>
+          <button class="icon-button" id="collapseSidebar" type="button" title="Collapse sidebar" aria-label="Collapse sidebar">
+            <i data-lucide="panel-left-close"></i>
+          </button>
+        </div>
+        <div class="palette" id="palette"></div>
+      </aside>
+
+      <section class="canvas-shell" aria-label="Form canvas">
+        <article class="form-page">
+          <div class="form-meta">
+            <input class="title-input" id="schemaTitle" data-schema-prop="title" maxlength="120" aria-label="Form title">
+            <textarea class="description-input" id="schemaDescription" data-schema-prop="description" maxlength="500" aria-label="Form description"></textarea>
+          </div>
+          <div class="fields-list" id="fieldsList"></div>
+        </article>
+      </section>
+
+      <aside class="inspector" aria-label="Field settings">
+        <div id="inspector"></div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "formal.builder.schema";
+
+    const fieldTypes = [
+      {
+        type: "short_answer",
+        name: "Short answer",
+        icon: "type",
+        defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer" }
+      },
+      {
+        type: "long_answer",
+        name: "Long answer",
+        icon: "align-left",
+        defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response" }
+      },
+      {
+        type: "multiple_choice",
+        name: "Multiple choice",
+        icon: "list",
+        defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"] }
+      },
+      {
+        type: "checkbox",
+        name: "Checkbox",
+        icon: "square-check",
+        defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"] }
+      },
+      {
+        type: "email",
+        name: "Email",
+        icon: "mail",
+        defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com" }
+      },
+      {
+        type: "number",
+        name: "Number",
+        icon: "hash",
+        defaults: { label: "Number", description: "", required: false, placeholder: "0" }
+      },
+      {
+        type: "poll",
+        name: "Poll",
+        icon: "bar-chart-3",
+        defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"] }
+      },
+      {
+        type: "mood_meter",
+        name: "Mood meter",
+        icon: "smile",
+        defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } }
+      },
+      {
+        type: "linear_scale",
+        name: "Linear scale",
+        icon: "sliders-horizontal",
+        defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } }
+      },
+      {
+        type: "star_rating",
+        name: "Star rating",
+        icon: "star",
+        defaults: { label: "Star rating", description: "", required: false, settings: { max: 5 } }
+      },
+      {
+        type: "radar",
+        name: "Radar",
+        icon: "radar",
+        defaults: {
+          label: "Radar",
+          description: "",
+          required: false,
+          settings: {
+            min: 0,
+            max: 5,
+            axes: ["Clarity", "Impact", "Effort", "Confidence", "Risk"]
+          }
+        }
+      },
+      {
+        type: "image_upload",
+        name: "Image upload",
+        icon: "image-up",
+        defaults: { label: "Image upload", description: "", required: false }
+      },
+      {
+        type: "link",
+        name: "Link",
+        icon: "link",
+        defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" }
+      }
+    ];
+
+    let schema = loadInitialSchema();
+    let selectedId = schema.fields[0]?.id || null;
+    let sidebarCollapsed = false;
+
+    const shell = document.getElementById("shell");
+    const palette = document.getElementById("palette");
+    const fieldsList = document.getElementById("fieldsList");
+    const inspector = document.getElementById("inspector");
+    const schemaTitle = document.getElementById("schemaTitle");
+    const schemaDescription = document.getElementById("schemaDescription");
+
+    function uid() {
+      return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function typeMeta(type) {
+      return fieldTypes.find((item) => item.type === type) || fieldTypes[0];
+    }
+
+    function fieldFromType(type) {
+      const meta = typeMeta(type);
+      return { id: uid(), type, ...clone(meta.defaults) };
+    }
+
+    function defaultSchema() {
+      return {
+        version: 1,
+        title: "Untitled form",
+        description: "",
+        createdAt: new Date().toISOString(),
+        fields: []
+      };
+    }
+
+    function loadInitialSchema() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return normalizeSchema(JSON.parse(saved));
+      } catch (error) {
+        console.warn(error);
+      }
+      return defaultSchema();
+    }
+
+    function normalizeSchema(input) {
+      const next = defaultSchema();
+      next.version = Number(input?.version) || 1;
+      next.title = String(input?.title || "Untitled form");
+      next.description = String(input?.description || "");
+      next.createdAt = input?.createdAt || new Date().toISOString();
+      next.updatedAt = input?.updatedAt || new Date().toISOString();
+      const seenIds = new Set();
+      next.fields = Array.isArray(input?.fields)
+        ? input.fields.map(normalizeField).map((field) => {
+          field.id = uniqueId(field.id, seenIds);
+          return field;
+        })
+        : [];
+      return next;
+    }
+
+    function normalizeField(raw) {
+      const meta = typeMeta(raw?.type);
+      const base = { id: uid(), type: meta.type, ...clone(meta.defaults) };
+      const next = { ...base, ...raw };
+      next.id = sanitizeId(next.id || uid());
+      next.type = meta.type;
+      next.label = String(next.label || meta.defaults.label || meta.name);
+      next.description = String(next.description || "");
+      next.required = Boolean(next.required);
+      if ("placeholder" in base || "placeholder" in next) {
+        next.placeholder = String(next.placeholder || "");
+      }
+      if ("options" in base || Array.isArray(next.options)) {
+        next.options = Array.isArray(next.options) && next.options.length ? next.options.map(String) : clone(base.options || ["Option 1"]);
+      }
+      next.settings = { ...(base.settings || {}), ...(next.settings || {}) };
+      if (next.type === "radar") {
+        next.settings.min = Number.isFinite(Number(next.settings.min)) ? Number(next.settings.min) : 0;
+        next.settings.max = Number.isFinite(Number(next.settings.max)) ? Number(next.settings.max) : 5;
+        if (next.settings.max <= next.settings.min) next.settings.max = next.settings.min + 1;
+        next.settings.axes = normalizeRadarAxes(next.settings.axes);
+      }
+      return next;
+    }
+
+    function sanitizeId(value) {
+      const clean = String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_");
+      return clean || uid();
+    }
+
+    function uniqueId(value, seen) {
+      const base = sanitizeId(value);
+      let next = base;
+      let count = 2;
+      while (seen.has(next)) {
+        next = base + "_" + count;
+        count += 1;
+      }
+      seen.add(next);
+      return next;
+    }
+
+    function save() {
+      schema.updatedAt = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(schema));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    function titleCaseType(type) {
+      return typeMeta(type).name;
+    }
+
+    function render() {
+      shell.classList.toggle("sidebar-collapsed", sidebarCollapsed);
+      const collapseIcon = document.querySelector("#collapseSidebar i");
+      if (collapseIcon) collapseIcon.setAttribute("data-lucide", sidebarCollapsed ? "panel-left-open" : "panel-left-close");
+      schemaTitle.value = schema.title;
+      schemaDescription.value = schema.description;
+      renderPalette();
+      renderFields();
+      renderInspector();
+      bindDrag();
+      if (window.lucide) lucide.createIcons({ attrs: { "stroke-width": 1.8 } });
+      save();
+    }
+
+    function renderPalette() {
+      palette.innerHTML = fieldTypes.map((item) => `
+        <button class="palette-block" type="button" draggable="true" data-new-type="${item.type}" title="${escapeHtml(item.name)}">
+          <span class="palette-icon"><i data-lucide="${item.icon}"></i></span>
+          <span class="palette-label">${escapeHtml(item.name)}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderFields() {
+      if (!schema.fields.length) {
+        fieldsList.innerHTML = `<div class="empty-state"><span>Blank form</span></div>`;
+        return;
+      }
+
+      fieldsList.innerHTML = schema.fields.map((field, index) => {
+        const meta = typeMeta(field.type);
+        const selected = field.id === selectedId ? " selected" : "";
+        return `
+          <article class="field-card${selected}" draggable="true" data-field-id="${field.id}" data-index="${index}">
+            <div class="field-card-head">
+              <button class="drag-handle" type="button" title="Move" aria-label="Move field"><i data-lucide="grip-vertical"></i></button>
+              <div class="field-type"><i data-lucide="${meta.icon}"></i><span>${escapeHtml(meta.name)}</span></div>
+              <div class="field-tools">
+                <button class="icon-button" type="button" data-action="move-up" data-id="${field.id}" title="Move up" aria-label="Move up"><i data-lucide="arrow-up"></i></button>
+                <button class="icon-button" type="button" data-action="move-down" data-id="${field.id}" title="Move down" aria-label="Move down"><i data-lucide="arrow-down"></i></button>
+                <button class="icon-button" type="button" data-action="duplicate" data-id="${field.id}" title="Duplicate" aria-label="Duplicate"><i data-lucide="copy"></i></button>
+                <button class="icon-button danger" type="button" data-action="delete" data-id="${field.id}" title="Delete" aria-label="Delete"><i data-lucide="trash-2"></i></button>
+              </div>
+            </div>
+            <div class="field-card-body">
+              <h3 class="field-label" data-card-title="${field.id}">${escapeHtml(field.label)}${field.required ? `<span class="required-mark">*</span>` : ""}</h3>
+              ${field.description ? `<p class="field-help">${escapeHtml(field.description)}</p>` : ""}
+              ${renderFieldPreview(field)}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderFieldPreview(field) {
+      const placeholder = escapeHtml(field.placeholder || "");
+      const options = (field.options || []).map(escapeHtml);
+      switch (field.type) {
+        case "short_answer":
+        case "email":
+        case "number":
+        case "link":
+          return `<div class="preview-line">${placeholder}</div>`;
+        case "long_answer":
+          return `<div class="preview-box">${placeholder}</div>`;
+        case "multiple_choice":
+          return `<div class="choice-preview">${options.map((option) => `<div class="choice-row"><span class="choice-dot"></span><span>${option}</span></div>`).join("")}</div>`;
+        case "checkbox":
+          return `<div class="choice-preview">${options.map((option) => `<div class="choice-row"><span class="choice-square"></span><span>${option}</span></div>`).join("")}</div>`;
+        case "poll":
+          return `<div class="pill-preview">${options.map((option) => `<span>${option}</span>`).join("")}</div>`;
+        case "mood_meter":
+          return `
+            <div class="meter-preview">
+              <span>${escapeHtml(field.settings?.minLabel || "Low")}</span>
+              <i data-lucide="angry"></i><i data-lucide="frown"></i><i data-lucide="meh"></i><i data-lucide="smile"></i><i data-lucide="laugh"></i>
+              <span>${escapeHtml(field.settings?.maxLabel || "High")}</span>
+            </div>
+          `;
+        case "linear_scale":
+          return `
+            <div class="scale-preview">
+              <span>${escapeHtml(field.settings?.minLabel || "Low")}</span>
+              <span class="scale-track"></span>
+              <span>${escapeHtml(field.settings?.maxLabel || "High")}</span>
+            </div>
+          `;
+        case "star_rating":
+          return `<div class="star-preview">${Array.from({ length: Number(field.settings?.max) || 5 }, () => `<i data-lucide="star"></i>`).join("")}</div>`;
+        case "radar": {
+          const axes = normalizeRadarAxes(field.settings?.axes);
+          return `
+            <div class="radar-preview">
+              ${renderRadarSvg(axes, Number(field.settings?.min ?? 0), Number(field.settings?.max ?? 5))}
+              <div class="radar-axis-list">
+                ${axes.map((axis) => `<span>${escapeHtml(axis)}</span>`).join("")}
+              </div>
+            </div>
+          `;
+        }
+        case "image_upload":
+          return `<div class="preview-line">Image file</div>`;
+        default:
+          return `<div class="preview-line"></div>`;
+      }
+    }
+
+    function renderInspector() {
+      const field = schema.fields.find((item) => item.id === selectedId);
+      if (!field) {
+        inspector.innerHTML = `
+          <h2 class="panel-title"><i data-lucide="settings-2"></i><span>Form Settings</span></h2>
+          <div class="property-stack">
+            <div class="property">
+              <label for="sideTitle">Title</label>
+              <input class="control" id="sideTitle" data-schema-prop="title" value="${escapeHtml(schema.title)}">
+            </div>
+            <div class="property">
+              <label for="sideDescription">Description</label>
+              <textarea class="textarea" id="sideDescription" data-schema-prop="description">${escapeHtml(schema.description)}</textarea>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      inspector.innerHTML = `
+        <h2 class="panel-title"><i data-lucide="${typeMeta(field.type).icon}"></i><span>${escapeHtml(titleCaseType(field.type))}</span></h2>
+        <div class="property-stack">
+          <div class="property">
+            <label for="fieldLabel">Label</label>
+            <input class="control" id="fieldLabel" data-field-prop="label" value="${escapeHtml(field.label)}">
+          </div>
+          <div class="property">
+            <label for="fieldDescription">Description</label>
+            <textarea class="textarea" id="fieldDescription" data-field-prop="description">${escapeHtml(field.description)}</textarea>
+          </div>
+          ${renderPlaceholderControl(field)}
+          ${renderOptionsControl(field)}
+          ${renderSettingsControl(field)}
+          <label class="toggle-row">
+            <input type="checkbox" data-field-check="required" ${field.required ? "checked" : ""}>
+            <span>Required</span>
+          </label>
+        </div>
+      `;
+    }
+
+    function renderPlaceholderControl(field) {
+      if (!["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) return "";
+      return `
+        <div class="property">
+          <label for="fieldPlaceholder">Placeholder</label>
+          <input class="control" id="fieldPlaceholder" data-field-prop="placeholder" value="${escapeHtml(field.placeholder || "")}">
+        </div>
+      `;
+    }
+
+    function renderOptionsControl(field) {
+      if (!["multiple_choice", "checkbox", "poll"].includes(field.type)) return "";
+      return `
+        <div class="property">
+          <div class="mini-label">Options</div>
+          ${(field.options || []).map((option, index) => `
+            <div class="option-row">
+              <input class="control" data-option-input="${index}" value="${escapeHtml(option)}" aria-label="Option ${index + 1}">
+              <button class="icon-button danger" type="button" data-action="remove-option" data-index="${index}" title="Remove option" aria-label="Remove option"><i data-lucide="x"></i></button>
+            </div>
+          `).join("")}
+          <button class="button ghost" type="button" data-action="add-option"><i data-lucide="plus"></i><span>Add option</span></button>
+        </div>
+      `;
+    }
+
+    function renderSettingsControl(field) {
+      if (field.type === "mood_meter") {
+        return `
+          <div class="settings-grid">
+            <div class="property">
+              <label for="minLabel">Low label</label>
+              <input class="control" id="minLabel" data-setting="minLabel" value="${escapeHtml(field.settings?.minLabel || "")}">
+            </div>
+            <div class="property">
+              <label for="maxLabel">High label</label>
+              <input class="control" id="maxLabel" data-setting="maxLabel" value="${escapeHtml(field.settings?.maxLabel || "")}">
+            </div>
+          </div>
+        `;
+      }
+
+      if (field.type === "linear_scale") {
+        return `
+          <div class="settings-grid">
+            <div class="property">
+              <label for="scaleMin">Minimum</label>
+              <input class="control" id="scaleMin" type="number" data-setting="min" value="${escapeHtml(field.settings?.min ?? 1)}">
+            </div>
+            <div class="property">
+              <label for="scaleMax">Maximum</label>
+              <input class="control" id="scaleMax" type="number" data-setting="max" value="${escapeHtml(field.settings?.max ?? 10)}">
+            </div>
+            <div class="property">
+              <label for="scaleMinLabel">Low label</label>
+              <input class="control" id="scaleMinLabel" data-setting="minLabel" value="${escapeHtml(field.settings?.minLabel || "")}">
+            </div>
+            <div class="property">
+              <label for="scaleMaxLabel">High label</label>
+              <input class="control" id="scaleMaxLabel" data-setting="maxLabel" value="${escapeHtml(field.settings?.maxLabel || "")}">
+            </div>
+          </div>
+        `;
+      }
+
+      if (field.type === "star_rating") {
+        return `
+          <div class="property">
+            <label for="starMax">Stars</label>
+            <input class="control" id="starMax" type="number" min="3" max="10" data-setting="max" value="${escapeHtml(field.settings?.max || 5)}">
+          </div>
+        `;
+      }
+
+      if (field.type === "radar") {
+        const axes = normalizeRadarAxes(field.settings?.axes);
+        return `
+          <div class="settings-grid">
+            <div class="property">
+              <label for="radarMin">Minimum</label>
+              <input class="control" id="radarMin" type="number" data-setting="min" value="${escapeHtml(field.settings?.min ?? 0)}">
+            </div>
+            <div class="property">
+              <label for="radarMax">Maximum</label>
+              <input class="control" id="radarMax" type="number" data-setting="max" value="${escapeHtml(field.settings?.max ?? 5)}">
+            </div>
+          </div>
+          <div class="property">
+            <div class="mini-label">Axes</div>
+            ${axes.map((axis, index) => `
+              <div class="option-row">
+                <input class="control" data-radar-axis="${index}" value="${escapeHtml(axis)}" aria-label="Radar axis ${index + 1}">
+                <button class="icon-button danger" type="button" data-action="remove-axis" data-index="${index}" title="Remove axis" aria-label="Remove axis"><i data-lucide="x"></i></button>
+              </div>
+            `).join("")}
+            <button class="button ghost" type="button" data-action="add-axis"><i data-lucide="plus"></i><span>Add axis</span></button>
+          </div>
+        `;
+      }
+
+      return "";
+    }
+
+    function normalizeRadarAxes(axes) {
+      const fallback = ["Clarity", "Impact", "Effort", "Confidence", "Risk"];
+      const source = Array.isArray(axes) ? axes : fallback;
+      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
+      return normalized.length ? normalized : fallback;
+    }
+
+    function renderRadarSvg(axes, min, max) {
+      const labels = normalizeRadarAxes(axes);
+      const count = labels.length;
+      const center = 65;
+      const radius = 44;
+      const safeMin = Number.isFinite(min) ? min : 0;
+      const safeMax = Number.isFinite(max) && max > safeMin ? max : safeMin + 1;
+      const mid = safeMin + (safeMax - safeMin) * 0.65;
+      const values = labels.map((_, index) => index % 2 ? mid : safeMin + (safeMax - safeMin) * 0.45);
+      const polygon = radarPoints(values, safeMin, safeMax, center, radius);
+      const axisLines = labels.map((_, index) => {
+        const point = radarPoint(index, count, center, radius);
+        return `<line x1="${center}" y1="${center}" x2="${point.x}" y2="${point.y}"></line>`;
+      }).join("");
+      const rings = [0.35, 0.7, 1].map((scale) => {
+        const points = labels.map((_, index) => {
+          const point = radarPoint(index, count, center, radius * scale);
+          return `${point.x},${point.y}`;
+        }).join(" ");
+        return `<polygon points="${points}"></polygon>`;
+      }).join("");
+
+      return `
+        <svg viewBox="0 0 130 130" role="img" aria-label="Radar preview">
+          <g class="radar-grid">${rings}${axisLines}</g>
+          <polygon class="radar-fill" points="${polygon}"></polygon>
+        </svg>
+      `;
+    }
+
+    function radarPoints(values, min, max, center, radius) {
+      const range = Math.max(1, max - min);
+      return values.map((value, index) => {
+        const scaled = Math.max(0, Math.min(1, (Number(value) - min) / range));
+        const point = radarPoint(index, values.length, center, radius * scaled);
+        return `${point.x},${point.y}`;
+      }).join(" ");
+    }
+
+    function radarPoint(index, count, center, radius) {
+      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
+      return {
+        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
+        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+      };
+    }
+
+    function selectedField() {
+      return schema.fields.find((item) => item.id === selectedId) || null;
+    }
+
+    function updateFieldTitle(field) {
+      const title = document.querySelector(`[data-card-title="${CSS.escape(field.id)}"]`);
+      if (title) title.innerHTML = `${escapeHtml(field.label)}${field.required ? `<span class="required-mark">*</span>` : ""}`;
+    }
+
+    function addField(type, index = schema.fields.length) {
+      const field = fieldFromType(type);
+      schema.fields.splice(index, 0, field);
+      selectedId = field.id;
+      render();
+    }
+
+    function moveField(id, direction) {
+      const index = schema.fields.findIndex((item) => item.id === id);
+      const nextIndex = index + direction;
+      if (index < 0 || nextIndex < 0 || nextIndex >= schema.fields.length) return;
+      const [field] = schema.fields.splice(index, 1);
+      schema.fields.splice(nextIndex, 0, field);
+      selectedId = id;
+      render();
+    }
+
+    function deleteField(id) {
+      const index = schema.fields.findIndex((item) => item.id === id);
+      if (index < 0) return;
+      schema.fields.splice(index, 1);
+      selectedId = schema.fields[Math.min(index, schema.fields.length - 1)]?.id || null;
+      render();
+    }
+
+    function duplicateField(id) {
+      const index = schema.fields.findIndex((item) => item.id === id);
+      if (index < 0) return;
+      const copy = clone(schema.fields[index]);
+      copy.id = uid();
+      copy.label = copy.label + " copy";
+      schema.fields.splice(index + 1, 0, copy);
+      selectedId = copy.id;
+      render();
+    }
+
+    function bindDrag() {
+      document.querySelectorAll("[data-new-type]").forEach((button) => {
+        button.addEventListener("dragstart", (event) => {
+          event.dataTransfer.setData("text/plain", "new:" + button.dataset.newType);
+          event.dataTransfer.effectAllowed = "copy";
+        });
+      });
+
+      document.querySelectorAll(".field-card").forEach((card) => {
+        card.addEventListener("dragstart", (event) => {
+          selectedId = card.dataset.fieldId;
+          card.classList.add("dragging");
+          event.dataTransfer.setData("text/plain", "move:" + card.dataset.fieldId);
+          event.dataTransfer.effectAllowed = "move";
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("dragging");
+        });
+      });
+    }
+
+    function dropIndex(event) {
+      const cards = [...fieldsList.querySelectorAll(".field-card:not(.dragging)")];
+      for (let index = 0; index < cards.length; index += 1) {
+        const rect = cards[index].getBoundingClientRect();
+        if (event.clientY < rect.top + rect.height / 2) return index;
+      }
+      return cards.length;
+    }
+
+    fieldsList.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      fieldsList.classList.add("drag-over");
+    });
+
+    fieldsList.addEventListener("dragleave", (event) => {
+      if (!fieldsList.contains(event.relatedTarget)) fieldsList.classList.remove("drag-over");
+    });
+
+    fieldsList.addEventListener("drop", (event) => {
+      event.preventDefault();
+      fieldsList.classList.remove("drag-over");
+      const payload = event.dataTransfer.getData("text/plain");
+      let index = dropIndex(event);
+
+      if (payload.startsWith("new:")) {
+        addField(payload.slice(4), index);
+        return;
+      }
+
+      if (payload.startsWith("move:")) {
+        const id = payload.slice(5);
+        const current = schema.fields.findIndex((item) => item.id === id);
+        if (current < 0) return;
+        const [field] = schema.fields.splice(current, 1);
+        if (current < index) index -= 1;
+        schema.fields.splice(index, 0, field);
+        selectedId = id;
+        render();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const paletteButton = event.target.closest("[data-new-type]");
+      if (paletteButton) {
+        addField(paletteButton.dataset.newType);
+        return;
+      }
+
+      const card = event.target.closest(".field-card");
+      if (card && !event.target.closest("[data-action]")) {
+        selectedId = card.dataset.fieldId;
+        render();
+        return;
+      }
+
+      const actionButton = event.target.closest("[data-action]");
+      if (!actionButton) return;
+      const action = actionButton.dataset.action;
+      const id = actionButton.dataset.id || selectedId;
+      const field = selectedField();
+
+      if (action === "move-up") moveField(id, -1);
+      if (action === "move-down") moveField(id, 1);
+      if (action === "delete") deleteField(id);
+      if (action === "duplicate") duplicateField(id);
+      if (action === "add-option" && field) {
+        field.options = field.options || [];
+        field.options.push("Option " + (field.options.length + 1));
+        render();
+      }
+      if (action === "remove-option" && field) {
+        const index = Number(actionButton.dataset.index);
+        field.options.splice(index, 1);
+        if (!field.options.length) field.options.push("Option 1");
+        render();
+      }
+      if (action === "add-axis" && field?.type === "radar") {
+        field.settings = field.settings || {};
+        field.settings.axes = normalizeRadarAxes(field.settings.axes);
+        field.settings.axes.push("Axis " + (field.settings.axes.length + 1));
+        render();
+      }
+      if (action === "remove-axis" && field?.type === "radar") {
+        const index = Number(actionButton.dataset.index);
+        field.settings.axes = normalizeRadarAxes(field.settings.axes);
+        field.settings.axes.splice(index, 1);
+        if (!field.settings.axes.length) field.settings.axes.push("Axis 1");
+        render();
+      }
+    });
+
+    document.addEventListener("input", (event) => {
+      const schemaProp = event.target.dataset.schemaProp;
+      if (schemaProp) {
+        schema[schemaProp] = event.target.value;
+        if (event.target.id === "sideTitle") schemaTitle.value = event.target.value;
+        if (event.target.id === "sideDescription") schemaDescription.value = event.target.value;
+        if (event.target.id === "schemaTitle") {
+          const sideTitle = document.getElementById("sideTitle");
+          if (sideTitle) sideTitle.value = event.target.value;
+        }
+        if (event.target.id === "schemaDescription") {
+          const sideDescription = document.getElementById("sideDescription");
+          if (sideDescription) sideDescription.value = event.target.value;
+        }
+        save();
+        return;
+      }
+
+      const field = selectedField();
+      if (!field) return;
+
+      const fieldProp = event.target.dataset.fieldProp;
+      if (fieldProp) {
+        field[fieldProp] = event.target.value;
+        if (fieldProp === "label") updateFieldTitle(field);
+        save();
+        return;
+      }
+
+      if (event.target.dataset.optionInput !== undefined) {
+        const index = Number(event.target.dataset.optionInput);
+        field.options[index] = event.target.value;
+        save();
+        return;
+      }
+
+      if (event.target.dataset.setting) {
+        const key = event.target.dataset.setting;
+        field.settings = field.settings || {};
+        field.settings[key] = event.target.type === "number" ? Number(event.target.value) : event.target.value;
+        if (field.type === "radar") {
+          field.settings.axes = normalizeRadarAxes(field.settings.axes);
+          if (Number(field.settings.max) <= Number(field.settings.min)) field.settings.max = Number(field.settings.min) + 1;
+        }
+        save();
+        return;
+      }
+
+      if (event.target.dataset.radarAxis !== undefined) {
+        const index = Number(event.target.dataset.radarAxis);
+        field.settings = field.settings || {};
+        field.settings.axes = normalizeRadarAxes(field.settings.axes);
+        field.settings.axes[index] = event.target.value;
+        save();
+      }
+    });
+
+    document.addEventListener("change", (event) => {
+      const field = selectedField();
+      if (!field) return;
+      if (event.target.dataset.fieldCheck) {
+        field[event.target.dataset.fieldCheck] = event.target.checked;
+        render();
+      }
+    });
+
+    document.getElementById("collapseSidebar").addEventListener("click", () => {
+      sidebarCollapsed = !sidebarCollapsed;
+      document.getElementById("collapseSidebar").setAttribute("title", sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar");
+      document.getElementById("collapseSidebar").setAttribute("aria-label", sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar");
+      render();
+    });
+
+    document.getElementById("newFormButton").addEventListener("click", () => {
+      const confirmed = !schema.fields.length || window.confirm("Start a new blank form?");
+      if (!confirmed) return;
+      schema = defaultSchema();
+      selectedId = null;
+      render();
+    });
+
+    document.getElementById("exportButton").addEventListener("click", () => {
+      const output = normalizeSchema(schema);
+      const blob = new Blob([JSON.stringify(output, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = safeFileName(schema.title || "form-schema") + ".json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importSchema").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        schema = normalizeSchema(JSON.parse(text));
+        selectedId = schema.fields[0]?.id || null;
+        render();
+      } catch (error) {
+        window.alert("That JSON file could not be loaded.");
+        console.error(error);
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    function safeFileName(value) {
+      return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "form-schema";
+    }
+
+    render();
+  </script>
+</body>
+</html>
