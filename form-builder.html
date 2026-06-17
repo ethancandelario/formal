@@ -63,9 +63,11 @@
     }
 
     .shell {
+      height: 100vh;
       min-height: 100vh;
       display: grid;
       grid-template-rows: 52px minmax(0, 1fr);
+      overflow: hidden;
     }
 
     .topbar {
@@ -160,6 +162,7 @@
 
     .sidebar,
     .inspector {
+      height: 100%;
       min-height: 0;
     }
 
@@ -170,6 +173,7 @@
       padding: 14px 10px;
       overflow-x: hidden;
       overflow-y: auto;
+      overscroll-behavior: contain;
       transition: padding 240ms var(--ease), border-color 180ms ease;
     }
 
@@ -226,7 +230,7 @@
     .sidebar-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
       margin-bottom: 12px;
       padding: 0 2px;
@@ -859,12 +863,30 @@
       min-height: 280px;
       align-content: start;
       grid-auto-rows: max-content;
+      transition: background 160ms ease, outline-color 160ms ease;
     }
 
-    .fields-list.drag-over {
-      outline: 2px dashed rgba(134, 31, 65, 0.35);
+    .fields-list.is-drag-target {
+      outline: 1px dashed rgba(134, 31, 65, 0.16);
       outline-offset: -10px;
-      background: rgba(134, 31, 65, 0.035);
+      background: rgba(134, 31, 65, 0.018);
+    }
+
+    .drop-indicator {
+      position: relative;
+      height: 8px;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      animation: indicator-in 120ms var(--ease) both;
+    }
+
+    .drop-indicator::before {
+      content: "";
+      width: 100%;
+      height: 1px;
+      border-radius: 999px;
+      background: rgba(134, 31, 65, 0.42);
     }
 
     .field-card {
@@ -898,8 +920,9 @@
       pointer-events: none;
     }
 
-    .field-card-ghost {
-      opacity: 0.38;
+    .field-card.is-dragging {
+      opacity: 0.46;
+      transform: scale(0.995);
       box-shadow: none;
     }
 
@@ -1146,6 +1169,192 @@
       font-size: 12.5px;
     }
 
+
+
+    .calendar-preview,
+    .calendar-control {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 10px;
+    }
+
+    .calendar-preview-head,
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .calendar-month-label {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-preview-dates,
+    .calendar-date-inputs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .calendar-date-chip,
+    .calendar-date-field {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 8px;
+    }
+
+    .calendar-date-chip span,
+    .calendar-date-field span {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 750;
+    }
+
+    .calendar-date-chip strong {
+      min-width: 0;
+      color: var(--ink);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 3px;
+    }
+
+    .calendar-weekday {
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-align: center;
+      user-select: none;
+    }
+
+    .calendar-day,
+    .calendar-day-button {
+      position: relative;
+      min-width: 0;
+      min-height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      background: #ffffff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calendar-day.is-outside,
+    .calendar-day-button.is-outside {
+      color: #a6a09a;
+      background: rgba(255, 255, 255, 0.54);
+    }
+
+    .calendar-day.is-range,
+    .calendar-day-button.is-range {
+      border-color: rgba(134, 31, 65, 0.16);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .calendar-day.is-boundary,
+    .calendar-day-button.is-boundary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .calendar-day.is-milestone::after,
+    .calendar-day-button.is-milestone::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      transform: translateX(-50%);
+    }
+
+    .calendar-milestone-list,
+    .calendar-milestone-editor {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .calendar-milestone-editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .calendar-milestone-empty {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .calendar-milestone-empty {
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.52);
+    }
+
+    .calendar-milestone-item {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .calendar-milestone-date {
+      color: var(--accent-2);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calendar-milestone-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-milestone-row {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr) auto;
+      gap: 5px;
+      align-items: center;
+    }
+
     .media-preview {
       display: grid;
       gap: 8px;
@@ -1258,7 +1467,12 @@
       border-left: 1px solid var(--line);
       background: #f4f2ef;
       padding: 16px;
+      position: sticky;
+      top: 52px;
+      align-self: start;
+      max-height: calc(100vh - 52px);
       overflow: auto;
+      overscroll-behavior: contain;
     }
 
     .panel-title {
@@ -1513,6 +1727,18 @@
       }
     }
 
+    @keyframes indicator-in {
+      from {
+        opacity: 0;
+        transform: scaleX(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+    }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -1543,7 +1769,7 @@
       }
 
       .sidebar-head {
-        justify-content: center;
+        justify-content: flex-end;
       }
 
       .sidebar-title,
@@ -1565,7 +1791,9 @@
 
     @media (max-width: 900px) {
       .shell {
+        height: auto;
         min-height: auto;
+        overflow: visible;
       }
 
       .topbar {
@@ -1650,6 +1878,9 @@
       .inspector {
         border-left: 0;
         border-top: 1px solid var(--line);
+        position: static;
+        height: auto;
+        max-height: none;
       }
     }
 
@@ -1674,7 +1905,6 @@
     import { h, render } from "https://esm.sh/preact@10.23.1";
     import { useEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
     import htm from "https://esm.sh/htm@3.1.1";
-    import Sortable from "https://esm.sh/sortablejs@1.15.2";
 
     const html = htm.bind(h);
     const STORAGE_KEY = "formal.builder.schema";
@@ -1717,6 +1947,7 @@
       { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"] } },
       { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com" } },
       { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0" } },
+      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [] } } },
       { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"] } },
       { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } } },
       { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } } },
@@ -1724,8 +1955,8 @@
       { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT } } },
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf" } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top" } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false } } },
       { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "Spacer", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1 } } }
     ];
 
@@ -1743,7 +1974,9 @@
 
     function fieldFromType(type) {
       const meta = typeMeta(type);
-      return { id: uid(), type: meta.type, ...clone(meta.defaults) };
+      const field = { id: uid(), type: meta.type, ...clone(meta.defaults) };
+      if (field.type === "calendar") field.settings = defaultCalendarSettings();
+      return field;
     }
 
     function defaultSchema() {
@@ -1940,6 +2173,147 @@
       return /^#[0-9a-f]{6}$/i.test(withHash) ? withHash : "";
     }
 
+
+
+    function padDatePart(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function isoFromDate(date) {
+      return [date.getFullYear(), padDatePart(date.getMonth() + 1), padDatePart(date.getDate())].join("-");
+    }
+
+    function dateFromISO(value) {
+      const text = String(value || "").trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return null;
+      const [year, month, day] = text.split("-").map(Number);
+      const date = new Date(year, month - 1, day);
+      if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+      return date;
+    }
+
+    function cleanDate(value) {
+      const date = dateFromISO(value);
+      return date ? isoFromDate(date) : "";
+    }
+
+    function todayISO() {
+      return isoFromDate(new Date());
+    }
+
+    function addDays(value, amount) {
+      const date = dateFromISO(value) || new Date();
+      date.setDate(date.getDate() + amount);
+      return isoFromDate(date);
+    }
+
+    function midpointDate(startDate, endDate) {
+      const start = dateFromISO(startDate);
+      const end = dateFromISO(endDate);
+      if (!start || !end) return startDate || endDate || todayISO();
+      return isoFromDate(new Date((start.getTime() + end.getTime()) / 2));
+    }
+
+    function defaultCalendarSettings() {
+      const startDate = todayISO();
+      const endDate = addDays(startDate, 7);
+      return {
+        startDate,
+        endDate,
+        allowMilestones: true,
+        milestones: [{ id: uid(), date: midpointDate(startDate, endDate), label: "Milestone 1" }]
+      };
+    }
+
+    function dateTime(value) {
+      const date = dateFromISO(value);
+      return date ? date.getTime() : null;
+    }
+
+    function readableDate(value) {
+      const date = dateFromISO(value);
+      return date ? date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Not set";
+    }
+
+    function monthStartFromDate(value) {
+      const date = dateFromISO(value) || new Date();
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    }
+
+    function monthLabel(date) {
+      return date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    }
+
+    function calendarGridDates(monthDate) {
+      const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+      const start = new Date(first);
+      start.setDate(first.getDate() - first.getDay());
+      return Array.from({ length: 42 }, (_, index) => {
+        const date = new Date(start);
+        date.setDate(start.getDate() + index);
+        return date;
+      });
+    }
+
+    function normalizeCalendarMilestones(items) {
+      const source = Array.isArray(items) ? items : [];
+      return source
+        .map((item, index) => ({
+          id: sanitizeId(item?.id || `milestone_${index + 1}`),
+          date: cleanDate(item?.date),
+          label: String(item?.label || "").trim()
+        }))
+        .filter((item) => item.date || item.label)
+        .sort((a, b) => (dateTime(a.date) ?? Number.MAX_SAFE_INTEGER) - (dateTime(b.date) ?? Number.MAX_SAFE_INTEGER) || a.label.localeCompare(b.label));
+    }
+
+    function normalizeCalendarSettings(field) {
+      const settings = field?.settings || {};
+      let startDate = cleanDate(settings.startDate);
+      let endDate = cleanDate(settings.endDate);
+      if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) {
+        [startDate, endDate] = [endDate, startDate];
+      }
+      return {
+        startDate,
+        endDate,
+        allowMilestones: settings.allowMilestones !== false,
+        milestones: normalizeCalendarMilestones(settings.milestones)
+      };
+    }
+
+    function settingNumber(value, fallback) {
+      const text = String(value ?? "").trim();
+      if (!text) return fallback;
+      const number = Number(text);
+      return Number.isFinite(number) ? number : fallback;
+    }
+
+    function clampSettingNumber(value, fallback, min, max, round = false) {
+      const number = settingNumber(value, fallback);
+      const clamped = Math.max(min, Math.min(max, number));
+      return round ? Math.round(clamped) : clamped;
+    }
+
+    function normalizeLinearScaleSettings(field) {
+      const settings = field?.settings || {};
+      let min = settingNumber(settings.min, 1);
+      let max = settingNumber(settings.max, 10);
+      if (max < min) [min, max] = [max, min];
+      if (max === min) max = min + 1;
+      return {
+        min,
+        max,
+        minLabel: Object.prototype.hasOwnProperty.call(settings, "minLabel") ? String(settings.minLabel ?? "") : "Low",
+        maxLabel: Object.prototype.hasOwnProperty.call(settings, "maxLabel") ? String(settings.maxLabel ?? "") : "High"
+      };
+    }
+
+    function normalizeStarRatingSettings(field) {
+      const settings = field?.settings || {};
+      return { max: clampSettingNumber(settings.max, 5, 3, 10, true) };
+    }
+
     function normalizeSpacerSettings(field) {
       const settings = field?.settings || {};
       const height = clampMediaNumber(settings.height, 32, 0, 240);
@@ -1972,13 +2346,12 @@
     }
 
     function normalizeRadarMax(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return DEFAULT_RADAR_MAX;
+      const number = settingNumber(value, DEFAULT_RADAR_MAX);
       return Math.max(RADAR_MIN_VALUE + 1, Math.round(number));
     }
 
     function clampRadarValue(value, max) {
-      const number = Number(value);
+      const number = settingNumber(value, Number.NaN);
       if (!Number.isFinite(number)) return null;
       return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
     }
@@ -1990,14 +2363,13 @@
     }
 
     function normalizeRadarAngle(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return DEFAULT_RADAR_POINT.angle;
+      const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
       const wrapped = ((number % 360) + 360) % 360;
       return Math.round(wrapped * 100) / 100;
     }
 
     function clampRadarPointValue(value, max) {
-      const number = Number(value);
+      const number = settingNumber(value, Number.NaN);
       if (!Number.isFinite(number)) return null;
       return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
     }
@@ -2043,11 +2415,23 @@
         };
       }
 
+      if (next.type === "linear_scale") {
+        next.settings = normalizeLinearScaleSettings(next);
+      }
+
+      if (next.type === "star_rating") {
+        next.settings = normalizeStarRatingSettings(next);
+      }
+
       if (next.type === "headline") {
         next.required = false;
         next.placeholder = "";
         next.options = [];
         next.settings = headlineSettings(next);
+      }
+
+      if (next.type === "calendar") {
+        next.settings = normalizeCalendarSettings(next);
       }
 
       if (next.type === "media_upload") {
@@ -2144,8 +2528,7 @@
     }
 
     function clampMediaNumber(value, fallback, min, max) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return fallback;
+      const number = settingNumber(value, fallback);
       return Math.max(min, Math.min(max, number));
     }
 
@@ -2188,7 +2571,8 @@
         headingHorizontalAlignment: normalizeHorizontalAlignment(settings.headingHorizontalAlignment, ["left", "center", "right"], "left"),
         headingVerticalAlignment: normalizeVerticalAlignment(settings.headingVerticalAlignment || "top"),
         descriptionHorizontalAlignment: normalizeHorizontalAlignment(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "left"),
-        descriptionVerticalAlignment: normalizeVerticalAlignment(settings.descriptionVerticalAlignment || "top")
+        descriptionVerticalAlignment: normalizeVerticalAlignment(settings.descriptionVerticalAlignment || "top"),
+        outline: settings.outline === true
       };
     }
 
@@ -2215,7 +2599,7 @@
         maxWidth: cleanMediaDimension(settings.maxWidth),
         maxHeight: clampMediaNumber(settings.maxHeight, 360, 80, 1600),
         objectFit,
-        outline: settings.outline !== false
+        outline: settings.outline === true
       };
     }
 
@@ -2478,6 +2862,58 @@
       `;
     }
 
+
+
+    function CalendarPreview({ field }) {
+      const settings = normalizeCalendarSettings(field);
+      const startDate = settings.startDate || todayISO();
+      const endDate = settings.endDate || addDays(startDate, 7);
+      const startTime = dateTime(startDate);
+      const endTime = dateTime(endDate);
+      const rangeStart = Math.min(startTime, endTime);
+      const rangeEnd = Math.max(startTime, endTime);
+      const monthDate = monthStartFromDate(startDate || endDate);
+      const month = monthDate.getMonth();
+      const milestoneDates = new Set(settings.milestones.map((item) => item.date).filter(Boolean));
+      const milestones = settings.milestones.filter((item) => item.date || item.label);
+
+      return html`
+        <div class="calendar-preview">
+          <div class="calendar-preview-dates">
+            <div class="calendar-date-chip"><span>Start</span><strong>${readableDate(startDate)}</strong></div>
+            <div class="calendar-date-chip"><span>End</span><strong>${readableDate(endDate)}</strong></div>
+          </div>
+          <div class="calendar-preview-head">
+            <div class="calendar-month-label">${monthLabel(monthDate)}</div>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
+          </div>
+          <div class="calendar-grid" aria-hidden="true">
+            ${calendarGridDates(monthDate).map((date) => {
+              const iso = isoFromDate(date);
+              const time = date.getTime();
+              const inRange = time >= rangeStart && time <= rangeEnd;
+              const isBoundary = iso === startDate || iso === endDate;
+              const isOutside = date.getMonth() !== month;
+              const isMilestone = milestoneDates.has(iso);
+              return html`<div class=${`calendar-day${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isBoundary ? " is-boundary" : ""}${isMilestone ? " is-milestone" : ""}`} key=${iso}>${date.getDate()}</div>`;
+            })}
+          </div>
+          ${settings.allowMilestones && milestones.length ? html`
+            <div class="calendar-milestone-list">
+              ${milestones.map((item) => html`
+                <div class="calendar-milestone-item" key=${item.id}>
+                  <span class="calendar-milestone-date">${item.date ? readableDate(item.date) : "No date"}</span>
+                  <span class="calendar-milestone-name">${item.label || "Milestone"}</span>
+                </div>
+              `)}
+            </div>
+          ` : null}
+        </div>
+      `;
+    }
+
     function FieldPreview({ field }) {
       const options = field.options || [];
       switch (field.type) {
@@ -2488,6 +2924,8 @@
         case "number":
         case "link":
           return html`<div class="preview-line">${field.placeholder || ""}</div>`;
+        case "calendar":
+          return html`<${CalendarPreview} field=${field} />`;
         case "long_answer":
           return html`<div class="preview-box">${field.placeholder || ""}</div>`;
         case "multiple_choice":
@@ -2531,7 +2969,7 @@
       }
     }
 
-    function Palette({ onAdd }) {
+    function Palette({ onAdd, onDragStart, onDragEnd }) {
       const groups = [
         ["Input elements", fieldTypes.filter((item) => item.category === "input")],
         ["Design elements", fieldTypes.filter((item) => item.category === "design")]
@@ -2552,10 +2990,8 @@
                     aria-label=${`Add ${item.name}`}
                     key=${item.type}
                     onClick=${() => onAdd(item.type)}
-                    onDragStart=${(event) => {
-              event.dataTransfer.setData("text/plain", "new:" + item.type);
-              event.dataTransfer.effectAllowed = "copy";
-            }}
+                    onDragStart=${(event) => onDragStart(event, item.type)}
+                    onDragEnd=${onDragEnd}
                   >
                     <span class="palette-icon"><${Icon} icon=${item.icon} /></span>
                     <span class="palette-label">${item.name}</span>
@@ -2697,20 +3133,28 @@
     function FontPickerModal({ value, onChange, onClose }) {
       const [query, setQuery] = useState("");
       const [catalog, setCatalog] = useState([]);
-      const [catalogState, setCatalogState] = useState("loading");
+      const [catalogState, setCatalogState] = useState("idle");
       const current = fontOptionByFamily(value);
       const normalizedQuery = query.trim().toLowerCase();
+      const hasSearch = normalizedQuery.length > 0;
       const matchingFonts = useMemo(() => {
+        if (!hasSearch) return [];
         const source = catalog.length ? catalog : [];
-        const matches = normalizedQuery
-          ? source.filter((font) => font.family.toLowerCase().includes(normalizedQuery))
-          : source.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
-        const systemMatch = !normalizedQuery || SYSTEM_FONT_OPTION.family.toLowerCase().includes(normalizedQuery);
+        const matches = source.filter((font) => font.family.toLowerCase().includes(normalizedQuery));
+        const systemMatch = SYSTEM_FONT_OPTION.family.toLowerCase().includes(normalizedQuery);
         const options = systemMatch ? [SYSTEM_FONT_OPTION, ...matches] : matches;
         return options.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
-      }, [catalog, normalizedQuery]);
+      }, [catalog, hasSearch, normalizedQuery]);
 
       useEffect(() => {
+        if (!hasSearch) {
+          setCatalogState("idle");
+          return undefined;
+        }
+        if (catalog.length) {
+          setCatalogState("ready");
+          return undefined;
+        }
         let cancelled = false;
         setCatalogState("loading");
         fetchGoogleFontCatalog()
@@ -2726,7 +3170,7 @@
         return () => {
           cancelled = true;
         };
-      }, []);
+      }, [catalog.length, hasSearch]);
 
       useEffect(() => {
         matchingFonts.forEach((font) => {
@@ -2780,7 +3224,7 @@
                       <span class="font-option-sample">The quick brown fox jumps over the lazy dog.</span>
                     </button>
                   `;
-                }) : html`<div class="font-option-empty">${catalogState === "loading" ? "Loading fonts…" : "No matching fonts."}</div>`}
+                }) : html`<div class="font-option-empty">${!hasSearch ? "Search to browse fonts." : catalogState === "loading" ? "Loading fonts..." : catalogState === "error" ? "Font catalog unavailable." : "No matching fonts."}</div>`}
               </div>
             </div>
             <div class="theme-modal-foot">
@@ -2840,7 +3284,45 @@
       `;
     }
 
-    function FieldCard({ field, selected, removing, onSelect, onMove, onDuplicate, onDelete }) {
+    function DropIndicator() {
+      return html`<div class="drop-indicator" aria-hidden="true"></div>`;
+    }
+
+    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, dropIndex, onSelect, onMove, onDuplicate, onDelete, onFieldDragStart, onFieldDragEnd }) {
+      const hasDropIndex = Number.isInteger(dropIndex);
+      if (!fields.length) {
+        return html`
+          ${hasDropIndex && dropIndex === 0 ? html`<${DropIndicator} key="drop-0" />` : null}
+          <div class="empty-state"><span>Add some blocks from the sidebar!</span></div>
+        `;
+      }
+
+      const nodes = [];
+      if (hasDropIndex && dropIndex === 0) nodes.push(html`<${DropIndicator} key="drop-0" />`);
+      fields.forEach((field, index) => {
+        nodes.push(html`
+          <${FieldCard}
+            key=${field.id}
+            field=${field}
+            selected=${field.id === selectedId}
+            removing=${field.id === removingId}
+            dragging=${field.id === draggingFieldId}
+            onSelect=${() => onSelect(field.id)}
+            onMove=${(direction) => onMove(field.id, direction)}
+            onDuplicate=${() => onDuplicate(field.id)}
+            onDelete=${() => onDelete(field.id)}
+            onDragStart=${(event) => onFieldDragStart(event, field.id)}
+            onDragEnd=${onFieldDragEnd}
+          />
+        `);
+        if (hasDropIndex && dropIndex === index + 1) {
+          nodes.push(html`<${DropIndicator} key=${`drop-${index + 1}`} />`);
+        }
+      });
+      return nodes;
+    }
+
+    function FieldCard({ field, selected, removing, dragging, onSelect, onMove, onDuplicate, onDelete, onDragStart, onDragEnd }) {
       const meta = fieldMeta(field);
       const visibleLabel = String(field.label ?? "").trim();
       const selectLabel = `Select ${visibleLabel || meta.name} field`;
@@ -2857,9 +3339,9 @@
       }
 
       return html`
-        <article class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}`} data-field-id=${field.id} onClick=${handleCardClick}>
+        <article class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`} data-field-id=${field.id} onClick=${handleCardClick}>
           <div class="field-card-head">
-            <span class="drag-handle" title="Drag to reorder" aria-hidden="true">
+            <span class="drag-handle" title="Drag to reorder" aria-hidden="true" draggable=${true} onDragStart=${onDragStart} onDragEnd=${onDragEnd}>
               <i class="fa-solid fa-grip-vertical"></i>
             </span>
             <button class="field-type" type="button" aria-pressed=${selected} aria-label=${selectLabel} onClick=${onSelect}>
@@ -2971,7 +3453,7 @@
     function TypeSettings({ field, onFieldChange }) {
       if (field.type === "headline") {
         const settings = headlineSettings(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...settings, ...patch } });
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...(field.settings || {}), ...patch } });
         return html`
           <div class="settings-grid">
             <div class="property">
@@ -3007,6 +3489,10 @@
               </select>
             </div>
           </div>
+          <label class="toggle-row">
+            <input type="checkbox" checked=${settings.outline} onChange=${(event) => patchSettings({ outline: event.currentTarget.checked })} />
+            <span>Show section outline</span>
+          </label>
         `;
       }
 
@@ -3026,34 +3512,86 @@
       }
 
       if (field.type === "linear_scale") {
+        const settings = { ...normalizeLinearScaleSettings(field), ...(field.settings || {}) };
         return html`
           <div class="settings-grid">
             <div class="property">
               <label for="scaleMin">Minimum</label>
-              <input class="control" id="scaleMin" type="number" value=${field.settings?.min ?? 1} onInput=${(event) => onFieldChange({ settings: { ...field.settings, min: Number(event.currentTarget.value) } })} />
+              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), min: event.currentTarget.value } })} />
             </div>
             <div class="property">
               <label for="scaleMax">Maximum</label>
-              <input class="control" id="scaleMax" type="number" value=${field.settings?.max ?? 10} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
+              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), max: event.currentTarget.value } })} />
             </div>
             <div class="property">
               <label for="scaleMinLabel">Low label</label>
-              <input class="control" id="scaleMinLabel" value=${field.settings?.minLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
+              <input class="control" id="scaleMinLabel" value=${settings.minLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), minLabel: event.currentTarget.value } })} />
             </div>
             <div class="property">
               <label for="scaleMaxLabel">High label</label>
-              <input class="control" id="scaleMaxLabel" value=${field.settings?.maxLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
+              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), maxLabel: event.currentTarget.value } })} />
             </div>
           </div>
         `;
       }
 
       if (field.type === "star_rating") {
+        const settings = { ...normalizeStarRatingSettings(field), ...(field.settings || {}) };
         return html`
           <div class="property">
             <label for="starMax">Stars</label>
-            <input class="control" id="starMax" type="number" min="3" max="10" value=${field.settings?.max || 5} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
+            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), max: event.currentTarget.value } })} />
           </div>
+        `;
+      }
+
+
+
+      if (field.type === "calendar") {
+        const normalized = normalizeCalendarSettings(field);
+        const settings = {
+          ...normalized,
+          ...(field.settings || {}),
+          milestones: Array.isArray(field.settings?.milestones) ? field.settings.milestones : normalized.milestones
+        };
+        const patchSettings = (patch) => onFieldChange({ settings: { ...(field.settings || {}), ...patch } });
+        const updateMilestone = (index, patch) => {
+          const milestones = settings.milestones.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
+          patchSettings({ milestones });
+        };
+        const removeMilestone = (index) => patchSettings({ milestones: settings.milestones.filter((_, itemIndex) => itemIndex !== index) });
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="calendarStartDate">Default start date</label>
+              <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => patchSettings({ startDate: event.currentTarget.value })} />
+            </div>
+            <div class="property">
+              <label for="calendarEndDate">Default end date</label>
+              <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => patchSettings({ endDate: event.currentTarget.value })} />
+            </div>
+          </div>
+          <label class="toggle-row">
+            <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => patchSettings({ allowMilestones: event.currentTarget.checked })} />
+            <span>Allow milestones</span>
+          </label>
+          ${settings.allowMilestones ? html`
+            <div class="property">
+              <div class="calendar-milestone-editor-head">
+                <div class="mini-label">Milestones</div>
+              </div>
+              ${settings.milestones.length ? settings.milestones.map((item, index) => html`
+                <div class="calendar-milestone-row" key=${item.id || index}>
+                  <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
+                  <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
+                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><i class="fa-solid fa-xmark"></i></button>
+                </div>
+              `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
+              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: settings.startDate || todayISO(), label: "Milestone " + (settings.milestones.length + 1) }] })}>
+                <i class="fa-solid fa-plus"></i><span>Add milestone</span>
+              </button>
+            </div>
+          ` : null}
         `;
       }
 
@@ -3068,8 +3606,9 @@
       }
 
       if (field.type === "media") {
-        const settings = mediaSettings(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...settings, ...patch } });
+        const normalized = mediaSettings(field);
+        const settings = { ...normalized, ...(field.settings || {}) };
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...(field.settings || {}), ...patch } });
         const fileInputId = field.id + "_mediaFile";
 
         return html`
@@ -3122,7 +3661,7 @@
             </div>
             <div class="property">
               <label for="mediaIframeHeight">HTML height</label>
-              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: event.currentTarget.value })} />
             </div>
           ` : null}
 
@@ -3166,7 +3705,7 @@
           <div class="settings-grid">
             <div class="property">
               <label for="mediaScale">Scale %</label>
-              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: event.currentTarget.value })} />
             </div>
             <div class="property">
               <label for="mediaMaxWidth">Max width</label>
@@ -3177,7 +3716,7 @@
           <div class="settings-grid">
             <div class="property">
               <label for="mediaMaxHeight">Max height</label>
-              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: event.currentTarget.value })} />
             </div>
             <div class="property">
               <label for="mediaObjectFit">Fit</label>
@@ -3193,32 +3732,29 @@
       }
 
       if (field.type === "radar") {
-        const axes = normalizeRadarAxes(field.settings?.axes);
-        const mode = normalizeRadarMode(field.settings?.mode);
-        const max = normalizeRadarMax(field.settings?.max);
+        const rawSettings = field.settings || {};
+        const axes = normalizeRadarAxes(rawSettings.axes);
+        const mode = normalizeRadarMode(rawSettings.mode);
+        const max = normalizeRadarMax(rawSettings.max);
         const settings = {
           mode,
           max,
           axes,
-          defaultValues: normalizeRadarValues(field.settings?.defaultValues, axes, max),
-          defaultPoint: normalizeRadarPoint(field.settings?.defaultPoint, max)
+          defaultValues: normalizeRadarValues(rawSettings.defaultValues, axes, max),
+          defaultPoint: normalizeRadarPoint(rawSettings.defaultPoint, max)
         };
+        const displayAxes = Array.isArray(rawSettings.axes) && rawSettings.axes.length ? rawSettings.axes : axes;
+        const displayValues = Array.isArray(rawSettings.defaultValues) ? rawSettings.defaultValues : settings.defaultValues;
+        const rawDefaultPoint = rawSettings.defaultPoint && typeof rawSettings.defaultPoint === "object" && !Array.isArray(rawSettings.defaultPoint) ? rawSettings.defaultPoint : {};
+        const displayDefaultPoint = {
+          angle: Object.prototype.hasOwnProperty.call(rawDefaultPoint, "angle") ? rawDefaultPoint.angle : settings.defaultPoint.angle,
+          value: Object.prototype.hasOwnProperty.call(rawDefaultPoint, "value") ? rawDefaultPoint.value : settings.defaultPoint.value
+        };
+        const displayMax = Object.prototype.hasOwnProperty.call(rawSettings, "max") ? rawSettings.max : settings.max;
         const midpoint = Math.round(RADAR_MIN_VALUE + (settings.max - RADAR_MIN_VALUE) / 2);
 
         function commitRadarSettings(patch) {
-          const next = { ...settings, ...patch };
-          const nextMode = normalizeRadarMode(next.mode);
-          const nextMax = normalizeRadarMax(next.max);
-          const nextAxes = normalizeRadarAxes(next.axes);
-          onFieldChange({
-            settings: {
-              mode: nextMode,
-              max: nextMax,
-              axes: nextAxes,
-              defaultValues: normalizeRadarValues(next.defaultValues, nextAxes, nextMax),
-              defaultPoint: normalizeRadarPoint(next.defaultPoint, nextMax)
-            }
-          });
+          onFieldChange({ settings: { ...rawSettings, ...patch } });
         }
 
         return html`
@@ -3231,7 +3767,7 @@
           </div>
           <div class="property">
             <label for="radarMax">Maximum</label>
-            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${settings.max} onInput=${(event) => commitRadarSettings({ max: Number(event.currentTarget.value) })} />
+            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${displayMax} onInput=${(event) => commitRadarSettings({ max: event.currentTarget.value })} />
           </div>
           ${settings.mode === "point" ? html`
             <div class="settings-grid">
@@ -3244,8 +3780,8 @@
                   min="0"
                   max="359"
                   step="1"
-                  value=${settings.defaultPoint.angle}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...settings.defaultPoint, angle: Number(event.currentTarget.value) } })}
+                  value=${displayDefaultPoint.angle}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, angle: event.currentTarget.value } })}
                 />
               </div>
               <div class="property">
@@ -3257,8 +3793,8 @@
                   min=${RADAR_MIN_VALUE}
                   max=${settings.max}
                   step="0.1"
-                  value=${settings.defaultPoint.value}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...settings.defaultPoint, value: Number(event.currentTarget.value) } })}
+                  value=${displayDefaultPoint.value}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, value: event.currentTarget.value } })}
                 />
               </div>
             </div>
@@ -3266,14 +3802,14 @@
           ` : null}
           <div class="property">
             <div class="mini-label">${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}</div>
-            ${axes.map((axis, index) => html`
+            ${displayAxes.map((axis, index) => html`
               <div class=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"} key=${index}>
                 <input
                   class="control"
                   value=${axis}
                   aria-label=${`Radar axis ${index + 1}`}
                   onInput=${(event) => {
-            const nextAxes = [...axes];
+            const nextAxes = [...displayAxes];
             nextAxes[index] = event.currentTarget.value;
             commitRadarSettings({ axes: nextAxes });
           }}
@@ -3284,10 +3820,10 @@
                     type="number"
                     min=${RADAR_MIN_VALUE}
                     max=${settings.max}
-                    value=${settings.defaultValues[index]}
+                    value=${displayValues[index] ?? settings.defaultValues[index] ?? midpoint}
                     aria-label=${`Radar placeholder value ${index + 1}`}
                     onInput=${(event) => {
-              const nextValues = [...settings.defaultValues];
+              const nextValues = [...displayValues];
               nextValues[index] = event.currentTarget.value;
               commitRadarSettings({ defaultValues: nextValues });
             }}
@@ -3299,8 +3835,8 @@
                   title="Remove axis"
                   aria-label="Remove axis"
                   onClick=${() => {
-            const nextAxes = axes.filter((_, itemIndex) => itemIndex !== index);
-            const nextValues = settings.defaultValues.filter((_, itemIndex) => itemIndex !== index);
+            const nextAxes = displayAxes.filter((_, itemIndex) => itemIndex !== index);
+            const nextValues = displayValues.filter((_, itemIndex) => itemIndex !== index);
             commitRadarSettings({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
           }}
                 >
@@ -3308,7 +3844,7 @@
                 </button>
               </div>
             `)}
-            <button class="button ghost" type="button" onClick=${() => commitRadarSettings({ axes: [...axes, "Axis " + (axes.length + 1)], defaultValues: [...settings.defaultValues, midpoint] })}>
+            <button class="button ghost" type="button" onClick=${() => commitRadarSettings({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}>
               <i class="fa-solid fa-plus"></i><span>Add axis</span>
             </button>
           </div>
@@ -3316,12 +3852,12 @@
       }
 
       if (field.type === "spacer") {
-        const settings = normalizeSpacerSettings(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...settings, ...patch } });
+        const settings = { ...normalizeSpacerSettings(field), ...(field.settings || {}) };
+        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...(field.settings || {}), ...patch } });
         return html`
           <div class="property">
             <label for="spacerHeight">Height</label>
-            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: Number(event.currentTarget.value) })} />
+            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: event.currentTarget.value })} />
           </div>
           <label class="toggle-row">
             <input type="checkbox" checked=${settings.showLine} onChange=${(event) => patchSettings({ showLine: event.currentTarget.checked })} />
@@ -3331,7 +3867,7 @@
             <div class="settings-grid">
               <div class="property">
                 <label for="spacerLineThickness">Line thickness</label>
-                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: Number(event.currentTarget.value) })} />
+                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: event.currentTarget.value })} />
               </div>
               <div class="property">
                 <label for="spacerLineStyle">Line style</label>
@@ -3353,11 +3889,12 @@
       const [schema, setSchema] = useState(loadInitialSchema);
       const [selectedId, setSelectedId] = useState(schema.fields[0]?.id || null);
       const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-      const [dragOver, setDragOver] = useState(false);
+      const [dragState, setDragState] = useState(null);
       const [removingId, setRemovingId] = useState(null);
       const [activeColorItem, setActiveColorItem] = useState(null);
       const [fontPickerOpen, setFontPickerOpen] = useState(false);
       const fieldsRef = useRef(null);
+      const dragPayloadRef = useRef(null);
       const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
 
       useEffect(() => {
@@ -3365,24 +3902,13 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       }, [schema]);
 
-      useEffect(() => {
-        if (!fieldsRef.current) return undefined;
-        const sortable = Sortable.create(fieldsRef.current, {
-          animation: 180,
-          easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
-          draggable: ".field-card",
-          handle: ".drag-handle",
-          ghostClass: "field-card-ghost",
-          onEnd: ({ oldIndex, newIndex }) => {
-            if (oldIndex === undefined || newIndex === undefined || oldIndex === newIndex) return;
-            setSchema((current) => ({ ...current, fields: reorder(current.fields, oldIndex, newIndex) }));
-          }
-        });
-        return () => sortable.destroy();
-      }, [schema.fields.length]);
-
       function updateSchema(patch) {
-        setSchema((current) => normalizeSchema({ ...current, ...patch }));
+        setSchema((current) => {
+          const next = { ...current, ...patch };
+          if (patch.settings) next.settings = { ...(current.settings || {}), ...patch.settings };
+          if (next.settings?.theme) next.settings = { ...(next.settings || {}), theme: normalizeTheme(next.settings.theme) };
+          return next;
+        });
       }
 
       function updatePrimaryHeadline(patch) {
@@ -3406,7 +3932,14 @@
       function updateField(id, patch) {
         setSchema((current) => ({
           ...current,
-          fields: current.fields.map((field) => field.id === id ? normalizeField({ ...field, ...patch }) : field)
+          fields: current.fields.map((field) => {
+            if (field.id !== id) return field;
+            return {
+              ...field,
+              ...patch,
+              settings: patch.settings ? { ...(field.settings || {}), ...patch.settings } : field.settings
+            };
+          })
         }));
       }
 
@@ -3414,7 +3947,7 @@
         const field = fieldFromType(type);
         setSchema((current) => {
           const fields = [...current.fields];
-          fields.splice(index, 0, field);
+          fields.splice(clampDropIndex(index, fields.length), 0, field);
           return { ...current, fields };
         });
         setSelectedId(field.id);
@@ -3454,21 +3987,93 @@
         }, 150);
       }
 
-      function dropIndex(event) {
+      function clampDropIndex(index, length) {
+        const fallback = Number.isInteger(index) ? index : length;
+        return Math.max(0, Math.min(fallback, length));
+      }
+
+      function sameDragPayload(first, second) {
+        if (!first || !second || first.kind !== second.kind) return false;
+        return first.kind === "new" ? first.type === second.type : first.id === second.id;
+      }
+
+      function payloadFromEvent(event) {
+        if (dragPayloadRef.current) return dragPayloadRef.current;
+        const payload = event.dataTransfer?.getData("text/plain") || "";
+        if (payload.startsWith("new:")) return { kind: "new", type: payload.slice(4) };
+        if (payload.startsWith("move:")) return { kind: "move", id: payload.slice(5) };
+        return null;
+      }
+
+      function insertionIndexFromPointer(clientY) {
         const cards = [...(fieldsRef.current?.querySelectorAll(".field-card") || [])];
         for (let index = 0; index < cards.length; index += 1) {
           const rect = cards[index].getBoundingClientRect();
-          if (event.clientY < rect.top + rect.height / 2) return index;
+          if (clientY < rect.top + rect.height / 2) return index;
         }
         return cards.length;
       }
 
+      function beginPaletteDrag(event, type) {
+        const payload = { kind: "new", type };
+        dragPayloadRef.current = payload;
+        event.dataTransfer.setData("text/plain", "new:" + type);
+        event.dataTransfer.effectAllowed = "copy";
+        setDragState({ ...payload, index: schema.fields.length });
+      }
+
+      function beginFieldDrag(event, id) {
+        const payload = { kind: "move", id };
+        dragPayloadRef.current = payload;
+        event.dataTransfer.setData("text/plain", "move:" + id);
+        event.dataTransfer.effectAllowed = "move";
+        const card = event.currentTarget.closest(".field-card");
+        if (card) event.dataTransfer.setDragImage(card, 24, 24);
+        setDragState({ ...payload, index: schema.fields.findIndex((field) => field.id === id) });
+      }
+
+      function clearDragState() {
+        dragPayloadRef.current = null;
+        setDragState(null);
+      }
+
+      function updateDropTarget(event) {
+        const payload = payloadFromEvent(event);
+        if (!payload) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
+        const index = insertionIndexFromPointer(event.clientY);
+        setDragState((current) => {
+          if (current && sameDragPayload(current, payload) && current.index === index) return current;
+          return { ...payload, index };
+        });
+      }
+
+      function clearDropTarget(event) {
+        if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
+        setDragState((current) => current ? { ...current, index: null } : current);
+      }
+
+      function moveFieldToDropIndex(id, index) {
+        setSchema((current) => {
+          const from = current.fields.findIndex((field) => field.id === id);
+          if (from < 0) return current;
+          const insertionIndex = clampDropIndex(index, current.fields.length);
+          const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
+          const boundedTo = Math.max(0, Math.min(to, current.fields.length - 1));
+          if (boundedTo === from) return current;
+          return { ...current, fields: reorder(current.fields, from, boundedTo) };
+        });
+      }
+
       function handleDrop(event) {
         event.preventDefault();
-        setDragOver(false);
-        const payload = event.dataTransfer.getData("text/plain");
-        if (!payload.startsWith("new:")) return;
-        addField(payload.slice(4), dropIndex(event));
+        const payload = payloadFromEvent(event);
+        const index = Number.isInteger(dragState?.index) ? dragState.index : insertionIndexFromPointer(event.clientY);
+        clearDragState();
+        if (!payload) return;
+        if (payload.kind === "new") addField(payload.type, index);
+        if (payload.kind === "move") moveFieldToDropIndex(payload.id, index);
       }
 
       async function importSchema(event) {
@@ -3507,14 +4112,6 @@
         window.open("form-runtime.html?preview=1&refresh=" + Date.now() + hash, "formalRuntimePreview");
       }
 
-      function newForm() {
-        const confirmed = !formHasContent(schema) || window.confirm("Start a new blank form?");
-        if (!confirmed) return;
-        const next = defaultSchema();
-        setSchema(next);
-        setSelectedId(next.fields[0]?.id || null);
-      }
-
       function resetForm() {
         const hasContent = formHasContent(schema);
         const confirmed = !hasContent || window.confirm("Reset this form and clear all fields?");
@@ -3528,6 +4125,9 @@
 
       const formName = formDisplayName(schema);
       const theme = normalizeTheme(schema?.settings?.theme);
+      const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
+      const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
+      const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
         ensureGoogleFontLoaded(theme.fontFamily);
@@ -3546,7 +4146,8 @@
           <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <header class="topbar">
             <div class="toolbar-actions">
-              <button class="icon-button" type="button" title="New form" aria-label="New form" onClick=${newForm}><i class="fa-solid fa-plus"></i></button>
+              <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><i class="fa-regular fa-folder-open"></i></label>
+              <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${importSchema} />
               <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i></button>
               <input
                 class="current-form-name"
@@ -3558,8 +4159,6 @@
                 onFocus=${selectPrimaryHeadline}
                 onInput=${(event) => updatePrimaryHeadline({ label: event.currentTarget.value })}
               />
-              <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><i class="fa-regular fa-folder-open"></i></label>
-              <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${importSchema} />
             </div>
             <div class="top-actions">
               <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${previewForm}><i class="fa-solid fa-play"></i></button>
@@ -3575,12 +4174,11 @@
             <aside class="sidebar" aria-label="Form blocks" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
               <div class="sidebar-inner">
                 <div class="sidebar-head">
-                  <div class="sidebar-title">Form</div>
                   <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
                     <i class="fa-solid fa-chevron-left"></i>
                   </button>
                 </div>
-                <${Palette} onAdd=${addField} />
+                <${Palette} onAdd=${addField} onDragStart=${beginPaletteDrag} onDragEnd=${clearDragState} />
                 <${SidebarSettings} schema=${schema} onSchemaChange=${updateSchema} onOpenColor=${setActiveColorItem} onOpenFont=${() => setFontPickerOpen(true)} />
               </div>
             </aside>
@@ -3588,31 +4186,26 @@
             <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)}>
               <article class="form-page">
                 <div
-                  class=${`fields-list${dragOver ? " drag-over" : ""}`}
+                  class=${`fields-list${listDragActive ? " is-drag-target" : ""}`}
                   ref=${fieldsRef}
-                  onDragOver=${(event) => {
-          event.preventDefault();
-          setDragOver(true);
-        }}
-                  onDragLeave=${(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setDragOver(false);
-        }}
+                  onDragOver=${updateDropTarget}
+                  onDragEnter=${updateDropTarget}
+                  onDragLeave=${clearDropTarget}
                   onDrop=${handleDrop}
                 >
-                  ${schema.fields.length
-          ? schema.fields.map((field) => html`
-                      <${FieldCard}
-                        key=${field.id}
-                        field=${field}
-                        selected=${field.id === selectedId}
-                        removing=${field.id === removingId}
-                        onSelect=${() => setSelectedId(field.id)}
-                        onMove=${(direction) => moveField(field.id, direction)}
-                        onDuplicate=${() => duplicateField(field.id)}
-                        onDelete=${() => deleteField(field.id)}
-                      />
-                    `)
-          : html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`}
+                  <${FieldListContent}
+                    fields=${schema.fields}
+                    selectedId=${selectedId}
+                    removingId=${removingId}
+                    draggingFieldId=${draggingFieldId}
+                    dropIndex=${activeDropIndex}
+                    onSelect=${setSelectedId}
+                    onMove=${moveField}
+                    onDuplicate=${duplicateField}
+                    onDelete=${deleteField}
+                    onFieldDragStart=${beginFieldDrag}
+                    onFieldDragEnd=${clearDragState}
+                  />
                 </div>
               </article>
             </section>
