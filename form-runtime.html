@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Runtime</title>
+  <title>Formal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -123,7 +123,7 @@
     .runtime-sidebar-head {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       gap: 8px;
       margin-bottom: 10px;
     }
@@ -146,7 +146,7 @@
     }
 
     .icon-button.sidebar-expand-button {
-      position: absolute;
+      position: fixed;
       top: 14px;
       left: 8px;
       z-index: 16;
@@ -1190,30 +1190,40 @@
       }
 
       .runtime-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 30;
+        width: min(300px, calc(100vw - 48px));
         height: auto;
         max-height: none;
-        position: static;
-        border-right: 0;
-        border-bottom: 1px solid var(--sidebar-line);
-        display: grid;
-        grid-template-rows: 1fr;
-        overflow: hidden;
-        transition: grid-template-rows 260ms var(--ease), padding 240ms var(--ease), border-color 180ms ease;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-right: 1px solid var(--sidebar-line);
+        border-bottom: 0;
+        box-shadow: 12px 0 28px rgba(18, 18, 20, 0.22);
+        transform: translateX(0);
+        transition: transform 260ms var(--ease), box-shadow 180ms ease, border-color 180ms ease;
       }
 
       .runtime-sidebar-content {
         min-width: 0;
-        min-height: 0;
-        overflow: hidden;
+        min-height: calc(100vh - 28px);
+        overflow: visible;
+      }
+
+      .icon-button.sidebar-expand-button {
+        left: 10px;
+        z-index: 31;
       }
 
       .runtime-shell.sidebar-collapsed .runtime-sidebar {
-        grid-template-rows: 0fr;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-bottom-color: transparent;
-        border-right-color: transparent;
-        overflow: hidden;
+        border-right-color: var(--sidebar-line);
+        transform: translateX(calc(-100% - 2px));
+        box-shadow: none;
+        pointer-events: none;
       }
 
       .stage {
@@ -2913,7 +2923,7 @@
       }
 
       useEffect(() => {
-        document.title = schema ? schemaDisplayName(schema) + " - Form Runtime" : "Form Runtime";
+        document.title = schema ? schemaDisplayName(schema) + " - Formal" : "Formal";
       }, [schema]);
 
       useEffect(() => {
@@ -3126,14 +3136,13 @@
                   </button>
                 </div>
                 <div class="sidebar-actions">
-                  <label class="button full" for="schemaFile"><i class="fa-regular fa-folder-open"></i><span>Open schema</span></label>
+                  <label class="button full" for="schemaFile"><i class="fa-regular fa-folder-open"></i><span>Open</span></label>
                   <input class="sr-only" id="schemaFile" type="file" accept="application/json,.json" onChange=${importSchema} />
-                  <button class="button full" type="button" disabled=${!schema} onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i><span>Reset answers</span></button>
+                  <button class="button full" type="button" disabled=${!schema} onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
                 </div>
               </div>
 
               <div class="runtime-sidebar-footer">
-                <label class="select-label" for="exportFormat">Save as</label>
                 <div class="select-wrap">
                   <select class="select" id="exportFormat" value=${exportFormat} disabled=${!schema || exporting} onChange=${(event) => setExportFormat(event.currentTarget.value)}>
                     <option value="pdf">PDF</option>

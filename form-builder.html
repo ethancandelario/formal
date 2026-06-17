@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Form Builder</title>
+  <title>Formal Editor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -230,7 +230,7 @@
     .sidebar-head {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       gap: 8px;
       margin-bottom: 12px;
       padding: 0 2px;
@@ -895,7 +895,7 @@
       border-radius: 8px;
       padding: 0;
       box-shadow: 0 8px 20px rgba(31, 31, 31, 0.045);
-      cursor: pointer;
+      cursor: grab;
       position: relative;
       align-self: start;
       transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease), opacity 140ms ease;
@@ -926,23 +926,16 @@
       box-shadow: none;
     }
 
+    .field-card:active {
+      cursor: grabbing;
+    }
+
     .field-card-head {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto;
       gap: 8px;
       align-items: center;
       padding: 10px 10px 0;
-    }
-
-    .drag-handle {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      background: transparent;
-      cursor: grab;
     }
 
     .field-type {
@@ -969,10 +962,6 @@
       color: var(--accent);
     }
 
-    .field-card.selected .drag-handle {
-      color: var(--accent);
-    }
-
     .field-tools {
       display: flex;
       align-items: center;
@@ -980,7 +969,7 @@
     }
 
     .field-card-body {
-      padding: 8px 16px 16px 58px;
+      padding: 8px 16px 16px;
       border-radius: 0 0 8px 8px;
     }
 
@@ -1769,7 +1758,7 @@
       }
 
       .sidebar-head {
-        justify-content: flex-end;
+        justify-content: flex-start;
       }
 
       .sidebar-title,
@@ -1793,23 +1782,31 @@
       .shell {
         height: auto;
         min-height: auto;
+        grid-template-rows: auto auto;
         overflow: visible;
       }
 
       .topbar {
-        grid-template-columns: 1fr;
-        gap: 7px;
-        padding: 10px;
-        position: static;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 6px;
+        min-height: 56px;
+        padding: 8px 10px;
+        position: sticky;
+      }
+
+      .toolbar-actions,
+      .top-actions {
+        flex-wrap: nowrap;
       }
 
       .top-actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
       }
 
       .current-form-name {
-        flex: 1 1 180px;
+        flex: 1 1 auto;
         width: auto;
+        min-width: 72px;
         max-width: 100%;
       }
 
@@ -1819,44 +1816,86 @@
         overflow: visible;
       }
 
-      .sidebar,
       .inspector,
       .canvas-shell {
         overflow: visible;
       }
 
       .sidebar {
-        border-right: 0;
-        border-bottom: 1px solid var(--sidebar-line);
-        display: grid;
-        grid-template-rows: 1fr;
-        overflow: hidden;
-        transition: grid-template-rows 260ms var(--ease), padding 240ms var(--ease), border-color 180ms ease;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        z-index: 30;
+        width: min(320px, calc(100vw - 48px));
+        height: auto;
+        display: block;
+        padding: 12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        border-right: 1px solid var(--sidebar-line);
+        border-bottom: 0;
+        box-shadow: 12px 0 28px rgba(18, 18, 20, 0.22);
+        transform: translateX(0);
+        transition: transform 260ms var(--ease), box-shadow 180ms ease, border-color 180ms ease;
       }
 
       .sidebar-inner {
         min-width: 0;
-        overflow: hidden;
+        overflow: visible;
+      }
+
+      .icon-button.sidebar-expand-button {
+        position: fixed;
+        top: 68px;
+        left: 14px;
+        z-index: 31;
+      }
+
+      .sidebar-section {
+        gap: 8px;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+      }
+
+      .palette-group {
+        gap: 6px;
+        padding-top: 8px;
       }
 
       .shell.sidebar-collapsed .sidebar {
-        grid-template-rows: 0fr;
-        padding-top: 0;
-        padding-bottom: 0;
-        border-bottom-color: transparent;
-        border-right-color: transparent;
-        overflow: hidden;
+        padding: 12px;
+        border-right-color: var(--sidebar-line);
+        transform: translateX(calc(-100% - 2px));
+        box-shadow: none;
+        pointer-events: none;
       }
 
       .palette,
       .shell.sidebar-collapsed .palette {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+        gap: 6px;
       }
 
-      .palette-label,
+      .palette-block {
+        min-height: 46px;
+        padding: 5px;
+        gap: 0;
+      }
+
+      .palette-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 15px;
+      }
+
       .sidebar-title,
       .sidebar-section-title {
         display: block;
+      }
+
+      .palette-label {
+        display: none;
       }
 
       .palette-group-title {
@@ -1865,6 +1904,56 @@
 
       .sidebar-settings {
         display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 10px;
+      }
+
+      .theme-color-groups {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 10px;
+      }
+
+      .theme-color-group {
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .theme-color-list {
+        gap: 5px;
+      }
+
+      .theme-color-token {
+        min-height: 34px;
+        grid-template-columns: 26px minmax(0, 1fr);
+        gap: 6px;
+        padding: 4px;
+      }
+
+      .theme-swatch {
+        width: 24px;
+        height: 24px;
+      }
+
+      .theme-color-value {
+        display: none;
+      }
+
+      .font-picker-button {
+        min-height: 42px;
+        padding: 7px 8px;
+      }
+
+      .font-picker-preview {
+        display: none;
+      }
+
+      .sidebar-theme-reset {
+        min-height: 42px;
+        align-self: end;
+        justify-content: center;
       }
 
       .canvas-shell {
@@ -1881,6 +1970,18 @@
         position: static;
         height: auto;
         max-height: none;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar .button.primary {
+        width: 40px;
+        min-width: 40px;
+        padding: 0;
+      }
+
+      .topbar .button.primary span {
+        display: none;
       }
     }
 
@@ -3277,7 +3378,7 @@
               </button>
             </div>
             <button class="button sidebar-theme-reset" type="button" onClick=${() => patchTheme(clone(DEFAULT_THEME))}>
-              <i class="fa-solid fa-rotate-left"></i><span>Reset theme</span>
+              <i class="fa-solid fa-rotate-left"></i><span>Reset</span>
             </button>
           </div>
         </div>
@@ -3339,11 +3440,15 @@
       }
 
       return html`
-        <article class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`} data-field-id=${field.id} onClick=${handleCardClick}>
+        <article
+          class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`}
+          data-field-id=${field.id}
+          draggable=${true}
+          onClick=${handleCardClick}
+          onDragStart=${onDragStart}
+          onDragEnd=${onDragEnd}
+        >
           <div class="field-card-head">
-            <span class="drag-handle" title="Drag to reorder" aria-hidden="true" draggable=${true} onDragStart=${onDragStart} onDragEnd=${onDragEnd}>
-              <i class="fa-solid fa-grip-vertical"></i>
-            </span>
             <button class="field-type" type="button" aria-pressed=${selected} aria-label=${selectLabel} onClick=${onSelect}>
               <${Icon} icon=${meta.icon} /><span>${meta.name}</span>
             </button>
