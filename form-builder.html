@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -312,7 +313,7 @@
     }
 
     .form-meta {
-      padding: 22px;
+      padding: 24px 28px 22px;
       border-bottom: 1px solid var(--line);
       background: #ffffff;
       position: relative;
@@ -345,13 +346,13 @@
 
     .title-input,
     .description-input {
-      width: 100%;
+      width: calc(100% + 24px);
       border: 1px solid transparent;
       background: transparent;
       color: var(--ink);
       border-radius: 8px;
-      padding: 7px 9px;
-      margin-left: -9px;
+      padding: 8px 12px;
+      margin: 0 -12px;
     }
 
     .title-input {
@@ -394,6 +395,8 @@
       gap: 10px;
       padding: 16px;
       min-height: 280px;
+      align-content: start;
+      grid-auto-rows: max-content;
     }
 
     .fields-list.drag-over {
@@ -410,6 +413,7 @@
       box-shadow: 0 8px 20px rgba(31, 31, 31, 0.045);
       cursor: pointer;
       position: relative;
+      align-self: start;
       transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease), opacity 140ms ease;
       overflow: hidden;
       animation: card-in 160ms var(--ease) both;
@@ -520,6 +524,33 @@
       font-size: 13px;
     }
 
+    .headline-preview {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .headline-preview-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1.2;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .headline-preview-description {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .headline-preview-placeholder {
+      color: #8b8f92;
+    }
+
     .preview-line,
     .preview-box {
       border: 1px solid var(--line);
@@ -626,6 +657,19 @@
       stroke-width: 2;
     }
 
+    .radar-point-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-dasharray: 4 5;
+    }
+
+    .radar-point-node {
+      fill: #ffffff;
+      stroke: var(--accent);
+      stroke-width: 2.4;
+    }
+
     .radar-axis-list {
       display: grid;
       gap: 5px;
@@ -640,6 +684,82 @@
       font-size: 12.5px;
     }
 
+    .media-preview {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      color: var(--muted);
+    }
+
+    .media-content-wrap {
+      display: flex;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .media-visual {
+      display: block;
+      max-width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      object-fit: contain;
+    }
+
+    .media-preview img.media-visual,
+    .media-preview video.media-visual,
+    .media-preview object.media-visual {
+      width: 100%;
+    }
+
+    .media-preview audio.media-visual {
+      width: 100%;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .media-embed {
+      width: 100%;
+      min-height: 180px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .media-placeholder {
+      min-height: 78px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed #b8b2aa;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    .media-caption {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .media-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent);
+      overflow-wrap: anywhere;
+    }
+
+    .media-file-note {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
     .empty-state {
       min-height: 260px;
       display: grid;
@@ -648,6 +768,7 @@
       border: 1px dashed var(--line);
       border-radius: 8px;
       background: #ffffff;
+      user-select: none;
     }
 
     .inspector {
@@ -722,6 +843,20 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 5px;
       align-items: center;
+    }
+
+    .radar-axis-row {
+      grid-template-columns: minmax(0, 1fr) 82px auto;
+    }
+
+    .radar-axis-only-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .radar-mode-note {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
     }
 
     .settings-grid {
@@ -806,7 +941,8 @@
       background: #424548;
     }
 
-    .custom-radar-icon {
+    .custom-radar-icon,
+    .custom-lucide-icon {
       width: 1em;
       height: 1em;
       display: block;
@@ -814,13 +950,16 @@
       overflow: hidden;
     }
 
-    .palette-icon .custom-radar-icon {
+    .palette-icon .custom-radar-icon,
+    .palette-icon .custom-lucide-icon {
       width: 16px;
       height: 16px;
     }
 
     .field-type .custom-radar-icon,
-    .panel-title .custom-radar-icon {
+    .field-type .custom-lucide-icon,
+    .panel-title .custom-radar-icon,
+    .panel-title .custom-lucide-icon {
       width: 1.08em;
       height: 1.08em;
     }
@@ -837,6 +976,14 @@
 
     .custom-radar-icon circle {
       fill: currentColor;
+    }
+
+    .custom-lucide-icon path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     @keyframes card-in {
@@ -987,6 +1134,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+
       *,
       *::before,
       *::after {
@@ -997,6 +1145,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="app"></div>
 
@@ -1008,8 +1157,14 @@
 
     const html = htm.bind(h);
     const STORAGE_KEY = "formal.builder.schema";
+    const RADAR_MIN_VALUE = 1;
+    const DEFAULT_RADAR_AXES = ["formal", "reserved", "vibrant", "casual"];
+    const DEFAULT_RADAR_MAX = 5;
+    const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
+    const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
 
     const fieldTypes = [
+      { type: "headline", name: "Headline", icon: "lucide-heading", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top" } } },
       { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer" } },
       { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response" } },
       { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"] } },
@@ -1020,8 +1175,9 @@
       { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } } },
       { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } } },
       { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5 } } },
-      { type: "radar", name: "Radar", icon: "radar-graph", defaults: { label: "Radar", description: "", required: false, settings: { min: 0, max: 5, axes: ["Clarity", "Impact", "Effort", "Confidence", "Risk"] } } },
-      { type: "image_upload", name: "Image upload", icon: "fa-regular fa-image", defaults: { label: "Image upload", description: "", required: false } },
+      { type: "radar", name: "Radar", icon: "radar-graph", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT } } },
+      { type: "media_upload", name: "Media upload", icon: "lucide-upload", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf" } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" } }
     ];
 
@@ -1044,12 +1200,10 @@
 
     function defaultSchema() {
       return {
-        version: 1,
-        title: "Untitled form",
-        description: "",
+        version: 4,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        fields: []
+        fields: [fieldFromType("headline")]
       };
     }
 
@@ -1071,10 +1225,56 @@
     }
 
     function normalizeRadarAxes(axes) {
-      const fallback = ["Clarity", "Impact", "Effort", "Confidence", "Risk"];
-      const source = Array.isArray(axes) ? axes : fallback;
+      const source = Array.isArray(axes) ? axes : DEFAULT_RADAR_AXES;
       const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
-      return normalized.length ? normalized : fallback;
+      return normalized.length ? normalized : DEFAULT_RADAR_AXES;
+    }
+
+    function normalizeRadarMode(mode) {
+      return mode === "point" ? "point" : "shape";
+    }
+
+    function normalizeRadarMax(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return DEFAULT_RADAR_MAX;
+      return Math.max(RADAR_MIN_VALUE + 1, Math.round(number));
+    }
+
+    function clampRadarValue(value, max) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return null;
+      return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
+    }
+
+    function normalizeRadarValues(values, axes, max) {
+      const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
+      const source = Array.isArray(values) ? values : [];
+      return axes.map((_, index) => clampRadarValue(source[index], max) ?? midpoint);
+    }
+
+    function normalizeRadarAngle(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return DEFAULT_RADAR_POINT.angle;
+      const wrapped = ((number % 360) + 360) % 360;
+      return Math.round(wrapped * 100) / 100;
+    }
+
+    function clampRadarPointValue(value, max) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return null;
+      return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
+    }
+
+    function normalizeRadarPoint(point, max) {
+      const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
+      return {
+        angle: normalizeRadarAngle(source.angle),
+        value: clampRadarPointValue(source.value, max) ?? clampRadarPointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
+      };
+    }
+
+    function fieldMeta(field) {
+      return typeMeta(field?.type);
     }
 
     function normalizeField(raw) {
@@ -1083,7 +1283,7 @@
       const next = { ...base, ...raw };
       next.id = sanitizeId(next.id || uid());
       next.type = meta.type;
-      next.label = String(next.label || meta.defaults.label || meta.name);
+      next.label = Object.prototype.hasOwnProperty.call(raw || {}, "label") ? String(raw.label ?? "") : String(meta.defaults.label || meta.name);
       next.description = String(next.description || "");
       next.required = Boolean(next.required);
 
@@ -1094,10 +1294,32 @@
 
       next.settings = { ...(base.settings || {}), ...(next.settings || {}) };
       if (next.type === "radar") {
-        next.settings.min = Number.isFinite(Number(next.settings.min)) ? Number(next.settings.min) : 0;
-        next.settings.max = Number.isFinite(Number(next.settings.max)) ? Number(next.settings.max) : 5;
-        if (next.settings.max <= next.settings.min) next.settings.max = next.settings.min + 1;
-        next.settings.axes = normalizeRadarAxes(next.settings.axes);
+        const mode = normalizeRadarMode(next.settings.mode);
+        const max = normalizeRadarMax(next.settings.max);
+        const axes = normalizeRadarAxes(next.settings.axes);
+        next.settings = {
+          mode,
+          max,
+          axes,
+          defaultValues: normalizeRadarValues(next.settings.defaultValues, axes, max),
+          defaultPoint: normalizeRadarPoint(next.settings.defaultPoint, max)
+        };
+      }
+
+      if (next.type === "headline") {
+        next.required = false;
+        next.placeholder = "";
+        next.options = [];
+        next.settings = headlineSettings(next);
+      }
+
+      if (next.type === "media_upload") {
+        next.settings = { accept: "image/*,video/*,audio/*,.svg,.pdf", ...next.settings };
+      }
+
+      if (next.type === "media") {
+        next.required = false;
+        next.settings = mediaSettings(next);
       }
 
       return next;
@@ -1105,9 +1327,7 @@
 
     function normalizeSchema(input) {
       const next = defaultSchema();
-      next.version = Number(input?.version) || 1;
-      next.title = String(input?.title || "Untitled form");
-      next.description = String(input?.description || "");
+      next.version = 4;
       next.createdAt = input?.createdAt || new Date().toISOString();
       next.updatedAt = input?.updatedAt || new Date().toISOString();
       const seenIds = new Set();
@@ -1118,6 +1338,22 @@
         })
         : [];
       return next;
+    }
+
+    function primaryHeadlineField(schema) {
+      return schema?.fields?.find((field) => field.type === "headline") || null;
+    }
+
+    function formDisplayName(schema) {
+      const headline = primaryHeadlineField(schema);
+      return String(headline?.label || "").trim() || "Untitled form";
+    }
+
+    function formHasContent(schema) {
+      return (schema.fields || []).some((field) => {
+        if (field.type !== "headline") return true;
+        return String(field.label || "").trim() !== "Untitled form" || String(field.description || "").trim();
+      });
     }
 
     function loadInitialSchema() {
@@ -1150,23 +1386,231 @@
       return next;
     }
 
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function clampMediaNumber(value, fallback, min, max) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return fallback;
+      return Math.max(min, Math.min(max, number));
+    }
+
+    function cleanMediaDimension(value) {
+      const text = String(value ?? "").trim();
+      if (!text) return "";
+      if (/^\d+(?:\.\d+)?(?:px|%|rem|em|vw|vh)$/i.test(text)) return text;
+      if (/^\d+(?:\.\d+)?$/.test(text)) return text + "px";
+      return "";
+    }
+
+    function normalizeHorizontalAlignment(value, allowed = ["left", "center", "right"], fallback = "center") {
+      return allowed.includes(value) ? value : fallback;
+    }
+
+    function normalizeVerticalAlignment(value) {
+      return ["top", "center", "bottom"].includes(value) ? value : "center";
+    }
+
+    function horizontalFlexValue(value) {
+      if (value === "left") return "flex-start";
+      if (value === "right") return "flex-end";
+      return "center";
+    }
+
+    function verticalFlexValue(value) {
+      if (value === "top") return "flex-start";
+      if (value === "bottom") return "flex-end";
+      return "center";
+    }
+
+    function textAlignValue(value) {
+      if (value === "left" || value === "right") return value;
+      return "center";
+    }
+
+    function headlineSettings(field) {
+      const settings = field?.settings || {};
+      return {
+        headingHorizontalAlignment: normalizeHorizontalAlignment(settings.headingHorizontalAlignment, ["left", "center", "right"], "left"),
+        headingVerticalAlignment: normalizeVerticalAlignment(settings.headingVerticalAlignment || "top"),
+        descriptionHorizontalAlignment: normalizeHorizontalAlignment(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "left"),
+        descriptionVerticalAlignment: normalizeVerticalAlignment(settings.descriptionVerticalAlignment || "top")
+      };
+    }
+
+    function mediaSettings(field) {
+      const settings = field?.settings || {};
+      const height = clampMediaNumber(settings.iframeHeight, 260, 120, 1200);
+      const horizontalAlignment = normalizeHorizontalAlignment(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
+      const verticalAlignment = normalizeVerticalAlignment(settings.verticalAlignment);
+      const fits = new Set(["contain", "cover", "fill", "scale-down"]);
+      const objectFit = fits.has(settings.objectFit) ? settings.objectFit : "contain";
+      return {
+        sourceType: settings.sourceType || "url",
+        url: String(settings.url || ""),
+        dataUrl: String(settings.dataUrl || ""),
+        mimeType: String(settings.mimeType || ""),
+        fileName: String(settings.fileName || ""),
+        alt: String(settings.alt || ""),
+        caption: String(settings.caption || ""),
+        html: String(settings.html || ""),
+        iframeHeight: height,
+        horizontalAlignment,
+        verticalAlignment,
+        scale: clampMediaNumber(settings.scale, 100, 10, 100),
+        maxWidth: cleanMediaDimension(settings.maxWidth),
+        maxHeight: clampMediaNumber(settings.maxHeight, 360, 80, 1600),
+        objectFit,
+        outline: settings.outline !== false
+      };
+    }
+
+    function mediaSource(settings) {
+      return settings.sourceType === "file" ? settings.dataUrl : settings.url;
+    }
+
+    function mediaKind(settings) {
+      if (settings.sourceType === "html") return "html";
+      const source = mediaSource(settings).toLowerCase().split(/[?#]/)[0];
+      const mime = settings.mimeType.toLowerCase();
+      if (mime.startsWith("image/") || source.startsWith("data:image/") || /\.(apng|avif|gif|jpe?g|png|svg|webp)$/i.test(source)) return "image";
+      if (mime.startsWith("video/") || source.startsWith("data:video/") || /\.(mp4|m4v|mov|ogv|webm)$/i.test(source)) return "video";
+      if (mime.startsWith("audio/") || source.startsWith("data:audio/") || /\.(aac|flac|m4a|mp3|oga|ogg|wav|webm)$/i.test(source)) return "audio";
+      if (mime === "application/pdf" || source.startsWith("data:application/pdf") || /\.pdf$/i.test(source)) return "document";
+      return "unknown";
+    }
+
+    function objectPositionX(value) {
+      if (value === "left") return "left";
+      if (value === "right") return "right";
+      return "center";
+    }
+
+    function objectPositionY(value) {
+      if (value === "top") return "top";
+      if (value === "bottom") return "bottom";
+      return "center";
+    }
+
+    function headlineTextStyle(settings, horizontalKey, verticalKey) {
+      const horizontal = settings[horizontalKey];
+      const vertical = settings[verticalKey];
+      return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+    }
+
+    function mediaAlignmentStyle(settings) {
+      const horizontal = settings.horizontalAlignment;
+      const vertical = settings.verticalAlignment;
+      const justify = horizontal === "stretch" ? "stretch" : horizontalFlexValue(horizontal);
+      return `justify-content: ${justify}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+    }
+
+    function mediaVisualStyle(settings, extra = "") {
+      const width = settings.horizontalAlignment === "stretch" ? "100%" : `${settings.scale}%`;
+      const maxWidth = settings.maxWidth ? `max-width: ${settings.maxWidth};` : "";
+      const maxHeight = `max-height: ${settings.maxHeight}px;`;
+      const objectPosition = `object-position: ${objectPositionX(settings.horizontalAlignment)} ${objectPositionY(settings.verticalAlignment)};`;
+      return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${settings.objectFit}; ${objectPosition} ${extra}`.trim();
+    }
+
+    function MediaPreview({ field }) {
+      const settings = mediaSettings(field);
+      const source = mediaSource(settings);
+      const kind = mediaKind(settings);
+      const title = settings.alt || settings.fileName || field.label || "Media";
+      const wrapStyle = mediaAlignmentStyle(settings);
+      const visualStyle = mediaVisualStyle(settings);
+
+      if (kind === "html") {
+        return html`
+          <div class="media-preview">
+            <div class="media-content-wrap" style=${wrapStyle}>
+              ${settings.html
+            ? html`<iframe class="media-embed media-visual" title=${title} srcdoc=${settings.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}></iframe>`
+            : html`<div class="media-placeholder" style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : ""}>Embedded HTML</div>`}
+            </div>
+            ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+          </div>
+        `;
+      }
+
+      if (!source) {
+        return html`<div class="media-preview"><div class="media-placeholder">No media selected</div></div>`;
+      }
+
+      return html`
+        <div class="media-preview">
+          <div class="media-content-wrap" style=${wrapStyle}>
+            ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${settings.alt || ""} style=${visualStyle} />` : null}
+            ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${title} style=${visualStyle}></video>` : null}
+            ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${title} style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${settings.scale}%; ${settings.maxWidth ? `max-width: ${settings.maxWidth};` : ""}`}></audio>` : null}
+            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a></object>` : null}
+            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a>` : null}
+          </div>
+          ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+        </div>
+      `;
+    }
+
     function RadarGraphIcon() {
+      return html`
+    <svg
+      class="custom-radar-icon"
+      viewBox="72 72 880 880"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M926.8 397.1l-396-288a31.81 31.81 0 0 0-37.6 0l-396 288a31.99 31.99 0 0 0-11.6 35.8l151.3 466a32 32 0 0 0 30.4 22.1h489.5c13.9 0 26.1-8.9 30.4-22.1l151.3-466c4.2-13.2-.5-27.6-11.7-35.8zM838.6 417l-98.5 32-200-144.7V199.9L838.6 417zM466 567.2l-89.1 122.3-55.2-169.2L466 567.2zm-116.3-96.8L484 373.3v140.8l-134.3-43.7zM512 599.2l93.9 128.9H418.1L512 599.2zm28.1-225.9l134.2 97.1L540.1 514V373.3zM558 567.2l144.3-46.9-55.2 169.2L558 567.2zm-74-367.3v104.4L283.9 449l-98.5-32L484 199.9zM169.3 470.8l86.5 28.1 80.4 246.4-53.8 73.9-113.1-348.4zM327.1 853l50.3-69h269.3l50.3 69H327.1zm414.5-33.8l-53.8-73.9 80.4-246.4 86.5-28.1-113.1 348.4z"
+      />
+    </svg>
+  `;
+    }
+
+    function RadarPointIcon() {
       return html`
         <svg class="custom-radar-icon" viewBox="0 0 24 24" aria-hidden="true">
           <polygon points="12 3.5 20 9.5 17 20 7 20 4 9.5"></polygon>
-          <polygon points="12 8 16.25 11.25 14.6 16.25 9.4 16.25 7.75 11.25"></polygon>
           <line x1="12" y1="3.5" x2="12" y2="12"></line>
           <line x1="20" y1="9.5" x2="12" y2="12"></line>
           <line x1="17" y1="20" x2="12" y2="12"></line>
           <line x1="7" y1="20" x2="12" y2="12"></line>
           <line x1="4" y1="9.5" x2="12" y2="12"></line>
-          <circle cx="12" cy="12" r="1"></circle>
+          <circle cx="15.5" cy="10.8" r="2.15"></circle>
+        </svg>
+      `;
+    }
+
+    function HeadingIcon() {
+      return html`
+        <svg class="custom-lucide-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 12h12"></path>
+          <path d="M6 20V4"></path>
+          <path d="M18 20V4"></path>
+        </svg>
+      `;
+    }
+
+    function UploadIcon() {
+      return html`
+        <svg class="custom-lucide-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3v12"></path>
+          <path d="m17 8-5-5-5 5"></path>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
         </svg>
       `;
     }
 
     function Icon({ icon }) {
       if (icon === "radar-graph") return html`<${RadarGraphIcon} />`;
+      if (icon === "lucide-heading") return html`<${HeadingIcon} />`;
+      if (icon === "lucide-upload") return html`<${UploadIcon} />`;
       return html`<i class=${icon} aria-hidden="true"></i>`;
     }
 
@@ -1178,45 +1622,101 @@
       };
     }
 
-    function radarPoints(values, min, max, center, radius) {
-      const range = Math.max(1, max - min);
+    function radarValueScale(value, max) {
+      return Math.max(0, Math.min(1, Number(value) / Math.max(1, max)));
+    }
+
+    function radarPoints(values, max, center, radius) {
       return values.map((value, index) => {
-        const scaled = Math.max(0, Math.min(1, (Number(value) - min) / range));
-        const point = radarPoint(index, values.length, center, radius * scaled);
+        const point = radarPoint(index, values.length, center, radius * radarValueScale(value, max));
         return `${point.x},${point.y}`;
       }).join(" ");
     }
 
+    function radarPointFromPolar(angle, value, max, center, radius) {
+      const radians = -Math.PI / 2 + (normalizeRadarAngle(angle) * Math.PI / 180);
+      const scaled = radarValueScale(value, max);
+      return {
+        x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
+        y: Math.round((center + Math.sin(radians) * radius * scaled) * 100) / 100
+      };
+    }
+
+    function formatRadarNumber(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "";
+      return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+    }
+
+    function nearestRadarAxis(angle, axes) {
+      const labels = normalizeRadarAxes(axes);
+      const step = 360 / labels.length;
+      const index = Math.round(normalizeRadarAngle(angle) / step) % labels.length;
+      return labels[index];
+    }
+
+    function radarPointDescription(angle, axes) {
+      const labels = normalizeRadarAxes(axes);
+      const step = 360 / labels.length;
+      const normalized = normalizeRadarAngle(angle);
+      const position = normalized / step;
+      const lower = Math.floor(position) % labels.length;
+      const upper = (lower + 1) % labels.length;
+      const blend = position - lower;
+      if (blend < 0.06) return labels[lower];
+      if (blend > 0.94) return labels[upper];
+      return `${labels[lower]} ↔ ${labels[upper]}`;
+    }
+
     function RadarPreview({ field }) {
       const axes = normalizeRadarAxes(field.settings?.axes);
-      const min = Number(field.settings?.min ?? 0);
-      const max = Number(field.settings?.max ?? 5);
+      const mode = normalizeRadarMode(field.settings?.mode);
+      const max = normalizeRadarMax(field.settings?.max);
       const center = 65;
       const radius = 44;
-      const mid = min + (max - min) * 0.65;
-      const values = axes.map((_, index) => index % 2 ? mid : min + (max - min) * 0.45);
-      const polygon = radarPoints(values, min, max, center, radius);
+      const values = normalizeRadarValues(field.settings?.defaultValues, axes, max);
+      const point = normalizeRadarPoint(field.settings?.defaultPoint, max);
+      const polygon = radarPoints(values, max, center, radius);
+      const pointPosition = radarPointFromPolar(point.angle, point.value, max, center, radius);
 
       return html`
         <div class="radar-preview">
-          <svg viewBox="0 0 130 130" role="img" aria-label="Radar preview">
+          <svg viewBox="0 0 130 130" role="img" aria-label=${mode === "point" ? "Radar single-node preview" : "Radar preview"}>
             <g class="radar-grid">
               ${[0.35, 0.7, 1].map((scale) => html`
                 <polygon points=${axes.map((_, index) => {
-                  const point = radarPoint(index, axes.length, center, radius * scale);
-                  return `${point.x},${point.y}`;
-                }).join(" ")} />
+        const gridPoint = radarPoint(index, axes.length, center, radius * scale);
+        return `${gridPoint.x},${gridPoint.y}`;
+      }).join(" ")} />
               `)}
               ${axes.map((_, index) => {
-                const point = radarPoint(index, axes.length, center, radius);
-                return html`<line x1=${center} y1=${center} x2=${point.x} y2=${point.y} />`;
-              })}
+        const gridPoint = radarPoint(index, axes.length, center, radius);
+        return html`<line x1=${center} y1=${center} x2=${gridPoint.x} y2=${gridPoint.y} />`;
+      })}
             </g>
-            <polygon class="radar-fill" points=${polygon} />
+            ${mode === "point" ? html`
+              <line class="radar-point-line" x1=${center} y1=${center} x2=${pointPosition.x} y2=${pointPosition.y} />
+              <circle class="radar-point-node" cx=${pointPosition.x} cy=${pointPosition.y} r="5" />
+            ` : html`<polygon class="radar-fill" points=${polygon} />`}
           </svg>
           <div class="radar-axis-list">
-            ${axes.map((axis) => html`<span key=${axis}>${axis}</span>`)}
+            ${mode === "point" ? html`
+              <span>Single node</span>
+              <span>${radarPointDescription(point.angle, axes)}: ${formatRadarNumber(point.value)}</span>
+            ` : axes.map((axis, index) => html`<span key=${`${axis}-${index}`}>${axis}: ${values[index]}</span>`)}
           </div>
+        </div>
+      `;
+    }
+
+    function HeadlinePreview({ field }) {
+      const title = String(field.label || "").trim();
+      const description = String(field.description || "").trim();
+      const settings = headlineSettings(field);
+      return html`
+        <div class="headline-preview">
+          <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Untitled form"}</h1>
+          ${description ? html`<p class="headline-preview-description" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
         </div>
       `;
     }
@@ -1224,6 +1724,8 @@
     function FieldPreview({ field }) {
       const options = field.options || [];
       switch (field.type) {
+        case "headline":
+          return html`<${HeadlinePreview} field=${field} />`;
         case "short_answer":
         case "email":
         case "number":
@@ -1261,8 +1763,10 @@
           return html`<div class="star-preview">${Array.from({ length: Number(field.settings?.max) || 5 }, (_, index) => html`<i class="fa-regular fa-star" key=${index}></i>`)}</div>`;
         case "radar":
           return html`<${RadarPreview} field=${field} />`;
-        case "image_upload":
-          return html`<div class="preview-line">Image file</div>`;
+        case "media_upload":
+          return html`<div class="preview-line">Image, video, or audio file</div>`;
+        case "media":
+          return html`<${MediaPreview} field=${field} />`;
         default:
           return html`<div class="preview-line"></div>`;
       }
@@ -1281,9 +1785,9 @@
               key=${item.type}
               onClick=${() => onAdd(item.type)}
               onDragStart=${(event) => {
-                event.dataTransfer.setData("text/plain", "new:" + item.type);
-                event.dataTransfer.effectAllowed = "copy";
-              }}
+          event.dataTransfer.setData("text/plain", "new:" + item.type);
+          event.dataTransfer.effectAllowed = "copy";
+        }}
             >
               <span class="palette-icon"><${Icon} icon=${item.icon} /></span>
               <span class="palette-label">${item.name}</span>
@@ -1294,8 +1798,9 @@
     }
 
     function FieldCard({ field, selected, removing, onSelect, onMove, onDuplicate, onDelete }) {
-      const meta = typeMeta(field.type);
-      const selectLabel = `Select ${field.label || meta.name} field`;
+      const meta = fieldMeta(field);
+      const visibleLabel = String(field.label ?? "").trim();
+      const selectLabel = `Select ${visibleLabel || meta.name} field`;
       function handleCardClick(event) {
         const target = event.target;
         if (target?.closest?.("button, a, input, textarea, select")) return;
@@ -1325,9 +1830,13 @@
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
-            <div class="field-label">${field.label}${field.required ? html`<span class="required-mark">*</span>` : null}</div>
-            ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
-            <${FieldPreview} field=${field} />
+            ${field.type === "headline" ? html`
+              <${FieldPreview} field=${field} />
+            ` : html`
+              ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
+              ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
+              <${FieldPreview} field=${field} />
+            `}
           </div>
         </article>
       `;
@@ -1338,24 +1847,17 @@
         return html`
           <h2 class="panel-title"><i class="fa-solid fa-sliders"></i><span>Form Settings</span></h2>
           <div class="property-stack">
-            <div class="property">
-              <label for="sideTitle">Title</label>
-              <input class="control" id="sideTitle" value=${schema.title} onInput=${(event) => onSchemaChange({ title: event.currentTarget.value })} />
-            </div>
-            <div class="property">
-              <label for="sideDescription">Description</label>
-              <textarea class="textarea" id="sideDescription" value=${schema.description} onInput=${(event) => onSchemaChange({ description: event.currentTarget.value })}></textarea>
-            </div>
+            <div class="radar-mode-note">Select a block to edit its settings. The form headline is now a normal reorderable block.</div>
           </div>
         `;
       }
 
-      const meta = typeMeta(selectedField.type);
+      const meta = fieldMeta(selectedField);
       return html`
         <h2 class="panel-title"><${Icon} icon=${meta.icon} /><span>${meta.name}</span></h2>
         <div class="property-stack">
           <div class="property">
-            <label for="fieldLabel">Label</label>
+            <label for="fieldLabel">${selectedField.type === "headline" ? "Heading" : "Label"}</label>
             <input class="control" id="fieldLabel" value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
           </div>
           <div class="property">
@@ -1365,10 +1867,12 @@
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
-          <label class="toggle-row">
-            <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
-            <span>Required</span>
-          </label>
+          ${!["headline", "media"].includes(selectedField.type) ? html`
+            <label class="toggle-row">
+              <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
+              <span>Required</span>
+            </label>
+          ` : null}
         </div>
       `;
     }
@@ -1396,10 +1900,10 @@
                 value=${option}
                 aria-label=${`Option ${index + 1}`}
                 onInput=${(event) => {
-                  const next = [...options];
-                  next[index] = event.currentTarget.value;
-                  onFieldChange({ options: next });
-                }}
+          const next = [...options];
+          next[index] = event.currentTarget.value;
+          onFieldChange({ options: next });
+        }}
               />
               <button
                 class="icon-button danger"
@@ -1420,6 +1924,47 @@
     }
 
     function TypeSettings({ field, onFieldChange }) {
+      if (field.type === "headline") {
+        const settings = headlineSettings(field);
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...settings, ...patch } });
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="headingHorizontalAlignment">Heading horizontal</label>
+              <select class="control" id="headingHorizontalAlignment" value=${settings.headingHorizontalAlignment} onChange=${(event) => patchSettings({ headingHorizontalAlignment: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="headingVerticalAlignment">Heading vertical</label>
+              <select class="control" id="headingVerticalAlignment" value=${settings.headingVerticalAlignment} onChange=${(event) => patchSettings({ headingVerticalAlignment: event.currentTarget.value })}>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="descriptionHorizontalAlignment">Description horizontal</label>
+              <select class="control" id="descriptionHorizontalAlignment" value=${settings.descriptionHorizontalAlignment} onChange=${(event) => patchSettings({ descriptionHorizontalAlignment: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="descriptionVerticalAlignment">Description vertical</label>
+              <select class="control" id="descriptionVerticalAlignment" value=${settings.descriptionVerticalAlignment} onChange=${(event) => patchSettings({ descriptionVerticalAlignment: event.currentTarget.value })}>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </div>
+          </div>
+        `;
+      }
+
       if (field.type === "mood_meter") {
         return html`
           <div class="settings-grid">
@@ -1467,60 +2012,258 @@
         `;
       }
 
-      if (field.type === "radar") {
-        const axes = normalizeRadarAxes(field.settings?.axes);
-        const settings = {
-          min: Number(field.settings?.min ?? 0),
-          max: Number(field.settings?.max ?? 5),
-          axes
-        };
+      if (field.type === "media_upload") {
+        const settings = { accept: "image/*,video/*,audio/*,.svg,.pdf", ...(field.settings || {}) };
+        return html`
+          <div class="property">
+            <label for="mediaUploadAccept">Accepted types</label>
+            <input class="control" id="mediaUploadAccept" value=${settings.accept || ""} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
+          </div>
+        `;
+      }
+
+      if (field.type === "media") {
+        const settings = mediaSettings(field);
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...settings, ...patch } });
+        const fileInputId = field.id + "_mediaFile";
 
         return html`
+          <div class="property">
+            <label for="mediaSourceType">Source</label>
+            <select class="control" id="mediaSourceType" value=${settings.sourceType} onChange=${(event) => patchSettings({ sourceType: event.currentTarget.value })}>
+              <option value="url">URL</option>
+              <option value="file">File</option>
+              <option value="html">HTML</option>
+            </select>
+          </div>
+
+          ${settings.sourceType === "url" ? html`
+            <div class="property">
+              <label for="mediaUrl">Media URL</label>
+              <input class="control" id="mediaUrl" value=${settings.url} placeholder="https://example.com/media.mp4" onInput=${(event) => patchSettings({ url: event.currentTarget.value, dataUrl: "", fileName: "", mimeType: "" })} />
+            </div>
+          ` : null}
+
+          ${settings.sourceType === "file" ? html`
+            <div class="property">
+              <label for=${fileInputId}>Media file</label>
+              <input
+                class="control"
+                id=${fileInputId}
+                type="file"
+                accept="image/*,video/*,audio/*,.svg,.pdf,.ai,.eps"
+                onChange=${async (event) => {
+              const file = event.currentTarget.files?.[0];
+              if (!file) return;
+              patchSettings({
+                sourceType: "file",
+                dataUrl: await readFileAsDataUrl(file),
+                mimeType: file.type || "",
+                fileName: file.name || "",
+                url: "",
+                html: ""
+              });
+              event.currentTarget.value = "";
+            }}
+              />
+              ${settings.fileName ? html`<div class="media-file-note">${settings.fileName}</div>` : null}
+            </div>
+          ` : null}
+
+          ${settings.sourceType === "html" ? html`
+            <div class="property">
+              <label for="mediaHtml">HTML</label>
+              <textarea class="textarea" id="mediaHtml" value=${settings.html} placeholder="<div>Embedded content</div>" onInput=${(event) => patchSettings({ html: event.currentTarget.value, url: "", dataUrl: "", fileName: "", mimeType: "" })}></textarea>
+            </div>
+            <div class="property">
+              <label for="mediaIframeHeight">HTML height</label>
+              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: Number(event.currentTarget.value) })} />
+            </div>
+          ` : null}
+
+          ${settings.sourceType !== "html" ? html`
+            <div class="property">
+              <label for="mediaAlt">Alt text</label>
+              <input class="control" id="mediaAlt" value=${settings.alt} onInput=${(event) => patchSettings({ alt: event.currentTarget.value })} />
+            </div>
+          ` : null}
+
+          <div class="property">
+            <label for="mediaCaption">Caption</label>
+            <input class="control" id="mediaCaption" value=${settings.caption} onInput=${(event) => patchSettings({ caption: event.currentTarget.value })} />
+          </div>
+
+          <label class="toggle-row">
+            <input type="checkbox" checked=${settings.outline} onChange=${(event) => patchSettings({ outline: event.currentTarget.checked })} />
+            <span>Show section outline</span>
+          </label>
+
           <div class="settings-grid">
             <div class="property">
-              <label for="radarMin">Minimum</label>
-              <input class="control" id="radarMin" type="number" value=${settings.min} onInput=${(event) => {
-                const min = Number(event.currentTarget.value);
-                onFieldChange({ settings: { ...settings, min, max: settings.max <= min ? min + 1 : settings.max } });
-              }} />
+              <label for="mediaHorizontalAlignment">Horizontal alignment</label>
+              <select class="control" id="mediaHorizontalAlignment" value=${settings.horizontalAlignment} onChange=${(event) => patchSettings({ horizontalAlignment: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+                <option value="stretch">Stretch</option>
+              </select>
             </div>
             <div class="property">
-              <label for="radarMax">Maximum</label>
-              <input class="control" id="radarMax" type="number" value=${settings.max} onInput=${(event) => {
-                const max = Number(event.currentTarget.value);
-                onFieldChange({ settings: { ...settings, max: max <= settings.min ? settings.min + 1 : max } });
-              }} />
+              <label for="mediaVerticalAlignment">Vertical alignment</label>
+              <select class="control" id="mediaVerticalAlignment" value=${settings.verticalAlignment} onChange=${(event) => patchSettings({ verticalAlignment: event.currentTarget.value })}>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </select>
             </div>
           </div>
+
+          <div class="settings-grid">
+            <div class="property">
+              <label for="mediaScale">Scale %</label>
+              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: Number(event.currentTarget.value) })} />
+            </div>
+            <div class="property">
+              <label for="mediaMaxWidth">Max width</label>
+              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => patchSettings({ maxWidth: event.currentTarget.value })} />
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <div class="property">
+              <label for="mediaMaxHeight">Max height</label>
+              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: Number(event.currentTarget.value) })} />
+            </div>
+            <div class="property">
+              <label for="mediaObjectFit">Fit</label>
+              <select class="control" id="mediaObjectFit" value=${settings.objectFit} onChange=${(event) => patchSettings({ objectFit: event.currentTarget.value })}>
+                <option value="contain">Contain</option>
+                <option value="cover">Cover</option>
+                <option value="fill">Fill</option>
+                <option value="scale-down">Scale down</option>
+              </select>
+            </div>
+          </div>
+        `;
+      }
+
+      if (field.type === "radar") {
+        const axes = normalizeRadarAxes(field.settings?.axes);
+        const mode = normalizeRadarMode(field.settings?.mode);
+        const max = normalizeRadarMax(field.settings?.max);
+        const settings = {
+          mode,
+          max,
+          axes,
+          defaultValues: normalizeRadarValues(field.settings?.defaultValues, axes, max),
+          defaultPoint: normalizeRadarPoint(field.settings?.defaultPoint, max)
+        };
+        const midpoint = Math.round(RADAR_MIN_VALUE + (settings.max - RADAR_MIN_VALUE) / 2);
+
+        function commitRadarSettings(patch) {
+          const next = { ...settings, ...patch };
+          const nextMode = normalizeRadarMode(next.mode);
+          const nextMax = normalizeRadarMax(next.max);
+          const nextAxes = normalizeRadarAxes(next.axes);
+          onFieldChange({
+            settings: {
+              mode: nextMode,
+              max: nextMax,
+              axes: nextAxes,
+              defaultValues: normalizeRadarValues(next.defaultValues, nextAxes, nextMax),
+              defaultPoint: normalizeRadarPoint(next.defaultPoint, nextMax)
+            }
+          });
+        }
+
+        return html`
           <div class="property">
-            <div class="mini-label">Axes</div>
+            <label for="radarMode">Mode</label>
+            <select class="control" id="radarMode" value=${settings.mode} onChange=${(event) => commitRadarSettings({ mode: event.currentTarget.value })}>
+              <option value="shape">Multi-node shape</option>
+              <option value="point">Single node</option>
+            </select>
+          </div>
+          <div class="property">
+            <label for="radarMax">Maximum</label>
+            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${settings.max} onInput=${(event) => commitRadarSettings({ max: Number(event.currentTarget.value) })} />
+          </div>
+          ${settings.mode === "point" ? html`
+            <div class="settings-grid">
+              <div class="property">
+                <label for="radarDefaultAngle">Default angle</label>
+                <input
+                  class="control"
+                  id="radarDefaultAngle"
+                  type="number"
+                  min="0"
+                  max="359"
+                  step="1"
+                  value=${settings.defaultPoint.angle}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...settings.defaultPoint, angle: Number(event.currentTarget.value) } })}
+                />
+              </div>
+              <div class="property">
+                <label for="radarDefaultValue">Default value</label>
+                <input
+                  class="control"
+                  id="radarDefaultValue"
+                  type="number"
+                  min=${RADAR_MIN_VALUE}
+                  max=${settings.max}
+                  step="0.1"
+                  value=${settings.defaultPoint.value}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...settings.defaultPoint, value: Number(event.currentTarget.value) } })}
+                />
+              </div>
+            </div>
+            <div class="radar-mode-note">Default position: ${radarPointDescription(settings.defaultPoint.angle, axes)}</div>
+          ` : null}
+          <div class="property">
+            <div class="mini-label">${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}</div>
             ${axes.map((axis, index) => html`
-              <div class="option-row" key=${index}>
+              <div class=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"} key=${index}>
                 <input
                   class="control"
                   value=${axis}
                   aria-label=${`Radar axis ${index + 1}`}
                   onInput=${(event) => {
-                    const next = [...axes];
-                    next[index] = event.currentTarget.value;
-                    onFieldChange({ settings: { ...settings, axes: next } });
-                  }}
+            const nextAxes = [...axes];
+            nextAxes[index] = event.currentTarget.value;
+            commitRadarSettings({ axes: nextAxes });
+          }}
                 />
+                ${settings.mode === "shape" ? html`
+                  <input
+                    class="control"
+                    type="number"
+                    min=${RADAR_MIN_VALUE}
+                    max=${settings.max}
+                    value=${settings.defaultValues[index]}
+                    aria-label=${`Radar placeholder value ${index + 1}`}
+                    onInput=${(event) => {
+              const nextValues = [...settings.defaultValues];
+              nextValues[index] = event.currentTarget.value;
+              commitRadarSettings({ defaultValues: nextValues });
+            }}
+                  />
+                ` : null}
                 <button
                   class="icon-button danger"
                   type="button"
                   title="Remove axis"
                   aria-label="Remove axis"
                   onClick=${() => {
-                    const next = axes.filter((_, itemIndex) => itemIndex !== index);
-                    onFieldChange({ settings: { ...settings, axes: next.length ? next : ["Axis 1"] } });
-                  }}
+            const nextAxes = axes.filter((_, itemIndex) => itemIndex !== index);
+            const nextValues = settings.defaultValues.filter((_, itemIndex) => itemIndex !== index);
+            commitRadarSettings({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
+          }}
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </button>
               </div>
             `)}
-            <button class="button ghost" type="button" onClick=${() => onFieldChange({ settings: { ...settings, axes: [...axes, "Axis " + (axes.length + 1)] } })}>
+            <button class="button ghost" type="button" onClick=${() => commitRadarSettings({ axes: [...axes, "Axis " + (axes.length + 1)], defaultValues: [...settings.defaultValues, midpoint] })}>
               <i class="fa-solid fa-plus"></i><span>Add axis</span>
             </button>
           </div>
@@ -1564,6 +2307,24 @@
         setSchema((current) => ({ ...current, ...patch }));
       }
 
+      function updatePrimaryHeadline(patch) {
+        setSchema((current) => {
+          const fields = [...current.fields];
+          const index = fields.findIndex((field) => field.type === "headline");
+          if (index >= 0) {
+            fields[index] = normalizeField({ ...fields[index], ...patch });
+          } else {
+            fields.unshift(normalizeField({ id: uid(), type: "headline", ...patch }));
+          }
+          return { ...current, fields };
+        });
+      }
+
+      function selectPrimaryHeadline() {
+        const headline = primaryHeadlineField(schema);
+        setSelectedId(headline?.id || null);
+      }
+
       function updateField(id, patch) {
         setSchema((current) => ({
           ...current,
@@ -1591,7 +2352,9 @@
       function duplicateField(id) {
         const index = schema.fields.findIndex((field) => field.id === id);
         if (index < 0) return;
-        const copy = normalizeField({ ...clone(schema.fields[index]), id: uid(), label: schema.fields[index].label + " copy" });
+        const source = schema.fields[index];
+        const copyLabel = String(source.label ?? "").trim() ? source.label + " copy" : "";
+        const copy = normalizeField({ ...clone(source), id: uid(), label: copyLabel });
         setSchema((current) => {
           const fields = [...current.fields];
           fields.splice(index + 1, 0, copy);
@@ -1652,7 +2415,7 @@
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = safeFileName(schema.title || "form-schema") + ".json";
+        link.download = safeFileName(formDisplayName(schema) || "form-schema") + ".json";
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -1667,24 +2430,25 @@
       }
 
       function newForm() {
-        const confirmed = !schema.fields.length || window.confirm("Start a new blank form?");
+        const confirmed = !formHasContent(schema) || window.confirm("Start a new blank form?");
         if (!confirmed) return;
-        setSchema(defaultSchema());
-        setSelectedId(null);
+        const next = defaultSchema();
+        setSchema(next);
+        setSelectedId(next.fields[0]?.id || null);
       }
 
       function resetForm() {
-        const hasContent = schema.fields.length || schema.title !== "Untitled form" || schema.description;
+        const hasContent = formHasContent(schema);
         const confirmed = !hasContent || window.confirm("Reset this form and clear all fields?");
         if (!confirmed) return;
         const next = defaultSchema();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
         setSchema(next);
-        setSelectedId(null);
+        setSelectedId(next.fields[0]?.id || null);
         setRemovingId(null);
       }
 
-      const formName = schema.title?.trim() || "Untitled form";
+      const formName = formDisplayName(schema);
 
       return html`
         <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
@@ -1694,13 +2458,13 @@
               <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i></button>
               <input
                 class="current-form-name"
-                value=${schema.title}
+                value=${formName}
                 maxlength="120"
                 title=${formName}
                 placeholder="Untitled form"
                 aria-label="Form title"
-                onFocus=${() => setSelectedId(null)}
-                onInput=${(event) => updateSchema({ title: event.currentTarget.value })}
+                onFocus=${selectPrimaryHeadline}
+                onInput=${(event) => updatePrimaryHeadline({ label: event.currentTarget.value })}
               />
               <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><i class="fa-regular fa-folder-open"></i></label>
               <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${importSchema} />
@@ -1730,38 +2494,20 @@
 
             <section class="canvas-shell" aria-label="Form canvas">
               <article class="form-page">
-                <div class=${`form-meta${!selectedField ? " selected" : ""}`} onClick=${() => setSelectedId(null)}>
-                  <input
-                    class="title-input"
-                    value=${schema.title}
-                    maxlength="120"
-                    aria-label="Form title"
-                    onFocus=${() => setSelectedId(null)}
-                    onInput=${(event) => updateSchema({ title: event.currentTarget.value })}
-                  />
-                  <textarea
-                    class="description-input"
-                    value=${schema.description}
-                    maxlength="500"
-                    aria-label="Form description"
-                    onFocus=${() => setSelectedId(null)}
-                    onInput=${(event) => updateSchema({ description: event.currentTarget.value })}
-                  ></textarea>
-                </div>
                 <div
                   class=${`fields-list${dragOver ? " drag-over" : ""}`}
                   ref=${fieldsRef}
                   onDragOver=${(event) => {
-                    event.preventDefault();
-                    setDragOver(true);
-                  }}
+          event.preventDefault();
+          setDragOver(true);
+        }}
                   onDragLeave=${(event) => {
-                    if (!event.currentTarget.contains(event.relatedTarget)) setDragOver(false);
-                  }}
+          if (!event.currentTarget.contains(event.relatedTarget)) setDragOver(false);
+        }}
                   onDrop=${handleDrop}
                 >
                   ${schema.fields.length
-                    ? schema.fields.map((field) => html`
+          ? schema.fields.map((field) => html`
                       <${FieldCard}
                         key=${field.id}
                         field=${field}
@@ -1773,7 +2519,7 @@
                         onDelete=${() => deleteField(field.id)}
                       />
                     `)
-                    : html`<div class="empty-state"><span>Blank form</span></div>`}
+          : html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`}
                 </div>
               </article>
             </section>
@@ -1794,4 +2540,5 @@
     render(html`<${BuilderApp} />`, document.getElementById("app"));
   </script>
 </body>
+
 </html>
