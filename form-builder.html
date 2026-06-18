@@ -2611,7 +2611,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.23.1";
-    import { useEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
+    import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
     import htm from "https://esm.sh/htm@3.1.1";
 
     const html = htm.bind(h);
@@ -4712,6 +4712,7 @@
       const [fontPickerOpen, setFontPickerOpen] = useState(false);
       const [exportMenuOpen, setExportMenuOpen] = useState(false);
       const fieldsRef = useRef(null);
+      const fieldRectsRef = useRef(null);
       const dragPayloadRef = useRef(null);
       const exportMenuRef = useRef(null);
       const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
@@ -4737,6 +4738,20 @@
           window.removeEventListener("keydown", handleKeyDown);
         };
       }, [exportMenuOpen]);
+
+      useLayoutEffect(() => {
+        const firstRects = fieldRectsRef.current;
+        if (!firstRects) return;
+        fieldRectsRef.current = null;
+        fieldsRef.current?.querySelectorAll(".field-card").forEach((card) => {
+          const first = firstRects.get(card.dataset.fieldId);
+          if (!first) return;
+          const last = card.getBoundingClientRect();
+          const dx = first.left - last.left;
+          const dy = first.top - last.top;
+          if (dx || dy) card.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration: 180, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+        });
+      }, [schema.fields]);
 
       function updateSchema(patch) {
         setSchema((current) => {
@@ -4788,10 +4803,15 @@
         setSelectedId(field.id);
       }
 
+      function snapshotFieldRects() {
+        fieldRectsRef.current = new Map([...(fieldsRef.current?.querySelectorAll(".field-card") || [])].map((card) => [card.dataset.fieldId, card.getBoundingClientRect()]));
+      }
+
       function moveField(id, direction) {
         const index = schema.fields.findIndex((field) => field.id === id);
         const nextIndex = index + direction;
         if (index < 0 || nextIndex < 0 || nextIndex >= schema.fields.length) return;
+        snapshotFieldRects();
         setSchema((current) => ({ ...current, fields: reorder(current.fields, index, nextIndex) }));
       }
 
@@ -4905,6 +4925,7 @@
           const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
           const boundedTo = Math.max(0, Math.min(to, current.fields.length - 1));
           if (boundedTo === from) return current;
+          snapshotFieldRects();
           return { ...current, fields: reorder(current.fields, from, boundedTo) };
         });
       }
