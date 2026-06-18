@@ -1016,11 +1016,28 @@
       display: flex;
       align-items: center;
       gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 130ms ease;
+    }
+
+    .field-card:hover .field-tools,
+    .field-card:focus-within .field-tools {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .field-card-body {
       padding: 8px 16px 16px;
       border-radius: 0 0 8px 8px;
+    }
+
+    .field-card.with-background .field-card-body {
+      margin: 8px 10px 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
     }
 
     .field-type:focus-visible,
@@ -2632,23 +2649,23 @@
     const THEME_COLOR_FIELDS = THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), []);
 
     const fieldTypes = [
-      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true } } },
-      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { outline: true } } },
-      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { outline: true } } },
-      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { outline: true } } },
-      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { outline: true } } },
-      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { outline: true } } },
-      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], outline: true } } },
-      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"], settings: { outline: true } } },
-      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High", outline: true } } },
-      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High", outline: true } } },
-      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5, outline: true } } },
-      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, outline: true } } },
-      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true } } },
-      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true } } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false } } },
-      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false } } }
+      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true, background: false } } },
+      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { outline: true, background: false } } },
+      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { outline: true, background: false } } },
+      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { outline: true, background: false } } },
+      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { outline: true, background: false } } },
+      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { outline: true, background: false } } },
+      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], outline: true, background: false } } },
+      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"], settings: { outline: true, background: false } } },
+      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High", outline: true, background: false } } },
+      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High", outline: true, background: false } } },
+      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5, outline: true, background: false } } },
+      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, outline: true, background: false } } },
+      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true, background: false } } },
+      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true, background: false } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false, background: false } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false, background: false } } },
+      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false, background: false } } }
     ];
 
     function uid() {
@@ -3101,8 +3118,9 @@
     }
 
     function assertSettingKeys(settings, keys, fieldType) {
-      assertExactKeys(settings, [...keys, "outline"], `${fieldType}.settings`);
+      assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
+      assertBoolean(settings.background, `${fieldType}.settings.background`);
     }
 
     function schemaField(raw) {
@@ -3328,6 +3346,10 @@
       return field.settings.outline === true;
     }
 
+    function fieldBackground(field) {
+      return field.settings.background === true;
+    }
+
     function headlineSettings(field) {
       const settings = field.settings;
       return {
@@ -3335,7 +3357,8 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        outline: fieldOutline(field)
+        outline: fieldOutline(field),
+        background: fieldBackground(field)
       };
     }
 
@@ -3361,7 +3384,8 @@
         maxWidth: settings.maxWidth,
         maxHeight: settings.maxHeight,
         objectFit: settings.objectFit,
-        outline: fieldOutline(field)
+        outline: fieldOutline(field),
+        background: fieldBackground(field)
       };
     }
 
@@ -4076,7 +4100,7 @@
       return html`<div class="drop-indicator" aria-hidden="true"></div>`;
     }
 
-    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, dropIndex, onSelect, onMove, onDuplicate, onDelete, onFieldDragStart, onFieldDragEnd }) {
+    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, dropIndex, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd }) {
       const hasDropIndex = Number.isInteger(dropIndex);
       if (!fields.length) {
         return html`
@@ -4098,6 +4122,7 @@
             onSelect=${() => onSelect(field.id)}
             onMove=${(direction) => onMove(field.id, direction)}
             onDuplicate=${() => onDuplicate(field.id)}
+            onReset=${() => onReset(field.id)}
             onDelete=${() => onDelete(field.id)}
             onDragStart=${(event) => onFieldDragStart(event, field.id)}
             onDragEnd=${onFieldDragEnd}
@@ -4110,7 +4135,7 @@
       return nodes;
     }
 
-    function FieldCard({ field, selected, removing, dragging, onSelect, onMove, onDuplicate, onDelete, onDragStart, onDragEnd }) {
+    function FieldCard({ field, selected, removing, dragging, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd }) {
       const meta = fieldMeta(field);
       const visibleLabel = String(field.label ?? "").trim();
       const selectLabel = `Select ${visibleLabel || meta.name} field`;
@@ -4128,7 +4153,7 @@
 
       return html`
         <article
-          class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`}
+          class=${`field-card${fieldBackground(field) ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`}
           data-field-id=${field.id}
           draggable=${true}
           onClick=${handleCardClick}
@@ -4142,6 +4167,7 @@
             <div class="field-tools">
               <button class="icon-button" type="button" onClick=${() => onMove(-1)} title="Move up" aria-label="Move up"><${Icon} icon="fa-solid fa-arrow-up" /></button>
               <button class="icon-button" type="button" onClick=${() => onMove(1)} title="Move down" aria-label="Move down"><${Icon} icon="fa-solid fa-arrow-down" /></button>
+              <button class="icon-button" type="button" onClick=${onReset} title="Reset properties" aria-label="Reset properties"><${Icon} icon="fa-solid fa-rotate-left" /></button>
               <button class="icon-button" type="button" onClick=${onDuplicate} title="Duplicate" aria-label="Duplicate"><${Icon} icon="fa-regular fa-copy" /></button>
               <button class="icon-button danger" type="button" onClick=${onDelete} title="Delete" aria-label="Delete"><${Icon} icon="fa-regular fa-trash-can" /></button>
             </div>
@@ -4198,15 +4224,19 @@
     }
 
     function OutlineSettings({ field, onFieldChange }) {
-      const patchSettings = (outline) => {
-        const patch = { settings: { ...field.settings, outline } };
+      const patchSettings = (key, value) => {
+        const patch = { settings: { ...field.settings, [key]: value } };
         if (["headline", "media", "spacer"].includes(field.type)) patch.required = false;
         onFieldChange(patch);
       };
       return html`
         <label class="toggle-row">
-          <input type="checkbox" checked=${fieldOutline(field)} onChange=${(event) => patchSettings(event.currentTarget.checked)} />
+          <input type="checkbox" checked=${fieldOutline(field)} onChange=${(event) => patchSettings("outline", event.currentTarget.checked)} />
           <span>Show outline</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" checked=${fieldBackground(field)} onChange=${(event) => patchSettings("background", event.currentTarget.checked)} />
+          <span>Show background</span>
         </label>
       `;
     }
@@ -4779,6 +4809,14 @@
         setSelectedId(copy.id);
       }
 
+      function resetField(id) {
+        const source = schema.fields.find((field) => field.id === id);
+        if (!source) return;
+        const reset = schemaField({ ...fieldFromType(source.type), id });
+        setSchema((current) => ({ ...current, fields: current.fields.map((field) => field.id === id ? reset : field) }));
+        setSelectedId(id);
+      }
+
       function deleteField(id) {
         const index = schema.fields.findIndex((field) => field.id === id);
         if (index < 0 || removingId === id) return;
@@ -5068,6 +5106,7 @@
                     onSelect=${setSelectedId}
                     onMove=${moveField}
                     onDuplicate=${duplicateField}
+                    onReset=${resetField}
                     onDelete=${deleteField}
                     onFieldDragStart=${beginFieldDrag}
                     onFieldDragEnd=${clearDragState}

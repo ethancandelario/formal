@@ -514,13 +514,20 @@
     .field {
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: #ffffff;
+      background: transparent;
       padding: 16px;
       display: grid;
       gap: 10px;
       align-self: start;
       animation: field-in 160ms var(--ease) both;
-      transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
+      transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
+    }
+
+    .field.with-background,
+    .headline-field.with-background,
+    .field.spacer-field.with-background {
+      --field-control-bg: var(--bg);
+      background: var(--panel-2);
     }
 
     .field:hover {
@@ -529,8 +536,6 @@
 
     .field.no-outline {
       border-color: transparent;
-      background: transparent;
-      padding: 0;
       box-shadow: none;
     }
 
@@ -541,27 +546,22 @@
 
     .field.no-outline.invalid {
       border-color: rgba(134, 31, 65, 0.7);
-      background: #ffffff;
-      padding: 16px;
     }
 
     .headline-field {
-      border: 0;
-      border-radius: 0;
+      border: 1px solid transparent;
+      border-radius: 8px;
       background: transparent;
-      padding: 8px 12px;
+      padding: 16px;
       display: grid;
       gap: 7px;
       align-self: start;
       animation: field-in 160ms var(--ease) both;
-      transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
+      transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
     }
 
     .headline-field.with-outline {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 16px;
+      border-color: var(--line);
     }
 
     .headline-field.with-outline:hover {
@@ -616,7 +616,7 @@
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel-2);
+      background: var(--field-control-bg, var(--panel-2));
       color: var(--ink);
       padding: 9px 10px;
       min-height: 40px;
@@ -680,7 +680,7 @@
       justify-content: center;
       gap: 7px;
       padding: 0 10px;
-      background: var(--panel-2);
+      background: var(--field-control-bg, var(--panel-2));
       color: var(--ink);
       cursor: pointer;
       font-size: 14px;
@@ -918,7 +918,7 @@
       padding: 7px 9px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--panel-2);
+      background: var(--field-control-bg, var(--panel-2));
     }
 
     .radar-values.point-readout .radar-value-row {
@@ -978,7 +978,7 @@
       min-width: 0;
       border: 0;
       border-radius: 8px;
-      background: var(--panel-2);
+      background: var(--field-control-bg, var(--panel-2));
       padding: 12px;
       box-shadow: none;
     }
@@ -986,7 +986,7 @@
     .calendar-preview.is-unboxed,
     .field.no-outline .calendar-control {
       border: 0;
-      background: var(--panel-2);
+      background: var(--field-control-bg, var(--panel-2));
       padding: 12px;
       box-shadow: none;
     }
@@ -1491,19 +1491,14 @@
     }
 
     .field.spacer-field {
-      border: 0;
-      background: transparent;
-      padding: 0 16px;
+      border-color: transparent;
       box-shadow: none;
       pointer-events: none;
       user-select: none;
     }
 
     .field.spacer-field.with-outline {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 16px;
+      border-color: var(--line);
     }
 
     .field.spacer-field:hover {
@@ -2472,8 +2467,9 @@
     }
 
     function assertSettingKeys(settings, keys, fieldType) {
-      assertExactKeys(settings, [...keys, "outline"], `${fieldType}.settings`);
+      assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
+      assertBoolean(settings.background, `${fieldType}.settings.background`);
     }
 
     function schemaField(raw) {
@@ -2710,6 +2706,10 @@
       return field.settings.outline === true;
     }
 
+    function fieldBackground(field) {
+      return field.settings.background === true;
+    }
+
     function headlineSettings(field) {
       const settings = field.settings;
       return {
@@ -2717,7 +2717,8 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        outline: fieldOutline(field)
+        outline: fieldOutline(field),
+        background: fieldBackground(field)
       };
     }
 
@@ -2743,7 +2744,8 @@
         maxWidth: settings.maxWidth,
         maxHeight: settings.maxHeight,
         objectFit: settings.objectFit,
-        outline: fieldOutline(field)
+        outline: fieldOutline(field),
+        background: fieldBackground(field)
       };
     }
 
@@ -2833,7 +2835,7 @@
 
     function UploadedMediaPreview({ value, label }) {
       if (!value?.dataUrl) return null;
-      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } }} />`;
+      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true, background: false } }} />`;
     }
 
     function radarPoint(index, count, center, radius) {
@@ -3303,8 +3305,9 @@
       const hasHead = Boolean(visibleLabel || field.description);
       const typeClass = field.type ? ` ${String(field.type).replace(/_/g, "-")}-field` : "";
       const outlineClass = fieldOutline(field) ? "" : " no-outline";
+      const backgroundClass = fieldBackground(field) ? " with-background" : "";
       return html`
-        <section class=${`field${typeClass}${outlineClass}${invalid ? " invalid" : ""}`} data-field-wrap=${field.id} aria-invalid=${invalid ? "true" : null} aria-describedby=${[helpId, errorId].filter(Boolean).join(" ") || null}>
+        <section class=${`field${typeClass}${outlineClass}${backgroundClass}${invalid ? " invalid" : ""}`} data-field-wrap=${field.id} aria-invalid=${invalid ? "true" : null} aria-describedby=${[helpId, errorId].filter(Boolean).join(" ") || null}>
           ${hasHead ? html`
             <div class="field-head">
               ${visibleLabel ? html`<label class="field-label" id=${labelId} for=${field.id}>${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</label>` : null}
@@ -3591,7 +3594,7 @@
           const settings = headlineSettings(field);
           if (!title && !description) return null;
           return html`
-            <section class=${`headline-field${settings.outline ? " with-outline" : ""}`} data-field-wrap=${field.id}>
+            <section class=${`headline-field${settings.outline ? " with-outline" : ""}${settings.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
               ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
               ${description ? html`<p class="headline-description" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
             </section>
@@ -3749,7 +3752,7 @@
         case "spacer": {
           const settings = spacerSettings(field);
           return html`
-            <section class=${`field spacer-field${fieldOutline(field) ? " with-outline" : " no-outline"}`} data-field-wrap=${field.id} aria-hidden="true">
+            <section class=${`field spacer-field${fieldOutline(field) ? " with-outline" : " no-outline"}${fieldBackground(field) ? " with-background" : ""}`} data-field-wrap=${field.id} aria-hidden="true">
               <div class="spacer-preview" style=${spacerStyle(settings)}>
                 ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
               </div>
