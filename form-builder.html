@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <style>
     :root {
       --bg: #f7f5f2;
@@ -1641,7 +1640,7 @@
       color: #f4f2ef;
     }
 
-    .sidebar-theme-reset i,
+    .sidebar-theme-reset .svg-icon,
     .sidebar-theme-reset span {
       color: inherit;
     }
@@ -1652,49 +1651,53 @@
       color: #ffffff;
     }
 
-    .custom-radar-icon,
-    .custom-lucide-icon {
+    .svg-icon {
       width: 1em;
       height: 1em;
       display: block;
       flex: 0 0 1em;
-      overflow: hidden;
+      overflow: visible;
+      fill: currentColor;
     }
 
-    .palette-icon .custom-radar-icon,
-    .palette-icon .custom-lucide-icon {
+    .svg-icon path {
+      fill: currentColor;
+    }
+
+    .palette-icon .svg-icon {
       width: 16px;
       height: 16px;
     }
 
-    .field-type .custom-radar-icon,
-    .field-type .custom-lucide-icon,
-    .panel-title .custom-radar-icon,
-    .panel-title .custom-lucide-icon {
+    .field-type .svg-icon,
+    .panel-title .svg-icon {
       width: 1.08em;
       height: 1.08em;
     }
 
-    .custom-radar-icon polygon,
-    .custom-radar-icon line,
-    .custom-radar-icon circle {
+    .svg-icon-stroke {
       fill: none;
-      stroke: currentColor;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
     }
 
-    .custom-radar-icon circle {
-      fill: currentColor;
-    }
-
-    .custom-lucide-icon path {
+    .svg-icon-stroke path,
+    .svg-icon-radar polygon,
+    .svg-icon-radar line,
+    .svg-icon-radar circle {
       fill: none;
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
+    }
+
+    .svg-icon-radar polygon,
+    .svg-icon-radar line,
+    .svg-icon-radar circle {
+      stroke-width: 1.8;
+    }
+
+    .svg-icon-radar circle {
+      fill: currentColor;
     }
 
     @keyframes card-in {
@@ -2082,7 +2085,6 @@
 
     function defaultSchema() {
       return {
-        version: 4,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         settings: { theme: clone(DEFAULT_THEME) },
@@ -2557,7 +2559,6 @@
 
     function normalizeSchema(input) {
       const next = defaultSchema();
-      next.version = 4;
       next.createdAt = input?.createdAt || new Date().toISOString();
       next.updatedAt = input?.updatedAt || new Date().toISOString();
       next.settings = { theme: normalizeTheme(input?.settings?.theme) };
@@ -2783,68 +2784,76 @@
             ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${settings.alt || ""} style=${visualStyle} />` : null}
             ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${title} style=${visualStyle}></video>` : null}
             ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${title} style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${settings.scale}%; ${settings.maxWidth ? `max-width: ${settings.maxWidth};` : ""}`}></audio>` : null}
-            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a></object>` : null}
-            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a>` : null}
+            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a></object>` : null}
+            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a>` : null}
           </div>
           ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
         </div>
       `;
     }
 
-    function RadarGraphIcon() {
-      return html`
-    <svg
-      class="custom-radar-icon"
-      viewBox="72 72 880 880"
-      aria-hidden="true"
-    >
-      <path
-        fill="currentColor"
-        d="M926.8 397.1l-396-288a31.81 31.81 0 0 0-37.6 0l-396 288a31.99 31.99 0 0 0-11.6 35.8l151.3 466a32 32 0 0 0 30.4 22.1h489.5c13.9 0 26.1-8.9 30.4-22.1l151.3-466c4.2-13.2-.5-27.6-11.7-35.8zM838.6 417l-98.5 32-200-144.7V199.9L838.6 417zM466 567.2l-89.1 122.3-55.2-169.2L466 567.2zm-116.3-96.8L484 373.3v140.8l-134.3-43.7zM512 599.2l93.9 128.9H418.1L512 599.2zm28.1-225.9l134.2 97.1L540.1 514V373.3zM558 567.2l144.3-46.9-55.2 169.2L558 567.2zm-74-367.3v104.4L283.9 449l-98.5-32L484 199.9zM169.3 470.8l86.5 28.1 80.4 246.4-53.8 73.9-113.1-348.4zM327.1 853l50.3-69h269.3l50.3 69H327.1zm414.5-33.8l-53.8-73.9 80.4-246.4 86.5-28.1-113.1 348.4z"
-      />
-    </svg>
-  `;
-    }
+    const ICONS = {
+      "fa-solid fa-align-left": [448, 512, "M288 64c0 17.7-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32H256c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c17.7 0 32 14.3 32 32zM0 192c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"],
+      "fa-solid fa-align-justify": [448, 512, "M448 64c0-17.7-14.3-32-32-32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32zm0 256c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32zM0 192c0 17.7 14.3 32 32 32H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zM448 448c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H416c17.7 0 32-14.3 32-32z"],
+      "fa-solid fa-list-ul": [512, 512, "M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"],
+      "fa-solid fa-hashtag": [448, 512, "M181.3 32.4c17.4 2.9 29.2 19.4 26.3 36.8L197.8 128h95.1l11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3s29.2 19.4 26.3 36.8L357.8 128H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H347.1L325.8 320H384c17.7 0 32 14.3 32 32s-14.3 32-32 32H315.1l-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8l9.8-58.7H155.1l-11.5 69.3c-2.9 17.4-19.4 29.2-36.8 26.3s-29.2-19.4-26.3-36.8L90.2 384H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h68.9l21.3-128H64c-17.7 0-32-14.3-32-32s14.3-32 32-32h68.9l11.5-69.3c2.9-17.4 19.4-29.2 36.8-26.3zM187.1 192L165.8 320h95.1l21.3-128H187.1z"],
+      "fa-solid fa-chart-simple": [448, 512, "M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"],
+      "fa-solid fa-sliders": [512, 512, "M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"],
+      "fa-solid fa-link": [640, 512, "M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"],
+      "fa-solid fa-grip-lines": [448, 512, "M32 288c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 288zm0-128c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 160z"],
+      "fa-solid fa-arrow-up-right-from-square": [512, 512, "M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"],
+      "fa-solid fa-xmark": [384, 512, "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"],
+      "fa-solid fa-chevron-right": [320, 512, "M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"],
+      "fa-solid fa-rotate-left": [512, 512, "M48.5 224H40c-13.3 0-24-10.7-24-24V72c0-9.7 5.8-18.5 14.8-22.2s19.3-1.7 26.2 5.2L98.6 96.6c87.6-86.5 228.7-86.2 315.8 1c87.5 87.5 87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3c-62.2-62.2-162.7-62.5-225.3-1L185 183c6.9 6.9 8.9 17.2 5.2 26.2s-12.5 14.8-22.2 14.8H48.5z"],
+      "fa-solid fa-arrow-up": [384, 512, "M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"],
+      "fa-solid fa-arrow-down": [384, 512, "M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"],
+      "fa-solid fa-plus": [448, 512, "M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"],
+      "fa-solid fa-play": [384, 512, "M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"],
+      "fa-solid fa-download": [512, 512, "M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"],
+      "fa-solid fa-chevron-left": [320, 512, "M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"],
+      "fa-solid fa-circle-exclamation": [512, 512, "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"],
+      "fa-solid fa-chevron-down": [512, 512, "M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"],
+      "fa-regular fa-square-check": [448, 512, "M64 80c-8.8 0-16 7.2-16 16V416c0 8.8 7.2 16 16 16H384c8.8 0 16-7.2 16-16V96c0-8.8-7.2-16-16-16H64zM0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"],
+      "fa-regular fa-envelope": [512, 512, "M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"],
+      "fa-regular fa-calendar-days": [448, 512, "M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192h80v56H48V192zm0 104h80v64H48V296zm128 0h96v64H176V296zm144 0h80v64H320V296zm80-48H320V192h80v56zm0 160v40c0 8.8-7.2 16-16 16H320V408h80zm-128 0v56H176V408h96zm-144 0v56H64c-8.8 0-16-7.2-16-16V408h80zM272 248H176V192h96v56z"],
+      "fa-regular fa-face-smile": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-star": [576, 512, "M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"],
+      "fa-regular fa-file-video": [384, 512, "M320 464c8.8 0 16-7.2 16-16V160H256c-17.7 0-32-14.3-32-32V48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320zM0 64C0 28.7 28.7 0 64 0H229.5c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zM80 288c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32v16l44.9-29.9c2-1.3 4.4-2.1 6.8-2.1c6.8 0 12.3 5.5 12.3 12.3V387.7c0 6.8-5.5 12.3-12.3 12.3c-2.4 0-4.8-.7-6.8-2.1L240 368v16c0 17.7-14.3 32-32 32H112c-17.7 0-32-14.3-32-32V288z"],
+      "fa-regular fa-face-angry": [512, 512, "M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm72.4-118.5c9.7-9 10.2-24.2 1.2-33.9C315.3 344.3 290.6 328 256 328s-59.3 16.3-73.5 31.6c-9 9.7-8.5 24.9 1.2 33.9s24.9 8.5 33.9-1.2c7.4-7.9 20-16.4 38.5-16.4s31.1 8.5 38.5 16.4c9 9.7 24.2 10.2 33.9 1.2zM176.4 272c17.7 0 32-14.3 32-32c0-1.5-.1-3-.3-4.4l10.9 3.6c8.4 2.8 17.4-1.7 20.2-10.1s-1.7-17.4-10.1-20.2l-96-32c-8.4-2.8-17.4 1.7-20.2 10.1s1.7 17.4 10.1 20.2l30.7 10.2c-5.8 5.8-9.3 13.8-9.3 22.6c0 17.7 14.3 32 32 32zm192-32c0-8.9-3.6-17-9.5-22.8l30.2-10.1c8.4-2.8 12.9-11.9 10.1-20.2s-11.9-12.9-20.2-10.1l-96 32c-8.4 2.8-12.9 11.9-10.1 20.2s11.9 12.9 20.2 10.1l11.7-3.9c-.2 1.5-.3 3.1-.3 4.7c0 17.7 14.3 32 32 32s32-14.3 32-32z"],
+      "fa-regular fa-face-frown": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM174.6 384.1c-4.5 12.5-18.2 18.9-30.7 14.4s-18.9-18.2-14.4-30.7C146.9 319.4 198.9 288 256 288s109.1 31.4 126.6 79.9c4.5 12.5-2 26.2-14.4 30.7s-26.2-2-30.7-14.4C328.2 358.5 297.2 336 256 336s-72.2 22.5-81.4 48.1zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-face-meh": [512, 512, "M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM176.4 240a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm192-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM184 328c-13.3 0-24 10.7-24 24s10.7 24 24 24H328c13.3 0 24-10.7 24-24s-10.7-24-24-24H184z"],
+      "fa-regular fa-face-laugh": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm130.7 57.9c-4.2-13.6 7.1-25.9 21.3-25.9H364.5c14.2 0 25.5 12.4 21.3 25.9C369 368.4 318.2 408 258.2 408s-110.8-39.6-127.5-94.1zM144.4 192a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-copy": [448, 512, "M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"],
+      "fa-regular fa-trash-can": [448, 512, "M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z"],
+      "fa-regular fa-folder-open": [576, 512, "M384 480h48c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224H144c-11.4 0-21.9 6-27.6 15.9L48 357.1V96c0-8.8 7.2-16 16-16H181.5c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8H416c8.8 0 16 7.2 16 16v32h48V160c0-35.3-28.7-64-64-64H298.5c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H87.7 384z"],
+      "fa-regular fa-file-lines": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z"],
+      "fa-regular fa-file-image": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm96 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm69.2 46.9c-3-4.3-7.9-6.9-13.2-6.9s-10.2 2.6-13.2 6.9l-41.3 59.7-11.9-19.1c-2.9-4.7-8.1-7.5-13.6-7.5s-10.6 2.8-13.6 7.5l-40 64c-3.1 4.9-3.2 11.1-.4 16.2s8.2 8.2 14 8.2h48 32 40 72c6 0 11.4-3.3 14.2-8.6s2.4-11.6-1-16.5l-72-104z"],
+      "fa-regular fa-image": [512, 512, "M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"],
+      "fa-regular fa-file-code": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm97 289c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L79 303c-9.4 9.4-9.4 24.6 0 33.9l48 48c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-31-31 31-31zM257 255c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l48-48c9.4-9.4 9.4-24.6 0-33.9l-48-48z"],
+      "radar-graph": {
+        viewBox: "72 72 880 880",
+        content: () => html`<path d="M926.8 397.1l-396-288a31.81 31.81 0 0 0-37.6 0l-396 288a31.99 31.99 0 0 0-11.6 35.8l151.3 466a32 32 0 0 0 30.4 22.1h489.5c13.9 0 26.1-8.9 30.4-22.1l151.3-466c4.2-13.2-.5-27.6-11.7-35.8zM838.6 417l-98.5 32-200-144.7V199.9L838.6 417zM466 567.2l-89.1 122.3-55.2-169.2L466 567.2zm-116.3-96.8L484 373.3v140.8l-134.3-43.7zM512 599.2l93.9 128.9H418.1L512 599.2zm28.1-225.9l134.2 97.1L540.1 514V373.3zM558 567.2l144.3-46.9-55.2 169.2L558 567.2zm-74-367.3v104.4L283.9 449l-98.5-32L484 199.9zM169.3 470.8l86.5 28.1 80.4 246.4-53.8 73.9-113.1-348.4zM327.1 853l50.3-69h269.3l50.3 69H327.1zm414.5-33.8l-53.8-73.9 80.4-246.4 86.5-28.1-113.1 348.4z" />`
+      },
+      "lucide-heading": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="M6 12h12"></path><path d="M6 20V4"></path><path d="M18 20V4"></path>`
+      },
+      "lucide-upload": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>`
+      }
+    };
 
-    function RadarPointIcon() {
-      return html`
-        <svg class="custom-radar-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <polygon points="12 3.5 20 9.5 17 20 7 20 4 9.5"></polygon>
-          <line x1="12" y1="3.5" x2="12" y2="12"></line>
-          <line x1="20" y1="9.5" x2="12" y2="12"></line>
-          <line x1="17" y1="20" x2="12" y2="12"></line>
-          <line x1="7" y1="20" x2="12" y2="12"></line>
-          <line x1="4" y1="9.5" x2="12" y2="12"></line>
-          <circle cx="15.5" cy="10.8" r="2.15"></circle>
-        </svg>
-      `;
-    }
-
-    function HeadingIcon() {
-      return html`
-        <svg class="custom-lucide-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 12h12"></path>
-          <path d="M6 20V4"></path>
-          <path d="M18 20V4"></path>
-        </svg>
-      `;
-    }
-
-    function UploadIcon() {
-      return html`
-        <svg class="custom-lucide-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3v12"></path>
-          <path d="m17 8-5-5-5 5"></path>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        </svg>
-      `;
-    }
-
-    function Icon({ icon }) {
-      if (icon === "radar-graph") return html`<${RadarGraphIcon} />`;
-      if (icon === "lucide-heading") return html`<${HeadingIcon} />`;
-      if (icon === "lucide-upload") return html`<${UploadIcon} />`;
-      return html`<i class=${icon} aria-hidden="true"></i>`;
+    function Icon({ icon, className = "", title = "" }) {
+      const definition = ICONS[String(icon || "").trim()];
+      if (!definition) return null;
+      const svgClass = ["svg-icon", definition.className, className].filter(Boolean).join(" ");
+      const viewBox = Array.isArray(definition) ? `0 0 ${definition[0]} ${definition[1]}` : definition.viewBox;
+      const content = Array.isArray(definition) ? html`<path d=${definition[2]}></path>` : definition.content();
+      const labelProps = title ? { role: "img", "aria-label": title } : { "aria-hidden": "true" };
+      return html`<svg class=${svgClass} viewBox=${viewBox} focusable="false" ...${labelProps}>${title ? html`<title>${title}</title>` : null}${content}</svg>`;
     }
 
     function radarPoint(index, count, center, radius) {
@@ -3039,11 +3048,11 @@
           return html`
             <div class="meter-preview">
               <span>${field.settings?.minLabel || "Low"}</span>
-              <i class="fa-regular fa-face-angry"></i>
-              <i class="fa-regular fa-face-frown"></i>
-              <i class="fa-regular fa-face-meh"></i>
-              <i class="fa-regular fa-face-smile"></i>
-              <i class="fa-regular fa-face-laugh"></i>
+              <${Icon} icon="fa-regular fa-face-angry" />
+              <${Icon} icon="fa-regular fa-face-frown" />
+              <${Icon} icon="fa-regular fa-face-meh" />
+              <${Icon} icon="fa-regular fa-face-smile" />
+              <${Icon} icon="fa-regular fa-face-laugh" />
               <span>${field.settings?.maxLabel || "High"}</span>
             </div>
           `;
@@ -3056,7 +3065,7 @@
             </div>
           `;
         case "star_rating":
-          return html`<div class="star-preview">${Array.from({ length: Number(field.settings?.max) || 5 }, (_, index) => html`<i class="fa-regular fa-star" key=${index}></i>`)}</div>`;
+          return html`<div class="star-preview">${Array.from({ length: Number(field.settings?.max) || 5 }, (_, index) => html`<${Icon} icon="fa-regular fa-star" key=${index} />`)}</div>`;
         case "radar":
           return html`<${RadarPreview} field=${field} />`;
         case "media_upload":
@@ -3201,7 +3210,7 @@
                 <h2 class="theme-modal-title">${label}</h2>
                 <p class="theme-modal-subtitle">${value.toUpperCase()}</p>
               </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><${Icon} icon="fa-solid fa-xmark" /></button>
             </div>
             <div class="theme-modal-body">
               <div class="theme-modal-picker">
@@ -3299,7 +3308,7 @@
                 <h2 class="theme-modal-title">Typeface</h2>
                 <p class="theme-modal-subtitle">Current: ${current.name}</p>
               </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><${Icon} icon="fa-solid fa-xmark" /></button>
             </div>
             <div class="theme-modal-body">
               <div class="font-search-wrap">
@@ -3374,11 +3383,11 @@
                   <span class="font-picker-name">${currentFont.name}</span>
                   <span class="font-picker-preview">The quick brown fox</span>
                 </span>
-                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                <${Icon} icon="fa-solid fa-chevron-right" />
               </button>
             </div>
             <button class="button sidebar-theme-reset" type="button" onClick=${() => patchTheme(clone(DEFAULT_THEME))}>
-              <i class="fa-solid fa-rotate-left"></i><span>Reset</span>
+              <${Icon} icon="fa-solid fa-rotate-left" /><span>Reset</span>
             </button>
           </div>
         </div>
@@ -3453,10 +3462,10 @@
               <${Icon} icon=${meta.icon} /><span>${meta.name}</span>
             </button>
             <div class="field-tools">
-              <button class="icon-button" type="button" onClick=${() => onMove(-1)} title="Move up" aria-label="Move up"><i class="fa-solid fa-arrow-up"></i></button>
-              <button class="icon-button" type="button" onClick=${() => onMove(1)} title="Move down" aria-label="Move down"><i class="fa-solid fa-arrow-down"></i></button>
-              <button class="icon-button" type="button" onClick=${onDuplicate} title="Duplicate" aria-label="Duplicate"><i class="fa-regular fa-copy"></i></button>
-              <button class="icon-button danger" type="button" onClick=${onDelete} title="Delete" aria-label="Delete"><i class="fa-regular fa-trash-can"></i></button>
+              <button class="icon-button" type="button" onClick=${() => onMove(-1)} title="Move up" aria-label="Move up"><${Icon} icon="fa-solid fa-arrow-up" /></button>
+              <button class="icon-button" type="button" onClick=${() => onMove(1)} title="Move down" aria-label="Move down"><${Icon} icon="fa-solid fa-arrow-down" /></button>
+              <button class="icon-button" type="button" onClick=${onDuplicate} title="Duplicate" aria-label="Duplicate"><${Icon} icon="fa-regular fa-copy" /></button>
+              <button class="icon-button danger" type="button" onClick=${onDelete} title="Delete" aria-label="Delete"><${Icon} icon="fa-regular fa-trash-can" /></button>
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
@@ -3475,7 +3484,7 @@
     function Inspector({ schema, selectedField, onSchemaChange, onFieldChange }) {
       if (!selectedField) {
         return html`
-          <h2 class="panel-title"><i class="fa-solid fa-sliders"></i><span>Form Settings</span></h2>
+          <h2 class="panel-title"><${Icon} icon="fa-solid fa-sliders" /><span>Form Settings</span></h2>
           <div class="property-stack">
             <div class="radar-mode-note">Select a block to edit its settings. Form-wide palette and font settings are in the sidebar.</div>
           </div>
@@ -3544,12 +3553,12 @@
                 aria-label="Remove option"
                 onClick=${() => onFieldChange({ options: options.filter((_, itemIndex) => itemIndex !== index).length ? options.filter((_, itemIndex) => itemIndex !== index) : ["Option 1"] })}
               >
-                <i class="fa-solid fa-xmark"></i>
+                <${Icon} icon="fa-solid fa-xmark" />
               </button>
             </div>
           `)}
           <button class="button ghost" type="button" onClick=${() => onFieldChange({ options: [...options, "Option " + (options.length + 1)] })}>
-            <i class="fa-solid fa-plus"></i><span>Add option</span>
+            <${Icon} icon="fa-solid fa-plus" /><span>Add option</span>
           </button>
         </div>
       `;
@@ -3689,11 +3698,11 @@
                 <div class="calendar-milestone-row" key=${item.id || index}>
                   <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
                   <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
-                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><i class="fa-solid fa-xmark"></i></button>
+                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
                 </div>
               `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
               <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: settings.startDate || todayISO(), label: "Milestone " + (settings.milestones.length + 1) }] })}>
-                <i class="fa-solid fa-plus"></i><span>Add milestone</span>
+                <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
               </button>
             </div>
           ` : null}
@@ -3945,12 +3954,12 @@
             commitRadarSettings({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
           }}
                 >
-                  <i class="fa-solid fa-xmark"></i>
+                  <${Icon} icon="fa-solid fa-xmark" />
                 </button>
               </div>
             `)}
             <button class="button ghost" type="button" onClick=${() => commitRadarSettings({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}>
-              <i class="fa-solid fa-plus"></i><span>Add axis</span>
+              <${Icon} icon="fa-solid fa-plus" /><span>Add axis</span>
             </button>
           </div>
         `;
@@ -4251,9 +4260,9 @@
           <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <header class="topbar">
             <div class="toolbar-actions">
-              <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><i class="fa-regular fa-folder-open"></i></label>
+              <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><${Icon} icon="fa-regular fa-folder-open" /></label>
               <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${importSchema} />
-              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i></button>
+              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
               <input
                 class="current-form-name"
                 value=${formName}
@@ -4266,21 +4275,21 @@
               />
             </div>
             <div class="top-actions">
-              <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${previewForm}><i class="fa-solid fa-play"></i></button>
-              <button class="button primary" type="button" aria-label="Export schema" onClick=${exportSchema}><i class="fa-solid fa-download"></i><span>Export</span></button>
+              <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${previewForm}><${Icon} icon="fa-solid fa-play" /></button>
+              <button class="button primary" type="button" aria-label="Export schema" onClick=${exportSchema}><${Icon} icon="fa-solid fa-download" /><span>Export</span></button>
             </div>
           </header>
 
           <main class="workspace">
             <button class="icon-button sidebar-expand-button" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-hidden=${!sidebarCollapsed} tabIndex=${sidebarCollapsed ? 0 : -1} onClick=${() => setSidebarCollapsed(false)}>
-              <i class="fa-solid fa-chevron-right"></i>
+              <${Icon} icon="fa-solid fa-chevron-right" />
             </button>
 
             <aside class="sidebar" aria-label="Form blocks" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
               <div class="sidebar-inner">
                 <div class="sidebar-head">
                   <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <${Icon} icon="fa-solid fa-chevron-left" />
                   </button>
                 </div>
                 <${Palette} onAdd=${addField} onDragStart=${beginPaletteDrag} onDragEnd=${clearDragState} />

@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
@@ -85,7 +84,9 @@
     .runtime-sidebar {
       min-width: 0;
       height: 100vh;
+      height: 100dvh;
       max-height: 100vh;
+      max-height: 100dvh;
       position: sticky;
       top: 0;
       align-self: start;
@@ -95,12 +96,15 @@
       padding: 14px 10px;
       overflow-x: hidden;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
       transition: padding 240ms var(--ease), border-color 180ms ease;
     }
 
     .runtime-sidebar-content {
       min-width: 216px;
       min-height: calc(100vh - 28px);
+      min-height: calc(100dvh - 28px);
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -136,14 +140,9 @@
       letter-spacing: 0;
     }
 
-    .sidebar-actions,
-    .runtime-sidebar-footer {
+    .sidebar-actions {
       display: grid;
       gap: 8px;
-    }
-
-    .runtime-sidebar-footer {
-      margin-top: auto;
     }
 
     .icon-button.sidebar-expand-button {
@@ -275,9 +274,46 @@
       justify-content: flex-start;
     }
 
-    .runtime-sidebar .button.full:not(.primary) i {
+    .runtime-sidebar .button.full:not(.primary) .svg-icon {
       width: 16px;
-      text-align: center;
+    }
+
+    .svg-icon {
+      width: 1em;
+      height: 1em;
+      display: block;
+      flex: 0 0 1em;
+      overflow: visible;
+      fill: currentColor;
+    }
+
+    .svg-icon path {
+      fill: currentColor;
+    }
+
+    .svg-icon-stroke {
+      fill: none;
+    }
+
+    .svg-icon-stroke path,
+    .svg-icon-radar polygon,
+    .svg-icon-radar line,
+    .svg-icon-radar circle {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .svg-icon-radar polygon,
+    .svg-icon-radar line,
+    .svg-icon-radar circle {
+      stroke-width: 1.8;
+    }
+
+    .svg-icon-radar circle {
+      fill: currentColor;
     }
 
     .select-wrap {
@@ -305,6 +341,28 @@
       color: #d7d2cb;
       font-size: 11.5px;
       font-weight: 700;
+    }
+
+    .runtime-export-bar {
+      max-width: 860px;
+      margin: 12px auto 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .runtime-export-bar .select-wrap {
+      width: 104px;
+      flex: 0 0 104px;
+    }
+
+    .runtime-export-bar .select-icon {
+      color: var(--muted);
+    }
+
+    .runtime-export-bar .button.primary {
+      min-width: 132px;
     }
 
     .stage {
@@ -636,7 +694,7 @@
       grid-template-columns: minmax(240px, 300px) minmax(260px, 340px);
       align-items: center;
       justify-content: center;
-      gap: 28px;
+      gap: 34px;
       min-width: 0;
       max-width: 760px;
       margin: 0 auto;
@@ -655,7 +713,9 @@
       min-width: 0;
       justify-self: center;
       align-self: center;
-      contain: layout paint;
+      position: relative;
+      z-index: 1;
+      contain: layout;
     }
 
     .radar-chart svg {
@@ -735,7 +795,8 @@
       gap: 7px;
       justify-self: stretch;
       align-self: center;
-      contain: paint;
+      position: relative;
+      z-index: 0;
     }
 
     .radar-values.point-readout {
@@ -1193,13 +1254,13 @@
 
       .runtime-sidebar {
         position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
+        inset: 0 auto 0 0;
         z-index: 30;
         width: min(300px, calc(100vw - 48px));
-        height: auto;
-        max-height: none;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100vh;
+        max-height: 100dvh;
         display: block;
         overflow-x: hidden;
         overflow-y: auto;
@@ -1213,6 +1274,7 @@
       .runtime-sidebar-content {
         min-width: 0;
         min-height: calc(100vh - 28px);
+        min-height: calc(100dvh - 28px);
         overflow: visible;
       }
 
@@ -1279,6 +1341,16 @@
 
       .radar-values.point-readout .radar-value {
         max-width: 220px;
+      }
+
+      .runtime-export-bar {
+        display: grid;
+        grid-template-columns: minmax(92px, 0.7fr) minmax(0, 1.3fr);
+      }
+
+      .runtime-export-bar .select-wrap {
+        width: auto;
+        flex-basis: auto;
       }
     }
 
@@ -1359,6 +1431,38 @@
       spacer: { label: "Spacer" },
       link: { label: "Link" }
     };
+
+    const ICONS = {
+      "fa-solid fa-arrow-up-right-from-square": [512, 512, "M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"],
+      "fa-solid fa-circle-exclamation": [512, 512, "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"],
+      "fa-solid fa-chevron-left": [320, 512, "M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"],
+      "fa-solid fa-chevron-right": [320, 512, "M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"],
+      "fa-solid fa-chevron-down": [512, 512, "M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"],
+      "fa-solid fa-xmark": [384, 512, "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"],
+      "fa-solid fa-plus": [448, 512, "M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"],
+      "fa-solid fa-rotate-left": [512, 512, "M48.5 224H40c-13.3 0-24-10.7-24-24V72c0-9.7 5.8-18.5 14.8-22.2s19.3-1.7 26.2 5.2L98.6 96.6c87.6-86.5 228.7-86.2 315.8 1c87.5 87.5 87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3c-62.2-62.2-162.7-62.5-225.3-1L185 183c6.9 6.9 8.9 17.2 5.2 26.2s-12.5 14.8-22.2 14.8H48.5z"],
+      "fa-regular fa-face-angry": [512, 512, "M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm72.4-118.5c9.7-9 10.2-24.2 1.2-33.9C315.3 344.3 290.6 328 256 328s-59.3 16.3-73.5 31.6c-9 9.7-8.5 24.9 1.2 33.9s24.9 8.5 33.9-1.2c7.4-7.9 20-16.4 38.5-16.4s31.1 8.5 38.5 16.4c9 9.7 24.2 10.2 33.9 1.2zM176.4 272c17.7 0 32-14.3 32-32c0-1.5-.1-3-.3-4.4l10.9 3.6c8.4 2.8 17.4-1.7 20.2-10.1s-1.7-17.4-10.1-20.2l-96-32c-8.4-2.8-17.4 1.7-20.2 10.1s1.7 17.4 10.1 20.2l30.7 10.2c-5.8 5.8-9.3 13.8-9.3 22.6c0 17.7 14.3 32 32 32zm192-32c0-8.9-3.6-17-9.5-22.8l30.2-10.1c8.4-2.8 12.9-11.9 10.1-20.2s-11.9-12.9-20.2-10.1l-96 32c-8.4 2.8-12.9 11.9-10.1 20.2s11.9 12.9 20.2 10.1l11.7-3.9c-.2 1.5-.3 3.1-.3 4.7c0 17.7 14.3 32 32 32s32-14.3 32-32z"],
+      "fa-regular fa-face-frown": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM174.6 384.1c-4.5 12.5-18.2 18.9-30.7 14.4s-18.9-18.2-14.4-30.7C146.9 319.4 198.9 288 256 288s109.1 31.4 126.6 79.9c4.5 12.5-2 26.2-14.4 30.7s-26.2-2-30.7-14.4C328.2 358.5 297.2 336 256 336s-72.2 22.5-81.4 48.1zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-face-meh": [512, 512, "M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM176.4 240a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm192-32a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM184 328c-13.3 0-24 10.7-24 24s10.7 24 24 24H328c13.3 0 24-10.7 24-24s-10.7-24-24-24H184z"],
+      "fa-regular fa-face-smile": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm177.6 62.1C192.8 334.5 218.8 352 256 352s63.2-17.5 78.4-33.9c9-9.7 24.2-10.4 33.9-1.4s10.4 24.2 1.4 33.9c-22 23.8-60 49.4-113.6 49.4s-91.7-25.5-113.6-49.4c-9-9.7-8.4-24.9 1.4-33.9s24.9-8.4 33.9 1.4zM144.4 208a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-face-laugh": [512, 512, "M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm130.7 57.9c-4.2-13.6 7.1-25.9 21.3-25.9H364.5c14.2 0 25.5 12.4 21.3 25.9C369 368.4 318.2 408 258.2 408s-110.8-39.6-127.5-94.1zM144.4 192a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm192-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"],
+      "fa-regular fa-star": [576, 512, "M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"],
+      "fa-regular fa-file-lines": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z"],
+      "fa-regular fa-file-image": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm96 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm69.2 46.9c-3-4.3-7.9-6.9-13.2-6.9s-10.2 2.6-13.2 6.9l-41.3 59.7-11.9-19.1c-2.9-4.7-8.1-7.5-13.6-7.5s-10.6 2.8-13.6 7.5l-40 64c-3.1 4.9-3.2 11.1-.4 16.2s8.2 8.2 14 8.2h48 32 40 72c6 0 11.4-3.3 14.2-8.6s2.4-11.6-1-16.5l-72-104z"],
+      "fa-regular fa-image": [512, 512, "M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"],
+      "fa-regular fa-folder-open": [576, 512, "M384 480h48c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224H144c-11.4 0-21.9 6-27.6 15.9L48 357.1V96c0-8.8 7.2-16 16-16H181.5c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8H416c8.8 0 16 7.2 16 16v32h48V160c0-35.3-28.7-64-64-64H298.5c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H87.7 384z"],
+      "fa-regular fa-file-code": [384, 512, "M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm97 289c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L79 303c-9.4 9.4-9.4 24.6 0 33.9l48 48c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-31-31 31-31zM257 255c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l48-48c9.4-9.4 9.4-24.6 0-33.9l-48-48z"]
+    };
+
+    function Icon({ icon, className = "", title = "" }) {
+      const definition = ICONS[String(icon || "").trim()];
+      if (!definition) return null;
+      const svgClass = ["svg-icon", definition.className, className].filter(Boolean).join(" ");
+      const viewBox = Array.isArray(definition) ? `0 0 ${definition[0]} ${definition[1]}` : definition.viewBox;
+      const content = Array.isArray(definition) ? html`<path d=${definition[2]}></path>` : definition.content();
+      const labelProps = title ? { role: "img", "aria-label": title } : { "aria-hidden": "true" };
+      return html`<svg class=${svgClass} viewBox=${viewBox} focusable="false" ...${labelProps}>${title ? html`<title>${title}</title>` : null}${content}</svg>`;
+    }
 
     function uid() {
       return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
@@ -1543,7 +1647,6 @@
 
     function defaultSchema() {
       return {
-        version: 4,
         settings: { theme: clone(DEFAULT_THEME) },
         fields: []
       };
@@ -1789,7 +1892,6 @@
 
     function normalizeSchema(input) {
       const next = defaultSchema();
-      next.version = 4;
       next.settings = { theme: normalizeTheme(input?.settings?.theme) };
       const seenIds = new Set();
       next.fields = Array.isArray(input?.fields)
@@ -1837,6 +1939,15 @@
 
     function safeFileName(value) {
       return String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "filled-form";
+    }
+
+    function longAnswerStyle(placeholder) {
+      const text = String(placeholder || "");
+      const estimatedRows = text
+        .split(/\r?\n/)
+        .reduce((rows, line) => rows + Math.max(1, Math.ceil(line.length / 58)), 0);
+      const minHeight = Math.max(104, Math.min(280, 28 + Math.max(4, estimatedRows) * 21));
+      return `min-height: ${minHeight}px;`;
     }
 
     function normalizeUrl(value) {
@@ -2007,8 +2118,8 @@
             ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${settings.alt || ""} style=${visualStyle} />` : null}
             ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${title} style=${visualStyle}></video>` : null}
             ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${title} style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${settings.scale}%; ${settings.maxWidth ? `max-width: ${settings.maxWidth};` : ""}`}></audio>` : null}
-            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a></object>` : null}
-            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${settings.fileName || source}</span></a>` : null}
+            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a></object>` : null}
+            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a>` : null}
           </div>
           ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
         </div>
@@ -2496,7 +2607,7 @@
             </div>
           ` : null}
           ${children}
-          ${invalid ? html`<div class="field-error" id=${errorId} role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span>Required field</span></div>` : null}
+          ${invalid ? html`<div class="field-error" id=${errorId} role="alert"><${Icon} icon="fa-solid fa-circle-exclamation" /><span>Required field</span></div>` : null}
         </section>
       `;
     }
@@ -2614,8 +2725,8 @@
           <div class="calendar-nav">
             <div class="calendar-month-label">${monthLabel(monthDate)}</div>
             <div class="calendar-nav-buttons">
-              <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><i class="fa-solid fa-chevron-left"></i></button>
-              <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><i class="fa-solid fa-chevron-right"></i></button>
+              <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
+              <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
             </div>
           </div>
           <div class="calendar-weekdays" aria-hidden="true">
@@ -2669,10 +2780,10 @@
                 <div class="calendar-milestone-row" key=${item.id || index}>
                   <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
                   <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
-                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><i class="fa-solid fa-xmark"></i></button>
+                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
                 </div>
               `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-              <button class="button ghost" type="button" onClick=${addMilestone}><i class="fa-solid fa-plus"></i><span>Add milestone</span></button>
+              <button class="button ghost" type="button" onClick=${addMilestone}><${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span></button>
             </div>
           ` : null}
         </div>
@@ -2710,7 +2821,7 @@
         case "short_answer":
           return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
         case "long_answer":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
+          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder || ""} style=${longAnswerStyle(field.placeholder)} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
         case "email":
           return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="email" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
         case "number":
@@ -2760,14 +2871,14 @@
             </${FieldShell}>
           `;
         case "mood_meter": {
-          const icons = ["fa-face-angry", "fa-face-frown", "fa-face-meh", "fa-face-smile", "fa-face-laugh"];
+          const icons = ["fa-regular fa-face-angry", "fa-regular fa-face-frown", "fa-regular fa-face-meh", "fa-regular fa-face-smile", "fa-regular fa-face-laugh"];
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <div class="meter-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
                 <span>${field.settings?.minLabel || "Low"}</span>
                 ${icons.map((icon, index) => {
             const rating = index + 1;
-            return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><i class=${`fa-regular ${icon}`}></i></button>`;
+            return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon=${icon} /></button>`;
           })}
                 <span>${field.settings?.maxLabel || "High"}</span>
               </div>
@@ -2805,7 +2916,7 @@
               <div class="star-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
                 ${Array.from({ length: max }, (_, index) => {
             const rating = index + 1;
-            return html`<button class=${`star-option${selected >= rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><i class="fa-regular fa-star"></i></button>`;
+            return html`<button class=${`star-option${selected >= rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon="fa-regular fa-star" /></button>`;
           })}
               </div>
             </${FieldShell}>
@@ -2878,7 +2989,7 @@
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <input ...${common} type="url" value=${text} placeholder=${field.placeholder || "https://example.com"} onInput=${(event) => onValue(event.currentTarget.value)} />
-              ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${text}</span></a>` : null}
+              ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${text}</span></a>` : null}
             </${FieldShell}>
           `;
         }
@@ -2934,7 +3045,7 @@
       const [schema, setSchemaState] = useState(null);
       const [values, setValues] = useState({});
       const [invalidIds, setInvalidIds] = useState(new Set());
-      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
       const [exportFormat, setExportFormat] = useState("pdf");
       const [exporting, setExporting] = useState(false);
       const captureRef = useRef(null);
@@ -3160,7 +3271,7 @@
       return html`
         <div class=${`runtime-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <button class="icon-button sidebar-expand-button" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-hidden=${!sidebarCollapsed} tabIndex=${sidebarCollapsed ? 0 : -1} onClick=${() => setSidebarCollapsed(false)}>
-            <i class="fa-solid fa-chevron-right"></i>
+            <${Icon} icon="fa-solid fa-chevron-right" />
           </button>
 
           <aside class="runtime-sidebar" aria-label="Runtime actions" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
@@ -3168,29 +3279,16 @@
               <div>
                 <div class="runtime-sidebar-head">
                   <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <${Icon} icon="fa-solid fa-chevron-left" />
                   </button>
                 </div>
                 <div class="sidebar-actions">
-                  <label class="button full" for="schemaFile"><i class="fa-regular fa-folder-open"></i><span>Open</span></label>
+                  <label class="button full" for="schemaFile"><${Icon} icon="fa-regular fa-folder-open" /><span>Open</span></label>
                   <input class="sr-only" id="schemaFile" type="file" accept="application/json,.json" onChange=${importSchema} />
-                  <button class="button full" type="button" disabled=${!schema} onClick=${resetForm}><i class="fa-solid fa-rotate-left"></i><span>Reset</span></button>
+                  <button class="button full" type="button" disabled=${!schema} onClick=${resetForm}><${Icon} icon="fa-solid fa-rotate-left" /><span>Reset</span></button>
                 </div>
               </div>
 
-              <div class="runtime-sidebar-footer">
-                <div class="select-wrap">
-                  <select class="select" id="exportFormat" value=${exportFormat} disabled=${!schema || exporting} onChange=${(event) => setExportFormat(event.currentTarget.value)}>
-                    <option value="pdf">PDF</option>
-                    <option value="png">PNG</option>
-                    <option value="jpg">JPG</option>
-                  </select>
-                  <i class="select-icon fa-solid fa-chevron-down" aria-hidden="true"></i>
-                </div>
-                <button class="button primary full" type="button" data-export disabled=${!schema || exporting} onClick=${() => exportFilledForm(exportFormat)}>
-                  <i class=${exportIcon}></i><span>${exporting ? "Preparing" : "Download"}</span>
-                </button>
-              </div>
             </div>
           </aside>
 
@@ -3213,12 +3311,25 @@
               ` : html`
                 <div class="empty">
                   <div class="empty-inner">
-                    <span class="empty-icon"><i class="fa-regular fa-file-code"></i></span>
+                    <span class="empty-icon"><${Icon} icon="fa-regular fa-file-code" /></span>
                     <strong>No schema loaded</strong>
                   </div>
                 </div>
               `}
             </section>
+            <div class="runtime-export-bar" role="group" aria-label="Export filled form">
+              <div class="select-wrap">
+                <select class="select" id="exportFormat" value=${exportFormat} disabled=${!schema || exporting} onChange=${(event) => setExportFormat(event.currentTarget.value)}>
+                  <option value="pdf">PDF</option>
+                  <option value="png">PNG</option>
+                  <option value="jpg">JPG</option>
+                </select>
+                <${Icon} icon="fa-solid fa-chevron-down" className="select-icon" />
+              </div>
+              <button class="button primary" type="button" data-export disabled=${!schema || exporting} onClick=${() => exportFilledForm(exportFormat)}>
+                <${Icon} icon=${exportIcon} /><span>${exporting ? "Preparing" : "Download"}</span>
+              </button>
+            </div>
           </main>
         </div>
       `;
