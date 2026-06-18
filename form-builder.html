@@ -2283,6 +2283,298 @@
       }
     }
 
+
+
+    /* Compact calendar/radar readouts. */
+    .calendar-preview,
+    .calendar-control {
+      --calendar-shell-radius: 14px;
+      --calendar-cell-radius: 8px;
+      --calendar-side-padding: 12px;
+      --calendar-cell-height: 32px;
+      grid-template-columns: minmax(238px, 300px) minmax(248px, 340px);
+      align-items: start;
+      justify-content: center;
+      gap: 28px;
+      max-width: 760px;
+      margin: 0 auto;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+    }
+
+    .calendar-preview.is-unboxed,
+    .field.no-outline .calendar-control {
+      background: transparent;
+      padding: 0;
+    }
+
+    .calendar-frame {
+      width: min(300px, 100%);
+      justify-self: center;
+      align-self: start;
+      box-shadow: none;
+    }
+
+    .calendar-preview-head,
+    .calendar-nav {
+      padding: 13px var(--calendar-side-padding) 10px;
+    }
+
+    .calendar-nav .calendar-month-label {
+      padding: 0 76px;
+    }
+
+    .calendar-weekdays {
+      padding: 0 var(--calendar-side-padding) 8px;
+    }
+
+    .calendar-grid {
+      padding: 8px var(--calendar-side-padding) 12px;
+    }
+
+    .radar-values,
+    .calendar-properties {
+      align-content: center;
+      gap: 0;
+    }
+
+    .calendar-properties {
+      width: 100%;
+      max-width: 340px;
+      display: grid;
+      justify-self: stretch;
+      align-self: center;
+    }
+
+    .radar-values {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 16px;
+      row-gap: 4px;
+    }
+
+    .radar-values.point-readout {
+      min-height: 0;
+      grid-template-columns: 68px minmax(0, 1fr);
+    }
+
+    .calendar-range-summary,
+    .calendar-milestone-list {
+      display: grid;
+      grid-template-columns: minmax(72px, max-content) minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 4px;
+      padding: 0;
+      border: 0;
+    }
+
+    .calendar-date-inputs,
+    .calendar-milestone-editor {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+      padding: 0;
+      border: 0;
+    }
+
+    .calendar-milestone-list,
+    .calendar-milestone-editor {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+
+    .radar-value-row,
+    .radar-values.point-readout .radar-value-row,
+    .calendar-property-row,
+    .calendar-milestone-item {
+      display: contents;
+    }
+
+    .radar-value-row span,
+    .radar-value,
+    .calendar-property-row > span,
+    .calendar-property-value,
+    .calendar-milestone-date,
+    .calendar-milestone-name {
+      min-width: 0;
+      padding: 3px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .radar-value-row span,
+    .calendar-property-row > span,
+    .calendar-milestone-date,
+    .calendar-date-field span,
+    .calendar-property-heading,
+    .calendar-milestone-editor-head .mini-label {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 750;
+    }
+
+    .radar-value,
+    .calendar-property-value,
+    .calendar-milestone-name {
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .radar-value {
+      justify-self: end;
+      text-align: right;
+    }
+
+    .calendar-property-heading,
+    .calendar-milestone-editor-head {
+      min-height: 0;
+      margin: 10px 0 2px;
+      padding: 0;
+    }
+
+    .calendar-property-heading,
+    .calendar-milestone-empty {
+      grid-column: 1 / -1;
+    }
+
+    .calendar-date-field,
+    .calendar-milestone-row,
+    .calendar-milestone-empty {
+      min-width: 0;
+      display: grid;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 4px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .calendar-date-field {
+      grid-template-columns: minmax(72px, max-content) minmax(0, 1fr) 28px;
+    }
+
+    .calendar-date-field .control {
+      grid-column: 2 / -1;
+    }
+
+    .calendar-milestone-row {
+      grid-template-columns: minmax(118px, 0.8fr) minmax(0, 1fr) 28px;
+    }
+
+    .calendar-date-field .control,
+    .calendar-milestone-row .control {
+      min-height: 30px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 2px 0;
+      box-shadow: none;
+      font-size: 13px;
+    }
+
+    .calendar-date-field .control[type="date"],
+    .calendar-milestone-row .control[type="date"] {
+      min-width: 0;
+      width: 100%;
+      padding-right: 30px;
+    }
+
+    .calendar-date-field .control:hover,
+    .calendar-milestone-row .control:hover {
+      box-shadow: inset 0 -1px 0 var(--line);
+    }
+
+    .calendar-date-field .control:focus,
+    .calendar-milestone-row .control:focus {
+      border-color: transparent;
+      background: transparent;
+      box-shadow: inset 0 -2px 0 var(--accent);
+    }
+
+    .calendar-date-field:focus-within,
+    .calendar-milestone-row:focus-within {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .calendar-milestone-row .icon-button {
+      width: 28px;
+      height: 28px;
+      min-height: 28px;
+      border-color: transparent;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .calendar-milestone-row .icon-button:hover,
+    .calendar-milestone-row .icon-button:focus-visible {
+      border-color: rgba(179, 38, 30, 0.20);
+      background: var(--danger-soft);
+    }
+
+    .calendar-milestone-editor > .button {
+      justify-self: start;
+      min-height: 34px;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 780px) {
+      .calendar-preview,
+      .calendar-control {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        max-width: 360px;
+      }
+
+      .calendar-properties {
+        max-width: none;
+      }
+
+      .calendar-date-field {
+        grid-template-columns: minmax(72px, max-content) minmax(0, 1fr) 28px;
+      }
+
+      .calendar-milestone-row {
+        grid-template-columns: minmax(0, 1fr) 28px;
+      }
+
+      .calendar-milestone-row .control[type="date"] {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-milestone-row .icon-button {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+      }
+    }
+
+    .radar-preview {
+      gap: 16px;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .radar-axis-list {
+      align-self: center;
+      gap: 4px;
+    }
+
+    .radar-axis-list span {
+      padding: 2px 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
 
       *,
@@ -2355,8 +2647,8 @@
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true } } },
       { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false } } },
-      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "Spacer", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false } } }
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false } } },
+      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false } } }
     ];
 
     function uid() {
@@ -3383,20 +3675,29 @@
             })}
             </div>
           </div>
-          <div class="calendar-range-summary">
-            <span><b>Start</b>${readableDate(settings.startDate)}</span>
-            <span><b>End</b>${readableDate(settings.endDate)}</span>
-          </div>
-          ${settings.allowMilestones && milestones.length ? html`
-            <div class="calendar-milestone-list">
-              ${milestones.map((item) => html`
-                <div class="calendar-milestone-item" key=${item.id}>
-                  <span class="calendar-milestone-date">${item.date ? readableDate(item.date) : "No date"}</span>
-                  <span class="calendar-milestone-name">${item.label}</span>
-                </div>
-              `)}
+          <div class="calendar-properties">
+            <div class="calendar-range-summary">
+              <div class="calendar-property-row">
+                <span>Start</span>
+                <output class="calendar-property-value">${readableDate(settings.startDate)}</output>
+              </div>
+              <div class="calendar-property-row">
+                <span>End</span>
+                <output class="calendar-property-value">${readableDate(settings.endDate)}</output>
+              </div>
             </div>
-          ` : null}
+            ${settings.allowMilestones ? html`
+              <div class="calendar-milestone-list">
+                <div class="calendar-property-heading">Milestones</div>
+                ${milestones.length ? milestones.map((item) => html`
+                  <div class="calendar-milestone-item" key=${item.id}>
+                    <span class="calendar-milestone-date">${item.date ? readableDate(item.date) : "No date"}</span>
+                    <span class="calendar-milestone-name">${item.label || "Milestone"}</span>
+                  </div>
+                `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
+              </div>
+            ` : null}
+          </div>
         </div>
       `;
     }
