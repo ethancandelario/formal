@@ -112,6 +112,57 @@
       min-width: 86px;
     }
 
+    .export-menu-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .export-menu {
+      position: absolute;
+      top: calc(100% + 7px);
+      right: 0;
+      z-index: 60;
+      width: min(236px, calc(100vw - 20px));
+      display: grid;
+      gap: 4px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 14px 34px rgba(31, 31, 31, 0.16);
+      animation: menu-in 120ms var(--ease) both;
+    }
+
+    .export-menu-item {
+      width: 100%;
+      min-height: 42px;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      font-size: 12.5px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .export-menu-item:hover,
+    .export-menu-item:focus-visible {
+      background: var(--panel-2);
+      outline: none;
+    }
+
+    .export-menu-item .svg-icon {
+      color: var(--accent);
+      justify-self: center;
+    }
+
     .current-form-name {
       min-width: 0;
       width: auto;
@@ -532,7 +583,7 @@
       place-items: center;
     }
 
-    .theme-picker-fallback {
+    .theme-picker-unavailable {
       min-height: 58px;
       display: grid;
       place-items: center;
@@ -910,7 +961,7 @@
 
     .field-card.selected {
       border-color: rgba(134, 31, 65, 0.36);
-      background: linear-gradient(180deg, rgba(134, 31, 65, 0.035), #ffffff 92px);
+      background: #fffdfb;
       box-shadow: 0 12px 26px rgba(31, 31, 31, 0.08), 0 0 0 3px rgba(134, 31, 65, 0.07);
     }
 
@@ -1161,78 +1212,157 @@
 
     .calendar-preview,
     .calendar-control {
+      --calendar-shell-radius: 14px;
+      --calendar-cell-radius: 9px;
+      --calendar-side-padding: 14px;
+      --calendar-cell-height: 36px;
       display: grid;
-      gap: 10px;
+      gap: 12px;
       min-width: 0;
-      border: 1px solid var(--line);
+      border: 0;
       border-radius: 8px;
       background: var(--panel-2);
-      padding: 10px;
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .calendar-preview.is-unboxed {
+      border: 0;
+      background: var(--panel-2);
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .calendar-frame {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--calendar-shell-radius);
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(31, 31, 31, 0.04);
     }
 
     .calendar-preview-head,
     .calendar-nav {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
       align-items: center;
-      justify-content: space-between;
+      justify-items: center;
       gap: 8px;
       min-width: 0;
+      border-radius: 0;
+      background: #ffffff;
+      padding: 14px var(--calendar-side-padding) 11px;
+      position: relative;
+      text-align: center;
+    }
+
+    .calendar-nav .calendar-month-label {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      padding: 0 92px;
+    }
+
+    .calendar-nav-buttons {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      justify-self: end;
+      z-index: 1;
     }
 
     .calendar-month-label {
+      min-width: 0;
+      width: 100%;
       color: var(--ink);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
+      line-height: 1.2;
       overflow: hidden;
+      text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .calendar-preview-dates,
+    .calendar-range-summary {
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .calendar-range-summary span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .calendar-range-summary b {
+      margin-right: 4px;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
     .calendar-date-inputs {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      gap: 12px;
+      align-items: start;
+      min-width: 0;
     }
 
-    .calendar-date-chip,
     .calendar-date-field {
       min-width: 0;
       display: grid;
-      gap: 4px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 8px;
+      gap: 5px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
-    .calendar-date-chip span,
+    .calendar-date-field:focus-within {
+      background: transparent;
+      box-shadow: none;
+    }
+
     .calendar-date-field span {
       color: var(--muted);
       font-size: 11.5px;
       font-weight: 750;
-    }
-
-    .calendar-date-chip strong {
-      min-width: 0;
-      color: var(--ink);
-      font-size: 13px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.2;
     }
 
     .calendar-weekdays,
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 3px;
+      gap: 0;
+    }
+
+    .calendar-weekdays {
+      padding: 0 var(--calendar-side-padding) 9px;
+      background: #ffffff;
+    }
+
+    .calendar-grid {
+      padding: 10px var(--calendar-side-padding) 14px;
+      border: 0;
+      border-radius: 0;
+      background: #ffffff;
+      box-shadow: none;
+      overflow: visible;
     }
 
     .calendar-weekday {
-      color: var(--muted);
+      color: #9a9fa3;
       font-size: 10.5px;
       font-weight: 800;
+      line-height: 1.2;
       text-align: center;
       user-select: none;
     }
@@ -1240,46 +1370,89 @@
     .calendar-day,
     .calendar-day-button {
       position: relative;
+      z-index: 0;
+      isolation: isolate;
       min-width: 0;
-      min-height: 30px;
+      min-height: var(--calendar-cell-height);
       display: grid;
       place-items: center;
-      border: 1px solid transparent;
-      border-radius: 7px;
+      border: 0;
+      border-radius: 0;
       color: var(--ink);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 750;
       line-height: 1;
-      background: #ffffff;
+      background: transparent;
       font-variant-numeric: tabular-nums;
+    }
+
+    .calendar-day::before,
+    .calendar-day-button::before {
+      content: "";
+      position: absolute;
+      inset: 3px 0;
+      z-index: -1;
+      border-radius: var(--calendar-cell-radius);
+      background: transparent;
+      transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease, border-radius 160ms ease;
+    }
+
+    .calendar-day-number {
+      position: relative;
+      z-index: 1;
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.45em;
+      pointer-events: none;
     }
 
     .calendar-day.is-outside,
     .calendar-day-button.is-outside {
       color: #a6a09a;
-      background: rgba(255, 255, 255, 0.54);
     }
 
     .calendar-day.is-range,
     .calendar-day-button.is-range {
-      border-color: rgba(134, 31, 65, 0.16);
-      background: var(--accent-soft);
       color: var(--accent);
+    }
+
+    .calendar-day.is-range::before,
+    .calendar-day-button.is-range::before {
+      background: var(--accent-soft);
+      border-radius: 0;
+    }
+
+    .calendar-day.is-range-start::before,
+    .calendar-day-button.is-range-start::before {
+      border-top-left-radius: var(--calendar-cell-radius);
+      border-bottom-left-radius: var(--calendar-cell-radius);
+    }
+
+    .calendar-day.is-range-end::before,
+    .calendar-day-button.is-range-end::before {
+      border-top-right-radius: var(--calendar-cell-radius);
+      border-bottom-right-radius: var(--calendar-cell-radius);
     }
 
     .calendar-day.is-boundary,
     .calendar-day-button.is-boundary {
-      border-color: var(--accent);
-      background: var(--accent);
       color: #ffffff;
+    }
+
+    .calendar-day.is-boundary::before,
+    .calendar-day-button.is-boundary::before {
+      background: var(--accent);
+      border-radius: var(--calendar-cell-radius);
+      box-shadow: 0 9px 16px -8px rgba(134, 31, 65, 0.54);
     }
 
     .calendar-day.is-milestone::after,
     .calendar-day-button.is-milestone::after {
       content: "";
       position: absolute;
+      z-index: 2;
       left: 50%;
-      bottom: 4px;
+      bottom: 5px;
       width: 4px;
       height: 4px;
       border-radius: 999px;
@@ -1287,11 +1460,105 @@
       transform: translateX(-50%);
     }
 
+    .calendar-day.is-boundary.is-milestone::after,
+    .calendar-day-button.is-boundary.is-milestone::after {
+      background: #ffffff;
+    }
+
+    .calendar-day.is-milestone:hover,
+    .calendar-day-button.is-milestone:hover,
+    .calendar-day-button.is-milestone:focus-visible {
+      z-index: 8;
+    }
+
+    .calendar-milestone-popover {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      z-index: 5;
+      width: max-content;
+      min-width: 96px;
+      max-width: 220px;
+      display: grid;
+      gap: 3px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 8px 18px rgba(31, 31, 31, 0.12);
+      font-size: 11.5px;
+      font-weight: 750;
+      line-height: 1.3;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 3px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .calendar-milestone-popover::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+      transform: translate(-50%, -4px) rotate(45deg);
+    }
+
+    .calendar-milestone-popover-line {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .calendar-day.is-milestone:hover .calendar-milestone-popover,
+    .calendar-day-button.is-milestone:hover .calendar-milestone-popover,
+    .calendar-day-button.is-milestone:focus-visible .calendar-milestone-popover {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .calendar-day-button {
+      cursor: pointer;
+      transition: color 160ms ease, transform 160ms ease;
+    }
+
+    .calendar-day-button:hover::before,
+    .calendar-day-button:focus-visible::before {
+      background: rgba(31, 31, 31, 0.07);
+      transform: translateY(-1px);
+    }
+
+    .calendar-day-button.is-range:hover::before,
+    .calendar-day-button.is-range:focus-visible::before {
+      background: var(--accent-soft);
+    }
+
+    .calendar-day-button.is-boundary:hover::before,
+    .calendar-day-button.is-boundary:focus-visible::before {
+      background: var(--accent);
+      box-shadow: 0 9px 16px -8px rgba(134, 31, 65, 0.54);
+    }
+
+    .calendar-day-button:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: -2px;
+    }
+
     .calendar-milestone-list,
     .calendar-milestone-editor {
       display: grid;
       gap: 7px;
       min-width: 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(215, 210, 203, 0.72);
     }
 
     .calendar-milestone-editor-head {
@@ -1308,10 +1575,10 @@
     }
 
     .calendar-milestone-empty {
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.52);
+      border: 0;
+      border-radius: 0;
+      padding: 2px 1px;
+      background: transparent;
     }
 
     .calendar-milestone-item {
@@ -1320,6 +1587,9 @@
       grid-template-columns: 92px minmax(0, 1fr);
       gap: 8px;
       align-items: center;
+      padding: 2px 1px;
+      border-radius: 0;
+      background: transparent;
       color: var(--muted);
       font-size: 12.5px;
     }
@@ -1341,6 +1611,10 @@
       grid-template-columns: 132px minmax(0, 1fr) auto;
       gap: 5px;
       align-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     .media-preview {
@@ -1731,6 +2005,18 @@
       }
     }
 
+    @keyframes menu-in {
+      from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.985);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -1986,6 +2272,15 @@
       .topbar .button.primary span {
         display: none;
       }
+
+      .topbar .button.primary .export-chevron {
+        display: none;
+      }
+
+      .calendar-date-inputs,
+      .calendar-milestone-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2045,23 +2340,23 @@
     const THEME_COLOR_FIELDS = THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), []);
 
     const fieldTypes = [
-      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer" } },
-      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response" } },
-      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"] } },
-      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"] } },
-      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com" } },
-      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0" } },
-      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [] } } },
-      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"] } },
-      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High" } } },
-      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High" } } },
-      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5 } } },
-      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT } } },
-      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf" } } },
-      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com" } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false } } },
+      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true } } },
+      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { outline: true } } },
+      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { outline: true } } },
+      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { outline: true } } },
+      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { outline: true } } },
+      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { outline: true } } },
+      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], outline: true } } },
+      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"], settings: { outline: true } } },
+      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High", outline: true } } },
+      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High", outline: true } } },
+      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5, outline: true } } },
+      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, outline: true } } },
+      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true } } },
+      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false } } },
       { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "Media", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false } } },
-      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "Spacer", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1 } } }
+      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "Spacer", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false } } }
     ];
 
     function uid() {
@@ -2073,14 +2368,14 @@
     }
 
     function typeMeta(type) {
-      return fieldTypes.find((item) => item.type === type) || fieldTypes[0];
+      const meta = fieldTypes.find((item) => item.type === type);
+      if (!meta) throw new Error(`Unsupported field type: ${type}`);
+      return meta;
     }
 
     function fieldFromType(type) {
       const meta = typeMeta(type);
-      const field = { id: uid(), type: meta.type, ...clone(meta.defaults) };
-      if (field.type === "calendar") field.settings = defaultCalendarSettings();
-      return field;
+      return { id: uid(), type: meta.type, ...clone(meta.defaults) };
     }
 
     function defaultSchema() {
@@ -2092,32 +2387,16 @@
       };
     }
 
-    function sanitizeId(value) {
-      const clean = String(value || "").replace(/[^a-zA-Z0-9_-]/g, "_");
-      return clean || uid();
+    function hexColor(value) {
+      const text = String(value).trim();
+      if (!/^#[0-9a-f]{6}$/i.test(text)) throw new Error("Expected a #rrggbb color.");
+      return text;
     }
 
-    function uniqueId(value, seen) {
-      const base = sanitizeId(value);
-      let next = base;
-      let count = 2;
-      while (seen.has(next)) {
-        next = base + "_" + count;
-        count += 1;
-      }
-      seen.add(next);
-      return next;
-    }
-
-    function cleanColor(value, fallback) {
-      const text = String(value || "").trim();
-      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
-    }
-
-    function cleanFontFamily(value) {
-      const text = String(value || "").trim();
-      if (!text) return DEFAULT_THEME.fontFamily;
-      return /^[a-zA-Z0-9_\-\s"',.()]+$/.test(text) ? text : DEFAULT_THEME.fontFamily;
+    function fontFamilyValue(value) {
+      const text = String(value).trim();
+      if (!text || !/^[a-zA-Z0-9_\-\s"',.()]+$/.test(text)) throw new Error("Expected a valid font-family value.");
+      return text;
     }
 
     function unquoteFontName(value) {
@@ -2127,18 +2406,18 @@
     }
 
     function fontNameFromStack(value) {
-      const first = cleanFontFamily(value).split(",")[0] || "";
+      const first = fontFamilyValue(value).split(",")[0] || "";
       const name = unquoteFontName(first);
       return /^(ui-sans-serif|system-ui|-apple-system|BlinkMacSystemFont)$/i.test(name) ? "System UI" : name || "Roboto";
     }
 
     function fontOptionByFamily(value) {
-      const stack = cleanFontFamily(value);
+      const stack = fontFamilyValue(value);
       const family = fontNameFromStack(stack);
       return { family, name: family, stack, system: family === "System UI" };
     }
 
-    function googleFontFallback(category) {
+    function googleFontCategoryStack(category) {
       const clean = String(category || "").toLowerCase();
       if (clean.includes("serif") && !clean.includes("sans")) return 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif';
       if (clean.includes("mono")) return 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace';
@@ -2151,7 +2430,7 @@
     }
 
     function googleFontStack(family, category) {
-      return `${quoteFontName(family)}, ${googleFontFallback(category)}`;
+      return `${quoteFontName(family)}, ${googleFontCategoryStack(category)}`;
     }
 
     function googleFontParam(family) {
@@ -2175,7 +2454,7 @@
       document.head.appendChild(link);
     }
 
-    function normalizeGoogleFontCatalog(payload) {
+    function googleFontCatalogItems(payload) {
       const items = Array.isArray(payload) ? payload : Array.isArray(payload?.items) ? payload.items : [];
       const seen = new Set();
       return items
@@ -2194,32 +2473,17 @@
             if (!response.ok) throw new Error("Unable to load Google Fonts metadata");
             return response.json();
           })
-          .then(normalizeGoogleFontCatalog);
+          .then(googleFontCatalogItems);
       }
       return googleFontCatalogPromise;
     }
 
-    function normalizeTheme(input = {}) {
-      const theme = { ...DEFAULT_THEME, ...(input || {}) };
-      return {
-        bg: cleanColor(theme.bg, DEFAULT_THEME.bg),
-        panel: cleanColor(theme.panel, DEFAULT_THEME.panel),
-        panel2: cleanColor(theme.panel2, DEFAULT_THEME.panel2),
-        ink: cleanColor(theme.ink, DEFAULT_THEME.ink),
-        muted: cleanColor(theme.muted, DEFAULT_THEME.muted),
-        line: cleanColor(theme.line, DEFAULT_THEME.line),
-        accent: cleanColor(theme.accent, DEFAULT_THEME.accent),
-        accent2: cleanColor(theme.accent2, DEFAULT_THEME.accent2),
-        accentSoft: cleanColor(theme.accentSoft, DEFAULT_THEME.accentSoft),
-        success: cleanColor(theme.success, DEFAULT_THEME.success),
-        warning: cleanColor(theme.warning, DEFAULT_THEME.warning),
-        danger: cleanColor(theme.danger, DEFAULT_THEME.danger),
-        fontFamily: cleanFontFamily(theme.fontFamily)
-      };
+    function themeSettings(input) {
+      return input;
     }
 
     function themeStyle(schema) {
-      const theme = normalizeTheme(schema?.settings?.theme);
+      const theme = themeSettings(schema.settings.theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
@@ -2242,8 +2506,7 @@
     }
 
     function hexToRgba(hex, alpha) {
-      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
-      const value = parseInt(clean, 16);
+      const value = parseInt(hexColor(hex).slice(1), 16);
       const r = (value >> 16) & 255;
       const g = (value >> 8) & 255;
       const b = value & 255;
@@ -2257,8 +2520,7 @@
     }
 
     function hexToRgb(hex) {
-      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
-      const value = parseInt(clean, 16);
+      const value = parseInt(hexColor(hex).slice(1), 16);
       return {
         r: (value >> 16) & 255,
         g: (value >> 8) & 255,
@@ -2304,27 +2566,12 @@
       return isoFromDate(new Date());
     }
 
-    function addDays(value, amount) {
-      const date = dateFromISO(value) || new Date();
-      date.setDate(date.getDate() + amount);
-      return isoFromDate(date);
-    }
-
-    function midpointDate(startDate, endDate) {
-      const start = dateFromISO(startDate);
-      const end = dateFromISO(endDate);
-      if (!start || !end) return startDate || endDate || todayISO();
-      return isoFromDate(new Date((start.getTime() + end.getTime()) / 2));
-    }
-
     function defaultCalendarSettings() {
-      const startDate = todayISO();
-      const endDate = addDays(startDate, 7);
       return {
-        startDate,
-        endDate,
+        startDate: "",
+        endDate: "",
         allowMilestones: true,
-        milestones: [{ id: uid(), date: midpointDate(startDate, endDate), label: "Milestone 1" }]
+        milestones: []
       };
     }
 
@@ -2358,75 +2605,57 @@
       });
     }
 
-    function normalizeCalendarMilestones(items) {
-      const source = Array.isArray(items) ? items : [];
-      return source
-        .map((item, index) => ({
-          id: sanitizeId(item?.id || `milestone_${index + 1}`),
-          date: cleanDate(item?.date),
-          label: String(item?.label || "").trim()
-        }))
-        .filter((item) => item.date || item.label)
-        .sort((a, b) => (dateTime(a.date) ?? Number.MAX_SAFE_INTEGER) - (dateTime(b.date) ?? Number.MAX_SAFE_INTEGER) || a.label.localeCompare(b.label));
-    }
-
-    function normalizeCalendarSettings(field) {
-      const settings = field?.settings || {};
-      let startDate = cleanDate(settings.startDate);
-      let endDate = cleanDate(settings.endDate);
-      if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) {
-        [startDate, endDate] = [endDate, startDate];
-      }
+    function calendarSettings(field) {
+      const settings = field.settings;
       return {
-        startDate,
-        endDate,
-        allowMilestones: settings.allowMilestones !== false,
-        milestones: normalizeCalendarMilestones(settings.milestones)
+        startDate: settings.startDate,
+        endDate: settings.endDate,
+        allowMilestones: settings.allowMilestones,
+        milestones: settings.milestones
       };
     }
 
-    function settingNumber(value, fallback) {
+    function calendarAnchorDate(settings) {
+      return settings.startDate || settings.endDate || settings.milestones.find((item) => item.date)?.date || todayISO();
+    }
+
+    function calendarMilestonesForDate(milestones, iso) {
+      return milestones.filter((item) => item.date === iso);
+    }
+
+    function calendarMilestoneDetails(items) {
+      return items.map((item) => `${item.label} - ${readableDate(item.date)}`).join(" | ");
+    }
+
+    function settingNumber(value, defaultValue) {
       const text = String(value ?? "").trim();
-      if (!text) return fallback;
+      if (!text) return defaultValue;
       const number = Number(text);
-      return Number.isFinite(number) ? number : fallback;
+      return Number.isFinite(number) ? number : defaultValue;
     }
 
-    function clampSettingNumber(value, fallback, min, max, round = false) {
-      const number = settingNumber(value, fallback);
-      const clamped = Math.max(min, Math.min(max, number));
-      return round ? Math.round(clamped) : clamped;
-    }
-
-    function normalizeLinearScaleSettings(field) {
-      const settings = field?.settings || {};
-      let min = settingNumber(settings.min, 1);
-      let max = settingNumber(settings.max, 10);
-      if (max < min) [min, max] = [max, min];
-      if (max === min) max = min + 1;
+    function linearScaleSettings(field) {
+      const settings = field.settings;
       return {
-        min,
-        max,
-        minLabel: Object.prototype.hasOwnProperty.call(settings, "minLabel") ? String(settings.minLabel ?? "") : "Low",
-        maxLabel: Object.prototype.hasOwnProperty.call(settings, "maxLabel") ? String(settings.maxLabel ?? "") : "High"
+        min: settings.min,
+        max: settings.max,
+        minLabel: settings.minLabel,
+        maxLabel: settings.maxLabel
       };
     }
 
-    function normalizeStarRatingSettings(field) {
-      const settings = field?.settings || {};
-      return { max: clampSettingNumber(settings.max, 5, 3, 10, true) };
+    function starRatingSettings(field) {
+      const settings = field.settings;
+      return { max: settings.max };
     }
 
-    function normalizeSpacerSettings(field) {
-      const settings = field?.settings || {};
-      const height = clampMediaNumber(settings.height, 32, 0, 240);
-      const thickness = clampMediaNumber(settings.lineThickness, 1, 1, 12);
-      const styles = new Set(["solid", "dashed", "dotted"]);
+    function spacerSettings(field) {
+      const settings = field.settings;
       return {
-        height,
-        showLine: Boolean(settings.showLine),
-        lineStyle: styles.has(settings.lineStyle) ? settings.lineStyle : "solid",
-        lineThickness: Math.round(thickness)
+        height: settings.height,
+        showLine: settings.showLine,
+        lineStyle: settings.lineStyle,
+        lineThickness: settings.lineThickness
       };
     }
 
@@ -2438,19 +2667,16 @@
       return `border-top-width: ${settings.lineThickness}px; border-top-style: ${settings.lineStyle};`;
     }
 
-    function normalizeRadarAxes(axes) {
-      const source = Array.isArray(axes) ? axes : DEFAULT_RADAR_AXES;
-      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
-      return normalized.length ? normalized : DEFAULT_RADAR_AXES;
+    function radarAxes(axes) {
+      return axes;
     }
 
-    function normalizeRadarMode(mode) {
-      return mode === "point" ? "point" : "shape";
+    function radarMode(mode) {
+      return mode;
     }
 
-    function normalizeRadarMax(value) {
-      const number = settingNumber(value, DEFAULT_RADAR_MAX);
-      return Math.max(RADAR_MIN_VALUE + 1, Math.round(number));
+    function radarMax(value) {
+      return value;
     }
 
     function clampRadarValue(value, max) {
@@ -2459,13 +2685,13 @@
       return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
     }
 
-    function normalizeRadarValues(values, axes, max) {
+    function radarValues(values, axes, max) {
       const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
       const source = Array.isArray(values) ? values : [];
       return axes.map((_, index) => clampRadarValue(source[index], max) ?? midpoint);
     }
 
-    function normalizeRadarAngle(value) {
+    function radarAngle(value) {
       const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
       const wrapped = ((number % 360) + 360) % 360;
       return Math.round(wrapped * 100) / 100;
@@ -2477,10 +2703,10 @@
       return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
     }
 
-    function normalizeRadarPoint(point, max) {
+    function radarPointSetting(point, max) {
       const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
       return {
-        angle: normalizeRadarAngle(source.angle),
+        angle: radarAngle(source.angle),
         value: clampRadarPointValue(source.value, max) ?? clampRadarPointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
       };
     }
@@ -2489,87 +2715,237 @@
       return typeMeta(field?.type);
     }
 
-    function normalizeField(raw) {
-      const meta = typeMeta(raw?.type);
-      const base = { id: uid(), type: meta.type, ...clone(meta.defaults) };
-      const next = { ...base, ...raw };
-      next.id = sanitizeId(next.id || uid());
-      next.type = meta.type;
-      next.label = Object.prototype.hasOwnProperty.call(raw || {}, "label") ? String(raw.label ?? "") : String(meta.defaults.label || meta.name);
-      next.description = String(next.description || "");
-      next.required = Boolean(next.required);
-
-      if ("placeholder" in base || "placeholder" in next) next.placeholder = String(next.placeholder || "");
-      if ("options" in base || Array.isArray(next.options)) {
-        next.options = Array.isArray(next.options) && next.options.length ? next.options.map(String) : clone(base.options || ["Option 1"]);
-      }
-
-      next.settings = { ...(base.settings || {}), ...(next.settings || {}) };
-      if (next.type === "radar") {
-        const mode = normalizeRadarMode(next.settings.mode);
-        const max = normalizeRadarMax(next.settings.max);
-        const axes = normalizeRadarAxes(next.settings.axes);
-        next.settings = {
-          mode,
-          max,
-          axes,
-          defaultValues: normalizeRadarValues(next.settings.defaultValues, axes, max),
-          defaultPoint: normalizeRadarPoint(next.settings.defaultPoint, max)
-        };
-      }
-
-      if (next.type === "linear_scale") {
-        next.settings = normalizeLinearScaleSettings(next);
-      }
-
-      if (next.type === "star_rating") {
-        next.settings = normalizeStarRatingSettings(next);
-      }
-
-      if (next.type === "headline") {
-        next.required = false;
-        next.placeholder = "";
-        next.options = [];
-        next.settings = headlineSettings(next);
-      }
-
-      if (next.type === "calendar") {
-        next.settings = normalizeCalendarSettings(next);
-      }
-
-      if (next.type === "media_upload") {
-        next.settings = { accept: "image/*,video/*,audio/*,.svg,.pdf", ...next.settings };
-      }
-
-      if (next.type === "media") {
-        next.required = false;
-        next.settings = mediaSettings(next);
-      }
-
-      if (next.type === "spacer") {
-        next.required = false;
-        next.description = "";
-        next.placeholder = "";
-        next.options = [];
-        next.settings = normalizeSpacerSettings(next);
-      }
-
-      return next;
+    function assertObject(value, name) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${name} must be an object.`);
+      return value;
     }
 
-    function normalizeSchema(input) {
-      const next = defaultSchema();
-      next.createdAt = input?.createdAt || new Date().toISOString();
-      next.updatedAt = input?.updatedAt || new Date().toISOString();
-      next.settings = { theme: normalizeTheme(input?.settings?.theme) };
+    function assertString(value, name) {
+      if (typeof value !== "string") throw new Error(`${name} must be a string.`);
+    }
+
+    function assertBoolean(value, name) {
+      if (typeof value !== "boolean") throw new Error(`${name} must be a boolean.`);
+    }
+
+    function assertArray(value, name) {
+      if (!Array.isArray(value)) throw new Error(`${name} must be an array.`);
+    }
+
+    function assertNumber(value, name) {
+      if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`${name} must be a finite number.`);
+    }
+
+    function assertInteger(value, name) {
+      assertNumber(value, name);
+      if (!Number.isInteger(value)) throw new Error(`${name} must be an integer.`);
+    }
+
+    function assertExactKeys(value, keys, name) {
+      keys.forEach((key) => {
+        if (!(key in value)) throw new Error(`${name}.${key} is required.`);
+      });
+      Object.keys(value).forEach((key) => {
+        if (!keys.includes(key)) throw new Error(`${name}.${key} is not supported.`);
+      });
+    }
+
+    function assertOneOf(value, choices, name) {
+      if (!choices.includes(value)) throw new Error(`${name} must be one of: ${choices.join(", ")}.`);
+    }
+
+    function assertNumberRange(value, name, min, max, integer = false) {
+      if (integer) {
+        assertInteger(value, name);
+      } else {
+        assertNumber(value, name);
+      }
+      if (value < min || value > max) throw new Error(`${name} must be between ${min} and ${max}.`);
+    }
+
+    function assertDateSetting(value, name) {
+      assertString(value, name);
+      if (value && !dateFromISO(value)) throw new Error(`${name} must be an ISO date string.`);
+    }
+
+    function assertHexColor(value, name) {
+      assertString(value, name);
+      hexColor(value);
+    }
+
+    function assertFontFamily(value, name) {
+      assertString(value, name);
+      fontFamilyValue(value);
+    }
+
+    function assertCalendarMilestones(items, name) {
+      assertArray(items, name);
+      items.forEach((item, index) => {
+        const itemName = `${name}[${index}]`;
+        assertObject(item, itemName);
+        assertExactKeys(item, ["id", "date", "label"], itemName);
+        assertString(item.id, `${itemName}.id`);
+        assertDateSetting(item.date, `${itemName}.date`);
+        assertString(item.label, `${itemName}.label`);
+      });
+    }
+
+    function assertRadarDefaults(values, axes, max, name) {
+      assertArray(values, name);
+      if (values.length !== axes.length) throw new Error(`${name} must match radar.settings.axes length.`);
+      values.forEach((value, index) => assertNumberRange(value, `${name}[${index}]`, RADAR_MIN_VALUE, max, true));
+    }
+
+    function assertRadarPoint(point, max, name) {
+      assertObject(point, name);
+      assertExactKeys(point, ["angle", "value"], name);
+      assertNumberRange(point.angle, `${name}.angle`, 0, 359);
+      assertNumberRange(point.value, `${name}.value`, RADAR_MIN_VALUE, max);
+    }
+
+    function assertCssLength(value, name) {
+      assertString(value, name);
+      if (value && !/^\d+(?:\.\d+)?(?:px|%|rem|em|vw|vh)$/i.test(value)) throw new Error(`${name} must be a CSS length.`);
+    }
+
+    function assertSettingKeys(settings, keys, fieldType) {
+      assertExactKeys(settings, [...keys, "outline"], `${fieldType}.settings`);
+      assertBoolean(settings.outline, `${fieldType}.settings.outline`);
+    }
+
+    function schemaField(raw) {
+      const field = assertObject(raw, "field");
+      typeMeta(field.type);
+      const baseKeys = ["id", "type", "label", "description", "required", "settings"];
+      assertString(field.id, "field.id");
+      assertString(field.type, "field.type");
+      assertString(field.label, `${field.type}.label`);
+      assertString(field.description, `${field.type}.description`);
+      assertBoolean(field.required, `${field.type}.required`);
+      const settings = assertObject(field.settings, `${field.type}.settings`);
+
+      if (["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) {
+        assertExactKeys(field, [...baseKeys, "placeholder"], "field");
+        assertString(field.placeholder, `${field.type}.placeholder`);
+        assertSettingKeys(settings, [], field.type);
+      }
+
+      if (["multiple_choice", "checkbox", "poll"].includes(field.type)) {
+        assertExactKeys(field, [...baseKeys, "options"], "field");
+        assertArray(field.options, `${field.type}.options`);
+        field.options.forEach((option, index) => assertString(option, `${field.type}.options[${index}]`));
+        assertSettingKeys(settings, [], field.type);
+      }
+
+      if (field.type === "calendar") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["startDate", "endDate", "allowMilestones", "milestones"], field.type);
+        assertDateSetting(settings.startDate, "calendar.settings.startDate");
+        assertDateSetting(settings.endDate, "calendar.settings.endDate");
+        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) {
+          throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
+        }
+        assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
+        assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
+      }
+
+      if (field.type === "mood_meter") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["minLabel", "maxLabel"], field.type);
+        assertString(settings.minLabel, "mood_meter.settings.minLabel");
+        assertString(settings.maxLabel, "mood_meter.settings.maxLabel");
+      }
+
+      if (field.type === "linear_scale") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["min", "max", "minLabel", "maxLabel"], field.type);
+        assertNumber(settings.min, "linear_scale.settings.min");
+        assertNumber(settings.max, "linear_scale.settings.max");
+        if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
+        assertString(settings.minLabel, "linear_scale.settings.minLabel");
+        assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
+      }
+
+      if (field.type === "star_rating") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["max"], field.type);
+        assertNumberRange(settings.max, "star_rating.settings.max", 3, 10, true);
+      }
+
+      if (field.type === "radar") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["mode", "max", "axes", "defaultValues", "defaultPoint"], field.type);
+        assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
+        assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
+        assertArray(settings.axes, "radar.settings.axes");
+        if (!settings.axes.length) throw new Error("radar.settings.axes must contain at least one axis.");
+        settings.axes.forEach((axis, index) => assertString(axis, `radar.settings.axes[${index}]`));
+        assertRadarDefaults(settings.defaultValues, settings.axes, settings.max, "radar.settings.defaultValues");
+        assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
+      }
+
+      if (field.type === "media_upload") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["accept"], field.type);
+        assertString(settings.accept, "media_upload.settings.accept");
+      }
+
+      if (field.type === "media") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"], field.type);
+        assertOneOf(settings.sourceType, ["url", "file", "html"], "media.settings.sourceType");
+        ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `media.settings.${key}`));
+        assertNumberRange(settings.iframeHeight, "media.settings.iframeHeight", 120, 1200, true);
+        assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], "media.settings.horizontalAlignment");
+        assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], "media.settings.verticalAlignment");
+        assertNumberRange(settings.scale, "media.settings.scale", 10, 100);
+        assertCssLength(settings.maxWidth, "media.settings.maxWidth");
+        assertNumberRange(settings.maxHeight, "media.settings.maxHeight", 80, 1600, true);
+        assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], "media.settings.objectFit");
+      }
+
+      if (field.type === "headline") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"], field.type);
+        assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
+        assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
+        assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
+        assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
+      }
+
+      if (field.type === "spacer") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["height", "showLine", "lineStyle", "lineThickness"], field.type);
+        assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
+        assertBoolean(settings.showLine, "spacer.settings.showLine");
+        assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
+        assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
+      }
+
+      return field;
+    }
+
+    function schemaDocument(input) {
+      const schema = assertObject(input, "schema");
+      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "fields"], "schema");
+      assertString(schema.createdAt, "schema.createdAt");
+      assertString(schema.updatedAt, "schema.updatedAt");
+      assertObject(schema.settings, "schema.settings");
+      assertExactKeys(schema.settings, ["theme"], "schema.settings");
+      assertObject(schema.settings.theme, "schema.settings.theme");
+      assertExactKeys(schema.settings.theme, [...THEME_COLOR_FIELDS.map(([key]) => key), "fontFamily"], "schema.settings.theme");
+      THEME_COLOR_FIELDS.forEach(([key]) => assertHexColor(schema.settings.theme[key], `schema.settings.theme.${key}`));
+      assertFontFamily(schema.settings.theme.fontFamily, "schema.settings.theme.fontFamily");
+      assertArray(schema.fields, "schema.fields");
       const seenIds = new Set();
-      next.fields = Array.isArray(input?.fields)
-        ? input.fields.map(normalizeField).map((field) => {
-          field.id = uniqueId(field.id, seenIds);
-          return field;
-        })
-        : [];
-      return next;
+      schema.fields.forEach((field, index) => {
+        schemaField(field);
+        if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
+        seenIds.add(field.id);
+        if (field.type === "headline" && field.required) throw new Error(`schema.fields[${index}].required must be false for headline.`);
+        if (["media", "spacer"].includes(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+      });
+      return schema;
     }
 
     function primaryHeadlineField(schema) {
@@ -2578,13 +2954,13 @@
 
     function formDisplayName(schema) {
       const headline = primaryHeadlineField(schema);
-      return String(headline?.label || "").trim() || "Untitled form";
+      return String(headline?.label || "").trim();
     }
 
     function formHasContent(schema) {
-      const theme = normalizeTheme(schema?.settings?.theme);
+      const theme = themeSettings(schema.settings.theme);
       const themeChanged = JSON.stringify(theme) !== JSON.stringify(DEFAULT_THEME);
-      return themeChanged || (schema.fields || []).some((field) => {
+      return themeChanged || schema.fields.some((field) => {
         if (field.type !== "headline") return true;
         return String(field.label || "").trim() !== "Untitled form" || String(field.description || "").trim();
       });
@@ -2593,7 +2969,7 @@
     function loadInitialSchema() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) return normalizeSchema(JSON.parse(saved));
+        if (saved) return schemaDocument(JSON.parse(saved));
       } catch (error) {
         console.warn(error);
       }
@@ -2629,25 +3005,14 @@
       });
     }
 
-    function clampMediaNumber(value, fallback, min, max) {
-      const number = settingNumber(value, fallback);
-      return Math.max(min, Math.min(max, number));
+    function horizontalAlignmentSetting(value, allowed = ["left", "center", "right"]) {
+      if (!allowed.includes(value)) throw new Error(`Unsupported horizontal alignment: ${value}`);
+      return value;
     }
 
-    function cleanMediaDimension(value) {
-      const text = String(value ?? "").trim();
-      if (!text) return "";
-      if (/^\d+(?:\.\d+)?(?:px|%|rem|em|vw|vh)$/i.test(text)) return text;
-      if (/^\d+(?:\.\d+)?$/.test(text)) return text + "px";
-      return "";
-    }
-
-    function normalizeHorizontalAlignment(value, allowed = ["left", "center", "right"], fallback = "center") {
-      return allowed.includes(value) ? value : fallback;
-    }
-
-    function normalizeVerticalAlignment(value) {
-      return ["top", "center", "bottom"].includes(value) ? value : "center";
+    function verticalAlignmentSetting(value) {
+      if (!["top", "center", "bottom"].includes(value)) throw new Error(`Unsupported vertical alignment: ${value}`);
+      return value;
     }
 
     function horizontalFlexValue(value) {
@@ -2667,41 +3032,44 @@
       return "center";
     }
 
+    function fieldOutline(field) {
+      return field.settings.outline === true;
+    }
+
     function headlineSettings(field) {
-      const settings = field?.settings || {};
+      const settings = field.settings;
       return {
-        headingHorizontalAlignment: normalizeHorizontalAlignment(settings.headingHorizontalAlignment, ["left", "center", "right"], "left"),
-        headingVerticalAlignment: normalizeVerticalAlignment(settings.headingVerticalAlignment || "top"),
-        descriptionHorizontalAlignment: normalizeHorizontalAlignment(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "left"),
-        descriptionVerticalAlignment: normalizeVerticalAlignment(settings.descriptionVerticalAlignment || "top"),
-        outline: settings.outline === true
+        headingHorizontalAlignment: horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]),
+        headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
+        descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
+        descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
+        outline: fieldOutline(field)
       };
     }
 
     function mediaSettings(field) {
-      const settings = field?.settings || {};
-      const height = clampMediaNumber(settings.iframeHeight, 260, 120, 1200);
-      const horizontalAlignment = normalizeHorizontalAlignment(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-      const verticalAlignment = normalizeVerticalAlignment(settings.verticalAlignment);
+      const settings = field.settings;
+      const horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
+      const verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
       const fits = new Set(["contain", "cover", "fill", "scale-down"]);
-      const objectFit = fits.has(settings.objectFit) ? settings.objectFit : "contain";
+      if (!fits.has(settings.objectFit)) throw new Error(`Unsupported media fit: ${settings.objectFit}`);
       return {
-        sourceType: settings.sourceType || "url",
-        url: String(settings.url || ""),
-        dataUrl: String(settings.dataUrl || ""),
-        mimeType: String(settings.mimeType || ""),
-        fileName: String(settings.fileName || ""),
-        alt: String(settings.alt || ""),
-        caption: String(settings.caption || ""),
-        html: String(settings.html || ""),
-        iframeHeight: height,
+        sourceType: settings.sourceType,
+        url: settings.url,
+        dataUrl: settings.dataUrl,
+        mimeType: settings.mimeType,
+        fileName: settings.fileName,
+        alt: settings.alt,
+        caption: settings.caption,
+        html: settings.html,
+        iframeHeight: settings.iframeHeight,
         horizontalAlignment,
         verticalAlignment,
-        scale: clampMediaNumber(settings.scale, 100, 10, 100),
-        maxWidth: cleanMediaDimension(settings.maxWidth),
-        maxHeight: clampMediaNumber(settings.maxHeight, 360, 80, 1600),
-        objectFit,
-        outline: settings.outline === true
+        scale: settings.scale,
+        maxWidth: settings.maxWidth,
+        maxHeight: settings.maxHeight,
+        objectFit: settings.objectFit,
+        outline: fieldOutline(field)
       };
     }
 
@@ -2757,7 +3125,7 @@
       const settings = mediaSettings(field);
       const source = mediaSource(settings);
       const kind = mediaKind(settings);
-      const title = settings.alt || settings.fileName || field.label || "Media";
+      const title = settings.alt || settings.fileName || field.label;
       const wrapStyle = mediaAlignmentStyle(settings);
       const visualStyle = mediaVisualStyle(settings);
 
@@ -2876,7 +3244,7 @@
     }
 
     function radarPointFromPolar(angle, value, max, center, radius) {
-      const radians = -Math.PI / 2 + (normalizeRadarAngle(angle) * Math.PI / 180);
+      const radians = -Math.PI / 2 + (radarAngle(angle) * Math.PI / 180);
       const scaled = radarValueScale(value, max);
       return {
         x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
@@ -2891,17 +3259,17 @@
     }
 
     function nearestRadarAxis(angle, axes) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const step = 360 / labels.length;
-      const index = Math.round(normalizeRadarAngle(angle) / step) % labels.length;
+      const index = Math.round(radarAngle(angle) / step) % labels.length;
       return labels[index];
     }
 
     function radarPointDescription(angle, axes) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const step = 360 / labels.length;
-      const normalized = normalizeRadarAngle(angle);
-      const position = normalized / step;
+      const cleaned = radarAngle(angle);
+      const position = cleaned / step;
       const lower = Math.floor(position) % labels.length;
       const upper = (lower + 1) % labels.length;
       const blend = position - lower;
@@ -2911,13 +3279,13 @@
     }
 
     function RadarPreview({ field }) {
-      const axes = normalizeRadarAxes(field.settings?.axes);
-      const mode = normalizeRadarMode(field.settings?.mode);
-      const max = normalizeRadarMax(field.settings?.max);
+      const axes = radarAxes(field.settings.axes);
+      const mode = radarMode(field.settings.mode);
+      const max = radarMax(field.settings.max);
       const center = 65;
       const radius = 44;
-      const values = normalizeRadarValues(field.settings?.defaultValues, axes, max);
-      const point = normalizeRadarPoint(field.settings?.defaultPoint, max);
+      const values = radarValues(field.settings.defaultValues, axes, max);
+      const point = radarPointSetting(field.settings.defaultPoint, max);
       const polygon = radarPoints(values, max, center, radius);
       const pointPosition = radarPointFromPolar(point.angle, point.value, max, center, radius);
 
@@ -2964,7 +3332,7 @@
     }
 
     function SpacerPreview({ field }) {
-      const settings = normalizeSpacerSettings(field);
+      const settings = spacerSettings(field);
       return html`
         <div class="spacer-preview" style=${spacerStyle(settings)} aria-hidden="true">
           ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
@@ -2975,47 +3343,56 @@
 
 
     function CalendarPreview({ field }) {
-      const settings = normalizeCalendarSettings(field);
-      const startDate = settings.startDate || todayISO();
-      const endDate = settings.endDate || addDays(startDate, 7);
-      const startTime = dateTime(startDate);
-      const endTime = dateTime(endDate);
-      const rangeStart = Math.min(startTime, endTime);
-      const rangeEnd = Math.max(startTime, endTime);
-      const monthDate = monthStartFromDate(startDate || endDate);
+      const settings = calendarSettings(field);
+      const startTime = dateTime(settings.startDate);
+      const endTime = dateTime(settings.endDate);
+      const hasRange = startTime !== null && endTime !== null;
+      const rangeStart = hasRange ? Math.min(startTime, endTime) : null;
+      const rangeEnd = hasRange ? Math.max(startTime, endTime) : null;
+      const monthDate = monthStartFromDate(calendarAnchorDate(settings));
       const month = monthDate.getMonth();
-      const milestoneDates = new Set(settings.milestones.map((item) => item.date).filter(Boolean));
       const milestones = settings.milestones.filter((item) => item.date || item.label);
 
       return html`
-        <div class="calendar-preview">
-          <div class="calendar-preview-dates">
-            <div class="calendar-date-chip"><span>Start</span><strong>${readableDate(startDate)}</strong></div>
-            <div class="calendar-date-chip"><span>End</span><strong>${readableDate(endDate)}</strong></div>
-          </div>
-          <div class="calendar-preview-head">
-            <div class="calendar-month-label">${monthLabel(monthDate)}</div>
-          </div>
-          <div class="calendar-weekdays" aria-hidden="true">
-            ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
-          </div>
-          <div class="calendar-grid" aria-hidden="true">
+        <div class=${`calendar-preview${settings.outline ? "" : " is-unboxed"}`}>
+          <div class="calendar-frame">
+            <div class="calendar-preview-head">
+              <div class="calendar-month-label">${monthLabel(monthDate)}</div>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
+            </div>
+            <div class="calendar-grid" aria-hidden="true">
             ${calendarGridDates(monthDate).map((date) => {
               const iso = isoFromDate(date);
               const time = date.getTime();
-              const inRange = time >= rangeStart && time <= rangeEnd;
-              const isBoundary = iso === startDate || iso === endDate;
+              const inRange = rangeStart !== null && rangeEnd !== null && time >= rangeStart && time <= rangeEnd;
+              const isBoundary = iso === settings.startDate || iso === settings.endDate;
+              const isRangeStart = inRange && (iso === settings.startDate || date.getDay() === 0);
+              const isRangeEnd = inRange && (iso === settings.endDate || date.getDay() === 6);
               const isOutside = date.getMonth() !== month;
-              const isMilestone = milestoneDates.has(iso);
-              return html`<div class=${`calendar-day${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isBoundary ? " is-boundary" : ""}${isMilestone ? " is-milestone" : ""}`} key=${iso}>${date.getDate()}</div>`;
+              const dayMilestones = calendarMilestonesForDate(settings.milestones, iso);
+              return html`<div class=${`calendar-day${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isRangeStart ? " is-range-start" : ""}${isRangeEnd ? " is-range-end" : ""}${isBoundary ? " is-boundary" : ""}${dayMilestones.length ? " is-milestone" : ""}`} key=${iso}>
+                <span class="calendar-day-number">${date.getDate()}</span>
+                ${dayMilestones.length ? html`
+                  <span class="calendar-milestone-popover" aria-hidden="true">
+                    ${dayMilestones.map((item) => html`<span class="calendar-milestone-popover-line" key=${item.id || item.label || item.date}>${item.label || "Milestone"}</span>`)}
+                  </span>
+                ` : null}
+              </div>`;
             })}
+            </div>
+          </div>
+          <div class="calendar-range-summary">
+            <span><b>Start</b>${readableDate(settings.startDate)}</span>
+            <span><b>End</b>${readableDate(settings.endDate)}</span>
           </div>
           ${settings.allowMilestones && milestones.length ? html`
             <div class="calendar-milestone-list">
               ${milestones.map((item) => html`
                 <div class="calendar-milestone-item" key=${item.id}>
                   <span class="calendar-milestone-date">${item.date ? readableDate(item.date) : "No date"}</span>
-                  <span class="calendar-milestone-name">${item.label || "Milestone"}</span>
+                  <span class="calendar-milestone-name">${item.label}</span>
                 </div>
               `)}
             </div>
@@ -3025,7 +3402,7 @@
     }
 
     function FieldPreview({ field }) {
-      const options = field.options || [];
+      const options = field.options;
       switch (field.type) {
         case "headline":
           return html`<${HeadlinePreview} field=${field} />`;
@@ -3033,11 +3410,11 @@
         case "email":
         case "number":
         case "link":
-          return html`<div class="preview-line">${field.placeholder || ""}</div>`;
+          return html`<div class="preview-line">${field.placeholder}</div>`;
         case "calendar":
           return html`<${CalendarPreview} field=${field} />`;
         case "long_answer":
-          return html`<div class="preview-box">${field.placeholder || ""}</div>`;
+          return html`<div class="preview-box">${field.placeholder}</div>`;
         case "multiple_choice":
           return html`<div class="choice-preview">${options.map((option) => html`<div class="choice-row" key=${option}><span class="choice-dot"></span><span>${option}</span></div>`)}</div>`;
         case "checkbox":
@@ -3047,25 +3424,25 @@
         case "mood_meter":
           return html`
             <div class="meter-preview">
-              <span>${field.settings?.minLabel || "Low"}</span>
+              <span>${field.settings.minLabel}</span>
               <${Icon} icon="fa-regular fa-face-angry" />
               <${Icon} icon="fa-regular fa-face-frown" />
               <${Icon} icon="fa-regular fa-face-meh" />
               <${Icon} icon="fa-regular fa-face-smile" />
               <${Icon} icon="fa-regular fa-face-laugh" />
-              <span>${field.settings?.maxLabel || "High"}</span>
+              <span>${field.settings.maxLabel}</span>
             </div>
           `;
         case "linear_scale":
           return html`
             <div class="scale-preview">
-              <span>${field.settings?.minLabel || "Low"}</span>
+              <span>${field.settings.minLabel}</span>
               <span class="scale-track"></span>
-              <span>${field.settings?.maxLabel || "High"}</span>
+              <span>${field.settings.maxLabel}</span>
             </div>
           `;
         case "star_rating":
-          return html`<div class="star-preview">${Array.from({ length: Number(field.settings?.max) || 5 }, (_, index) => html`<${Icon} icon="fa-regular fa-star" key=${index} />`)}</div>`;
+          return html`<div class="star-preview">${Array.from({ length: Number(field.settings.max) }, (_, index) => html`<${Icon} icon="fa-regular fa-star" key=${index} />`)}</div>`;
         case "radar":
           return html`<${RadarPreview} field=${field} />`;
         case "media_upload":
@@ -3155,14 +3532,14 @@
 
       useEffect(() => {
         if (!pickerRef.current) return;
-        const next = cleanColor(color, DEFAULT_THEME.accent);
+        const next = hexColor(color);
         if (pickerRef.current.color.hexString.toLowerCase() !== next.toLowerCase()) {
           pickerRef.current.color.hexString = next;
         }
       }, [color]);
 
       if (!window.iro) {
-        return html`<div class="theme-picker-fallback">Color picker unavailable. Use the color fields below.</div>`;
+        return html`<div class="theme-picker-unavailable">Color picker unavailable. Use the color fields below.</div>`;
       }
 
       return html`<div class="theme-color-picker-ui" ref=${mountRef}></div>`;
@@ -3245,16 +3622,16 @@
       const [catalog, setCatalog] = useState([]);
       const [catalogState, setCatalogState] = useState("idle");
       const current = fontOptionByFamily(value);
-      const normalizedQuery = query.trim().toLowerCase();
-      const hasSearch = normalizedQuery.length > 0;
+      const cleanQuery = query.trim().toLowerCase();
+      const hasSearch = cleanQuery.length > 0;
       const matchingFonts = useMemo(() => {
         if (!hasSearch) return [];
         const source = catalog.length ? catalog : [];
-        const matches = source.filter((font) => font.family.toLowerCase().includes(normalizedQuery));
-        const systemMatch = SYSTEM_FONT_OPTION.family.toLowerCase().includes(normalizedQuery);
+        const matches = source.filter((font) => font.family.toLowerCase().includes(cleanQuery));
+        const systemMatch = SYSTEM_FONT_OPTION.family.toLowerCase().includes(cleanQuery);
         const options = systemMatch ? [SYSTEM_FONT_OPTION, ...matches] : matches;
         return options.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
-      }, [catalog, hasSearch, normalizedQuery]);
+      }, [catalog, hasSearch, cleanQuery]);
 
       useEffect(() => {
         if (!hasSearch) {
@@ -3347,9 +3724,9 @@
     }
 
     function SidebarSettings({ schema, onSchemaChange, onOpenColor, onOpenFont }) {
-      const theme = normalizeTheme(schema?.settings?.theme);
+      const theme = themeSettings(schema.settings.theme);
       const currentFont = fontOptionByFamily(theme.fontFamily);
-      const patchTheme = (patch) => onSchemaChange({ settings: { ...(schema.settings || {}), theme: normalizeTheme({ ...theme, ...patch }) } });
+      const patchTheme = (patch) => onSchemaChange({ settings: { ...schema.settings, theme: themeSettings({ ...theme, ...patch }) } });
 
       return html`
         <div class="sidebar-section">
@@ -3508,6 +3885,7 @@
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
+          <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           ${!["headline", "media", "spacer"].includes(selectedField.type) ? html`
             <label class="toggle-row">
               <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
@@ -3518,19 +3896,33 @@
       `;
     }
 
+    function OutlineSettings({ field, onFieldChange }) {
+      const patchSettings = (outline) => {
+        const patch = { settings: { ...field.settings, outline } };
+        if (["headline", "media", "spacer"].includes(field.type)) patch.required = false;
+        onFieldChange(patch);
+      };
+      return html`
+        <label class="toggle-row">
+          <input type="checkbox" checked=${fieldOutline(field)} onChange=${(event) => patchSettings(event.currentTarget.checked)} />
+          <span>Show outline</span>
+        </label>
+      `;
+    }
+
     function PlaceholderSettings({ field, onFieldChange }) {
       if (!["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) return null;
       return html`
         <div class="property">
           <label for="fieldPlaceholder">Placeholder</label>
-          <input class="control" id="fieldPlaceholder" value=${field.placeholder || ""} onInput=${(event) => onFieldChange({ placeholder: event.currentTarget.value })} />
+          <input class="control" id="fieldPlaceholder" value=${field.placeholder} onInput=${(event) => onFieldChange({ placeholder: event.currentTarget.value })} />
         </div>
       `;
     }
 
     function OptionSettings({ field, onFieldChange }) {
       if (!["multiple_choice", "checkbox", "poll"].includes(field.type)) return null;
-      const options = field.options || [];
+      const options = field.options;
       return html`
         <div class="property">
           <div class="mini-label">Options</div>
@@ -3551,7 +3943,7 @@
                 type="button"
                 title="Remove option"
                 aria-label="Remove option"
-                onClick=${() => onFieldChange({ options: options.filter((_, itemIndex) => itemIndex !== index).length ? options.filter((_, itemIndex) => itemIndex !== index) : ["Option 1"] })}
+                onClick=${() => onFieldChange({ options: options.filter((_, itemIndex) => itemIndex !== index) })}
               >
                 <${Icon} icon="fa-solid fa-xmark" />
               </button>
@@ -3567,7 +3959,7 @@
     function TypeSettings({ field, onFieldChange }) {
       if (field.type === "headline") {
         const settings = headlineSettings(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...(field.settings || {}), ...patch } });
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
         return html`
           <div class="settings-grid">
             <div class="property">
@@ -3603,10 +3995,6 @@
               </select>
             </div>
           </div>
-          <label class="toggle-row">
-            <input type="checkbox" checked=${settings.outline} onChange=${(event) => patchSettings({ outline: event.currentTarget.checked })} />
-            <span>Show section outline</span>
-          </label>
         `;
       }
 
@@ -3615,46 +4003,46 @@
           <div class="settings-grid">
             <div class="property">
               <label for="minLabel">Low label</label>
-              <input class="control" id="minLabel" value=${field.settings?.minLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
+              <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
             </div>
             <div class="property">
               <label for="maxLabel">High label</label>
-              <input class="control" id="maxLabel" value=${field.settings?.maxLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
+              <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
             </div>
           </div>
         `;
       }
 
       if (field.type === "linear_scale") {
-        const settings = { ...normalizeLinearScaleSettings(field), ...(field.settings || {}) };
+        const settings = field.settings;
         return html`
           <div class="settings-grid">
             <div class="property">
               <label for="scaleMin">Minimum</label>
-              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), min: event.currentTarget.value } })} />
+              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...field.settings, min: Number(event.currentTarget.value) } })} />
             </div>
             <div class="property">
               <label for="scaleMax">Maximum</label>
-              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), max: event.currentTarget.value } })} />
+              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
             </div>
             <div class="property">
               <label for="scaleMinLabel">Low label</label>
-              <input class="control" id="scaleMinLabel" value=${settings.minLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), minLabel: event.currentTarget.value } })} />
+              <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
             </div>
             <div class="property">
               <label for="scaleMaxLabel">High label</label>
-              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel || ""} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), maxLabel: event.currentTarget.value } })} />
+              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
             </div>
           </div>
         `;
       }
 
       if (field.type === "star_rating") {
-        const settings = { ...normalizeStarRatingSettings(field), ...(field.settings || {}) };
+        const settings = field.settings;
         return html`
           <div class="property">
             <label for="starMax">Stars</label>
-            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...(field.settings || {}), max: event.currentTarget.value } })} />
+            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
           </div>
         `;
       }
@@ -3662,13 +4050,8 @@
 
 
       if (field.type === "calendar") {
-        const normalized = normalizeCalendarSettings(field);
-        const settings = {
-          ...normalized,
-          ...(field.settings || {}),
-          milestones: Array.isArray(field.settings?.milestones) ? field.settings.milestones : normalized.milestones
-        };
-        const patchSettings = (patch) => onFieldChange({ settings: { ...(field.settings || {}), ...patch } });
+        const settings = field.settings;
+        const patchSettings = (patch) => onFieldChange({ settings: { ...field.settings, ...patch } });
         const updateMilestone = (index, patch) => {
           const milestones = settings.milestones.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
           patchSettings({ milestones });
@@ -3701,7 +4084,7 @@
                   <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
                 </div>
               `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: settings.startDate || todayISO(), label: "Milestone " + (settings.milestones.length + 1) }] })}>
+              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) }] })}>
                 <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
               </button>
             </div>
@@ -3710,19 +4093,18 @@
       }
 
       if (field.type === "media_upload") {
-        const settings = { accept: "image/*,video/*,audio/*,.svg,.pdf", ...(field.settings || {}) };
+        const settings = field.settings;
         return html`
           <div class="property">
             <label for="mediaUploadAccept">Accepted types</label>
-            <input class="control" id="mediaUploadAccept" value=${settings.accept || ""} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
+            <input class="control" id="mediaUploadAccept" value=${settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
           </div>
         `;
       }
 
       if (field.type === "media") {
-        const normalized = mediaSettings(field);
-        const settings = { ...normalized, ...(field.settings || {}) };
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...(field.settings || {}), ...patch } });
+        const settings = field.settings;
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
         const fileInputId = field.id + "_mediaFile";
 
         return html`
@@ -3775,7 +4157,7 @@
             </div>
             <div class="property">
               <label for="mediaIframeHeight">HTML height</label>
-              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: event.currentTarget.value })} />
+              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: Number(event.currentTarget.value) })} />
             </div>
           ` : null}
 
@@ -3790,11 +4172,6 @@
             <label for="mediaCaption">Caption</label>
             <input class="control" id="mediaCaption" value=${settings.caption} onInput=${(event) => patchSettings({ caption: event.currentTarget.value })} />
           </div>
-
-          <label class="toggle-row">
-            <input type="checkbox" checked=${settings.outline} onChange=${(event) => patchSettings({ outline: event.currentTarget.checked })} />
-            <span>Show section outline</span>
-          </label>
 
           <div class="settings-grid">
             <div class="property">
@@ -3819,7 +4196,7 @@
           <div class="settings-grid">
             <div class="property">
               <label for="mediaScale">Scale %</label>
-              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: event.currentTarget.value })} />
+              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: Number(event.currentTarget.value) })} />
             </div>
             <div class="property">
               <label for="mediaMaxWidth">Max width</label>
@@ -3830,7 +4207,7 @@
           <div class="settings-grid">
             <div class="property">
               <label for="mediaMaxHeight">Max height</label>
-              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: event.currentTarget.value })} />
+              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: Number(event.currentTarget.value) })} />
             </div>
             <div class="property">
               <label for="mediaObjectFit">Fit</label>
@@ -3846,25 +4223,20 @@
       }
 
       if (field.type === "radar") {
-        const rawSettings = field.settings || {};
-        const axes = normalizeRadarAxes(rawSettings.axes);
-        const mode = normalizeRadarMode(rawSettings.mode);
-        const max = normalizeRadarMax(rawSettings.max);
+        const rawSettings = field.settings;
+        const axes = radarAxes(rawSettings.axes);
+        const mode = radarMode(rawSettings.mode);
+        const max = radarMax(rawSettings.max);
         const settings = {
           mode,
           max,
           axes,
-          defaultValues: normalizeRadarValues(rawSettings.defaultValues, axes, max),
-          defaultPoint: normalizeRadarPoint(rawSettings.defaultPoint, max)
+          defaultValues: radarValues(rawSettings.defaultValues, axes, max),
+          defaultPoint: radarPointSetting(rawSettings.defaultPoint, max)
         };
-        const displayAxes = Array.isArray(rawSettings.axes) && rawSettings.axes.length ? rawSettings.axes : axes;
-        const displayValues = Array.isArray(rawSettings.defaultValues) ? rawSettings.defaultValues : settings.defaultValues;
-        const rawDefaultPoint = rawSettings.defaultPoint && typeof rawSettings.defaultPoint === "object" && !Array.isArray(rawSettings.defaultPoint) ? rawSettings.defaultPoint : {};
-        const displayDefaultPoint = {
-          angle: Object.prototype.hasOwnProperty.call(rawDefaultPoint, "angle") ? rawDefaultPoint.angle : settings.defaultPoint.angle,
-          value: Object.prototype.hasOwnProperty.call(rawDefaultPoint, "value") ? rawDefaultPoint.value : settings.defaultPoint.value
-        };
-        const displayMax = Object.prototype.hasOwnProperty.call(rawSettings, "max") ? rawSettings.max : settings.max;
+        const displayAxes = rawSettings.axes;
+        const displayValues = rawSettings.defaultValues;
+        const rawDefaultPoint = rawSettings.defaultPoint;
         const midpoint = Math.round(RADAR_MIN_VALUE + (settings.max - RADAR_MIN_VALUE) / 2);
 
         function commitRadarSettings(patch) {
@@ -3881,7 +4253,7 @@
           </div>
           <div class="property">
             <label for="radarMax">Maximum</label>
-            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${displayMax} onInput=${(event) => commitRadarSettings({ max: event.currentTarget.value })} />
+            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${rawSettings.max} onInput=${(event) => commitRadarSettings({ max: Number(event.currentTarget.value) })} />
           </div>
           ${settings.mode === "point" ? html`
             <div class="settings-grid">
@@ -3894,8 +4266,8 @@
                   min="0"
                   max="359"
                   step="1"
-                  value=${displayDefaultPoint.angle}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, angle: event.currentTarget.value } })}
+                  value=${rawDefaultPoint.angle}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, angle: Number(event.currentTarget.value) } })}
                 />
               </div>
               <div class="property">
@@ -3907,8 +4279,8 @@
                   min=${RADAR_MIN_VALUE}
                   max=${settings.max}
                   step="0.1"
-                  value=${displayDefaultPoint.value}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, value: event.currentTarget.value } })}
+                  value=${rawDefaultPoint.value}
+                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, value: Number(event.currentTarget.value) } })}
                 />
               </div>
             </div>
@@ -3934,11 +4306,11 @@
                     type="number"
                     min=${RADAR_MIN_VALUE}
                     max=${settings.max}
-                    value=${displayValues[index] ?? settings.defaultValues[index] ?? midpoint}
+                    value=${displayValues[index]}
                     aria-label=${`Radar placeholder value ${index + 1}`}
                     onInput=${(event) => {
               const nextValues = [...displayValues];
-              nextValues[index] = event.currentTarget.value;
+              nextValues[index] = Number(event.currentTarget.value);
               commitRadarSettings({ defaultValues: nextValues });
             }}
                   />
@@ -3966,12 +4338,12 @@
       }
 
       if (field.type === "spacer") {
-        const settings = { ...normalizeSpacerSettings(field), ...(field.settings || {}) };
-        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...(field.settings || {}), ...patch } });
+        const settings = field.settings;
+        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...field.settings, ...patch } });
         return html`
           <div class="property">
             <label for="spacerHeight">Height</label>
-            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: event.currentTarget.value })} />
+            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: Number(event.currentTarget.value) })} />
           </div>
           <label class="toggle-row">
             <input type="checkbox" checked=${settings.showLine} onChange=${(event) => patchSettings({ showLine: event.currentTarget.checked })} />
@@ -3981,7 +4353,7 @@
             <div class="settings-grid">
               <div class="property">
                 <label for="spacerLineThickness">Line thickness</label>
-                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: event.currentTarget.value })} />
+                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: Number(event.currentTarget.value) })} />
               </div>
               <div class="property">
                 <label for="spacerLineStyle">Line style</label>
@@ -4007,8 +4379,10 @@
       const [removingId, setRemovingId] = useState(null);
       const [activeColorItem, setActiveColorItem] = useState(null);
       const [fontPickerOpen, setFontPickerOpen] = useState(false);
+      const [exportMenuOpen, setExportMenuOpen] = useState(false);
       const fieldsRef = useRef(null);
       const dragPayloadRef = useRef(null);
+      const exportMenuRef = useRef(null);
       const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
 
       useEffect(() => {
@@ -4016,11 +4390,27 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       }, [schema]);
 
+      useEffect(() => {
+        if (!exportMenuOpen) return undefined;
+        function handlePointerDown(event) {
+          if (exportMenuRef.current?.contains(event.target)) return;
+          setExportMenuOpen(false);
+        }
+        function handleKeyDown(event) {
+          if (event.key === "Escape") setExportMenuOpen(false);
+        }
+        window.addEventListener("pointerdown", handlePointerDown);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+          window.removeEventListener("pointerdown", handlePointerDown);
+          window.removeEventListener("keydown", handleKeyDown);
+        };
+      }, [exportMenuOpen]);
+
       function updateSchema(patch) {
         setSchema((current) => {
           const next = { ...current, ...patch };
-          if (patch.settings) next.settings = { ...(current.settings || {}), ...patch.settings };
-          if (next.settings?.theme) next.settings = { ...(next.settings || {}), theme: normalizeTheme(next.settings.theme) };
+          if (patch.settings) next.settings = { ...current.settings, ...patch.settings };
           return next;
         });
       }
@@ -4030,9 +4420,9 @@
           const fields = [...current.fields];
           const index = fields.findIndex((field) => field.type === "headline");
           if (index >= 0) {
-            fields[index] = normalizeField({ ...fields[index], ...patch });
+            fields[index] = schemaField({ ...fields[index], ...patch });
           } else {
-            fields.unshift(normalizeField({ id: uid(), type: "headline", ...patch }));
+            fields.unshift(schemaField({ ...fieldFromType("headline"), ...patch, required: false }));
           }
           return { ...current, fields };
         });
@@ -4051,7 +4441,7 @@
             return {
               ...field,
               ...patch,
-              settings: patch.settings ? { ...(field.settings || {}), ...patch.settings } : field.settings
+              settings: patch.settings ? { ...field.settings, ...patch.settings } : field.settings
             };
           })
         }));
@@ -4079,7 +4469,7 @@
         if (index < 0) return;
         const source = schema.fields[index];
         const copyLabel = String(source.label ?? "").trim() ? source.label + " copy" : "";
-        const copy = normalizeField({ ...clone(source), id: uid(), label: copyLabel });
+        const copy = schemaField({ ...clone(source), id: uid(), label: copyLabel });
         setSchema((current) => {
           const fields = [...current.fields];
           fields.splice(index + 1, 0, copy);
@@ -4102,8 +4492,8 @@
       }
 
       function clampDropIndex(index, length) {
-        const fallback = Number.isInteger(index) ? index : length;
-        return Math.max(0, Math.min(fallback, length));
+        const targetIndex = Number.isInteger(index) ? index : length;
+        return Math.max(0, Math.min(targetIndex, length));
       }
 
       function sameDragPayload(first, second) {
@@ -4195,7 +4585,7 @@
         if (!file) return;
         try {
           const text = await file.text();
-          const imported = normalizeSchema(JSON.parse(text));
+          const imported = schemaDocument(JSON.parse(text));
           setSchema(imported);
           setSelectedId(imported.fields[0]?.id || null);
         } catch (error) {
@@ -4206,21 +4596,61 @@
         }
       }
 
-      function exportSchema() {
-        const output = normalizeSchema(schema);
-        const blob = new Blob([JSON.stringify(output, null, 2)], { type: "application/json" });
+      function downloadBlob(blob, fileName) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = safeFileName(formDisplayName(schema) || "form-schema") + ".json";
+        link.download = fileName;
         document.body.appendChild(link);
         link.click();
         link.remove();
         URL.revokeObjectURL(url);
       }
 
+      function exportSchema() {
+        const output = schemaDocument(schema);
+        downloadBlob(
+          new Blob([JSON.stringify(output, null, 2)], { type: "application/json" }),
+          safeFileName(formDisplayName(schema) || "form-schema") + ".json"
+        );
+      }
+
+      function runtimeHtmlWithSchema(runtimeHtml, output) {
+        const token = encodeSchemaToken(output);
+        const embeddedTag = `<script id="formal-embedded-schema" type="application/json" data-schema-token="${token}"><` + `/script>`;
+        const slotPattern = /<script id="formal-embedded-schema" type="application\/json" data-schema-token="[^"]*"><\/script>/;
+        if (!slotPattern.test(runtimeHtml)) throw new Error("Runtime embedded schema slot was not found.");
+        return runtimeHtml.replace(slotPattern, embeddedTag);
+      }
+
+      async function exportRuntime() {
+        const output = schemaDocument({ ...schema, updatedAt: new Date().toISOString() });
+        try {
+          const response = await fetch("form-runtime.html?standalone=" + Date.now(), { cache: "no-store" });
+          if (!response.ok) throw new Error("Unable to load form-runtime.html");
+          const runtimeHtml = runtimeHtmlWithSchema(await response.text(), output);
+          downloadBlob(
+            new Blob([runtimeHtml], { type: "text/html" }),
+            safeFileName(formDisplayName(schema) || "form-runtime") + ".html"
+          );
+        } catch (error) {
+          console.error(error);
+          window.alert("The runtime HTML could not be exported. Make sure form-runtime.html is available next to the builder.");
+        }
+      }
+
+      function chooseExportSchema() {
+        setExportMenuOpen(false);
+        exportSchema();
+      }
+
+      function chooseExportRuntime() {
+        setExportMenuOpen(false);
+        exportRuntime();
+      }
+
       function previewForm() {
-        const previewSchema = normalizeSchema({ ...schema, updatedAt: new Date().toISOString() });
+        const previewSchema = schemaDocument({ ...schema, updatedAt: new Date().toISOString() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(previewSchema));
         const hash = "#s=" + encodeSchemaToken(previewSchema);
         window.open("form-runtime.html?preview=1&refresh=" + Date.now() + hash, "formalRuntimePreview");
@@ -4238,7 +4668,7 @@
       }
 
       const formName = formDisplayName(schema);
-      const theme = normalizeTheme(schema?.settings?.theme);
+      const theme = themeSettings(schema.settings.theme);
       const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
       const listDragActive = dragState?.kind && activeDropIndex !== null;
@@ -4248,11 +4678,11 @@
       }, [theme.fontFamily]);
 
       function patchTheme(patch) {
-        updateSchema({ settings: { ...(schema.settings || {}), theme: normalizeTheme({ ...theme, ...patch }) } });
+        updateSchema({ settings: { ...schema.settings, theme: themeSettings({ ...theme, ...patch }) } });
       }
 
       function patchColor(key, value) {
-        patchTheme({ [key]: cleanColor(value, theme[key] || DEFAULT_THEME[key] || DEFAULT_THEME.accent) });
+        patchTheme({ [key]: value });
       }
 
       return html`
@@ -4276,7 +4706,28 @@
             </div>
             <div class="top-actions">
               <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${previewForm}><${Icon} icon="fa-solid fa-play" /></button>
-              <button class="button primary" type="button" aria-label="Export schema" onClick=${exportSchema}><${Icon} icon="fa-solid fa-download" /><span>Export</span></button>
+              <div class="export-menu-wrap" ref=${exportMenuRef}>
+                <button
+                  class="button primary"
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded=${exportMenuOpen ? "true" : "false"}
+                  aria-label="Export"
+                  onClick=${() => setExportMenuOpen((open) => !open)}
+                >
+                  <${Icon} icon="fa-solid fa-download" /><span>Export</span><${Icon} icon="fa-solid fa-chevron-down" className="export-chevron" />
+                </button>
+                ${exportMenuOpen ? html`
+                  <div class="export-menu" role="menu" aria-label="Export options">
+                    <button class="export-menu-item" type="button" role="menuitem" onClick=${chooseExportSchema}>
+                      <${Icon} icon="fa-solid fa-download" /><span>Schema JSON</span>
+                    </button>
+                    <button class="export-menu-item" type="button" role="menuitem" onClick=${chooseExportRuntime}>
+                      <${Icon} icon="fa-regular fa-file-code" /><span>Runtime HTML</span>
+                    </button>
+                  </div>
+                ` : null}
+              </div>
             </div>
           </header>
 

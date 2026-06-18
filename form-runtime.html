@@ -388,6 +388,102 @@
       overflow: hidden;
     }
 
+    .export-mount {
+      position: fixed;
+      top: 0;
+      left: -10000px;
+      width: 842px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .export-document {
+      width: 842px;
+      display: grid;
+      gap: 18px;
+      padding: 18px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--form-font-family);
+      box-sizing: border-box;
+    }
+
+    .export-page {
+      width: 794px;
+      height: 1123px;
+      padding: 48px;
+      box-sizing: border-box;
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid var(--line);
+    }
+
+    .export-page-content {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .export-page-content > * {
+      min-width: 0;
+      width: 100%;
+      break-inside: avoid;
+    }
+
+    .export-document .field,
+    .export-document .headline-field,
+    .export-document .spacer-field {
+      width: 100%;
+      margin: 0;
+      animation: none;
+      transition: none;
+      transform: none;
+    }
+
+    .export-document .field:hover,
+    .export-document .headline-field:hover,
+    .export-document .spacer-field:hover {
+      transform: none;
+    }
+
+    .export-document .field.no-outline:hover,
+    .export-document .headline-field:not(.with-outline):hover {
+      transform: none;
+    }
+
+    .export-document .calendar-nav-buttons,
+    .export-document .calendar-milestone-editor > .button,
+    .export-document .calendar-milestone-row .icon-button,
+    .export-document .calendar-milestone-empty,
+    .export-document .media-upload-preview > input[type="file"],
+    .export-document [data-export-hidden="true"] {
+      display: none !important;
+    }
+
+    .export-document input,
+    .export-document textarea,
+    .export-document select,
+    .export-document button {
+      pointer-events: none;
+    }
+
+    .export-document .calendar-day-button {
+      cursor: default;
+    }
+
+    .export-document svg.media-visual[data-export-inlined-svg="true"] {
+      flex: 0 1 auto;
+    }
+
+    .export-empty {
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-weight: 750;
+    }
+
     .form-header {
       padding: 24px 28px 22px;
       border-bottom: 1px solid var(--line);
@@ -431,15 +527,22 @@
       transform: translateY(-1px);
     }
 
-    .field.media-field.no-outline {
+    .field.no-outline {
       border-color: transparent;
       background: transparent;
       padding: 0;
+      box-shadow: none;
     }
 
-    .field.media-field.no-outline:hover,
+    .field.no-outline:hover,
     .headline-field:not(.with-outline):hover {
       transform: none;
+    }
+
+    .field.no-outline.invalid {
+      border-color: rgba(134, 31, 65, 0.7);
+      background: #ffffff;
+      padding: 16px;
     }
 
     .headline-field {
@@ -866,78 +969,158 @@
 
     .calendar-preview,
     .calendar-control {
+      --calendar-shell-radius: 14px;
+      --calendar-cell-radius: 9px;
+      --calendar-side-padding: 14px;
+      --calendar-cell-height: 36px;
       display: grid;
-      gap: 10px;
+      gap: 12px;
       min-width: 0;
-      border: 1px solid var(--line);
+      border: 0;
       border-radius: 8px;
       background: var(--panel-2);
-      padding: 10px;
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .calendar-preview.is-unboxed,
+    .field.no-outline .calendar-control {
+      border: 0;
+      background: var(--panel-2);
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .calendar-frame {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--calendar-shell-radius);
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(31, 31, 31, 0.04);
     }
 
     .calendar-preview-head,
     .calendar-nav {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
       align-items: center;
-      justify-content: space-between;
+      justify-items: center;
       gap: 8px;
       min-width: 0;
+      border-radius: 0;
+      background: #ffffff;
+      padding: 14px var(--calendar-side-padding) 11px;
+      position: relative;
+      text-align: center;
+    }
+
+    .calendar-nav .calendar-month-label {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      padding: 0 92px;
+    }
+
+    .calendar-nav-buttons {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      justify-self: end;
+      z-index: 1;
     }
 
     .calendar-month-label {
+      min-width: 0;
+      width: 100%;
       color: var(--ink);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
+      line-height: 1.2;
       overflow: hidden;
+      text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .calendar-preview-dates,
+    .calendar-range-summary {
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .calendar-range-summary span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .calendar-range-summary b {
+      margin-right: 4px;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
     .calendar-date-inputs {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      gap: 12px;
+      align-items: start;
+      min-width: 0;
     }
 
-    .calendar-date-chip,
     .calendar-date-field {
       min-width: 0;
       display: grid;
-      gap: 4px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #ffffff;
-      padding: 8px;
+      gap: 5px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      box-shadow: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
-    .calendar-date-chip span,
+    .calendar-date-field:focus-within {
+      background: transparent;
+      box-shadow: none;
+    }
+
     .calendar-date-field span {
       color: var(--muted);
       font-size: 11.5px;
       font-weight: 750;
-    }
-
-    .calendar-date-chip strong {
-      min-width: 0;
-      color: var(--ink);
-      font-size: 13px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      line-height: 1.2;
     }
 
     .calendar-weekdays,
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 3px;
+      gap: 0;
+    }
+
+    .calendar-weekdays {
+      padding: 0 var(--calendar-side-padding) 9px;
+      background: #ffffff;
+    }
+
+    .calendar-grid {
+      padding: 10px var(--calendar-side-padding) 14px;
+      border: 0;
+      border-radius: 0;
+      background: #ffffff;
+      box-shadow: none;
+      overflow: visible;
     }
 
     .calendar-weekday {
-      color: var(--muted);
+      color: #9a9fa3;
       font-size: 10.5px;
       font-weight: 800;
+      line-height: 1.2;
       text-align: center;
       user-select: none;
     }
@@ -945,46 +1128,89 @@
     .calendar-day,
     .calendar-day-button {
       position: relative;
+      z-index: 0;
+      isolation: isolate;
       min-width: 0;
-      min-height: 30px;
+      min-height: var(--calendar-cell-height);
       display: grid;
       place-items: center;
-      border: 1px solid transparent;
-      border-radius: 7px;
+      border: 0;
+      border-radius: 0;
       color: var(--ink);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 750;
       line-height: 1;
-      background: #ffffff;
+      background: transparent;
       font-variant-numeric: tabular-nums;
+    }
+
+    .calendar-day::before,
+    .calendar-day-button::before {
+      content: "";
+      position: absolute;
+      inset: 3px 0;
+      z-index: -1;
+      border-radius: var(--calendar-cell-radius);
+      background: transparent;
+      transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease, border-radius 160ms ease;
+    }
+
+    .calendar-day-number {
+      position: relative;
+      z-index: 1;
+      display: inline-grid;
+      place-items: center;
+      min-width: 1.45em;
+      pointer-events: none;
     }
 
     .calendar-day.is-outside,
     .calendar-day-button.is-outside {
       color: #a6a09a;
-      background: rgba(255, 255, 255, 0.54);
     }
 
     .calendar-day.is-range,
     .calendar-day-button.is-range {
-      border-color: rgba(134, 31, 65, 0.16);
-      background: var(--accent-soft);
       color: var(--accent);
+    }
+
+    .calendar-day.is-range::before,
+    .calendar-day-button.is-range::before {
+      background: var(--accent-soft);
+      border-radius: 0;
+    }
+
+    .calendar-day.is-range-start::before,
+    .calendar-day-button.is-range-start::before {
+      border-top-left-radius: var(--calendar-cell-radius);
+      border-bottom-left-radius: var(--calendar-cell-radius);
+    }
+
+    .calendar-day.is-range-end::before,
+    .calendar-day-button.is-range-end::before {
+      border-top-right-radius: var(--calendar-cell-radius);
+      border-bottom-right-radius: var(--calendar-cell-radius);
     }
 
     .calendar-day.is-boundary,
     .calendar-day-button.is-boundary {
-      border-color: var(--accent);
-      background: var(--accent);
       color: #ffffff;
+    }
+
+    .calendar-day.is-boundary::before,
+    .calendar-day-button.is-boundary::before {
+      background: var(--accent);
+      border-radius: var(--calendar-cell-radius);
+      box-shadow: 0 9px 16px -8px rgba(134, 31, 65, 0.54);
     }
 
     .calendar-day.is-milestone::after,
     .calendar-day-button.is-milestone::after {
       content: "";
       position: absolute;
+      z-index: 2;
       left: 50%;
-      bottom: 4px;
+      bottom: 5px;
       width: 4px;
       height: 4px;
       border-radius: 999px;
@@ -992,11 +1218,105 @@
       transform: translateX(-50%);
     }
 
+    .calendar-day.is-boundary.is-milestone::after,
+    .calendar-day-button.is-boundary.is-milestone::after {
+      background: #ffffff;
+    }
+
+    .calendar-day.is-milestone:hover,
+    .calendar-day-button.is-milestone:hover,
+    .calendar-day-button.is-milestone:focus-visible {
+      z-index: 8;
+    }
+
+    .calendar-milestone-popover {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      z-index: 5;
+      width: max-content;
+      min-width: 96px;
+      max-width: 220px;
+      display: grid;
+      gap: 3px;
+      padding: 7px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--ink);
+      box-shadow: 0 8px 18px rgba(31, 31, 31, 0.12);
+      font-size: 11.5px;
+      font-weight: 750;
+      line-height: 1.3;
+      text-align: left;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 3px);
+      transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .calendar-milestone-popover::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 7px;
+      height: 7px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+      transform: translate(-50%, -4px) rotate(45deg);
+    }
+
+    .calendar-milestone-popover-line {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .calendar-day.is-milestone:hover .calendar-milestone-popover,
+    .calendar-day-button.is-milestone:hover .calendar-milestone-popover,
+    .calendar-day-button.is-milestone:focus-visible .calendar-milestone-popover {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .calendar-day-button {
+      cursor: pointer;
+      transition: color 160ms ease, transform 160ms ease;
+    }
+
+    .calendar-day-button:hover::before,
+    .calendar-day-button:focus-visible::before {
+      background: rgba(31, 31, 31, 0.07);
+      transform: translateY(-1px);
+    }
+
+    .calendar-day-button.is-range:hover::before,
+    .calendar-day-button.is-range:focus-visible::before {
+      background: var(--accent-soft);
+    }
+
+    .calendar-day-button.is-boundary:hover::before,
+    .calendar-day-button.is-boundary:focus-visible::before {
+      background: var(--accent);
+      box-shadow: 0 9px 16px -8px rgba(134, 31, 65, 0.54);
+    }
+
+    .calendar-day-button:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: -2px;
+    }
+
     .calendar-milestone-list,
     .calendar-milestone-editor {
       display: grid;
       gap: 7px;
       min-width: 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(215, 210, 203, 0.72);
     }
 
     .calendar-milestone-editor-head {
@@ -1013,10 +1333,10 @@
     }
 
     .calendar-milestone-empty {
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.52);
+      border: 0;
+      border-radius: 0;
+      padding: 2px 1px;
+      background: transparent;
     }
 
     .calendar-milestone-item {
@@ -1025,6 +1345,9 @@
       grid-template-columns: 92px minmax(0, 1fr);
       gap: 8px;
       align-items: center;
+      padding: 2px 1px;
+      border-radius: 0;
+      background: transparent;
       color: var(--muted);
       font-size: 12.5px;
     }
@@ -1046,37 +1369,40 @@
       grid-template-columns: 132px minmax(0, 1fr) auto;
       gap: 5px;
       align-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
 
     .calendar-date-field .control {
-      background: var(--panel-2);
-    }
-
-    .calendar-day-button {
-      cursor: pointer;
-      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
-    }
-
-    .calendar-day-button:hover {
-      border-color: #cbc5b6;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
       background: #ffffff;
-      transform: translateY(-1px);
+      padding: 9px 10px;
+      box-shadow: none;
     }
 
-    .calendar-day-button.is-boundary:hover {
+    .calendar-date-field .control:focus {
+      background: #ffffff;
       border-color: var(--accent);
-      background: var(--accent);
-      color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(134, 31, 65, 0.12);
     }
 
-    .calendar-day-button.is-boundary {
+    .calendar-day-button.is-boundary,
+    .calendar-day-button.is-milestone {
       cursor: grab;
+    }
+
+    .calendar-day-button.is-armed-boundary::before,
+    .calendar-day-button.is-dragging::before {
+      box-shadow: 0 0 0 3px rgba(134, 31, 65, 0.13), 0 9px 16px -8px rgba(134, 31, 65, 0.54);
     }
 
     .calendar-day-button.is-dragging {
       cursor: grabbing;
-      box-shadow: 0 0 0 3px rgba(134, 31, 65, 0.12);
     }
 
     .calendar-nav-buttons {
@@ -1173,6 +1499,13 @@
       user-select: none;
     }
 
+    .field.spacer-field.with-outline {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 16px;
+    }
+
     .field.spacer-field:hover {
       transform: none;
     }
@@ -1257,10 +1590,8 @@
         inset: 0 auto 0 0;
         z-index: 30;
         width: min(300px, calc(100vw - 48px));
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100vh;
-        max-height: 100dvh;
+        height: auto;
+        max-height: none;
         display: block;
         overflow-x: hidden;
         overflow-y: auto;
@@ -1315,6 +1646,11 @@
       }
 
       .range-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .calendar-date-inputs,
+      .calendar-milestone-row {
         grid-template-columns: 1fr;
       }
 
@@ -1387,7 +1723,6 @@
     const BUILDER_STORAGE_KEY = "formal.builder.schema";
     const EMBEDDED_SCHEMA_ELEMENT_ID = "formal-embedded-schema";
     const RADAR_MIN_VALUE = 1;
-    const DEFAULT_RADAR_AXES = ["formal", "reserved", "vibrant", "casual"];
     const DEFAULT_RADAR_MAX = 5;
     const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
     const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
@@ -1468,19 +1803,16 @@
       return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     }
 
-    function clone(value) {
-      return JSON.parse(JSON.stringify(value));
+    function hexColor(value) {
+      const text = String(value).trim();
+      if (!/^#[0-9a-f]{6}$/i.test(text)) throw new Error("Expected a #rrggbb color.");
+      return text;
     }
 
-    function cleanColor(value, fallback) {
-      const text = String(value || "").trim();
-      return /^#[0-9a-f]{6}$/i.test(text) ? text : fallback;
-    }
-
-    function cleanFontFamily(value) {
-      const text = String(value || "").trim();
-      if (!text) return DEFAULT_THEME.fontFamily;
-      return /^[a-zA-Z0-9_\-\s"',.()]+$/.test(text) ? text : DEFAULT_THEME.fontFamily;
+    function fontFamilyValue(value) {
+      const text = String(value).trim();
+      if (!text || !/^[a-zA-Z0-9_\-\s"',.()]+$/.test(text)) throw new Error("Expected a valid font-family value.");
+      return text;
     }
 
     function unquoteFontName(value) {
@@ -1490,7 +1822,7 @@
     }
 
     function fontNameFromStack(value) {
-      const first = cleanFontFamily(value).split(",")[0] || "";
+      const first = fontFamilyValue(value).split(",")[0] || "";
       const name = unquoteFontName(first);
       return /^(ui-sans-serif|system-ui|-apple-system|BlinkMacSystemFont)$/i.test(name) ? "System UI" : name || "Roboto";
     }
@@ -1516,28 +1848,12 @@
       document.head.appendChild(link);
     }
 
-    function normalizeTheme(input = {}) {
-      const theme = { ...DEFAULT_THEME, ...(input || {}) };
-      return {
-        bg: cleanColor(theme.bg, DEFAULT_THEME.bg),
-        panel: cleanColor(theme.panel, DEFAULT_THEME.panel),
-        panel2: cleanColor(theme.panel2, DEFAULT_THEME.panel2),
-        ink: cleanColor(theme.ink, DEFAULT_THEME.ink),
-        muted: cleanColor(theme.muted, DEFAULT_THEME.muted),
-        line: cleanColor(theme.line, DEFAULT_THEME.line),
-        accent: cleanColor(theme.accent, DEFAULT_THEME.accent),
-        accent2: cleanColor(theme.accent2, DEFAULT_THEME.accent2),
-        accentSoft: cleanColor(theme.accentSoft, DEFAULT_THEME.accentSoft),
-        success: cleanColor(theme.success, DEFAULT_THEME.success),
-        warning: cleanColor(theme.warning, DEFAULT_THEME.warning),
-        danger: cleanColor(theme.danger, DEFAULT_THEME.danger),
-        fontFamily: cleanFontFamily(theme.fontFamily)
-      };
+    function themeSettings(input) {
+      return input;
     }
 
     function hexToRgba(hex, alpha) {
-      const clean = cleanColor(hex, DEFAULT_THEME.accent).slice(1);
-      const value = parseInt(clean, 16);
+      const value = parseInt(hexColor(hex).slice(1), 16);
       const r = (value >> 16) & 255;
       const g = (value >> 8) & 255;
       const b = value & 255;
@@ -1545,7 +1861,7 @@
     }
 
     function themeStyle(schema) {
-      const theme = normalizeTheme(schema?.settings?.theme);
+      const theme = themeSettings(schema.settings.theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
@@ -1573,44 +1889,23 @@
       return clean || uid();
     }
 
-    function uniqueId(value, seen) {
-      const base = sanitizeId(value);
-      let next = base;
-      let count = 2;
-      while (seen.has(next)) {
-        next = base + "_" + count;
-        count += 1;
-      }
-      seen.add(next);
-      return next;
-    }
-
-    function settingNumber(value, fallback) {
+    function settingNumber(value, defaultValue) {
       const text = String(value ?? "").trim();
-      if (!text) return fallback;
+      if (!text) return defaultValue;
       const number = Number(text);
-      return Number.isFinite(number) ? number : fallback;
+      return Number.isFinite(number) ? number : defaultValue;
     }
 
-    function clampSettingNumber(value, fallback, min, max, round = false) {
-      const number = settingNumber(value, fallback);
-      const clamped = Math.max(min, Math.min(max, number));
-      return round ? Math.round(clamped) : clamped;
+    function radarAxes(axes) {
+      return axes;
     }
 
-    function normalizeRadarAxes(axes) {
-      const source = Array.isArray(axes) ? axes : DEFAULT_RADAR_AXES;
-      const normalized = source.map((axis) => String(axis || "").trim()).filter(Boolean);
-      return normalized.length ? normalized : DEFAULT_RADAR_AXES;
+    function radarMode(mode) {
+      return mode;
     }
 
-    function normalizeRadarMode(mode) {
-      return mode === "point" ? "point" : "shape";
-    }
-
-    function normalizeRadarMax(value) {
-      const number = settingNumber(value, DEFAULT_RADAR_MAX);
-      return Math.max(RADAR_MIN_VALUE + 1, Math.round(number));
+    function radarMax(value) {
+      return value;
     }
 
     function clampRadarValue(value, max) {
@@ -1619,13 +1914,13 @@
       return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
     }
 
-    function normalizeRadarValues(values, axes, max) {
+    function radarValues(values, axes, max) {
       const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
       const source = Array.isArray(values) ? values : DEFAULT_RADAR_VALUES;
       return axes.map((_, index) => clampRadarValue(source[index], max) ?? midpoint);
     }
 
-    function normalizeRadarAngle(value) {
+    function radarAngle(value) {
       const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
       const wrapped = ((number % 360) + 360) % 360;
       return Math.round(wrapped * 100) / 100;
@@ -1637,22 +1932,13 @@
       return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
     }
 
-    function normalizeRadarPoint(point, max) {
+    function radarPointSetting(point, max) {
       const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
       return {
-        angle: normalizeRadarAngle(source.angle),
+        angle: radarAngle(source.angle),
         value: clampRadarPointValue(source.value, max) ?? clampRadarPointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
       };
     }
-
-    function defaultSchema() {
-      return {
-        settings: { theme: clone(DEFAULT_THEME) },
-        fields: []
-      };
-    }
-
-
 
     function padDatePart(value) {
       return String(value).padStart(2, "0");
@@ -1678,12 +1964,6 @@
 
     function todayISO() {
       return isoFromDate(new Date());
-    }
-
-    function addDays(value, amount) {
-      const date = dateFromISO(value) || new Date();
-      date.setDate(date.getDate() + amount);
-      return isoFromDate(date);
     }
 
     function dateTime(value) {
@@ -1716,7 +1996,7 @@
       });
     }
 
-    function normalizeCalendarMilestones(items) {
+    function calendarMilestones(items) {
       const source = Array.isArray(items) ? items : [];
       return source
         .map((item, index) => ({
@@ -1728,23 +2008,32 @@
         .sort((a, b) => (dateTime(a.date) ?? Number.MAX_SAFE_INTEGER) - (dateTime(b.date) ?? Number.MAX_SAFE_INTEGER) || a.label.localeCompare(b.label));
     }
 
-    function normalizeCalendarSettings(field) {
-      const settings = field?.settings || {};
-      let startDate = cleanDate(settings.startDate);
-      let endDate = cleanDate(settings.endDate);
-      if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) {
-        [startDate, endDate] = [endDate, startDate];
-      }
+    function calendarSettings(field) {
+      const settings = field.settings;
       return {
-        startDate,
-        endDate,
-        allowMilestones: settings.allowMilestones !== false,
-        milestones: normalizeCalendarMilestones(settings.milestones)
+        startDate: settings.startDate,
+        endDate: settings.endDate,
+        allowMilestones: settings.allowMilestones,
+        milestones: settings.milestones
       };
     }
 
+    function calendarAnchorDate(settings) {
+      return settings.startDate || settings.endDate || settings.milestones.find((item) => item.date)?.date || todayISO();
+    }
 
-    function normalizeCalendarValue(value, settings) {
+    function calendarMilestonesForDate(milestones, iso) {
+      return milestones
+        .map((item, index) => ({ ...item, index }))
+        .filter((item) => item.date === iso);
+    }
+
+    function calendarMilestoneDetails(items) {
+      return items.map((item) => `${item.label} - ${readableDate(item.date)}`).join(" | ");
+    }
+
+
+    function calendarValue(value, settings) {
       const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
       let startDate = cleanDate(source.startDate ?? settings.startDate);
       let endDate = cleanDate(source.endDate ?? settings.endDate);
@@ -1754,7 +2043,11 @@
       return {
         startDate,
         endDate,
-        milestones: settings.allowMilestones ? normalizeCalendarMilestones(source.milestones ?? settings.milestones) : []
+        milestones: settings.allowMilestones
+          ? source.milestones === undefined
+            ? settings.milestones
+            : calendarMilestones(source.milestones)
+          : []
       };
     }
 
@@ -1775,132 +2068,277 @@
       return calendarMonthKey(isoFromDate(date));
     }
 
-    function normalizeSpacerSettings(field) {
-      const settings = field?.settings || {};
-      const style = ["solid", "dashed", "dotted"].includes(settings.lineStyle) ? settings.lineStyle : "solid";
+    function spacerSettings(field) {
+      const settings = field.settings;
       return {
-        height: clampSettingNumber(settings.height, 32, 0, 240, true),
-        showLine: Boolean(settings.showLine),
-        lineStyle: style,
-        lineThickness: clampSettingNumber(settings.lineThickness, 1, 1, 12, true)
+        height: settings.height,
+        showLine: settings.showLine,
+        lineStyle: settings.lineStyle,
+        lineThickness: settings.lineThickness
       };
     }
 
-    function normalizeLinearScaleSettings(field) {
-      const settings = field?.settings || {};
-      let min = settingNumber(settings.min, 1);
-      let max = settingNumber(settings.max, 10);
-      if (max < min) [min, max] = [max, min];
-      if (max === min) max = min + 1;
+    function linearScaleSettings(field) {
+      const settings = field.settings;
       return {
-        min,
-        max,
-        minLabel: Object.prototype.hasOwnProperty.call(settings, "minLabel") ? String(settings.minLabel ?? "") : "Low",
-        maxLabel: Object.prototype.hasOwnProperty.call(settings, "maxLabel") ? String(settings.maxLabel ?? "") : "High"
+        min: settings.min,
+        max: settings.max,
+        minLabel: settings.minLabel,
+        maxLabel: settings.maxLabel
       };
     }
 
-    function normalizeStarRatingSettings(field) {
-      const settings = field?.settings || {};
-      return { max: clampSettingNumber(settings.max, 5, 3, 10, true) };
+    function starRatingSettings(field) {
+      const settings = field.settings;
+      return { max: settings.max };
     }
 
     function spacerStyle(settings) {
-      const normalized = normalizeSpacerSettings({ settings });
-      return `height: ${normalized.height}px;`;
+      const spacer = spacerSettings({ settings });
+      return `height: ${spacer.height}px;`;
     }
 
     function spacerLineStyle(settings) {
-      const normalized = normalizeSpacerSettings({ settings });
-      return `border-top-width: ${normalized.lineThickness}px; border-top-style: ${normalized.lineStyle};`;
+      const spacer = spacerSettings({ settings });
+      return `border-top-width: ${spacer.lineThickness}px; border-top-style: ${spacer.lineStyle};`;
     }
 
-    function normalizeField(raw) {
-      const type = fieldTypes[raw?.type] ? raw.type : "short_answer";
-      const next = {
-        id: sanitizeId(raw?.id || uid()),
-        type,
-        label: Object.prototype.hasOwnProperty.call(raw || {}, "label") ? String(raw.label ?? "") : fieldTypes[type].label,
-        description: String(raw?.description || ""),
-        required: Boolean(raw?.required),
-        placeholder: String(raw?.placeholder || ""),
-        options: Array.isArray(raw?.options) ? raw.options.map(String) : [],
-        settings: { ...(raw?.settings || {}) }
-      };
-
-      if (!next.options.length && ["multiple_choice", "checkbox", "poll"].includes(type)) {
-        next.options = ["Option 1", "Option 2"];
-      }
-
-      if (type === "linear_scale") {
-        next.settings = normalizeLinearScaleSettings(next);
-      }
-
-      if (type === "mood_meter") {
-        next.settings = { minLabel: "Low", maxLabel: "High", ...next.settings };
-      }
-
-      if (type === "star_rating") {
-        next.settings = normalizeStarRatingSettings(next);
-      }
-
-      if (type === "radar") {
-        const settings = { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, ...next.settings };
-        const mode = normalizeRadarMode(settings.mode);
-        const max = normalizeRadarMax(settings.max);
-        const axes = normalizeRadarAxes(settings.axes);
-        next.settings = {
-          mode,
-          max,
-          axes,
-          defaultValues: normalizeRadarValues(settings.defaultValues, axes, max),
-          defaultPoint: normalizeRadarPoint(settings.defaultPoint, max)
-        };
-      }
-
-      if (type === "headline") {
-        next.required = false;
-        next.placeholder = "";
-        next.options = [];
-        next.settings = headlineSettings(next);
-      }
-
-      if (type === "calendar") {
-        next.settings = normalizeCalendarSettings(next);
-      }
-
-      if (type === "media_upload") {
-        next.settings = { accept: "image/*,video/*,audio/*,.svg,.pdf", ...next.settings };
-      }
-
-      if (type === "media") {
-        next.required = false;
-        next.settings = mediaSettings(next);
-      }
-
-      if (type === "spacer") {
-        next.required = false;
-        next.label = "";
-        next.description = "";
-        next.placeholder = "";
-        next.options = [];
-        next.settings = normalizeSpacerSettings(next);
-      }
-
-      return next;
+    function assertObject(value, name) {
+      if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${name} must be an object.`);
+      return value;
     }
 
-    function normalizeSchema(input) {
-      const next = defaultSchema();
-      next.settings = { theme: normalizeTheme(input?.settings?.theme) };
+    function assertString(value, name) {
+      if (typeof value !== "string") throw new Error(`${name} must be a string.`);
+    }
+
+    function assertBoolean(value, name) {
+      if (typeof value !== "boolean") throw new Error(`${name} must be a boolean.`);
+    }
+
+    function assertArray(value, name) {
+      if (!Array.isArray(value)) throw new Error(`${name} must be an array.`);
+    }
+
+    function assertNumber(value, name) {
+      if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`${name} must be a finite number.`);
+    }
+
+    function assertInteger(value, name) {
+      assertNumber(value, name);
+      if (!Number.isInteger(value)) throw new Error(`${name} must be an integer.`);
+    }
+
+    function assertExactKeys(value, keys, name) {
+      keys.forEach((key) => {
+        if (!(key in value)) throw new Error(`${name}.${key} is required.`);
+      });
+      Object.keys(value).forEach((key) => {
+        if (!keys.includes(key)) throw new Error(`${name}.${key} is not supported.`);
+      });
+    }
+
+    function assertOneOf(value, choices, name) {
+      if (!choices.includes(value)) throw new Error(`${name} must be one of: ${choices.join(", ")}.`);
+    }
+
+    function assertNumberRange(value, name, min, max, integer = false) {
+      if (integer) {
+        assertInteger(value, name);
+      } else {
+        assertNumber(value, name);
+      }
+      if (value < min || value > max) throw new Error(`${name} must be between ${min} and ${max}.`);
+    }
+
+    function assertDateSetting(value, name) {
+      assertString(value, name);
+      if (value && !dateFromISO(value)) throw new Error(`${name} must be an ISO date string.`);
+    }
+
+    function assertHexColor(value, name) {
+      assertString(value, name);
+      hexColor(value);
+    }
+
+    function assertFontFamily(value, name) {
+      assertString(value, name);
+      fontFamilyValue(value);
+    }
+
+    function assertCalendarMilestones(items, name) {
+      assertArray(items, name);
+      items.forEach((item, index) => {
+        const itemName = `${name}[${index}]`;
+        assertObject(item, itemName);
+        assertExactKeys(item, ["id", "date", "label"], itemName);
+        assertString(item.id, `${itemName}.id`);
+        assertDateSetting(item.date, `${itemName}.date`);
+        assertString(item.label, `${itemName}.label`);
+      });
+    }
+
+    function assertRadarDefaults(values, axes, max, name) {
+      assertArray(values, name);
+      if (values.length !== axes.length) throw new Error(`${name} must match radar.settings.axes length.`);
+      values.forEach((value, index) => assertNumberRange(value, `${name}[${index}]`, RADAR_MIN_VALUE, max, true));
+    }
+
+    function assertRadarPoint(point, max, name) {
+      assertObject(point, name);
+      assertExactKeys(point, ["angle", "value"], name);
+      assertNumberRange(point.angle, `${name}.angle`, 0, 359);
+      assertNumberRange(point.value, `${name}.value`, RADAR_MIN_VALUE, max);
+    }
+
+    function assertCssLength(value, name) {
+      assertString(value, name);
+      if (value && !/^\d+(?:\.\d+)?(?:px|%|rem|em|vw|vh)$/i.test(value)) throw new Error(`${name} must be a CSS length.`);
+    }
+
+    function assertSettingKeys(settings, keys, fieldType) {
+      assertExactKeys(settings, [...keys, "outline"], `${fieldType}.settings`);
+      assertBoolean(settings.outline, `${fieldType}.settings.outline`);
+    }
+
+    function schemaField(raw) {
+      const field = assertObject(raw, "field");
+      if (!fieldTypes[field.type]) throw new Error(`Unsupported field type: ${field.type}`);
+      const baseKeys = ["id", "type", "label", "description", "required", "settings"];
+      assertString(field.id, "field.id");
+      assertString(field.type, "field.type");
+      assertString(field.label, `${field.type}.label`);
+      assertString(field.description, `${field.type}.description`);
+      assertBoolean(field.required, `${field.type}.required`);
+      const settings = assertObject(field.settings, `${field.type}.settings`);
+
+      if (["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) {
+        assertExactKeys(field, [...baseKeys, "placeholder"], "field");
+        assertString(field.placeholder, `${field.type}.placeholder`);
+        assertSettingKeys(settings, [], field.type);
+      }
+
+      if (["multiple_choice", "checkbox", "poll"].includes(field.type)) {
+        assertExactKeys(field, [...baseKeys, "options"], "field");
+        assertArray(field.options, `${field.type}.options`);
+        field.options.forEach((option, index) => assertString(option, `${field.type}.options[${index}]`));
+        assertSettingKeys(settings, [], field.type);
+      }
+
+      if (field.type === "calendar") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["startDate", "endDate", "allowMilestones", "milestones"], field.type);
+        assertDateSetting(settings.startDate, "calendar.settings.startDate");
+        assertDateSetting(settings.endDate, "calendar.settings.endDate");
+        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) {
+          throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
+        }
+        assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
+        assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
+      }
+
+      if (field.type === "mood_meter") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["minLabel", "maxLabel"], field.type);
+        assertString(settings.minLabel, "mood_meter.settings.minLabel");
+        assertString(settings.maxLabel, "mood_meter.settings.maxLabel");
+      }
+
+      if (field.type === "linear_scale") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["min", "max", "minLabel", "maxLabel"], field.type);
+        assertNumber(settings.min, "linear_scale.settings.min");
+        assertNumber(settings.max, "linear_scale.settings.max");
+        if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
+        assertString(settings.minLabel, "linear_scale.settings.minLabel");
+        assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
+      }
+
+      if (field.type === "star_rating") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["max"], field.type);
+        assertNumberRange(settings.max, "star_rating.settings.max", 3, 10, true);
+      }
+
+      if (field.type === "radar") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["mode", "max", "axes", "defaultValues", "defaultPoint"], field.type);
+        assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
+        assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
+        assertArray(settings.axes, "radar.settings.axes");
+        if (!settings.axes.length) throw new Error("radar.settings.axes must contain at least one axis.");
+        settings.axes.forEach((axis, index) => assertString(axis, `radar.settings.axes[${index}]`));
+        assertRadarDefaults(settings.defaultValues, settings.axes, settings.max, "radar.settings.defaultValues");
+        assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
+      }
+
+      if (field.type === "media_upload") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["accept"], field.type);
+        assertString(settings.accept, "media_upload.settings.accept");
+      }
+
+      if (field.type === "media") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"], field.type);
+        assertOneOf(settings.sourceType, ["url", "file", "html"], "media.settings.sourceType");
+        ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `media.settings.${key}`));
+        assertNumberRange(settings.iframeHeight, "media.settings.iframeHeight", 120, 1200, true);
+        assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], "media.settings.horizontalAlignment");
+        assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], "media.settings.verticalAlignment");
+        assertNumberRange(settings.scale, "media.settings.scale", 10, 100);
+        assertCssLength(settings.maxWidth, "media.settings.maxWidth");
+        assertNumberRange(settings.maxHeight, "media.settings.maxHeight", 80, 1600, true);
+        assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], "media.settings.objectFit");
+      }
+
+      if (field.type === "headline") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"], field.type);
+        assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
+        assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
+        assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
+        assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
+      }
+
+      if (field.type === "spacer") {
+        assertExactKeys(field, baseKeys, "field");
+        assertSettingKeys(settings, ["height", "showLine", "lineStyle", "lineThickness"], field.type);
+        assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
+        assertBoolean(settings.showLine, "spacer.settings.showLine");
+        assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
+        assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
+      }
+
+      return field;
+    }
+
+    function schemaDocument(input) {
+      const schema = assertObject(input, "schema");
+      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "fields"], "schema");
+      assertString(schema.createdAt, "schema.createdAt");
+      assertString(schema.updatedAt, "schema.updatedAt");
+      assertObject(schema.settings, "schema.settings");
+      assertExactKeys(schema.settings, ["theme"], "schema.settings");
+      assertObject(schema.settings.theme, "schema.settings.theme");
+      assertExactKeys(schema.settings.theme, Object.keys(DEFAULT_THEME), "schema.settings.theme");
+      Object.keys(DEFAULT_THEME).forEach((key) => {
+        if (key === "fontFamily") {
+          assertFontFamily(schema.settings.theme[key], `schema.settings.theme.${key}`);
+        } else {
+          assertHexColor(schema.settings.theme[key], `schema.settings.theme.${key}`);
+        }
+      });
+      assertArray(schema.fields, "schema.fields");
       const seenIds = new Set();
-      next.fields = Array.isArray(input?.fields)
-        ? input.fields.map(normalizeField).map((field) => {
-          field.id = uniqueId(field.id, seenIds);
-          return field;
-        })
-        : [];
-      return next;
+      schema.fields.forEach((field, index) => {
+        schemaField(field);
+        if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
+        seenIds.add(field.id);
+        if (field.type === "headline" && field.required) throw new Error(`schema.fields[${index}].required must be false for headline.`);
+        if (["media", "spacer"].includes(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+      });
+      return schema;
     }
 
     function primaryHeadlineField(schema) {
@@ -1916,22 +2354,22 @@
       const values = {};
       schema.fields.forEach((field) => {
         if (field.type === "linear_scale") {
-          const { min, max } = normalizeLinearScaleSettings(field);
+          const { min, max } = linearScaleSettings(field);
           values[field.id] = Math.round(min + (max - min) / 2);
         }
 
         if (field.type === "radar") {
-          const axes = normalizeRadarAxes(field.settings?.axes);
-          const mode = normalizeRadarMode(field.settings?.mode);
-          const max = normalizeRadarMax(field.settings?.max);
+          const axes = radarAxes(field.settings.axes);
+          const mode = radarMode(field.settings.mode);
+          const max = radarMax(field.settings.max);
           values[field.id] = mode === "point"
-            ? normalizeRadarPoint(field.settings?.defaultPoint, max)
-            : normalizeRadarValues(field.settings?.defaultValues, axes, max);
+            ? radarPointSetting(field.settings.defaultPoint, max)
+            : radarValues(field.settings.defaultValues, axes, max);
         }
 
         if (field.type === "calendar") {
-          const settings = normalizeCalendarSettings(field);
-          values[field.id] = normalizeCalendarValue({}, settings);
+          const settings = calendarSettings(field);
+          values[field.id] = calendarValue({}, settings);
         }
       });
       return values;
@@ -1950,7 +2388,7 @@
       return `min-height: ${minHeight}px;`;
     }
 
-    function normalizeUrl(value) {
+    function urlWithProtocol(value) {
       const text = String(value || "").trim();
       if (!text) return "";
       if (/^https?:\/\//i.test(text)) return text;
@@ -1966,25 +2404,14 @@
       });
     }
 
-    function clampMediaNumber(value, fallback, min, max) {
-      const number = settingNumber(value, fallback);
-      return Math.max(min, Math.min(max, number));
+    function horizontalAlignmentSetting(value, allowed = ["left", "center", "right"]) {
+      if (!allowed.includes(value)) throw new Error(`Unsupported horizontal alignment: ${value}`);
+      return value;
     }
 
-    function cleanMediaDimension(value) {
-      const text = String(value ?? "").trim();
-      if (!text) return "";
-      if (/^\d+(?:\.\d+)?(?:px|%|rem|em|vw|vh)$/i.test(text)) return text;
-      if (/^\d+(?:\.\d+)?$/.test(text)) return text + "px";
-      return "";
-    }
-
-    function normalizeHorizontalAlignment(value, allowed = ["left", "center", "right"], fallback = "center") {
-      return allowed.includes(value) ? value : fallback;
-    }
-
-    function normalizeVerticalAlignment(value) {
-      return ["top", "center", "bottom"].includes(value) ? value : "center";
+    function verticalAlignmentSetting(value) {
+      if (!["top", "center", "bottom"].includes(value)) throw new Error(`Unsupported vertical alignment: ${value}`);
+      return value;
     }
 
     function horizontalFlexValue(value) {
@@ -2004,41 +2431,44 @@
       return "center";
     }
 
+    function fieldOutline(field) {
+      return field.settings.outline === true;
+    }
+
     function headlineSettings(field) {
-      const settings = field?.settings || {};
+      const settings = field.settings;
       return {
-        headingHorizontalAlignment: normalizeHorizontalAlignment(settings.headingHorizontalAlignment, ["left", "center", "right"], "left"),
-        headingVerticalAlignment: normalizeVerticalAlignment(settings.headingVerticalAlignment || "top"),
-        descriptionHorizontalAlignment: normalizeHorizontalAlignment(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "left"),
-        descriptionVerticalAlignment: normalizeVerticalAlignment(settings.descriptionVerticalAlignment || "top"),
-        outline: settings.outline === true
+        headingHorizontalAlignment: horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]),
+        headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
+        descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
+        descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
+        outline: fieldOutline(field)
       };
     }
 
     function mediaSettings(field) {
-      const settings = field?.settings || {};
-      const height = clampMediaNumber(settings.iframeHeight, 260, 120, 1200);
-      const horizontalAlignment = normalizeHorizontalAlignment(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-      const verticalAlignment = normalizeVerticalAlignment(settings.verticalAlignment);
+      const settings = field.settings;
+      const horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
+      const verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
       const fits = new Set(["contain", "cover", "fill", "scale-down"]);
-      const objectFit = fits.has(settings.objectFit) ? settings.objectFit : "contain";
+      if (!fits.has(settings.objectFit)) throw new Error(`Unsupported media fit: ${settings.objectFit}`);
       return {
-        sourceType: settings.sourceType || "url",
-        url: String(settings.url || ""),
-        dataUrl: String(settings.dataUrl || ""),
-        mimeType: String(settings.mimeType || ""),
-        fileName: String(settings.fileName || ""),
-        alt: String(settings.alt || ""),
-        caption: String(settings.caption || ""),
-        html: String(settings.html || ""),
-        iframeHeight: height,
+        sourceType: settings.sourceType,
+        url: settings.url,
+        dataUrl: settings.dataUrl,
+        mimeType: settings.mimeType,
+        fileName: settings.fileName,
+        alt: settings.alt,
+        caption: settings.caption,
+        html: settings.html,
+        iframeHeight: settings.iframeHeight,
         horizontalAlignment,
         verticalAlignment,
-        scale: clampMediaNumber(settings.scale, 100, 10, 100),
-        maxWidth: cleanMediaDimension(settings.maxWidth),
-        maxHeight: clampMediaNumber(settings.maxHeight, 360, 80, 1600),
-        objectFit,
-        outline: settings.outline === true
+        scale: settings.scale,
+        maxWidth: settings.maxWidth,
+        maxHeight: settings.maxHeight,
+        objectFit: settings.objectFit,
+        outline: fieldOutline(field)
       };
     }
 
@@ -2094,7 +2524,7 @@
       const settings = mediaSettings(field);
       const source = mediaSource(settings);
       const kind = mediaKind(settings);
-      const title = settings.alt || settings.fileName || field.label || "Media";
+      const title = settings.alt || settings.fileName || field.label;
       const wrapStyle = mediaAlignmentStyle(settings);
       const visualStyle = mediaVisualStyle(settings);
 
@@ -2128,7 +2558,7 @@
 
     function UploadedMediaPreview({ value, label }) {
       if (!value?.dataUrl) return null;
-      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "" } }} />`;
+      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true } }} />`;
     }
 
     function radarPoint(index, count, center, radius) {
@@ -2155,7 +2585,7 @@
     }
 
     function radarPointFromPolar(angle, value, max, center, radius) {
-      const radians = -Math.PI / 2 + (normalizeRadarAngle(angle) * Math.PI / 180);
+      const radians = -Math.PI / 2 + (radarAngle(angle) * Math.PI / 180);
       const scaled = radarValueScale(value, max);
       return {
         x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
@@ -2170,19 +2600,19 @@
     }
 
     function radarAngleDelta(a, b) {
-      return Math.abs(((normalizeRadarAngle(a) - normalizeRadarAngle(b) + 540) % 360) - 180);
+      return Math.abs(((radarAngle(a) - radarAngle(b) + 540) % 360) - 180);
     }
 
     function nearestRadarAxisCandidate(angle, axes) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const step = 360 / labels.length;
-      const normalized = normalizeRadarAngle(angle);
-      const index = Math.round(normalized / step) % labels.length;
-      const axisAngle = normalizeRadarAngle(index * step);
+      const cleaned = radarAngle(angle);
+      const index = Math.round(cleaned / step) % labels.length;
+      const axisAngle = radarAngle(index * step);
       return {
         index,
         angle: axisAngle,
-        delta: radarAngleDelta(normalized, axisAngle),
+        delta: radarAngleDelta(cleaned, axisAngle),
         label: labels[index]
       };
     }
@@ -2192,10 +2622,10 @@
     }
 
     function radarPointDescription(angle, axes) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const step = 360 / labels.length;
-      const normalized = normalizeRadarAngle(angle);
-      const position = normalized / step;
+      const cleaned = radarAngle(angle);
+      const position = cleaned / step;
       const lower = Math.floor(position) % labels.length;
       const upper = (lower + 1) % labels.length;
       const blend = position - lower;
@@ -2206,15 +2636,15 @@
 
     function roundedRadarPoint(point) {
       return {
-        angle: normalizeRadarAngle(point.angle),
+        angle: radarAngle(point.angle),
         value: clampRadarPointValue(point.value, point.max ?? DEFAULT_RADAR_MAX) ?? RADAR_MIN_VALUE
       };
     }
 
     function applyRadarPointSnap(rawPoint, axes, max, radius, snapState) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const state = snapState || { axisIndex: null, ringValue: null };
-      let angle = normalizeRadarAngle(rawPoint.angle);
+      let angle = radarAngle(rawPoint.angle);
       let value = clampRadarPointValue(rawPoint.value, max) ?? RADAR_MIN_VALUE;
       const distance = Math.max(0, Number(rawPoint.distance) || 0);
       const canAxisSnap = distance >= RADAR_AXIS_SNAP_MIN_RADIUS_PX;
@@ -2223,7 +2653,7 @@
       if (!canAxisSnap) {
         state.axisIndex = null;
       } else if (state.axisIndex !== null && state.axisIndex !== undefined) {
-        const lockedAngle = normalizeRadarAngle(state.axisIndex * step);
+        const lockedAngle = radarAngle(state.axisIndex * step);
         const lockedDelta = radarAngleDelta(angle, lockedAngle);
         const lockedPerpendicularDistance = Math.abs(Math.sin(lockedDelta * Math.PI / 180) * distance);
         if (lockedPerpendicularDistance <= RADAR_AXIS_SNAP_EXIT_PX) {
@@ -2260,7 +2690,7 @@
         }
       }
 
-      return normalizeRadarPoint({ angle, value }, max);
+      return radarPointSetting({ angle, value }, max);
     }
 
     function pointerSvgPoint(event) {
@@ -2317,7 +2747,7 @@
       const pointerY = local.y - center;
       const distance = Math.sqrt(pointerX * pointerX + pointerY * pointerY);
       const scaled = clamp(distance / radius, RADAR_MIN_VALUE / max, 1);
-      const rawAngle = normalizeRadarAngle((Math.atan2(pointerY, pointerX) * 180 / Math.PI) + 90);
+      const rawAngle = radarAngle((Math.atan2(pointerY, pointerX) * 180 / Math.PI) + 90);
       return applyRadarPointSnap({
         angle: rawAngle,
         value: scaled * max,
@@ -2326,10 +2756,10 @@
     }
 
     function RadarChart({ axes, values, max, onValue }) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const center = 150;
       const radius = 92;
-      const current = normalizeRadarValues(values, labels, max);
+      const current = radarValues(values, labels, max);
       const polygon = radarPoints(current, max, center, radius);
       const handlePoints = current.map((value, index) => ({
         ...radarPoint(index, labels.length, center, radius * radarValueScale(value, max)),
@@ -2440,29 +2870,29 @@
     }
 
     function RadarPointChart({ axes, point, max, onPoint }) {
-      const labels = normalizeRadarAxes(axes);
+      const labels = radarAxes(axes);
       const center = 150;
       const radius = 92;
       const snapRef = useRef({ axisIndex: null, ringValue: null });
       const dragMetricsRef = useRef(null);
       const dragPointRef = useRef(null);
       const [dragPoint, setDragPoint] = useState(null);
-      const committed = normalizeRadarPoint(point, max);
-      const current = dragPoint ? normalizeRadarPoint(dragPoint, max) : committed;
+      const committed = radarPointSetting(point, max);
+      const current = dragPoint ? radarPointSetting(dragPoint, max) : committed;
       const handlePoint = radarPointFromPolar(current.angle, current.value, max, center, radius);
       const pointDescription = radarPointDescription(current.angle, labels);
 
       function commitPoint(nextPoint) {
         if (!onPoint) return;
-        const normalized = normalizeRadarPoint(nextPoint, max);
-        if (normalized.angle === committed.angle && normalized.value === committed.value) return;
-        onPoint(normalized);
+        const cleaned = radarPointSetting(nextPoint, max);
+        if (cleaned.angle === committed.angle && cleaned.value === committed.value) return;
+        onPoint(cleaned);
       }
 
       function previewPoint(nextPoint) {
-        const normalized = normalizeRadarPoint(nextPoint, max);
-        dragPointRef.current = normalized;
-        setDragPoint(normalized);
+        const cleaned = radarPointSetting(nextPoint, max);
+        dragPointRef.current = cleaned;
+        setDragPoint(cleaned);
       }
 
       function updateFromPointer(event) {
@@ -2597,7 +3027,7 @@
       const errorId = invalid ? field.id + "_error" : null;
       const hasHead = Boolean(visibleLabel || field.description);
       const typeClass = field.type ? ` ${String(field.type).replace(/_/g, "-")}-field` : "";
-      const outlineClass = field.type === "media" && mediaSettings(field).outline === false ? " no-outline" : "";
+      const outlineClass = fieldOutline(field) ? "" : " no-outline";
       return html`
         <section class=${`field${typeClass}${outlineClass}${invalid ? " invalid" : ""}`} data-field-wrap=${field.id} aria-invalid=${invalid ? "true" : null} aria-describedby=${[helpId, errorId].filter(Boolean).join(" ") || null}>
           ${hasHead ? html`
@@ -2615,18 +3045,22 @@
 
 
     function CalendarInput({ field, value, invalid, onValue, labelProps, describedBy }) {
-      const settings = normalizeCalendarSettings(field);
-      const current = normalizeCalendarValue(value, settings);
-      const anchorDate = current.startDate || current.endDate || settings.startDate || settings.endDate || todayISO();
+      const settings = calendarSettings(field);
+      const current = calendarValue(value, settings);
+      const anchorDate = calendarAnchorDate({ ...settings, startDate: current.startDate, endDate: current.endDate, milestones: current.milestones });
       const [viewMonth, setViewMonth] = useState(() => calendarMonthKey(anchorDate));
       const [draggingBoundary, setDraggingBoundary] = useState(null);
+      const [draggingMilestoneIndex, setDraggingMilestoneIndex] = useState(null);
+      const [armedBoundary, setArmedBoundary] = useState(null);
       const suppressClickRef = useRef(false);
+      const dragMovedRef = useRef(false);
+      const dragSourceIsoRef = useRef("");
       const monthDate = monthFromKey(viewMonth);
       const month = monthDate.getMonth();
       const startTime = dateTime(current.startDate);
       const endTime = dateTime(current.endDate);
       const hasRange = startTime !== null && endTime !== null;
-      const milestoneDates = new Set(current.milestones.map((item) => item.date).filter(Boolean));
+      const hasCompleteRange = Boolean(current.startDate && current.endDate);
       const rangeStart = hasRange ? Math.min(startTime, endTime) : startTime;
       const rangeEnd = hasRange ? Math.max(startTime, endTime) : endTime;
 
@@ -2635,19 +3069,22 @@
       }, [anchorDate]);
 
       useEffect(() => {
-        if (!draggingBoundary) return undefined;
+        if (!draggingBoundary && draggingMilestoneIndex === null) return undefined;
         function stopDragging() {
           setDraggingBoundary(null);
+          setDraggingMilestoneIndex(null);
           window.setTimeout(() => {
             suppressClickRef.current = false;
+            dragMovedRef.current = false;
+            dragSourceIsoRef.current = "";
           }, 0);
         }
         window.addEventListener("mouseup", stopDragging);
         return () => window.removeEventListener("mouseup", stopDragging);
-      }, [draggingBoundary]);
+      }, [draggingBoundary, draggingMilestoneIndex]);
 
       function commit(patch) {
-        onValue(normalizeCalendarValue({ ...current, ...patch }, settings));
+        onValue(calendarValue({ ...current, ...patch }, settings));
       }
 
       function updateStart(raw) {
@@ -2684,6 +3121,19 @@
         }
       }
 
+      function dragMilestone(index, iso) {
+        setViewMonth(calendarMonthKey(iso));
+        updateMilestone(index, { date: iso });
+      }
+
+      function markDragMove(iso) {
+        if (iso === dragSourceIsoRef.current) return false;
+        dragSourceIsoRef.current = iso;
+        dragMovedRef.current = true;
+        suppressClickRef.current = true;
+        return true;
+      }
+
       function pickDate(iso) {
         setViewMonth(calendarMonthKey(iso));
         if (!current.startDate || current.endDate) {
@@ -2706,12 +3156,113 @@
         commit({ milestones: current.milestones.filter((_, itemIndex) => itemIndex !== index) });
       }
 
-      function addMilestone() {
-        commit({ milestones: [...current.milestones, { id: uid(), date: current.startDate || todayISO(), label: "Milestone " + (current.milestones.length + 1) }] });
+      function addMilestone(date = "") {
+        commit({ milestones: [...current.milestones, { id: uid(), date: cleanDate(date), label: "Milestone " + (current.milestones.length + 1) }] });
+      }
+
+      function handleDateClick(iso) {
+        if (armedBoundary) {
+          dragBoundary(armedBoundary, iso);
+          setArmedBoundary(null);
+          return;
+        }
+        if (!hasCompleteRange) {
+          pickDate(iso);
+          return;
+        }
+        if (settings.allowMilestones) {
+          addMilestone(iso);
+          return;
+        }
+        pickDate(iso);
       }
 
       return html`
         <div class="calendar-control" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
+          <div class="calendar-frame">
+            <div class="calendar-nav">
+              <div class="calendar-month-label">${monthLabel(monthDate)}</div>
+              <div class="calendar-nav-buttons">
+                <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
+                <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
+              </div>
+            </div>
+            <div class="calendar-weekdays" aria-hidden="true">
+              ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
+            </div>
+            <div class="calendar-grid">
+            ${calendarGridDates(monthDate).map((date) => {
+        const iso = isoFromDate(date);
+        const time = date.getTime();
+        const inRange = rangeStart !== null && rangeEnd !== null && time >= rangeStart && time <= rangeEnd;
+        const isBoundary = iso === current.startDate || iso === current.endDate;
+        const isRangeStart = inRange && (iso === current.startDate || date.getDay() === 0);
+        const isRangeEnd = inRange && (iso === current.endDate || date.getDay() === 6);
+        const isOutside = date.getMonth() !== month;
+        const dayMilestones = calendarMilestonesForDate(current.milestones, iso);
+        const milestoneDetails = calendarMilestoneDetails(dayMilestones);
+        const milestoneIndex = dayMilestones[0]?.index ?? -1;
+        const boundary = boundaryForDate(iso);
+        return html`
+                <button
+                  class=${`calendar-day-button${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isRangeStart ? " is-range-start" : ""}${isRangeEnd ? " is-range-end" : ""}${isBoundary ? " is-boundary" : ""}${armedBoundary === boundary && boundary ? " is-armed-boundary" : ""}${draggingBoundary === boundary && boundary && dragMovedRef.current ? " is-dragging" : ""}${draggingMilestoneIndex === milestoneIndex && milestoneIndex >= 0 && dragMovedRef.current ? " is-dragging" : ""}${dayMilestones.length ? " is-milestone" : ""}`}
+                  type="button"
+                  key=${iso}
+                  onMouseDown=${(event) => {
+            if (armedBoundary) return;
+            if (boundary) {
+              event.preventDefault();
+              if ((event.shiftKey || event.ctrlKey || event.metaKey) && hasCompleteRange) {
+                setArmedBoundary(boundary);
+                setDraggingBoundary(null);
+                setDraggingMilestoneIndex(null);
+                suppressClickRef.current = true;
+                return;
+              }
+              dragMovedRef.current = false;
+              dragSourceIsoRef.current = iso;
+              setDraggingBoundary(boundary);
+              return;
+            }
+            if (settings.allowMilestones && milestoneIndex >= 0) {
+              event.preventDefault();
+              dragMovedRef.current = false;
+              dragSourceIsoRef.current = iso;
+              setDraggingMilestoneIndex(milestoneIndex);
+            }
+          }}
+                  onMouseEnter=${() => {
+            if (draggingBoundary && markDragMove(iso)) dragBoundary(draggingBoundary, iso);
+            if (draggingMilestoneIndex !== null && markDragMove(iso)) dragMilestone(draggingMilestoneIndex, iso);
+          }}
+                  onMouseUp=${() => {
+            if (draggingBoundary && dragMovedRef.current) dragBoundary(draggingBoundary, iso);
+            if (draggingMilestoneIndex !== null && dragMovedRef.current) dragMilestone(draggingMilestoneIndex, iso);
+            setDraggingBoundary(null);
+            setDraggingMilestoneIndex(null);
+          }}
+                  onClick=${() => {
+            if (suppressClickRef.current) {
+              suppressClickRef.current = false;
+              dragMovedRef.current = false;
+              dragSourceIsoRef.current = "";
+              return;
+            }
+            handleDateClick(iso);
+          }}
+                  aria-label=${milestoneDetails ? `${readableDate(iso)}, ${milestoneDetails}` : boundary ? `Drag ${boundary} date, ${readableDate(iso)}` : readableDate(iso)}
+                >
+                  <span class="calendar-day-number">${date.getDate()}</span>
+                  ${dayMilestones.length ? html`
+                    <span class="calendar-milestone-popover" aria-hidden="true">
+                      ${dayMilestones.map((item) => html`<span class="calendar-milestone-popover-line" key=${item.id || item.label || item.date}>${item.label || "Milestone"}</span>`)}
+                    </span>
+                  ` : null}
+                </button>
+              `;
+      })}
+            </div>
+          </div>
           <div class="calendar-date-inputs">
             <label class="calendar-date-field">
               <span>Start date</span>
@@ -2721,55 +3272,6 @@
               <span>End date</span>
               <input class="control" type="date" value=${current.endDate} onInput=${(event) => updateEnd(event.currentTarget.value)} />
             </label>
-          </div>
-          <div class="calendar-nav">
-            <div class="calendar-month-label">${monthLabel(monthDate)}</div>
-            <div class="calendar-nav-buttons">
-              <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
-              <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
-            </div>
-          </div>
-          <div class="calendar-weekdays" aria-hidden="true">
-            ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
-          </div>
-          <div class="calendar-grid">
-            ${calendarGridDates(monthDate).map((date) => {
-        const iso = isoFromDate(date);
-        const time = date.getTime();
-        const inRange = rangeStart !== null && rangeEnd !== null && time >= rangeStart && time <= rangeEnd;
-        const isBoundary = iso === current.startDate || iso === current.endDate;
-        const isOutside = date.getMonth() !== month;
-        const isMilestone = milestoneDates.has(iso);
-        const boundary = boundaryForDate(iso);
-        return html`
-                <button
-                  class=${`calendar-day-button${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isBoundary ? " is-boundary" : ""}${draggingBoundary === boundary && boundary ? " is-dragging" : ""}${isMilestone ? " is-milestone" : ""}`}
-                  type="button"
-                  key=${iso}
-                  onMouseDown=${(event) => {
-            if (!boundary) return;
-            event.preventDefault();
-            suppressClickRef.current = true;
-            setDraggingBoundary(boundary);
-          }}
-                  onMouseEnter=${() => draggingBoundary && dragBoundary(draggingBoundary, iso)}
-                  onMouseUp=${() => {
-            if (draggingBoundary) dragBoundary(draggingBoundary, iso);
-            setDraggingBoundary(null);
-          }}
-                  onClick=${() => {
-            if (suppressClickRef.current) {
-              suppressClickRef.current = false;
-              return;
-            }
-            pickDate(iso);
-          }}
-                  aria-label=${boundary ? `Drag ${boundary} date, ${readableDate(iso)}` : readableDate(iso)}
-                >
-                  ${date.getDate()}
-                </button>
-              `;
-      })}
           </div>
           ${settings.allowMilestones ? html`
             <div class="calendar-milestone-editor">
@@ -2783,7 +3285,7 @@
                   <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
                 </div>
               `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-              <button class="button ghost" type="button" onClick=${addMilestone}><${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span></button>
+              <button class="button ghost" type="button" onClick=${() => addMilestone()}><${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span></button>
             </div>
           ` : null}
         </div>
@@ -2819,13 +3321,13 @@
           `;
         }
         case "short_answer":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
         case "long_answer":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder || ""} style=${longAnswerStyle(field.placeholder)} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
+          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder} style=${longAnswerStyle(field.placeholder)} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
         case "email":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="email" value=${value || ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="email" value=${value || ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
         case "number":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="number" value=${value ?? ""} placeholder=${field.placeholder || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="number" value=${value ?? ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
         case "calendar":
           return html`<${FieldShell} field=${field} invalid=${invalid}><${CalendarInput} field=${field} value=${value} invalid=${invalid} onValue=${onValue} labelProps=${labelProps} describedBy=${describedBy} /></${FieldShell}>`;
         case "multiple_choice":
@@ -2875,18 +3377,18 @@
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <div class="meter-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                <span>${field.settings?.minLabel || "Low"}</span>
+                <span>${field.settings.minLabel}</span>
                 ${icons.map((icon, index) => {
             const rating = index + 1;
             return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon=${icon} /></button>`;
           })}
-                <span>${field.settings?.maxLabel || "High"}</span>
+                <span>${field.settings.maxLabel}</span>
               </div>
             </${FieldShell}>
           `;
         }
         case "linear_scale": {
-          const settings = normalizeLinearScaleSettings(field);
+          const settings = linearScaleSettings(field);
           const { min, max } = settings;
           const current = Number(value ?? Math.round(min + (max - min) / 2));
           const span = Math.max(1, max - min);
@@ -2894,7 +3396,7 @@
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <div class="range-wrap">
-                <span>${settings.minLabel || String(min)}</span>
+                <span>${settings.minLabel}</span>
                 <div class="linear-scale-control">
                   <div class="linear-scale-track" aria-hidden="true">
                     <div class="linear-scale-fill" style=${`width: ${percent}%;`}></div>
@@ -2902,14 +3404,14 @@
                   <div class="linear-scale-thumb" style=${`left: ${percent}%;`} aria-hidden="true"></div>
                   <input class="linear-scale-native" id=${field.id} type="range" min=${min} max=${max} value=${current} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy} ...${labelledBy ? { "aria-labelledby": labelledBy } : { "aria-label": accessibleName }} onInput=${(event) => onValue(Number(event.currentTarget.value))} />
                 </div>
-                <span>${settings.maxLabel || String(max)}</span>
+                <span>${settings.maxLabel}</span>
                 <output class="range-value">${current}</output>
               </div>
             </${FieldShell}>
           `;
         }
         case "star_rating": {
-          const max = normalizeStarRatingSettings(field).max;
+          const max = starRatingSettings(field).max;
           const selected = Number(value || 0);
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
@@ -2923,13 +3425,13 @@
           `;
         }
         case "radar": {
-          const axes = normalizeRadarAxes(field.settings?.axes);
-          const mode = normalizeRadarMode(field.settings?.mode);
-          const max = normalizeRadarMax(field.settings?.max);
-          const defaults = normalizeRadarValues(field.settings?.defaultValues, axes, max);
-          const current = normalizeRadarValues(value, axes, max);
-          const defaultPoint = normalizeRadarPoint(field.settings?.defaultPoint, max);
-          const currentPoint = normalizeRadarPoint(value && !Array.isArray(value) ? value : defaultPoint, max);
+          const axes = radarAxes(field.settings.axes);
+          const mode = radarMode(field.settings.mode);
+          const max = radarMax(field.settings.max);
+          const defaults = radarValues(field.settings.defaultValues, axes, max);
+          const current = radarValues(value, axes, max);
+          const defaultPoint = radarPointSetting(field.settings.defaultPoint, max);
+          const currentPoint = radarPointSetting(value && !Array.isArray(value) ? value : defaultPoint, max);
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <div class=${`radar-wrap${mode === "point" ? " point-mode" : ""}`} role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
@@ -2958,7 +3460,7 @@
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
               <div class="media-upload-preview">
-                <input ...${common} type="file" accept=${field.settings?.accept || "image/*,video/*,audio/*,.svg,.pdf"} onChange=${async (event) => {
+                <input ...${common} type="file" accept=${field.settings.accept} onChange=${async (event) => {
               const file = event.currentTarget.files?.[0];
               if (!file) return;
               onValue({ name: file.name, type: file.type, dataUrl: await readFileAsDataUrl(file) });
@@ -2968,9 +3470,9 @@
             </${FieldShell}>
           `;
         case "spacer": {
-          const settings = normalizeSpacerSettings(field);
+          const settings = spacerSettings(field);
           return html`
-            <section class="field spacer-field" data-field-wrap=${field.id} aria-hidden="true">
+            <section class=${`field spacer-field${fieldOutline(field) ? " with-outline" : " no-outline"}`} data-field-wrap=${field.id} aria-hidden="true">
               <div class="spacer-preview" style=${spacerStyle(settings)}>
                 ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
               </div>
@@ -2985,10 +3487,10 @@
           `;
         case "link": {
           const text = String(value || "");
-          const href = normalizeUrl(text);
+          const href = urlWithProtocol(text);
           return html`
             <${FieldShell} field=${field} invalid=${invalid}>
-              <input ...${common} type="url" value=${text} placeholder=${field.placeholder || "https://example.com"} onInput=${(event) => onValue(event.currentTarget.value)} />
+              <input ...${common} type="url" value=${text} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} />
               ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${text}</span></a>` : null}
             </${FieldShell}>
           `;
@@ -3021,9 +3523,7 @@
         const hashParams = new URLSearchParams(window.location.hash.slice(1));
         const token = params.get("s") || hashParams.get("s") || schemaTokenFromPath();
         if (token) return decodeSchemaToken(token);
-
-        const legacySchema = hashParams.get("schema");
-        return legacySchema ? JSON.parse(legacySchema) : null;
+        return null;
       } catch (error) {
         console.warn(error);
         return null;
@@ -3041,6 +3541,333 @@
       return json ? JSON.parse(json) : null;
     }
 
+    const EXPORT_PAGE_WIDTH = 794;
+    const EXPORT_PAGE_HEIGHT = 1123;
+    const EXPORT_SCALE = 2;
+
+    function exportElement(tag, className = "", text = "") {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== "") element.textContent = text;
+      return element;
+    }
+
+    function syncExportControlState(sourceRoot, cloneRoot) {
+      const sourceControls = [...sourceRoot.querySelectorAll("input, textarea, select")];
+      const cloneControls = [...cloneRoot.querySelectorAll("input, textarea, select")];
+      sourceControls.forEach((source, index) => {
+        const clone = cloneControls[index];
+        if (!clone) return;
+
+        if (source.tagName === "TEXTAREA") {
+          clone.value = source.value;
+          clone.textContent = source.value;
+          return;
+        }
+
+        if (source.tagName === "SELECT") {
+          clone.value = source.value;
+          [...clone.options].forEach((option) => {
+            option.selected = option.value === source.value;
+            if (option.selected) option.setAttribute("selected", "");
+            else option.removeAttribute("selected");
+          });
+          return;
+        }
+
+        if (source.type === "checkbox" || source.type === "radio") {
+          clone.checked = source.checked;
+          if (source.checked) clone.setAttribute("checked", "");
+          else clone.removeAttribute("checked");
+          return;
+        }
+
+        if (source.type !== "file") {
+          clone.value = source.value;
+          clone.setAttribute("value", source.value);
+        }
+      });
+    }
+
+    function syncExportMediaState(sourceRoot, cloneRoot) {
+      const sourceMedia = [...sourceRoot.querySelectorAll("video, audio")];
+      const cloneMedia = [...cloneRoot.querySelectorAll("video, audio")];
+      sourceMedia.forEach((source, index) => {
+        const clone = cloneMedia[index];
+        if (!clone) return;
+        try {
+          clone.currentTime = Number.isFinite(source.currentTime) ? source.currentTime : 0;
+        } catch (error) {
+          // Some media elements cannot be seeked until metadata is available.
+        }
+        clone.pause?.();
+      });
+    }
+
+    function exportImageSourceLooksLikeSvg(image) {
+      const source = String(image.currentSrc || image.getAttribute("src") || "").trim();
+      return /^data:image\/svg\+xml/i.test(source) || /\.svg(?:[?#]|$)/i.test(source);
+    }
+
+    function waitForExportImage(image) {
+      if (!image) return Promise.resolve();
+      if (image.decode) {
+        return image.decode().catch(() => {
+          if (image.complete) return;
+          return new Promise((resolve) => {
+            image.addEventListener("load", resolve, { once: true });
+            image.addEventListener("error", resolve, { once: true });
+          });
+        });
+      }
+      if (image.complete) return Promise.resolve();
+      return new Promise((resolve) => {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    }
+
+    function waitForExportLayout() {
+      return new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve));
+      });
+    }
+
+    function decodeExportSvgDataUrl(source) {
+      const commaIndex = source.indexOf(",");
+      if (commaIndex < 0) return "";
+      const header = source.slice(0, commaIndex).toLowerCase();
+      const payload = source.slice(commaIndex + 1);
+      try {
+        if (header.includes(";base64")) return atob(payload);
+        return decodeURIComponent(payload.replace(/\+/g, "%20"));
+      } catch (error) {
+        return "";
+      }
+    }
+
+    async function loadExportSvgMarkup(source) {
+      if (/^data:image\/svg\+xml/i.test(source)) return decodeExportSvgDataUrl(source);
+      try {
+        const response = await fetch(source, { mode: "cors", credentials: "same-origin" });
+        if (!response.ok) return "";
+        const type = response.headers.get("content-type") || "";
+        if (type && !/svg|xml|text/i.test(type)) return "";
+        return response.text();
+      } catch (error) {
+        return "";
+      }
+    }
+
+    function importExportSvg(markup) {
+      if (!markup) return null;
+      const parsed = new DOMParser().parseFromString(markup, "image/svg+xml");
+      if (parsed.querySelector("parsererror")) return null;
+      const svg = parsed.documentElement;
+      if (!svg || svg.nodeName.toLowerCase() !== "svg") return null;
+      svg.querySelectorAll("script").forEach((script) => script.remove());
+      return document.importNode(svg, true);
+    }
+
+    function inlineSvgSizeFromImage(image, inlineSvg) {
+      const rect = image.getBoundingClientRect();
+      let width = rect.width;
+      let height = rect.height;
+      const viewBox = String(inlineSvg.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+      const viewBoxWidth = viewBox.length === 4 && Number.isFinite(viewBox[2]) ? viewBox[2] : 0;
+      const viewBoxHeight = viewBox.length === 4 && Number.isFinite(viewBox[3]) ? viewBox[3] : 0;
+      const naturalWidth = image.naturalWidth || viewBoxWidth;
+      const naturalHeight = image.naturalHeight || viewBoxHeight;
+
+      if ((!height || height < 1) && width && naturalWidth && naturalHeight) {
+        height = width * naturalHeight / naturalWidth;
+      }
+
+      if ((!width || width < 1) && height && naturalWidth && naturalHeight) {
+        width = height * naturalWidth / naturalHeight;
+      }
+
+      return {
+        width: Math.max(1, Math.round(width || naturalWidth || viewBoxWidth || 1)),
+        height: Math.max(1, Math.round(height || naturalHeight || viewBoxHeight || 1))
+      };
+    }
+
+    async function inlineExportSvgMediaImages(root) {
+      const images = [...root.querySelectorAll("img.media-visual")].filter(exportImageSourceLooksLikeSvg);
+      for (const image of images) {
+        await waitForExportImage(image);
+        const source = String(image.currentSrc || image.getAttribute("src") || "").trim();
+        const inlineSvg = importExportSvg(await loadExportSvgMarkup(source));
+        if (!inlineSvg) continue;
+
+        const size = inlineSvgSizeFromImage(image, inlineSvg);
+        const className = image.getAttribute("class") || "";
+        const inlineStyle = image.getAttribute("style") || "";
+        const alt = image.getAttribute("alt") || "";
+
+        inlineSvg.setAttribute("class", className);
+        inlineSvg.setAttribute("style", inlineStyle);
+        inlineSvg.style.display = "block";
+        inlineSvg.style.width = `${size.width}px`;
+        inlineSvg.style.height = `${size.height}px`;
+        inlineSvg.style.maxWidth = "100%";
+        inlineSvg.style.maxHeight = "none";
+        inlineSvg.style.overflow = "visible";
+        inlineSvg.setAttribute("preserveAspectRatio", inlineSvg.getAttribute("preserveAspectRatio") || "xMidYMid meet");
+        inlineSvg.setAttribute("focusable", "false");
+        inlineSvg.setAttribute("data-export-inlined-svg", "true");
+        if (alt) inlineSvg.setAttribute("aria-label", alt);
+        else inlineSvg.setAttribute("aria-hidden", "true");
+
+        image.replaceWith(inlineSvg);
+      }
+    }
+
+    function prepareRuntimeExportNode(node) {
+      node.classList.add("export-runtime-field");
+      node.querySelectorAll("[id]").forEach((item) => item.removeAttribute("id"));
+      node.querySelectorAll("[for]").forEach((item) => item.removeAttribute("for"));
+      node.querySelectorAll(".calendar-nav-buttons, .calendar-milestone-editor > .button, .calendar-milestone-row .icon-button, .calendar-milestone-empty").forEach((item) => item.setAttribute("data-export-hidden", "true"));
+      node.querySelectorAll("input[type='file']").forEach((item) => item.setAttribute("data-export-hidden", "true"));
+      node.querySelectorAll("details").forEach((item) => item.open = true);
+      return node;
+    }
+
+    function createExportPage(documentNode) {
+      const page = exportElement("section", "export-page");
+      page.append(exportElement("div", "export-page-content"));
+      documentNode.append(page);
+      return page;
+    }
+
+    function paginateExportNodes(exportDoc, fieldNodes) {
+      exportDoc.documentNode.textContent = "";
+      let page = createExportPage(exportDoc.documentNode);
+      let content = page.querySelector(".export-page-content");
+
+      fieldNodes.forEach((fieldNode) => {
+        content.append(fieldNode);
+        if (content.children.length > 1 && page.scrollHeight > EXPORT_PAGE_HEIGHT + 1) {
+          fieldNode.remove();
+          page = createExportPage(exportDoc.documentNode);
+          content = page.querySelector(".export-page-content");
+          content.append(fieldNode);
+        }
+      });
+
+      exportDoc.pages = [...exportDoc.documentNode.querySelectorAll(".export-page")];
+    }
+
+    function buildRuntimeExportDocument(schema, captureNode) {
+      if (!captureNode) throw new Error("Runtime capture node was not available.");
+      const mount = exportElement("div", "export-mount");
+      const documentNode = exportElement("div", "export-document");
+      documentNode.setAttribute("style", themeStyle(schema));
+      mount.append(documentNode);
+      document.body.append(mount);
+
+      const sourceFields = [...(captureNode.querySelector(".fields")?.children || [])];
+      const fields = sourceFields.map((source) => {
+        const clone = source.cloneNode(true);
+        syncExportControlState(source, clone);
+        syncExportMediaState(source, clone);
+        return prepareRuntimeExportNode(clone);
+      });
+      if (!fields.length) fields.push(exportElement("div", "export-empty", "Blank form"));
+
+      const exportDoc = { mount, documentNode, pages: [], fields };
+      paginateExportNodes(exportDoc, fields);
+      return exportDoc;
+    }
+
+    async function waitForExportAssets(root) {
+      const images = [...root.querySelectorAll("img")];
+      const media = [...root.querySelectorAll("video")];
+      const frames = [...root.querySelectorAll("iframe")];
+
+      await Promise.all(images.map(waitForExportImage));
+      await inlineExportSvgMediaImages(root);
+      await waitForExportLayout();
+
+      await Promise.all([
+        ...[...root.querySelectorAll("img")].map(waitForExportImage),
+        ...media.map((item) => {
+          if (item.readyState >= 2) return Promise.resolve();
+          return new Promise((resolve) => {
+            item.addEventListener("loadeddata", resolve, { once: true });
+            item.addEventListener("error", resolve, { once: true });
+            window.setTimeout(resolve, 1200);
+          });
+        }),
+        ...frames.map((frame) => new Promise((resolve) => {
+          frame.addEventListener("load", resolve, { once: true });
+          window.setTimeout(resolve, 800);
+        }))
+      ]);
+    }
+
+    async function captureExportElement(element, theme) {
+      return html2canvas(element, {
+        scale: EXPORT_SCALE,
+        backgroundColor: theme.bg,
+        useCORS: true,
+        logging: false,
+        windowWidth: Math.max(element.scrollWidth || 0, EXPORT_PAGE_WIDTH),
+        windowHeight: Math.max(element.scrollHeight || 0, EXPORT_PAGE_HEIGHT),
+        scrollX: 0,
+        scrollY: 0
+      });
+    }
+
+    async function exportPdfFromDocument(exportDoc, schema, theme) {
+      const pdfCtor = window.jspdf?.jsPDF;
+      if (!pdfCtor) {
+        window.alert("PDF export library did not load.");
+        return;
+      }
+
+      const pdf = new pdfCtor("p", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      for (let index = 0; index < exportDoc.pages.length; index += 1) {
+        if (index > 0) pdf.addPage();
+        const canvas = await captureExportElement(exportDoc.pages[index], theme);
+        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 0, 0, pageWidth, pageHeight);
+      }
+      pdf.save(safeFileName(schemaDisplayName(schema)) + ".pdf");
+    }
+
+    async function exportFormDocument(kind, schema, captureNode) {
+      const theme = themeSettings(schema.settings.theme);
+      const exportDoc = buildRuntimeExportDocument(schema, captureNode);
+      try {
+        if (document.fonts?.ready) await document.fonts.ready;
+        await waitForExportAssets(exportDoc.mount);
+        paginateExportNodes(exportDoc, exportDoc.fields);
+        if (kind === "pdf") {
+          await exportPdfFromDocument(exportDoc, schema, theme);
+          return;
+        }
+
+        const canvas = await captureExportElement(exportDoc.documentNode, theme);
+        const mime = kind === "jpg" ? "image/jpeg" : "image/png";
+        downloadDataUrl(canvas.toDataURL(mime, 0.94), safeFileName(schemaDisplayName(schema)) + "." + kind);
+      } finally {
+        exportDoc.mount.remove();
+      }
+    }
+
+    function downloadDataUrl(dataUrl, fileName) {
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+
     function RuntimeApp() {
       const [schema, setSchemaState] = useState(null);
       const [values, setValues] = useState({});
@@ -3051,9 +3878,9 @@
       const captureRef = useRef(null);
 
       function setLoadedSchema(nextSchema) {
-        const normalized = normalizeSchema(nextSchema);
-        setSchemaState(normalized);
-        setValues(initialValuesFor(normalized));
+        const validated = schemaDocument(nextSchema);
+        setSchemaState(validated);
+        setValues(initialValuesFor(validated));
         setInvalidIds(new Set());
       }
 
@@ -3062,7 +3889,7 @@
       }, [schema]);
 
       useEffect(() => {
-        if (schema) ensureGoogleFontLoaded(normalizeTheme(schema?.settings?.theme).fontFamily);
+        if (schema) ensureGoogleFontLoaded(themeSettings(schema.settings.theme).fontFamily);
       }, [schema]);
 
       useEffect(() => {
@@ -3080,11 +3907,6 @@
           } catch (error) {
             console.error(error);
             window.alert("The embedded schema could not be loaded.");
-            return;
-          }
-
-          if (window.FORM_SCHEMA) {
-            setLoadedSchema(window.FORM_SCHEMA);
             return;
           }
 
@@ -3199,67 +4021,14 @@
       }
 
       async function exportFilledForm(kind) {
-        if (!schema || exporting || !captureRef.current || !validateRequired()) return;
+        if (!schema || exporting || !validateRequired()) return;
 
         setExporting(true);
         try {
-          if (document.fonts?.ready) await document.fonts.ready;
-          const canvas = await html2canvas(captureRef.current, {
-            scale: 2,
-            backgroundColor: normalizeTheme(schema?.settings?.theme).bg,
-            useCORS: true,
-            logging: false
-          });
-
-          if (kind === "pdf") {
-            exportPdf(canvas);
-          } else {
-            const mime = kind === "jpg" ? "image/jpeg" : "image/png";
-            const dataUrl = canvas.toDataURL(mime, 0.94);
-            downloadDataUrl(dataUrl, safeFileName(schemaDisplayName(schema)) + "." + kind);
-          }
+          await exportFormDocument(kind, schema, captureRef.current);
         } finally {
           setExporting(false);
         }
-      }
-
-      function exportPdf(canvas) {
-        const pdfCtor = window.jspdf?.jsPDF;
-        if (!pdfCtor) {
-          window.alert("PDF export library did not load.");
-          return;
-        }
-
-        const pdf = new pdfCtor("p", "pt", "a4");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 28;
-        const imgWidth = pageWidth - margin * 2;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        const imgData = canvas.toDataURL("image/png");
-
-        let position = margin;
-        let remaining = imgHeight;
-        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-        remaining -= pageHeight - margin * 2;
-
-        while (remaining > 0) {
-          pdf.addPage();
-          position = margin - (imgHeight - remaining);
-          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-          remaining -= pageHeight - margin * 2;
-        }
-
-        pdf.save(safeFileName(schemaDisplayName(schema)) + ".pdf");
-      }
-
-      function downloadDataUrl(dataUrl, fileName) {
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
       }
 
       const exportIcon = exportFormat === "pdf"
