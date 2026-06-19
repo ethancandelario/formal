@@ -32,6 +32,34 @@
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --focus-ring: rgba(134, 31, 65, 0.28);
       --form-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --form-page-margin: 20px;
+      --form-page-padding: 16px;
+      --form-field-spacing: 10px;
+      --form-field-padding: 16px;
+      --heading-font-family: var(--form-font-family);
+      --heading-color: var(--ink);
+      --heading-font-size: 26px;
+      --heading-font-weight: 750;
+      --heading-font-style: normal;
+      --heading-line-height: 1.2;
+      --heading-letter-spacing: 0px;
+      --heading-text-transform: none;
+      --description-font-family: var(--form-font-family);
+      --description-color: var(--muted);
+      --description-font-size: 14px;
+      --description-font-weight: 400;
+      --description-font-style: normal;
+      --description-line-height: 1.5;
+      --description-letter-spacing: 0px;
+      --description-text-transform: none;
+      --label-font-family: var(--form-font-family);
+      --label-color: var(--ink);
+      --label-font-size: 16px;
+      --label-font-weight: 700;
+      --label-font-style: normal;
+      --label-line-height: 1.35;
+      --label-letter-spacing: 0px;
+      --label-text-transform: none;
     }
 
     * {
@@ -53,7 +81,8 @@
 
     button,
     input,
-    textarea {
+    textarea,
+    select {
       font: inherit;
     }
 
@@ -404,10 +433,11 @@
     }
 
     .theme-color-token:focus-visible,
+    .typography-token:focus-visible,
     .sidebar-control:focus-visible,
-    .font-picker-button:focus-visible,
     .modal-close-button:focus-visible,
     .theme-modal input:focus-visible,
+    .theme-modal select:focus-visible,
     .theme-modal button:focus-visible {
       outline: 2px solid rgba(255, 255, 255, 0.34);
       outline-offset: 2px;
@@ -459,14 +489,19 @@
       border-color: #666a6d;
     }
 
-    .font-picker-button {
-      width: 100%;
-      min-height: 58px;
+    .typography-token-list {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .typography-token {
+      width: 100%;
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) auto;
       align-items: center;
       gap: 8px;
-      padding: 8px 10px;
+      padding: 8px;
       border: 1px solid var(--sidebar-line);
       border-radius: 8px;
       background: var(--sidebar-2);
@@ -476,18 +511,30 @@
       transition: background 160ms ease, border-color 160ms ease;
     }
 
-    .font-picker-button:hover {
+    .typography-token:hover {
       background: #424548;
       border-color: #666a6d;
     }
 
-    .font-picker-summary {
+    .typography-token-icon {
+      width: 32px;
+      height: 32px;
       display: grid;
-      gap: 3px;
-      min-width: 0;
+      place-items: center;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #303235;
+      color: #ffffff;
     }
 
-    .font-picker-name {
+    .typography-token-main {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .typography-token-label {
+      color: #f4f2ef;
       font-size: 12.5px;
       font-weight: 750;
       overflow: hidden;
@@ -495,12 +542,22 @@
       white-space: nowrap;
     }
 
-    .font-picker-preview {
+    .typography-token-sample,
+    .typography-token-meta {
       color: #bfc3c6;
       font-size: 12px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .typography-token-swatch {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 7px;
+      background: var(--swatch-color);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
     }
 
     .theme-modal-backdrop {
@@ -529,6 +586,10 @@
 
     .theme-modal.wide {
       width: min(92vw, 620px);
+    }
+
+    .theme-modal.character-modal {
+      width: min(94vw, 780px);
     }
 
     .theme-modal-head,
@@ -613,7 +674,8 @@
       font-weight: 700;
     }
 
-    .theme-modal input {
+    .theme-modal input,
+    .theme-modal select {
       width: 100%;
       min-height: 38px;
       border: 1px solid var(--sidebar-line);
@@ -627,9 +689,92 @@
     }
 
     .theme-modal input:hover,
-    .theme-modal input:focus {
+    .theme-modal input:focus,
+    .theme-modal select:hover,
+    .theme-modal select:focus {
       background: #303235;
       border-color: #666a6d;
+    }
+
+    .character-modal-body {
+      grid-template-columns: minmax(220px, 0.86fr) minmax(280px, 1fr);
+      align-items: start;
+      gap: 16px;
+    }
+
+    .character-preview-pane,
+    .character-controls {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .character-preview-surface {
+      min-height: 150px;
+      display: grid;
+      align-content: center;
+      padding: 16px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: auto;
+    }
+
+    .character-preview-text {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .character-color-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+    }
+
+    .character-color-chip {
+      min-height: 112px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: var(--swatch-color);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.10);
+    }
+
+    .character-field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .character-segmented {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--sidebar-line);
+      border-radius: 8px;
+      background: #303235;
+    }
+
+    .character-segmented button {
+      min-height: 30px;
+      border-radius: 6px;
+      background: transparent;
+      color: #d7d2cb;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .character-segmented button.active {
+      background: #4a4d50;
+      color: #ffffff;
+    }
+
+    .font-option-list.compact {
+      max-height: 178px;
+      overflow: auto;
+      padding-right: 2px;
     }
 
     .theme-modal .button {
@@ -812,7 +957,7 @@
     .canvas-shell {
       min-height: 0;
       overflow: auto;
-      padding: 20px;
+      padding: var(--form-page-margin);
       background: var(--bg);
       font-family: var(--form-font-family);
       transition: padding 240ms var(--ease);
@@ -820,7 +965,7 @@
 
     .form-page {
       max-width: 840px;
-      margin: 0 auto 40px;
+      margin: 0 auto var(--form-page-margin);
       background: var(--panel);
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
@@ -872,17 +1017,27 @@
     }
 
     .title-input {
-      font-size: 26px;
-      line-height: 1.2;
-      font-weight: 750;
+      color: var(--heading-color);
+      font-family: var(--heading-font-family);
+      font-size: var(--heading-font-size);
+      line-height: var(--heading-line-height);
+      font-weight: var(--heading-font-weight);
+      font-style: var(--heading-font-style);
+      letter-spacing: var(--heading-letter-spacing);
+      text-transform: var(--heading-text-transform);
     }
 
     .description-input {
       min-height: 68px;
-      color: var(--muted);
-      line-height: 1.5;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
       resize: vertical;
-      font-size: 14px;
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
     }
 
     .title-input:hover,
@@ -908,11 +1063,12 @@
 
     .fields-list {
       display: grid;
-      gap: 10px;
-      padding: 16px;
+      gap: var(--form-field-spacing);
+      padding: var(--form-page-padding);
       min-height: 280px;
       align-content: start;
       grid-auto-rows: max-content;
+      position: relative;
       transition: background 160ms ease, outline-color 160ms ease;
     }
 
@@ -923,12 +1079,17 @@
     }
 
     .drop-indicator {
-      position: relative;
+      position: absolute;
+      left: var(--form-page-padding);
+      right: var(--form-page-padding);
+      top: var(--drop-y, 0px);
+      z-index: 4;
       height: 8px;
       display: flex;
       align-items: center;
       pointer-events: none;
-      animation: indicator-in 120ms var(--ease) both;
+      transform: translateY(-50%);
+      transition: top 90ms var(--ease), opacity 70ms ease;
     }
 
     .drop-indicator::before {
@@ -1028,7 +1189,7 @@
     }
 
     .field-card-body {
-      padding: 8px 16px 16px;
+      padding: 8px var(--form-field-padding) var(--form-field-padding);
       border-radius: 0 0 8px 8px;
     }
 
@@ -1048,9 +1209,14 @@
 
     .field-label {
       margin: 0 0 5px;
-      font-size: 16px;
-      line-height: 1.35;
-      font-weight: 700;
+      color: var(--label-color);
+      font-family: var(--label-font-family);
+      font-size: var(--label-font-size);
+      line-height: var(--label-line-height);
+      font-weight: var(--label-font-weight);
+      font-style: var(--label-font-style);
+      letter-spacing: var(--label-letter-spacing);
+      text-transform: var(--label-text-transform);
     }
 
     .required-mark {
@@ -1060,9 +1226,14 @@
 
     .field-help {
       margin: 0 0 10px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 13px;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
     }
 
     .headline-preview {
@@ -1073,23 +1244,116 @@
 
     .headline-preview-title {
       margin: 0;
-      color: var(--ink);
-      font-size: 26px;
-      line-height: 1.2;
-      font-weight: 750;
+      color: var(--heading-color);
+      font-family: var(--heading-font-family);
+      font-size: var(--heading-font-size);
+      line-height: var(--heading-line-height);
+      font-weight: var(--heading-font-weight);
+      font-style: var(--heading-font-style);
+      letter-spacing: var(--heading-letter-spacing);
+      text-transform: var(--heading-text-transform);
       overflow-wrap: anywhere;
     }
 
-    .headline-preview-description {
+    .headline-preview-subhead {
       margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 14px;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
       overflow-wrap: anywhere;
     }
 
     .headline-preview-placeholder {
       color: #8b8f92;
+    }
+
+    .headline-copy {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .headline-preview.has-media:not(.media-middle) {
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
+      align-items: center;
+      gap: 16px;
+    }
+
+    .headline-media {
+      min-width: 0;
+    }
+
+    .headline-preview.media-left .headline-media {
+      order: -1;
+    }
+
+    .field-card.is-split-target .headline-preview {
+      position: relative;
+    }
+
+    .headline-drop-indicator {
+      position: absolute;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      transition: opacity 70ms ease;
+    }
+
+    .headline-drop-indicator::before {
+      content: "";
+      border-radius: 999px;
+      background: rgba(134, 31, 65, 0.42);
+    }
+
+    .headline-drop-indicator.middle {
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 8px;
+      transform: translateY(-50%);
+    }
+
+    .headline-drop-indicator.middle::before {
+      width: 100%;
+      height: 1px;
+    }
+
+    .headline-drop-indicator.left,
+    .headline-drop-indicator.right {
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      justify-content: center;
+    }
+
+    .headline-drop-indicator.left {
+      left: 0;
+      transform: translateX(-50%);
+    }
+
+    .headline-drop-indicator.right {
+      right: 0;
+      transform: translateX(50%);
+    }
+
+    .headline-drop-indicator.left::before,
+    .headline-drop-indicator.right::before {
+      width: 1px;
+      height: 100%;
+    }
+
+    .headline-media.is-draggable {
+      cursor: grab;
+    }
+
+    .headline-media.is-draggable:active {
+      cursor: grabbing;
     }
 
     .preview-line,
@@ -1274,7 +1538,8 @@
       text-align: center;
     }
 
-    .calendar-nav .calendar-month-label {
+    .calendar-nav .calendar-month-label,
+    .calendar-nav .calendar-month-input {
       grid-column: 1 / -1;
       grid-row: 1;
       padding: 0 92px;
@@ -1298,6 +1563,22 @@
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .calendar-month-input {
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .calendar-month-input:hover,
+    .calendar-month-input:focus {
+      border-color: var(--line);
+      background: var(--panel-2);
+      outline: none;
     }
 
     .calendar-range-summary {
@@ -2080,7 +2361,7 @@
       }
 
       .shell.sidebar-collapsed .canvas-shell {
-        padding-left: 20px;
+        padding-left: var(--form-page-margin);
       }
     }
 
@@ -2247,13 +2528,12 @@
         display: none;
       }
 
-      .font-picker-button {
-        min-height: 42px;
-        padding: 7px 8px;
+      .character-modal-body {
+        grid-template-columns: 1fr;
       }
 
-      .font-picker-preview {
-        display: none;
+      .character-color-row {
+        grid-template-columns: 1fr;
       }
 
       .sidebar-theme-reset {
@@ -2263,11 +2543,12 @@
       }
 
       .canvas-shell {
-        padding: 12px;
+        padding: max(12px, var(--form-page-margin));
       }
 
       .shell.sidebar-collapsed .canvas-shell {
-        padding: 60px 12px 12px;
+        padding: max(12px, var(--form-page-margin));
+        padding-top: max(60px, var(--form-page-margin));
       }
 
       .inspector {
@@ -2338,7 +2619,8 @@
       padding: 13px var(--calendar-side-padding) 10px;
     }
 
-    .calendar-nav .calendar-month-label {
+    .calendar-nav .calendar-month-label,
+    .calendar-nav .calendar-month-input {
       padding: 0 76px;
     }
 
@@ -2592,6 +2874,18 @@
       padding: 2px 0;
     }
 
+    @media (max-width: 720px) {
+      .headline-preview.has-media:not(.media-middle),
+      .headline-content.has-media:not(.media-middle) {
+        grid-template-columns: 1fr;
+      }
+
+      .headline-preview.media-left .headline-media,
+      .headline-content.media-left .headline-media {
+        order: 0;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
 
       *,
@@ -2621,6 +2915,7 @@
     const DEFAULT_RADAR_MAX = 5;
     const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
     const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
+    const DEFAULT_FORM_NAME = "Untitled form";
     const DEFAULT_THEME = {
       bg: "#f7f5f2",
       panel: "#ffffff",
@@ -2636,17 +2931,35 @@
       danger: "#b3261e",
       fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
+    const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
+    const DEFAULT_TYPOGRAPHY = {
+      heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
+      description: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.muted, size: 14, weight: 400, style: "normal", lineHeight: 1.5, letterSpacing: 0, textTransform: "none" },
+      label: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 16, weight: 700, style: "normal", lineHeight: 1.35, letterSpacing: 0, textTransform: "none" }
+    };
+    const LEGACY_TYPOGRAPHY_KEYS = ["headingSize", "headingWeight", "headingStyle", "descriptionSize", "descriptionWeight", "descriptionStyle", "labelSize", "labelWeight", "labelStyle"];
     const GOOGLE_FONT_METADATA_URL = "https://cdn.jsdelivr.net/npm/google-font-metadata@6.0.7/data/api-response.json";
     const GOOGLE_FONT_PREVIEW_LIMIT = 36;
     const SYSTEM_FONT_OPTION = { family: "System UI", stack: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', system: true };
     let googleFontCatalogPromise = null;
     const THEME_COLOR_GROUPS = [
       { title: "Surfaces", fields: [["bg", "Background"], ["panel", "Panel"], ["panel2", "Soft panel"], ["line", "Lines"]] },
-      { title: "Text", fields: [["ink", "Text"], ["muted", "Muted text"]] },
+      { title: "Base", fields: [["ink", "Body text"], ["muted", "Muted UI"]] },
       { title: "Brand", fields: [["accent", "Accent"], ["accent2", "Secondary accent"], ["accentSoft", "Accent soft"]] },
       { title: "Semantic", fields: [["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]] }
     ];
     const THEME_COLOR_FIELDS = THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), []);
+    const LAYOUT_CONTROLS = [["pageMargin", "Outer margin", 0, 80], ["pagePadding", "Page padding", 0, 80], ["fieldSpacing", "Block spacing", 0, 48], ["fieldPadding", "Block padding", 0, 64]];
+    const TYPOGRAPHY_ROLES = [
+      { key: "heading", label: "Heading", icon: "lucide-heading", sample: "Heading", colorSource: "ink" },
+      { key: "description", label: "Subhead", icon: "fa-solid fa-align-left", sample: "Supporting subhead", colorSource: "muted" },
+      { key: "label", label: "Labels", icon: "fa-solid fa-list-ul", sample: "Field label", colorSource: "ink" }
+    ];
+    const TYPOGRAPHY_ROLE_KEYS = TYPOGRAPHY_ROLES.map((role) => role.key);
+    const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
+    const FONT_WEIGHT_OPTIONS = [300, 400, 500, 600, 700, 750, 800, 900];
+    const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
+    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
 
     const fieldTypes = [
       { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true, background: false } } },
@@ -2663,7 +2976,7 @@
       { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, outline: true, background: false } } },
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true, background: false } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true, background: false } } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Untitled form", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", outline: false, background: false } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", mediaPlacement: "right", media: null, outline: false, background: false } } },
       { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false, background: false } } },
       { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false, background: false } } }
     ];
@@ -2691,8 +3004,8 @@
       return {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        settings: { theme: clone(DEFAULT_THEME) },
-        fields: [fieldFromType("headline")]
+        settings: { name: DEFAULT_FORM_NAME, theme: clone(DEFAULT_THEME), layout: clone(DEFAULT_LAYOUT), typography: clone(DEFAULT_TYPOGRAPHY) },
+        fields: []
       };
     }
 
@@ -2787,12 +3100,86 @@
       return googleFontCatalogPromise;
     }
 
+    function typographyRoleMeta(key) {
+      const role = TYPOGRAPHY_ROLES.find((item) => item.key === key);
+      if (!role) throw new Error(`Unsupported typography role: ${key}`);
+      return role;
+    }
+
+    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
+      const role = typographyRoleMeta(key);
+      const base = DEFAULT_TYPOGRAPHY[key];
+      return {
+        ...base,
+        fontFamily: theme?.fontFamily || base.fontFamily,
+        color: theme?.[role.colorSource] || base.color
+      };
+    }
+
+    function isPlainObject(value) {
+      return value && typeof value === "object" && !Array.isArray(value);
+    }
+
+    function isLegacyTypography(value) {
+      return isPlainObject(value) && LEGACY_TYPOGRAPHY_KEYS.some((key) => key in value);
+    }
+
+    function legacyTypographySettings(input, theme = DEFAULT_THEME) {
+      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
+        const defaults = typographyRoleDefault(role.key, theme);
+        settings[role.key] = {
+          ...defaults,
+          size: input[role.key + "Size"] ?? defaults.size,
+          weight: input[role.key + "Weight"] ?? defaults.weight,
+          style: input[role.key + "Style"] ?? defaults.style
+        };
+        return settings;
+      }, {});
+    }
+
+    function typographyRoleSettings(value, key, theme = DEFAULT_THEME) {
+      const defaults = typographyRoleDefault(key, theme);
+      const source = isPlainObject(value) ? value : {};
+      return TYPOGRAPHY_STYLE_KEYS.reduce((settings, styleKey) => {
+        settings[styleKey] = source[styleKey] ?? defaults[styleKey];
+        return settings;
+      }, {});
+    }
+
+    function typographySettings(input, theme = DEFAULT_THEME) {
+      if (isLegacyTypography(input)) return legacyTypographySettings(input, theme);
+      const source = isPlainObject(input) ? input : {};
+      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
+        settings[role.key] = typographyRoleSettings(source[role.key], role.key, theme);
+        return settings;
+      }, {});
+    }
+
+    function typographyStyle(style, { includeSize = true, includeColor = true } = {}) {
+      return [
+        `font-family: ${style.fontFamily}`,
+        includeColor ? `color: ${style.color}` : "",
+        includeSize ? `font-size: ${style.size}px` : "",
+        `font-weight: ${style.weight}`,
+        `font-style: ${style.style}`,
+        `line-height: ${style.lineHeight}`,
+        `letter-spacing: ${style.letterSpacing}px`,
+        `text-transform: ${style.textTransform}`
+      ].filter(Boolean).join("; ");
+    }
+
+    function typographySummary(style) {
+      return `${fontNameFromStack(style.fontFamily)} / ${style.size}px / ${style.weight}`;
+    }
+
     function themeSettings(input) {
       return input;
     }
 
     function themeStyle(schema) {
       const theme = themeSettings(schema.settings.theme);
+      const layout = schema.settings.layout;
+      const type = typographySettings(schema.settings.typography, theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
@@ -2810,7 +3197,24 @@
         `--warning-soft: ${hexToRgba(theme.warning, 0.12)}`,
         `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
         `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
-        `--form-font-family: ${theme.fontFamily}`
+        `--form-font-family: ${theme.fontFamily}`,
+        `--form-page-margin: ${layout.pageMargin}px`,
+        `--form-page-padding: ${layout.pagePadding}px`,
+        `--form-field-spacing: ${layout.fieldSpacing}px`,
+        `--form-field-padding: ${layout.fieldPadding}px`,
+        ...TYPOGRAPHY_ROLES.flatMap((role) => {
+          const textStyle = type[role.key];
+          return [
+            `--${role.key}-font-family: ${textStyle.fontFamily}`,
+            `--${role.key}-color: ${textStyle.color}`,
+            `--${role.key}-font-size: ${textStyle.size}px`,
+            `--${role.key}-font-weight: ${textStyle.weight}`,
+            `--${role.key}-font-style: ${textStyle.style}`,
+            `--${role.key}-line-height: ${textStyle.lineHeight}`,
+            `--${role.key}-letter-spacing: ${textStyle.letterSpacing}px`,
+            `--${role.key}-text-transform: ${textStyle.textTransform}`
+          ];
+        })
       ].join("; ");
     }
 
@@ -3087,6 +3491,30 @@
       fontFamilyValue(value);
     }
 
+    function assertTypographyRole(style, key) {
+      const name = `schema.settings.typography.${key}`;
+      assertObject(style, name);
+      assertExactKeys(style, TYPOGRAPHY_STYLE_KEYS, name);
+      assertFontFamily(style.fontFamily, `${name}.fontFamily`);
+      assertHexColor(style.color, `${name}.color`);
+      assertNumberRange(style.size, `${name}.size`, 8, 96, true);
+      assertNumberRange(style.weight, `${name}.weight`, 100, 1000, true);
+      assertOneOf(style.style, ["normal", "italic"], `${name}.style`);
+      assertNumberRange(style.lineHeight, `${name}.lineHeight`, 0.8, 3);
+      assertNumberRange(style.letterSpacing, `${name}.letterSpacing`, 0, 12);
+      assertOneOf(style.textTransform, TEXT_TRANSFORM_OPTIONS.map(([value]) => value), `${name}.textTransform`);
+    }
+
+    function assertAppearanceSettings(settings) {
+      assertObject(settings.layout, "schema.settings.layout");
+      assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
+      Object.keys(DEFAULT_LAYOUT).forEach((key) => assertNumberRange(settings.layout[key], `schema.settings.layout.${key}`, 0, key === "fieldSpacing" ? 48 : 80, true));
+      settings.typography = typographySettings(settings.typography, settings.theme);
+      assertObject(settings.typography, "schema.settings.typography");
+      assertExactKeys(settings.typography, TYPOGRAPHY_ROLE_KEYS, "schema.settings.typography");
+      TYPOGRAPHY_ROLE_KEYS.forEach((key) => assertTypographyRole(settings.typography[key], key));
+    }
+
     function assertCalendarMilestones(items, name) {
       assertArray(items, name);
       items.forEach((item, index) => {
@@ -3121,6 +3549,27 @@
       assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
       assertBoolean(settings.background, `${fieldType}.settings.background`);
+    }
+
+    function assertMediaSettingValues(settings, name) {
+      assertOneOf(settings.sourceType, ["url", "file", "html"], `${name}.sourceType`);
+      ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `${name}.${key}`));
+      assertNumberRange(settings.iframeHeight, `${name}.iframeHeight`, 120, 1200, true);
+      assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], `${name}.horizontalAlignment`);
+      assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], `${name}.verticalAlignment`);
+      assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
+      assertCssLength(settings.maxWidth, `${name}.maxWidth`);
+      assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
+      assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
+    }
+
+    function assertNestedMediaSettings(settings, name) {
+      if (settings === null) return;
+      assertObject(settings, name);
+      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "outline", "background"], name);
+      assertBoolean(settings.outline, `${name}.outline`);
+      assertBoolean(settings.background, `${name}.background`);
+      assertMediaSettingValues(settings, name);
     }
 
     function schemaField(raw) {
@@ -3202,25 +3651,19 @@
 
       if (field.type === "media") {
         assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"], field.type);
-        assertOneOf(settings.sourceType, ["url", "file", "html"], "media.settings.sourceType");
-        ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `media.settings.${key}`));
-        assertNumberRange(settings.iframeHeight, "media.settings.iframeHeight", 120, 1200, true);
-        assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], "media.settings.horizontalAlignment");
-        assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], "media.settings.verticalAlignment");
-        assertNumberRange(settings.scale, "media.settings.scale", 10, 100);
-        assertCssLength(settings.maxWidth, "media.settings.maxWidth");
-        assertNumberRange(settings.maxHeight, "media.settings.maxHeight", 80, 1600, true);
-        assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], "media.settings.objectFit");
+        assertSettingKeys(settings, MEDIA_SETTING_KEYS, field.type);
+        assertMediaSettingValues(settings, "media.settings");
       }
 
       if (field.type === "headline") {
         assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"], field.type);
+        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"], field.type);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
+        assertOneOf(settings.mediaPlacement, ["left", "middle", "right"], "headline.settings.mediaPlacement");
+        assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
       if (field.type === "spacer") {
@@ -3241,11 +3684,13 @@
       assertString(schema.createdAt, "schema.createdAt");
       assertString(schema.updatedAt, "schema.updatedAt");
       assertObject(schema.settings, "schema.settings");
-      assertExactKeys(schema.settings, ["theme"], "schema.settings");
+      assertExactKeys(schema.settings, ["name", "theme", "layout", "typography"], "schema.settings");
+      assertString(schema.settings.name, "schema.settings.name");
       assertObject(schema.settings.theme, "schema.settings.theme");
       assertExactKeys(schema.settings.theme, [...THEME_COLOR_FIELDS.map(([key]) => key), "fontFamily"], "schema.settings.theme");
       THEME_COLOR_FIELDS.forEach(([key]) => assertHexColor(schema.settings.theme[key], `schema.settings.theme.${key}`));
       assertFontFamily(schema.settings.theme.fontFamily, "schema.settings.theme.fontFamily");
+      assertAppearanceSettings(schema.settings);
       assertArray(schema.fields, "schema.fields");
       const seenIds = new Set();
       schema.fields.forEach((field, index) => {
@@ -3258,22 +3703,16 @@
       return schema;
     }
 
-    function primaryHeadlineField(schema) {
-      return schema?.fields?.find((field) => field.type === "headline") || null;
-    }
-
     function formDisplayName(schema) {
-      const headline = primaryHeadlineField(schema);
-      return String(headline?.label || "").trim();
+      return String(schema.settings.name || "").trim();
     }
 
     function formHasContent(schema) {
-      const theme = themeSettings(schema.settings.theme);
-      const themeChanged = JSON.stringify(theme) !== JSON.stringify(DEFAULT_THEME);
-      return themeChanged || schema.fields.some((field) => {
-        if (field.type !== "headline") return true;
-        return String(field.label || "").trim() !== "Untitled form" || String(field.description || "").trim();
-      });
+      return schema.settings.name !== DEFAULT_FORM_NAME
+        || JSON.stringify(themeSettings(schema.settings.theme)) !== JSON.stringify(DEFAULT_THEME)
+        || JSON.stringify(schema.settings.layout) !== JSON.stringify(DEFAULT_LAYOUT)
+        || JSON.stringify(typographySettings(schema.settings.typography, themeSettings(schema.settings.theme))) !== JSON.stringify(DEFAULT_TYPOGRAPHY)
+        || schema.fields.length > 0;
     }
 
     function loadInitialSchema() {
@@ -3357,6 +3796,8 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
+        mediaPlacement: ["left", "middle", "right"].includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
+        media: settings.media,
         outline: fieldOutline(field),
         background: fieldBackground(field)
       };
@@ -3387,6 +3828,10 @@
         outline: fieldOutline(field),
         background: fieldBackground(field)
       };
+    }
+
+    function splitMediaField(field) {
+      return field.settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: field.settings.media } : null;
     }
 
     function mediaSource(settings) {
@@ -3635,14 +4080,31 @@
       `;
     }
 
-    function HeadlinePreview({ field }) {
+    function HeadlineDropIndicator({ placement }) {
+      return html`<div class=${`headline-drop-indicator ${placement}`} aria-hidden="true"></div>`;
+    }
+
+    function HeadlinePreview({ field, dropPlacement, onMediaDragStart, onMediaDragEnd }) {
       const title = String(field.label || "").trim();
       const description = String(field.description || "").trim();
       const settings = headlineSettings(field);
+      const mediaField = splitMediaField(field);
+      const mediaMiddle = mediaField && settings.mediaPlacement === "middle";
+      const mediaNode = mediaField ? html`<div class=${`headline-media${onMediaDragStart ? " is-draggable" : ""}`} draggable=${!!onMediaDragStart} title="Drag to reposition media" onDragStart=${(event) => onMediaDragStart?.(event, field.id)} onDragEnd=${onMediaDragEnd}><${MediaPreview} field=${mediaField} /></div>` : null;
       return html`
-        <div class="headline-preview">
-          <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Untitled form"}</h1>
-          ${description ? html`<p class="headline-preview-description" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+        <div class=${`headline-preview${mediaField ? " has-media media-" + settings.mediaPlacement : ""}`}>
+          ${dropPlacement ? html`<${HeadlineDropIndicator} placement=${dropPlacement} />` : null}
+          ${mediaMiddle ? html`
+            <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Heading"}</h1>
+            ${mediaNode}
+            ${description ? html`<p class="headline-preview-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+          ` : html`
+            <div class="headline-copy">
+              <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Heading"}</h1>
+              ${description ? html`<p class="headline-preview-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+            </div>
+            ${mediaNode}
+          `}
         </div>
       `;
     }
@@ -3726,11 +4188,11 @@
       `;
     }
 
-    function FieldPreview({ field }) {
+    function FieldPreview({ field, headlineDropPlacement, onHeadlineMediaDragStart, onFieldDragEnd }) {
       const options = field.options;
       switch (field.type) {
         case "headline":
-          return html`<${HeadlinePreview} field=${field} />`;
+          return html`<${HeadlinePreview} field=${field} dropPlacement=${headlineDropPlacement} onMediaDragStart=${onHeadlineMediaDragStart} onMediaDragEnd=${onFieldDragEnd} />`;
         case "short_answer":
         case "email":
         case "number":
@@ -3867,18 +4329,19 @@
         return html`<div class="theme-picker-unavailable">Color picker unavailable. Use the color fields below.</div>`;
       }
 
-      return html`<div class="theme-color-picker-ui" ref=${mountRef}></div>`;
+      return html`<div class="theme-color-picker-ui" style=${`width: ${width}px; min-height: ${width}px;`} ref=${mountRef}></div>`;
     }
 
     function ColorPickerModal({ item, value, defaultValue, onChange, onClose }) {
       const [, label] = item;
-      const [hexDraft, setHexDraft] = useState(value);
-      const [rgbDraft, setRgbDraft] = useState(hexToRgb(value));
+      const [color, setColor] = useState(value);
+      const [hexDraft, setHexDraft] = useState(color);
+      const [rgbDraft, setRgbDraft] = useState(hexToRgb(color));
 
       useEffect(() => {
-        setHexDraft(value);
-        setRgbDraft(hexToRgb(value));
-      }, [value]);
+        setHexDraft(color);
+        setRgbDraft(hexToRgb(color));
+      }, [color]);
 
       useEffect(() => {
         function handleKeyDown(event) {
@@ -3891,7 +4354,7 @@
       function applyHex(raw) {
         setHexDraft(raw);
         const next = hexCandidate(raw);
-        if (next) onChange(next);
+        if (next) setColor(next);
       }
 
       function updateRgb(channel, raw) {
@@ -3901,7 +4364,7 @@
         const g = clampByte(next.g);
         const b = clampByte(next.b);
         if (r === null || g === null || b === null) return;
-        onChange(rgbToHex(r, g, b));
+        setColor(rgbToHex(r, g, b));
       }
 
       return html`
@@ -3910,39 +4373,40 @@
             <div class="theme-modal-head">
               <div>
                 <h2 class="theme-modal-title">${label}</h2>
-                <p class="theme-modal-subtitle">${value.toUpperCase()}</p>
+                <p class="theme-modal-subtitle">${color.toUpperCase()}</p>
               </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><${Icon} icon="fa-solid fa-xmark" /></button>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Cancel"><${Icon} icon="fa-solid fa-xmark" /></button>
             </div>
             <div class="theme-modal-body">
               <div class="theme-modal-picker">
-                <${IroColorPicker} color=${value} onChange=${onChange} width=${220} />
+                <${IroColorPicker} color=${color} onChange=${setColor} width=${220} />
               </div>
               <div class="color-input-grid">
                 <div class="theme-modal-field">
                   <label for="themeHexInput">Hex</label>
-                  <input id="themeHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(value)} />
+                  <input id="themeHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(color)} />
                 </div>
                 <div class="rgb-input-grid">
                   ${["r", "g", "b"].map((channel) => html`
                     <div class="theme-modal-field" key=${channel}>
                       <label for=${`themeRgb${channel}`}>${channel.toUpperCase()}</label>
-                      <input id=${`themeRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(value))} />
+                      <input id=${`themeRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(color))} />
                     </div>
                   `)}
                 </div>
               </div>
             </div>
             <div class="theme-modal-foot">
-              <button class="button" type="button" onClick=${() => onChange(defaultValue)}>Use default</button>
-              <button class="button primary" type="button" onClick=${onClose}>Done</button>
+              <button class="button" type="button" onClick=${() => setColor(defaultValue)}>Use default</button>
+              <button class="button" type="button" onClick=${onClose}>Cancel</button>
+              <button class="button primary" type="button" onClick=${() => { onChange(color); onClose(); }}>Done</button>
             </div>
           </section>
         </div>
       `;
     }
 
-    function FontPickerModal({ value, onChange, onClose }) {
+    function FontFamilySearch({ value, onChange, sampleText }) {
       const [query, setQuery] = useState("");
       const [catalog, setCatalog] = useState([]);
       const [catalogState, setCatalogState] = useState("idle");
@@ -3950,13 +4414,12 @@
       const cleanQuery = query.trim().toLowerCase();
       const hasSearch = cleanQuery.length > 0;
       const matchingFonts = useMemo(() => {
-        if (!hasSearch) return [];
-        const source = catalog.length ? catalog : [];
-        const matches = source.filter((font) => font.family.toLowerCase().includes(cleanQuery));
+        if (!hasSearch) return [current];
+        const matches = catalog.filter((font) => font.family.toLowerCase().includes(cleanQuery));
         const systemMatch = SYSTEM_FONT_OPTION.family.toLowerCase().includes(cleanQuery);
         const options = systemMatch ? [SYSTEM_FONT_OPTION, ...matches] : matches;
         return options.slice(0, GOOGLE_FONT_PREVIEW_LIMIT);
-      }, [catalog, hasSearch, cleanQuery]);
+      }, [catalog, hasSearch, cleanQuery, current.stack]);
 
       useEffect(() => {
         if (!hasSearch) {
@@ -3986,13 +4449,54 @@
 
       useEffect(() => {
         matchingFonts.forEach((font) => {
-          if (!font.system) ensureGoogleFontLoaded(googleFontStack(font.family, font.category));
+          const stack = font.stack || (font.system ? font.stack : googleFontStack(font.family, font.category));
+          ensureGoogleFontLoaded(stack);
         });
       }, [matchingFonts]);
 
+      return html`
+        <div class="font-search-wrap">
+          <label class="sr-only" for="characterFontSearch">Search fonts</label>
+          <input id="characterFontSearch" value=${query} placeholder="Search Google Fonts" onInput=${(event) => setQuery(event.currentTarget.value)} />
+        </div>
+        <div class="font-option-list compact">
+          ${matchingFonts.length ? matchingFonts.map((font) => {
+            const stack = font.stack || (font.system ? font.stack : googleFontStack(font.family, font.category));
+            const family = font.name || font.family;
+            const selected = stack === current.stack;
+            return html`
+              <button
+                class=${`font-option-card${selected ? " selected" : ""}`}
+                type="button"
+                key=${stack}
+                style=${`font-family: ${stack};`}
+                onClick=${() => onChange(stack)}
+              >
+                <span class="font-option-title-row">
+                  <span class="font-option-title">${family}</span>
+                  ${selected ? html`<span class="font-option-status">Selected</span>` : null}
+                </span>
+                <span class="font-option-sample">${sampleText}</span>
+              </button>
+            `;
+          }) : html`<div class="font-option-empty">${catalogState === "loading" ? "Loading fonts..." : catalogState === "error" ? "Font catalog unavailable." : "No matching fonts."}</div>`}
+        </div>
+      `;
+    }
+
+    function CharacterStyleModal({ role, value, defaultValue, onChange, onClose }) {
+      const [draft, setDraft] = useState(value);
+      const [hexDraft, setHexDraft] = useState(value.color);
+      const [rgbDraft, setRgbDraft] = useState(hexToRgb(value.color));
+
       useEffect(() => {
-        ensureGoogleFontLoaded(value);
-      }, [value]);
+        setHexDraft(draft.color);
+        setRgbDraft(hexToRgb(draft.color));
+      }, [draft.color]);
+
+      useEffect(() => {
+        ensureGoogleFontLoaded(draft.fontFamily);
+      }, [draft.fontFamily]);
 
       useEffect(() => {
         function handleKeyDown(event) {
@@ -4002,60 +4506,142 @@
         return () => document.removeEventListener("keydown", handleKeyDown);
       }, [onClose]);
 
+      function patchDraft(patch) {
+        setDraft((current) => ({ ...current, ...patch }));
+      }
+
+      function patchNumber(key, raw, min, max, integer = false) {
+        const number = Number(raw);
+        if (!Number.isFinite(number)) return;
+        const rounded = integer ? Math.round(number) : Math.round(number * 100) / 100;
+        patchDraft({ [key]: Math.max(min, Math.min(max, rounded)) });
+      }
+
+      function applyHex(raw) {
+        setHexDraft(raw);
+        const next = hexCandidate(raw);
+        if (next) patchDraft({ color: next });
+      }
+
+      function updateRgb(channel, raw) {
+        const next = { ...rgbDraft, [channel]: raw };
+        setRgbDraft(next);
+        const r = clampByte(next.r);
+        const g = clampByte(next.g);
+        const b = clampByte(next.b);
+        if (r === null || g === null || b === null) return;
+        patchDraft({ color: rgbToHex(r, g, b) });
+      }
+
       return html`
         <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
-          <section class="theme-modal wide" role="dialog" aria-modal="true" aria-label="Choose font" onMouseDown=${(event) => event.stopPropagation()}>
+          <section class="theme-modal character-modal" role="dialog" aria-modal="true" aria-label=${`Edit ${role.label} typography`} onMouseDown=${(event) => event.stopPropagation()}>
             <div class="theme-modal-head">
               <div>
-                <h2 class="theme-modal-title">Typeface</h2>
-                <p class="theme-modal-subtitle">Current: ${current.name}</p>
+                <h2 class="theme-modal-title">${role.label}</h2>
+                <p class="theme-modal-subtitle">${typographySummary(draft)}</p>
               </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Close"><${Icon} icon="fa-solid fa-xmark" /></button>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Cancel"><${Icon} icon="fa-solid fa-xmark" /></button>
             </div>
-            <div class="theme-modal-body">
-              <div class="font-search-wrap">
-                <label class="sr-only" for="fontSearch">Search fonts</label>
-                <input id="fontSearch" value=${query} placeholder="Search Google Fonts" onInput=${(event) => setQuery(event.currentTarget.value)} />
+            <div class="theme-modal-body character-modal-body">
+              <div class="character-preview-pane">
+                <div class="character-preview-surface">
+                  <span class="character-preview-text" style=${typographyStyle(draft)}>${role.sample}</span>
+                </div>
+                <div class="character-color-row">
+                  <div class="character-color-chip" style=${`--swatch-color: ${draft.color};`} aria-hidden="true"></div>
+                  <${IroColorPicker} color=${draft.color} onChange=${(color) => patchDraft({ color })} width=${164} />
+                </div>
+                <div class="color-input-grid">
+                  <div class="theme-modal-field">
+                    <label for="characterHexInput">Hex</label>
+                    <input id="characterHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(draft.color)} />
+                  </div>
+                  <div class="rgb-input-grid">
+                    ${["r", "g", "b"].map((channel) => html`
+                      <div class="theme-modal-field" key=${channel}>
+                        <label for=${`characterRgb${channel}`}>${channel.toUpperCase()}</label>
+                        <input id=${`characterRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(draft.color))} />
+                      </div>
+                    `)}
+                  </div>
+                </div>
               </div>
-              <div class="font-option-list">
-                ${matchingFonts.length ? matchingFonts.map((font) => {
-                  const stack = font.system ? font.stack : googleFontStack(font.family, font.category);
-                  const selected = stack === current.stack;
-                  return html`
-                    <button
-                      class=${`font-option-card${selected ? " selected" : ""}`}
-                      type="button"
-                      key=${font.family}
-                      style=${`font-family: ${stack};`}
-                      onClick=${() => onChange(stack)}
-                    >
-                      <span class="font-option-title-row">
-                        <span class="font-option-title">${font.family}</span>
-                        ${selected ? html`<span class="font-option-status">Selected</span>` : null}
-                      </span>
-                      <span class="font-option-sample">The quick brown fox jumps over the lazy dog.</span>
-                    </button>
-                  `;
-                }) : html`<div class="font-option-empty">${!hasSearch ? "Search to browse fonts." : catalogState === "loading" ? "Loading fonts..." : catalogState === "error" ? "Font catalog unavailable." : "No matching fonts."}</div>`}
+              <div class="character-controls">
+                <div class="theme-modal-field">
+                  <label>Family</label>
+                  <${FontFamilySearch} value=${draft.fontFamily} onChange=${(fontFamily) => patchDraft({ fontFamily })} sampleText=${role.sample} />
+                </div>
+                <div class="character-field-grid">
+                  <div class="theme-modal-field">
+                    <label for="characterSize">Size</label>
+                    <input id="characterSize" type="number" min="8" max="96" value=${draft.size} onInput=${(event) => patchNumber("size", event.currentTarget.value, 8, 96, true)} />
+                  </div>
+                  <div class="theme-modal-field">
+                    <label for="characterLineHeight">Leading</label>
+                    <input id="characterLineHeight" type="number" min="0.8" max="3" step="0.05" value=${draft.lineHeight} onInput=${(event) => patchNumber("lineHeight", event.currentTarget.value, 0.8, 3)} />
+                  </div>
+                  <div class="theme-modal-field">
+                    <label for="characterWeight">Weight</label>
+                    <select id="characterWeight" value=${draft.weight} onChange=${(event) => patchNumber("weight", event.currentTarget.value, 100, 1000, true)}>
+                      ${FONT_WEIGHT_OPTIONS.map((weight) => html`<option value=${weight} key=${weight}>${weight}</option>`)}
+                    </select>
+                  </div>
+                  <div class="theme-modal-field">
+                    <label>Style</label>
+                    <div class="character-segmented" role="group" aria-label="Font style">
+                      ${["normal", "italic"].map((style) => html`
+                        <button class=${draft.style === style ? "active" : ""} type="button" key=${style} onClick=${() => patchDraft({ style })}>${style === "normal" ? "Regular" : "Italic"}</button>
+                      `)}
+                    </div>
+                  </div>
+                  <div class="theme-modal-field">
+                    <label for="characterTracking">Tracking</label>
+                    <input id="characterTracking" type="number" min="0" max="12" step="0.1" value=${draft.letterSpacing} onInput=${(event) => patchNumber("letterSpacing", event.currentTarget.value, 0, 12)} />
+                  </div>
+                  <div class="theme-modal-field">
+                    <label for="characterCase">Case</label>
+                    <select id="characterCase" value=${draft.textTransform} onChange=${(event) => patchDraft({ textTransform: event.currentTarget.value })}>
+                      ${TEXT_TRANSFORM_OPTIONS.map(([option, label]) => html`<option value=${option} key=${option}>${label}</option>`)}
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="theme-modal-foot">
-              <button class="button" type="button" onClick=${() => onChange(DEFAULT_THEME.fontFamily)}>Use default</button>
-              <button class="button primary" type="button" onClick=${onClose}>Done</button>
+              <button class="button" type="button" onClick=${() => setDraft(defaultValue)}>Use default</button>
+              <button class="button" type="button" onClick=${onClose}>Cancel</button>
+              <button class="button primary" type="button" onClick=${() => { onChange(draft); onClose(); }}>Done</button>
             </div>
           </section>
         </div>
       `;
     }
 
-    function SidebarSettings({ schema, onSchemaChange, onOpenColor, onOpenFont }) {
+    function TypographyRoleControl({ role, value, onOpen }) {
+      return html`
+        <button class="typography-token" type="button" onClick=${onOpen} title=${`Edit ${role.label}`} aria-label=${`Edit ${role.label}`}>
+          <span class="typography-token-icon"><${Icon} icon=${role.icon} /></span>
+          <span class="typography-token-main">
+            <span class="typography-token-label">${role.label}</span>
+            <span class="typography-token-sample" style=${typographyStyle(value, { includeSize: false, includeColor: false })}>${role.sample}</span>
+            <span class="typography-token-meta">${typographySummary(value)}</span>
+          </span>
+          <span class="typography-token-swatch" style=${`--swatch-color: ${value.color};`} aria-hidden="true"></span>
+        </button>
+      `;
+    }
+
+    function SidebarSettings({ schema, onSchemaChange, onOpenColor, onOpenTypography }) {
       const theme = themeSettings(schema.settings.theme);
-      const currentFont = fontOptionByFamily(theme.fontFamily);
-      const patchTheme = (patch) => onSchemaChange({ settings: { ...schema.settings, theme: themeSettings({ ...theme, ...patch }) } });
+      const layout = schema.settings.layout;
+      const typography = typographySettings(schema.settings.typography, theme);
+      const patchLayout = (patch) => onSchemaChange({ settings: { ...schema.settings, layout: { ...layout, ...patch } } });
+      const numberInput = (value) => Number(value || 0);
 
       return html`
         <div class="sidebar-section">
-          <div class="sidebar-section-title">Settings</div>
+          <div class="sidebar-section-title">Appearance</div>
           <div class="sidebar-settings">
             <div class="theme-color-groups">
               ${THEME_COLOR_GROUPS.map((group) => html`
@@ -4078,17 +4664,33 @@
               `)}
             </div>
 
-            <div class="sidebar-property">
-              <label>Typeface</label>
-              <button class="font-picker-button" type="button" onClick=${onOpenFont}>
-                <span class="font-picker-summary" style=${`font-family: ${currentFont.stack};`}>
-                  <span class="font-picker-name">${currentFont.name}</span>
-                  <span class="font-picker-preview">The quick brown fox</span>
-                </span>
-                <${Icon} icon="fa-solid fa-chevron-right" />
-              </button>
+            <div class="theme-color-group">
+              <div class="theme-color-group-title">Layout</div>
+              <div class="settings-grid">
+                ${LAYOUT_CONTROLS.map(([key, label, min, max]) => html`
+                  <div class="sidebar-property" key=${key}>
+                    <label for=${`layout_${key}`}>${label}</label>
+                    <input class="sidebar-control" id=${`layout_${key}`} type="number" min=${min} max=${max} value=${layout[key]} onInput=${(event) => patchLayout({ [key]: numberInput(event.currentTarget.value) })} />
+                  </div>
+                `)}
+              </div>
             </div>
-            <button class="button sidebar-theme-reset" type="button" onClick=${() => patchTheme(clone(DEFAULT_THEME))}>
+
+            <div class="theme-color-group">
+              <div class="theme-color-group-title">Character styles</div>
+              <div class="typography-token-list">
+                ${TYPOGRAPHY_ROLES.map((role) => html`
+                  <${TypographyRoleControl}
+                    key=${role.key}
+                    role=${role}
+                    value=${typography[role.key]}
+                    onOpen=${() => onOpenTypography(role)}
+                  />
+                `)}
+              </div>
+            </div>
+
+            <button class="button sidebar-theme-reset" type="button" onClick=${() => onSchemaChange({ settings: { ...schema.settings, theme: clone(DEFAULT_THEME), layout: clone(DEFAULT_LAYOUT), typography: clone(DEFAULT_TYPOGRAPHY) } })}>
               <${Icon} icon="fa-solid fa-rotate-left" /><span>Reset</span>
             </button>
           </div>
@@ -4096,46 +4698,37 @@
       `;
     }
 
-    function DropIndicator() {
-      return html`<div class="drop-indicator" aria-hidden="true"></div>`;
+    function DropIndicator({ y }) {
+      return html`<div class="drop-indicator" style=${`--drop-y: ${Math.round(y)}px;`} aria-hidden="true"></div>`;
     }
 
-    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, dropIndex, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd }) {
-      const hasDropIndex = Number.isInteger(dropIndex);
-      if (!fields.length) {
-        return html`
-          ${hasDropIndex && dropIndex === 0 ? html`<${DropIndicator} key="drop-0" />` : null}
-          <div class="empty-state"><span>Add some blocks from the sidebar!</span></div>
-        `;
-      }
+    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, headlineDropId, headlineDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
+      if (!fields.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
 
-      const nodes = [];
-      if (hasDropIndex && dropIndex === 0) nodes.push(html`<${DropIndicator} key="drop-0" />`);
-      fields.forEach((field, index) => {
-        nodes.push(html`
-          <${FieldCard}
-            key=${field.id}
-            field=${field}
-            selected=${field.id === selectedId}
-            removing=${field.id === removingId}
-            dragging=${field.id === draggingFieldId}
-            onSelect=${() => onSelect(field.id)}
-            onMove=${(direction) => onMove(field.id, direction)}
-            onDuplicate=${() => onDuplicate(field.id)}
-            onReset=${() => onReset(field.id)}
-            onDelete=${() => onDelete(field.id)}
-            onDragStart=${(event) => onFieldDragStart(event, field.id)}
-            onDragEnd=${onFieldDragEnd}
-          />
-        `);
-        if (hasDropIndex && dropIndex === index + 1) {
-          nodes.push(html`<${DropIndicator} key=${`drop-${index + 1}`} />`);
-        }
-      });
-      return nodes;
+      return fields.map((field) => html`
+        <${FieldCard}
+          key=${field.id}
+          field=${field}
+          selected=${field.id === selectedId}
+          removing=${field.id === removingId}
+          dragging=${field.id === draggingFieldId}
+          headlineDropPlacement=${field.id === headlineDropId ? headlineDropPlacement : null}
+          onSelect=${() => onSelect(field.id)}
+          onMove=${(direction) => onMove(field.id, direction)}
+          onDuplicate=${() => onDuplicate(field.id)}
+          onReset=${() => onReset(field.id)}
+          onDelete=${() => onDelete(field.id)}
+          onDragStart=${(event) => onFieldDragStart(event, field.id)}
+          onDragEnd=${onFieldDragEnd}
+          onHeadlineDragOver=${(event) => onHeadlineDragOver(event, field.id)}
+          onHeadlineDragLeave=${(event) => onHeadlineDragLeave(event, field.id)}
+          onHeadlineDrop=${(event) => onHeadlineDrop(event, field.id)}
+          onHeadlineMediaDragStart=${onHeadlineMediaDragStart}
+        />
+      `);
     }
 
-    function FieldCard({ field, selected, removing, dragging, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd }) {
+    function FieldCard({ field, selected, removing, dragging, headlineDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
       const meta = fieldMeta(field);
       const visibleLabel = String(field.label ?? "").trim();
       const selectLabel = `Select ${visibleLabel || meta.name} field`;
@@ -4153,12 +4746,15 @@
 
       return html`
         <article
-          class=${`field-card${fieldBackground(field) ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}`}
+          class=${`field-card${fieldBackground(field) ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${headlineDropPlacement ? " is-split-target split-" + headlineDropPlacement : ""}`}
           data-field-id=${field.id}
           draggable=${true}
           onClick=${handleCardClick}
           onDragStart=${onDragStart}
           onDragEnd=${onDragEnd}
+          onDragOver=${field.type === "headline" ? onHeadlineDragOver : null}
+          onDragLeave=${field.type === "headline" ? onHeadlineDragLeave : null}
+          onDrop=${field.type === "headline" ? onHeadlineDrop : null}
         >
           <div class="field-card-head">
             <button class="field-type" type="button" aria-pressed=${selected} aria-label=${selectLabel} onClick=${onSelect}>
@@ -4174,7 +4770,7 @@
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
             ${["headline", "spacer"].includes(field.type) ? html`
-              <${FieldPreview} field=${field} />
+              <${FieldPreview} field=${field} headlineDropPlacement=${headlineDropPlacement} onHeadlineMediaDragStart=${onHeadlineMediaDragStart} onFieldDragEnd=${onDragEnd} />
             ` : html`
               ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
               ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
@@ -4188,9 +4784,13 @@
     function Inspector({ schema, selectedField, onSchemaChange, onFieldChange }) {
       if (!selectedField) {
         return html`
-          <h2 class="panel-title"><${Icon} icon="fa-solid fa-sliders" /><span>Form Settings</span></h2>
+          <h2 class="panel-title"><${Icon} icon="fa-solid fa-sliders" /><span>Form Details</span></h2>
           <div class="property-stack">
-            <div class="radar-mode-note">Select a block to edit its settings. Form-wide palette and font settings are in the sidebar.</div>
+            <div class="property">
+              <label for="formName">Title</label>
+              <input class="control" id="formName" value=${formDisplayName(schema)} placeholder="Untitled form" onInput=${(event) => onSchemaChange({ settings: { ...schema.settings, name: event.currentTarget.value } })} />
+            </div>
+            <div class="radar-mode-note">Select a block to edit its settings.</div>
           </div>
         `;
       }
@@ -4205,7 +4805,7 @@
               <input class="control" id="fieldLabel" value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
             </div>
             <div class="property">
-              <label for="fieldDescription">Description</label>
+              <label for="fieldDescription">${selectedField.type === "headline" ? "Subhead" : "Description"}</label>
               <textarea class="textarea" id="fieldDescription" value=${selectedField.description} onInput=${(event) => onFieldChange({ description: event.currentTarget.value })}></textarea>
             </div>
           ` : null}
@@ -4287,153 +4887,7 @@
       `;
     }
 
-    function TypeSettings({ field, onFieldChange }) {
-      if (field.type === "headline") {
-        const settings = headlineSettings(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="headingHorizontalAlignment">Heading horizontal</label>
-              <select class="control" id="headingHorizontalAlignment" value=${settings.headingHorizontalAlignment} onChange=${(event) => patchSettings({ headingHorizontalAlignment: event.currentTarget.value })}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="headingVerticalAlignment">Heading vertical</label>
-              <select class="control" id="headingVerticalAlignment" value=${settings.headingVerticalAlignment} onChange=${(event) => patchSettings({ headingVerticalAlignment: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="descriptionHorizontalAlignment">Description horizontal</label>
-              <select class="control" id="descriptionHorizontalAlignment" value=${settings.descriptionHorizontalAlignment} onChange=${(event) => patchSettings({ descriptionHorizontalAlignment: event.currentTarget.value })}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="descriptionVerticalAlignment">Description vertical</label>
-              <select class="control" id="descriptionVerticalAlignment" value=${settings.descriptionVerticalAlignment} onChange=${(event) => patchSettings({ descriptionVerticalAlignment: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
-              </select>
-            </div>
-          </div>
-        `;
-      }
-
-      if (field.type === "mood_meter") {
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="minLabel">Low label</label>
-              <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
-            </div>
-            <div class="property">
-              <label for="maxLabel">High label</label>
-              <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
-            </div>
-          </div>
-        `;
-      }
-
-      if (field.type === "linear_scale") {
-        const settings = field.settings;
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="scaleMin">Minimum</label>
-              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...field.settings, min: Number(event.currentTarget.value) } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMax">Maximum</label>
-              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMinLabel">Low label</label>
-              <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMaxLabel">High label</label>
-              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
-            </div>
-          </div>
-        `;
-      }
-
-      if (field.type === "star_rating") {
-        const settings = field.settings;
-        return html`
-          <div class="property">
-            <label for="starMax">Stars</label>
-            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
-          </div>
-        `;
-      }
-
-
-
-      if (field.type === "calendar") {
-        const settings = field.settings;
-        const patchSettings = (patch) => onFieldChange({ settings: { ...field.settings, ...patch } });
-        const updateMilestone = (index, patch) => {
-          const milestones = settings.milestones.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
-          patchSettings({ milestones });
-        };
-        const removeMilestone = (index) => patchSettings({ milestones: settings.milestones.filter((_, itemIndex) => itemIndex !== index) });
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="calendarStartDate">Default start date</label>
-              <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => patchSettings({ startDate: event.currentTarget.value })} />
-            </div>
-            <div class="property">
-              <label for="calendarEndDate">Default end date</label>
-              <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => patchSettings({ endDate: event.currentTarget.value })} />
-            </div>
-          </div>
-          <label class="toggle-row">
-            <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => patchSettings({ allowMilestones: event.currentTarget.checked })} />
-            <span>Allow milestones</span>
-          </label>
-          ${settings.allowMilestones ? html`
-            <div class="property">
-              <div class="calendar-milestone-editor-head">
-                <div class="mini-label">Milestones</div>
-              </div>
-              ${settings.milestones.length ? settings.milestones.map((item, index) => html`
-                <div class="calendar-milestone-row" key=${item.id || index}>
-                  <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
-                  <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
-                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
-                </div>
-              `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) }] })}>
-                <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
-              </button>
-            </div>
-          ` : null}
-        `;
-      }
-
-      if (field.type === "media_upload") {
-        const settings = field.settings;
-        return html`
-          <div class="property">
-            <label for="mediaUploadAccept">Accepted types</label>
-            <input class="control" id="mediaUploadAccept" value=${settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
-          </div>
-        `;
-      }
-
-      if (field.type === "media") {
+    function MediaSettingsControls({ field, onFieldChange }) {
         const settings = field.settings;
         const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
         const fileInputId = field.id + "_mediaFile";
@@ -4551,7 +5005,170 @@
             </div>
           </div>
         `;
+    }
+
+    function TypeSettings({ field, onFieldChange }) {
+      if (field.type === "headline") {
+        const settings = headlineSettings(field);
+        const mediaField = splitMediaField(field);
+        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
+        const updateMedia = (patch) => patch.settings && patchSettings({ media: patch.settings });
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="headingHorizontalAlignment">Heading horizontal</label>
+              <select class="control" id="headingHorizontalAlignment" value=${settings.headingHorizontalAlignment} onChange=${(event) => patchSettings({ headingHorizontalAlignment: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="headingVerticalAlignment">Heading vertical</label>
+              <select class="control" id="headingVerticalAlignment" value=${settings.headingVerticalAlignment} onChange=${(event) => patchSettings({ headingVerticalAlignment: event.currentTarget.value })}>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="descriptionHorizontalAlignment">Subhead horizontal</label>
+              <select class="control" id="descriptionHorizontalAlignment" value=${settings.descriptionHorizontalAlignment} onChange=${(event) => patchSettings({ descriptionHorizontalAlignment: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="property">
+              <label for="descriptionVerticalAlignment">Subhead vertical</label>
+              <select class="control" id="descriptionVerticalAlignment" value=${settings.descriptionVerticalAlignment} onChange=${(event) => patchSettings({ descriptionVerticalAlignment: event.currentTarget.value })}>
+                <option value="top">Top</option>
+                <option value="center">Center</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </div>
+          </div>
+          ${mediaField ? html`
+            <div class="mini-label">Split media</div>
+            <div class="property">
+              <label for="headlineMediaPlacement">Media position</label>
+              <select class="control" id="headlineMediaPlacement" value=${settings.mediaPlacement} onChange=${(event) => patchSettings({ mediaPlacement: event.currentTarget.value })}>
+                <option value="left">Left</option>
+                <option value="middle">Middle</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <${MediaSettingsControls} field=${mediaField} onFieldChange=${updateMedia} />
+            <button class="button ghost" type="button" onClick=${() => patchSettings({ media: null })}>Remove split media</button>
+          ` : html`<div class="radar-mode-note">Drop a Media block onto this headline to split it.</div>`}
+        `;
       }
+
+      if (field.type === "mood_meter") {
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="minLabel">Low label</label>
+              <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
+            </div>
+            <div class="property">
+              <label for="maxLabel">High label</label>
+              <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
+            </div>
+          </div>
+        `;
+      }
+
+      if (field.type === "linear_scale") {
+        const settings = field.settings;
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="scaleMin">Minimum</label>
+              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...field.settings, min: Number(event.currentTarget.value) } })} />
+            </div>
+            <div class="property">
+              <label for="scaleMax">Maximum</label>
+              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
+            </div>
+            <div class="property">
+              <label for="scaleMinLabel">Low label</label>
+              <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
+            </div>
+            <div class="property">
+              <label for="scaleMaxLabel">High label</label>
+              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
+            </div>
+          </div>
+        `;
+      }
+
+      if (field.type === "star_rating") {
+        const settings = field.settings;
+        return html`
+          <div class="property">
+            <label for="starMax">Stars</label>
+            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
+          </div>
+        `;
+      }
+
+
+
+      if (field.type === "calendar") {
+        const settings = field.settings;
+        const patchSettings = (patch) => onFieldChange({ settings: { ...field.settings, ...patch } });
+        const updateMilestone = (index, patch) => {
+          const milestones = settings.milestones.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
+          patchSettings({ milestones });
+        };
+        const removeMilestone = (index) => patchSettings({ milestones: settings.milestones.filter((_, itemIndex) => itemIndex !== index) });
+        return html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="calendarStartDate">Default start date</label>
+              <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => patchSettings({ startDate: event.currentTarget.value })} />
+            </div>
+            <div class="property">
+              <label for="calendarEndDate">Default end date</label>
+              <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => patchSettings({ endDate: event.currentTarget.value })} />
+            </div>
+          </div>
+          <label class="toggle-row">
+            <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => patchSettings({ allowMilestones: event.currentTarget.checked })} />
+            <span>Allow milestones</span>
+          </label>
+          ${settings.allowMilestones ? html`
+            <div class="property">
+              <div class="calendar-milestone-editor-head">
+                <div class="mini-label">Milestones</div>
+              </div>
+              ${settings.milestones.length ? settings.milestones.map((item, index) => html`
+                <div class="calendar-milestone-row" key=${item.id || index}>
+                  <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
+                  <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
+                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
+                </div>
+              `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
+              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) }] })}>
+                <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
+              </button>
+            </div>
+          ` : null}
+        `;
+      }
+
+      if (field.type === "media_upload") {
+        const settings = field.settings;
+        return html`
+          <div class="property">
+            <label for="mediaUploadAccept">Accepted types</label>
+            <input class="control" id="mediaUploadAccept" value=${settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
+          </div>
+        `;
+      }
+
+      if (field.type === "media") return html`<${MediaSettingsControls} field=${field} onFieldChange=${onFieldChange} />`;
 
       if (field.type === "radar") {
         const rawSettings = field.settings;
@@ -4709,7 +5326,7 @@
       const [dragState, setDragState] = useState(null);
       const [removingId, setRemovingId] = useState(null);
       const [activeColorItem, setActiveColorItem] = useState(null);
-      const [fontPickerOpen, setFontPickerOpen] = useState(false);
+      const [activeTypographyRole, setActiveTypographyRole] = useState(null);
       const [exportMenuOpen, setExportMenuOpen] = useState(false);
       const fieldsRef = useRef(null);
       const fieldRectsRef = useRef(null);
@@ -4759,24 +5376,6 @@
           if (patch.settings) next.settings = { ...current.settings, ...patch.settings };
           return next;
         });
-      }
-
-      function updatePrimaryHeadline(patch) {
-        setSchema((current) => {
-          const fields = [...current.fields];
-          const index = fields.findIndex((field) => field.type === "headline");
-          if (index >= 0) {
-            fields[index] = schemaField({ ...fields[index], ...patch });
-          } else {
-            fields.unshift(schemaField({ ...fieldFromType("headline"), ...patch, required: false }));
-          }
-          return { ...current, fields };
-        });
-      }
-
-      function selectPrimaryHeadline() {
-        const headline = primaryHeadlineField(schema);
-        setSelectedId(headline?.id || null);
       }
 
       function updateField(id, patch) {
@@ -4865,16 +5464,55 @@
         const payload = event.dataTransfer?.getData("text/plain") || "";
         if (payload.startsWith("new:")) return { kind: "new", type: payload.slice(4) };
         if (payload.startsWith("move:")) return { kind: "move", id: payload.slice(5) };
+        if (payload.startsWith("split:")) return { kind: "split", id: payload.slice(6) };
         return null;
       }
 
-      function insertionIndexFromPointer(clientY) {
-        const cards = [...(fieldsRef.current?.querySelectorAll(".field-card") || [])];
-        for (let index = 0; index < cards.length; index += 1) {
-          const rect = cards[index].getBoundingClientRect();
-          if (clientY < rect.top + rect.height / 2) return index;
+      function payloadIsMedia(payload, fields = schema.fields) {
+        if (payload?.kind === "new") return payload.type === "media";
+        if (payload?.kind === "move") return fields.some((field) => field.id === payload.id && field.type === "media");
+        if (payload?.kind === "split") return fields.some((field) => field.id === payload.id && field.type === "headline" && splitMediaField(field));
+        return false;
+      }
+
+      function splitMediaIntoHeadline(headlineId, payload, placement = "right") {
+        setSchema((current) => {
+          const headline = current.fields.find((field) => field.id === headlineId);
+          if (!headline || headline.type !== "headline" || !payloadIsMedia(payload, current.fields)) return current;
+          const source = payload.kind === "move" ? current.fields.find((field) => field.id === payload.id) : payload.kind === "split" ? current.fields.find((field) => field.id === payload.id) : fieldFromType("media");
+          const media = payload.kind === "split" ? source?.settings?.media : source?.settings;
+          if (!source || !media || source.id === headlineId && payload.kind !== "split") return current;
+          snapshotFieldRects();
+          const fields = payload.kind === "move" ? current.fields.filter((field) => field.id !== source.id) : current.fields;
+          return { ...current, fields: fields.map((field) => {
+            if (field.id === headlineId) return { ...field, required: false, settings: { ...field.settings, mediaPlacement: placement, media: clone(media) } };
+            if (payload.kind === "split" && field.id === source.id) return { ...field, settings: { ...field.settings, media: null } };
+            return field;
+          }) };
+        });
+        setSelectedId(headlineId);
+      }
+
+      function insertionTargetFromPointer(clientY) {
+        const list = fieldsRef.current;
+        const cards = [...(list?.querySelectorAll(".field-card") || [])];
+        const listRect = list?.getBoundingClientRect();
+        if (!list || !listRect || !cards.length) {
+          const top = list ? parseFloat(getComputedStyle(list).paddingTop) || 0 : 0;
+          return { index: 0, y: top };
         }
-        return cards.length;
+        const rects = cards.map((card) => card.getBoundingClientRect());
+        const gap = parseFloat(getComputedStyle(list).rowGap || getComputedStyle(list).gap) || 0;
+        const yForIndex = (index) => {
+          if (index <= 0) return Math.max(0, rects[0].top - listRect.top - gap / 2);
+          if (index >= rects.length) return rects[rects.length - 1].bottom - listRect.top + gap / 2;
+          return (rects[index - 1].bottom + rects[index].top) / 2 - listRect.top;
+        };
+        for (let index = 0; index < rects.length; index += 1) {
+          const rect = rects[index];
+          if (clientY < rect.top + rect.height / 2) return { index, y: Math.round(yForIndex(index)) };
+        }
+        return { index: rects.length, y: Math.round(yForIndex(rects.length)) };
       }
 
       function beginPaletteDrag(event, type) {
@@ -4895,6 +5533,15 @@
         setDragState({ ...payload, index: schema.fields.findIndex((field) => field.id === id) });
       }
 
+      function beginHeadlineMediaDrag(event, id) {
+        const payload = { kind: "split", id };
+        event.stopPropagation();
+        dragPayloadRef.current = payload;
+        event.dataTransfer.setData("text/plain", "split:" + id);
+        event.dataTransfer.effectAllowed = "move";
+        setDragState({ ...payload, headlineId: id, headlinePlacement: headlineSettings(schema.fields.find((field) => field.id === id)).mediaPlacement });
+      }
+
       function clearDragState() {
         dragPayloadRef.current = null;
         setDragState(null);
@@ -4902,14 +5549,45 @@
 
       function updateDropTarget(event) {
         const payload = payloadFromEvent(event);
-        if (!payload) return;
+        if (!payload || payload.kind === "split") return;
         event.preventDefault();
         event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
-        const index = insertionIndexFromPointer(event.clientY);
+        const target = insertionTargetFromPointer(event.clientY);
         setDragState((current) => {
-          if (current && sameDragPayload(current, payload) && current.index === index) return current;
-          return { ...payload, index };
+          if (current && sameDragPayload(current, payload) && current.index === target.index && current.y === target.y) return current;
+          return { ...payload, ...target };
         });
+      }
+
+      function headlinePlacementFromPointer(event) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = rect.width ? (event.clientX - rect.left) / rect.width : 1;
+        return x < 0.33 ? "left" : x > 0.67 ? "right" : "middle";
+      }
+
+      function updateHeadlineDropTarget(event, headlineId) {
+        const payload = payloadFromEvent(event);
+        if (!payloadIsMedia(payload)) return;
+        const headlinePlacement = headlinePlacementFromPointer(event);
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
+        setDragState((current) => current && sameDragPayload(current, payload) && current.headlineId === headlineId && current.headlinePlacement === headlinePlacement ? current : { ...payload, index: null, y: null, headlineId, headlinePlacement });
+      }
+
+      function clearHeadlineDropTarget(event, headlineId) {
+        if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
+        setDragState((current) => current?.headlineId === headlineId ? { ...current, headlineId: null, headlinePlacement: null } : current);
+      }
+
+      function handleHeadlineDrop(event, headlineId) {
+        const payload = payloadFromEvent(event);
+        if (!payloadIsMedia(payload)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const placement = headlinePlacementFromPointer(event);
+        clearDragState();
+        splitMediaIntoHeadline(headlineId, payload, placement);
       }
 
       function clearDropTarget(event) {
@@ -4933,11 +5611,11 @@
       function handleDrop(event) {
         event.preventDefault();
         const payload = payloadFromEvent(event);
-        const index = Number.isInteger(dragState?.index) ? dragState.index : insertionIndexFromPointer(event.clientY);
+        const target = Number.isInteger(dragState?.index) ? dragState : insertionTargetFromPointer(event.clientY);
         clearDragState();
         if (!payload) return;
-        if (payload.kind === "new") addField(payload.type, index);
-        if (payload.kind === "move") moveFieldToDropIndex(payload.id, index);
+        if (payload.kind === "new") addField(payload.type, target.index);
+        if (payload.kind === "move") moveFieldToDropIndex(payload.id, target.index);
       }
 
       async function importSchema(event) {
@@ -5029,20 +5707,34 @@
 
       const formName = formDisplayName(schema);
       const theme = themeSettings(schema.settings.theme);
+      const typography = typographySettings(schema.settings.typography, theme);
       const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
+      const activeDropY = Number.isFinite(dragState?.y) ? dragState.y : null;
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
+      const headlineDropId = dragState?.headlineId || null;
+      const headlineDropPlacement = dragState?.headlinePlacement || null;
       const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
         ensureGoogleFontLoaded(theme.fontFamily);
-      }, [theme.fontFamily]);
+        TYPOGRAPHY_ROLES.forEach((role) => ensureGoogleFontLoaded(typography[role.key].fontFamily));
+      }, [theme.fontFamily, typography.heading.fontFamily, typography.description.fontFamily, typography.label.fontFamily]);
 
       function patchTheme(patch) {
         updateSchema({ settings: { ...schema.settings, theme: themeSettings({ ...theme, ...patch }) } });
       }
 
+      function patchTypographyRole(key, value) {
+        updateSchema({ settings: { ...schema.settings, typography: { ...typography, [key]: value } } });
+      }
+
       function patchColor(key, value) {
         patchTheme({ [key]: value });
+      }
+
+      function clearSelectionFromCanvas(event) {
+        if (event.target?.closest?.(".field-card, button, a, input, textarea, select")) return;
+        setSelectedId(null);
       }
 
       return html`
@@ -5060,8 +5752,7 @@
                 title=${formName}
                 placeholder="Untitled form"
                 aria-label="Form title"
-                onFocus=${selectPrimaryHeadline}
-                onInput=${(event) => updatePrimaryHeadline({ label: event.currentTarget.value })}
+                onInput=${(event) => updateSchema({ settings: { ...schema.settings, name: event.currentTarget.value } })}
               />
             </div>
             <div class="top-actions">
@@ -5104,11 +5795,11 @@
                   </button>
                 </div>
                 <${Palette} onAdd=${addField} onDragStart=${beginPaletteDrag} onDragEnd=${clearDragState} />
-                <${SidebarSettings} schema=${schema} onSchemaChange=${updateSchema} onOpenColor=${setActiveColorItem} onOpenFont=${() => setFontPickerOpen(true)} />
+                <${SidebarSettings} schema=${schema} onSchemaChange=${updateSchema} onOpenColor=${setActiveColorItem} onOpenTypography=${setActiveTypographyRole} />
               </div>
             </aside>
 
-            <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)}>
+            <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)} onClick=${clearSelectionFromCanvas}>
               <article class="form-page">
                 <div
                   class=${`fields-list${listDragActive ? " is-drag-target" : ""}`}
@@ -5123,7 +5814,8 @@
                     selectedId=${selectedId}
                     removingId=${removingId}
                     draggingFieldId=${draggingFieldId}
-                    dropIndex=${activeDropIndex}
+                    headlineDropId=${headlineDropId}
+                    headlineDropPlacement=${headlineDropPlacement}
                     onSelect=${setSelectedId}
                     onMove=${moveField}
                     onDuplicate=${duplicateField}
@@ -5131,7 +5823,12 @@
                     onDelete=${deleteField}
                     onFieldDragStart=${beginFieldDrag}
                     onFieldDragEnd=${clearDragState}
+                    onHeadlineDragOver=${updateHeadlineDropTarget}
+                    onHeadlineDragLeave=${clearHeadlineDropTarget}
+                    onHeadlineDrop=${handleHeadlineDrop}
+                    onHeadlineMediaDragStart=${beginHeadlineMediaDrag}
                   />
+                  ${listDragActive && activeDropY !== null ? html`<${DropIndicator} y=${activeDropY} />` : null}
                 </div>
               </article>
             </section>
@@ -5157,11 +5854,13 @@
           />
         ` : null}
 
-        ${fontPickerOpen ? html`
-          <${FontPickerModal}
-            value=${theme.fontFamily}
-            onChange=${(value) => patchTheme({ fontFamily: value })}
-            onClose=${() => setFontPickerOpen(false)}
+        ${activeTypographyRole ? html`
+          <${CharacterStyleModal}
+            role=${activeTypographyRole}
+            value=${typography[activeTypographyRole.key]}
+            defaultValue=${typographyRoleDefault(activeTypographyRole.key)}
+            onChange=${(value) => patchTypographyRole(activeTypographyRole.key, value)}
+            onClose=${() => setActiveTypographyRole(null)}
           />
         ` : null}
       </div>

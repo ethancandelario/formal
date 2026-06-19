@@ -35,6 +35,34 @@
       --shadow: 0 12px 28px rgba(31, 31, 31, 0.07);
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --focus-ring: rgba(134, 31, 65, 0.28);
+      --form-page-margin: 20px;
+      --form-page-padding: 16px;
+      --form-field-spacing: 10px;
+      --form-field-padding: 16px;
+      --heading-font-family: var(--form-font-family);
+      --heading-color: var(--ink);
+      --heading-font-size: 26px;
+      --heading-font-weight: 750;
+      --heading-font-style: normal;
+      --heading-line-height: 1.2;
+      --heading-letter-spacing: 0px;
+      --heading-text-transform: none;
+      --description-font-family: var(--form-font-family);
+      --description-color: var(--muted);
+      --description-font-size: 14px;
+      --description-font-weight: 400;
+      --description-font-style: normal;
+      --description-line-height: 1.5;
+      --description-letter-spacing: 0px;
+      --description-text-transform: none;
+      --label-font-family: var(--form-font-family);
+      --label-color: var(--ink);
+      --label-font-size: 16px;
+      --label-font-weight: 700;
+      --label-font-style: normal;
+      --label-line-height: 1.35;
+      --label-letter-spacing: 0px;
+      --label-text-transform: none;
     }
 
     * {
@@ -367,7 +395,8 @@
 
     .stage {
       min-width: 0;
-      padding: 24px 16px 46px;
+      padding: var(--form-page-margin);
+      padding-bottom: calc(var(--form-page-margin) + 22px);
       color: var(--ink);
       background: var(--bg);
       font-family: var(--form-font-family);
@@ -375,7 +404,7 @@
     }
 
     .runtime-shell.sidebar-collapsed .stage {
-      padding-left: 16px;
+      padding-left: var(--form-page-margin);
     }
 
     .capture {
@@ -400,8 +429,8 @@
     .export-document {
       width: 842px;
       display: grid;
-      gap: 18px;
-      padding: 18px;
+      gap: var(--form-field-spacing);
+      padding: var(--form-page-margin);
       background: var(--bg);
       color: var(--ink);
       font-family: var(--form-font-family);
@@ -420,7 +449,7 @@
 
     .export-page-content {
       display: grid;
-      gap: 12px;
+      gap: var(--form-field-spacing);
       align-content: start;
       min-width: 0;
     }
@@ -472,6 +501,10 @@
       cursor: default;
     }
 
+    .export-document .linear-scale-native {
+      display: none !important;
+    }
+
     .export-document svg.media-visual[data-export-inlined-svg="true"] {
       flex: 0 1 auto;
     }
@@ -492,21 +525,32 @@
 
     .form-title {
       margin: 0;
-      font-size: 28px;
-      line-height: 1.18;
+      color: var(--heading-color);
+      font-family: var(--heading-font-family);
+      font-size: var(--heading-font-size);
+      line-height: var(--heading-line-height);
+      font-weight: var(--heading-font-weight);
+      font-style: var(--heading-font-style);
+      letter-spacing: var(--heading-letter-spacing);
+      text-transform: var(--heading-text-transform);
     }
 
     .form-description {
       margin: 8px 0 0;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 14px;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
     }
 
     .fields {
       display: grid;
-      gap: 12px;
-      padding: 16px;
+      gap: var(--form-field-spacing);
+      padding: var(--form-page-padding);
       align-content: start;
       grid-auto-rows: max-content;
     }
@@ -515,9 +559,9 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: transparent;
-      padding: 16px;
+      padding: var(--form-field-padding);
       display: grid;
-      gap: 10px;
+      gap: var(--form-field-spacing);
       align-self: start;
       animation: field-in 160ms var(--ease) both;
       transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
@@ -552,9 +596,9 @@
       border: 1px solid transparent;
       border-radius: 8px;
       background: transparent;
-      padding: 16px;
+      padding: var(--form-field-padding);
       display: grid;
-      gap: 7px;
+      gap: var(--form-field-spacing);
       align-self: start;
       animation: field-in 160ms var(--ease) both;
       transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
@@ -568,19 +612,50 @@
       transform: translateY(-1px);
     }
 
+    .headline-content,
+    .headline-copy {
+      display: grid;
+      gap: var(--form-field-spacing);
+      min-width: 0;
+    }
+
+    .headline-content.has-media:not(.media-middle) {
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
+      align-items: center;
+      gap: 16px;
+    }
+
+    .headline-media {
+      min-width: 0;
+    }
+
+    .headline-content.media-left .headline-media {
+      order: -1;
+    }
+
     .headline-title {
       margin: 0;
-      color: var(--ink);
-      font-size: 28px;
-      line-height: 1.18;
+      color: var(--heading-color);
+      font-family: var(--heading-font-family);
+      font-size: var(--heading-font-size);
+      line-height: var(--heading-line-height);
+      font-weight: var(--heading-font-weight);
+      font-style: var(--heading-font-style);
+      letter-spacing: var(--heading-letter-spacing);
+      text-transform: var(--heading-text-transform);
       overflow-wrap: anywhere;
     }
 
-    .headline-description {
+    .headline-subhead {
       margin: 0;
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: 14px;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
       overflow-wrap: anywhere;
     }
 
@@ -595,9 +670,14 @@
     }
 
     .field-label {
-      font-weight: 750;
-      line-height: 1.35;
-      font-size: 15px;
+      color: var(--label-color);
+      font-family: var(--label-font-family);
+      font-weight: var(--label-font-weight);
+      line-height: var(--label-line-height);
+      font-size: var(--label-font-size);
+      font-style: var(--label-font-style);
+      letter-spacing: var(--label-letter-spacing);
+      text-transform: var(--label-text-transform);
     }
 
     .required-mark {
@@ -606,9 +686,14 @@
     }
 
     .field-help {
-      color: var(--muted);
-      line-height: 1.5;
-      font-size: 13px;
+      color: var(--description-color);
+      font-family: var(--description-font-family);
+      line-height: var(--description-line-height);
+      font-size: var(--description-font-size);
+      font-weight: var(--description-font-weight);
+      font-style: var(--description-font-style);
+      letter-spacing: var(--description-letter-spacing);
+      text-transform: var(--description-text-transform);
     }
 
     .control,
@@ -1015,7 +1100,8 @@
       text-align: center;
     }
 
-    .calendar-nav .calendar-month-label {
+    .calendar-nav .calendar-month-label,
+    .calendar-nav .calendar-month-input {
       grid-column: 1 / -1;
       grid-row: 1;
       padding: 0 92px;
@@ -1039,6 +1125,22 @@
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .calendar-month-input {
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .calendar-month-input:hover,
+    .calendar-month-input:focus {
+      border-color: var(--line);
+      background: var(--panel-2);
+      outline: none;
     }
 
     .calendar-range-summary {
@@ -1617,19 +1719,16 @@
       }
 
       .stage {
-        padding: 12px 10px 34px;
+        padding: max(10px, var(--form-page-margin));
       }
 
       .runtime-shell.sidebar-collapsed .stage {
-        padding: 60px 10px 34px;
+        padding: max(10px, var(--form-page-margin));
+        padding-top: max(60px, var(--form-page-margin));
       }
 
       .form-header {
         padding: 20px 16px;
-      }
-
-      .form-title {
-        font-size: 23px;
       }
 
       .fields {
@@ -1723,7 +1822,8 @@
       padding: 13px var(--calendar-side-padding) 10px;
     }
 
-    .calendar-nav .calendar-month-label {
+    .calendar-nav .calendar-month-label,
+    .calendar-nav .calendar-month-input {
       padding: 0 76px;
     }
 
@@ -1960,6 +2060,18 @@
       }
     }
 
+    @media (max-width: 720px) {
+      .headline-preview.has-media:not(.media-middle),
+      .headline-content.has-media:not(.media-middle) {
+        grid-template-columns: 1fr;
+      }
+
+      .headline-preview.media-left .headline-media,
+      .headline-content.media-left .headline-media {
+        order: 0;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
 
       *,
@@ -1996,6 +2108,7 @@
     const DEFAULT_RADAR_MAX = 5;
     const DEFAULT_RADAR_VALUES = [3, 3, 3, 3];
     const DEFAULT_RADAR_POINT = { angle: 0, value: 3 };
+    const DEFAULT_FORM_NAME = "Untitled form";
     const DEFAULT_THEME = {
       bg: "#f7f5f2",
       panel: "#ffffff",
@@ -2011,6 +2124,21 @@
       danger: "#b3261e",
       fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
+    const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
+    const DEFAULT_TYPOGRAPHY = {
+      heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
+      description: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.muted, size: 14, weight: 400, style: "normal", lineHeight: 1.5, letterSpacing: 0, textTransform: "none" },
+      label: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 16, weight: 700, style: "normal", lineHeight: 1.35, letterSpacing: 0, textTransform: "none" }
+    };
+    const LEGACY_TYPOGRAPHY_KEYS = ["headingSize", "headingWeight", "headingStyle", "descriptionSize", "descriptionWeight", "descriptionStyle", "labelSize", "labelWeight", "labelStyle"];
+    const TYPOGRAPHY_ROLES = [
+      { key: "heading", colorSource: "ink" },
+      { key: "description", colorSource: "muted" },
+      { key: "label", colorSource: "ink" }
+    ];
+    const TYPOGRAPHY_ROLE_KEYS = TYPOGRAPHY_ROLES.map((role) => role.key);
+    const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
+    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
     const RADAR_AXIS_SNAP_ENTER_PX = 8;
     const RADAR_AXIS_SNAP_EXIT_PX = 14;
     const RADAR_RING_SNAP_ENTER_PX = 5;
@@ -2118,6 +2246,61 @@
       document.head.appendChild(link);
     }
 
+    function typographyRoleMeta(key) {
+      const role = TYPOGRAPHY_ROLES.find((item) => item.key === key);
+      if (!role) throw new Error(`Unsupported typography role: ${key}`);
+      return role;
+    }
+
+    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
+      const role = typographyRoleMeta(key);
+      const base = DEFAULT_TYPOGRAPHY[key];
+      return {
+        ...base,
+        fontFamily: theme?.fontFamily || base.fontFamily,
+        color: theme?.[role.colorSource] || base.color
+      };
+    }
+
+    function isPlainObject(value) {
+      return value && typeof value === "object" && !Array.isArray(value);
+    }
+
+    function isLegacyTypography(value) {
+      return isPlainObject(value) && LEGACY_TYPOGRAPHY_KEYS.some((key) => key in value);
+    }
+
+    function legacyTypographySettings(input, theme = DEFAULT_THEME) {
+      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
+        const defaults = typographyRoleDefault(role.key, theme);
+        settings[role.key] = {
+          ...defaults,
+          size: input[role.key + "Size"] ?? defaults.size,
+          weight: input[role.key + "Weight"] ?? defaults.weight,
+          style: input[role.key + "Style"] ?? defaults.style
+        };
+        return settings;
+      }, {});
+    }
+
+    function typographyRoleSettings(value, key, theme = DEFAULT_THEME) {
+      const defaults = typographyRoleDefault(key, theme);
+      const source = isPlainObject(value) ? value : {};
+      return TYPOGRAPHY_STYLE_KEYS.reduce((settings, styleKey) => {
+        settings[styleKey] = source[styleKey] ?? defaults[styleKey];
+        return settings;
+      }, {});
+    }
+
+    function typographySettings(input, theme = DEFAULT_THEME) {
+      if (isLegacyTypography(input)) return legacyTypographySettings(input, theme);
+      const source = isPlainObject(input) ? input : {};
+      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
+        settings[role.key] = typographyRoleSettings(source[role.key], role.key, theme);
+        return settings;
+      }, {});
+    }
+
     function themeSettings(input) {
       return input;
     }
@@ -2132,6 +2315,8 @@
 
     function themeStyle(schema) {
       const theme = themeSettings(schema.settings.theme);
+      const layout = schema.settings.layout;
+      const type = typographySettings(schema.settings.typography, theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
@@ -2150,7 +2335,24 @@
         `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
         `--focus: ${theme.accent}`,
         `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
-        `--form-font-family: ${theme.fontFamily}`
+        `--form-font-family: ${theme.fontFamily}`,
+        `--form-page-margin: ${layout.pageMargin}px`,
+        `--form-page-padding: ${layout.pagePadding}px`,
+        `--form-field-spacing: ${layout.fieldSpacing}px`,
+        `--form-field-padding: ${layout.fieldPadding}px`,
+        ...TYPOGRAPHY_ROLES.flatMap((role) => {
+          const textStyle = type[role.key];
+          return [
+            `--${role.key}-font-family: ${textStyle.fontFamily}`,
+            `--${role.key}-color: ${textStyle.color}`,
+            `--${role.key}-font-size: ${textStyle.size}px`,
+            `--${role.key}-font-weight: ${textStyle.weight}`,
+            `--${role.key}-font-style: ${textStyle.style}`,
+            `--${role.key}-line-height: ${textStyle.lineHeight}`,
+            `--${role.key}-letter-spacing: ${textStyle.letterSpacing}px`,
+            `--${role.key}-text-transform: ${textStyle.textTransform}`
+          ];
+        })
       ].join("; ");
     }
 
@@ -2436,6 +2638,30 @@
       fontFamilyValue(value);
     }
 
+    function assertTypographyRole(style, key) {
+      const name = `schema.settings.typography.${key}`;
+      assertObject(style, name);
+      assertExactKeys(style, TYPOGRAPHY_STYLE_KEYS, name);
+      assertFontFamily(style.fontFamily, `${name}.fontFamily`);
+      assertHexColor(style.color, `${name}.color`);
+      assertNumberRange(style.size, `${name}.size`, 8, 96, true);
+      assertNumberRange(style.weight, `${name}.weight`, 100, 1000, true);
+      assertOneOf(style.style, ["normal", "italic"], `${name}.style`);
+      assertNumberRange(style.lineHeight, `${name}.lineHeight`, 0.8, 3);
+      assertNumberRange(style.letterSpacing, `${name}.letterSpacing`, 0, 12);
+      assertOneOf(style.textTransform, ["none", "uppercase", "lowercase", "capitalize"], `${name}.textTransform`);
+    }
+
+    function assertAppearanceSettings(settings) {
+      assertObject(settings.layout, "schema.settings.layout");
+      assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
+      Object.keys(DEFAULT_LAYOUT).forEach((key) => assertNumberRange(settings.layout[key], `schema.settings.layout.${key}`, 0, key === "fieldSpacing" ? 48 : 80, true));
+      settings.typography = typographySettings(settings.typography, settings.theme);
+      assertObject(settings.typography, "schema.settings.typography");
+      assertExactKeys(settings.typography, TYPOGRAPHY_ROLE_KEYS, "schema.settings.typography");
+      TYPOGRAPHY_ROLE_KEYS.forEach((key) => assertTypographyRole(settings.typography[key], key));
+    }
+
     function assertCalendarMilestones(items, name) {
       assertArray(items, name);
       items.forEach((item, index) => {
@@ -2470,6 +2696,27 @@
       assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
       assertBoolean(settings.background, `${fieldType}.settings.background`);
+    }
+
+    function assertMediaSettingValues(settings, name) {
+      assertOneOf(settings.sourceType, ["url", "file", "html"], `${name}.sourceType`);
+      ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `${name}.${key}`));
+      assertNumberRange(settings.iframeHeight, `${name}.iframeHeight`, 120, 1200, true);
+      assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], `${name}.horizontalAlignment`);
+      assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], `${name}.verticalAlignment`);
+      assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
+      assertCssLength(settings.maxWidth, `${name}.maxWidth`);
+      assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
+      assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
+    }
+
+    function assertNestedMediaSettings(settings, name) {
+      if (settings === null) return;
+      assertObject(settings, name);
+      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "outline", "background"], name);
+      assertBoolean(settings.outline, `${name}.outline`);
+      assertBoolean(settings.background, `${name}.background`);
+      assertMediaSettingValues(settings, name);
     }
 
     function schemaField(raw) {
@@ -2551,25 +2798,19 @@
 
       if (field.type === "media") {
         assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"], field.type);
-        assertOneOf(settings.sourceType, ["url", "file", "html"], "media.settings.sourceType");
-        ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `media.settings.${key}`));
-        assertNumberRange(settings.iframeHeight, "media.settings.iframeHeight", 120, 1200, true);
-        assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], "media.settings.horizontalAlignment");
-        assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], "media.settings.verticalAlignment");
-        assertNumberRange(settings.scale, "media.settings.scale", 10, 100);
-        assertCssLength(settings.maxWidth, "media.settings.maxWidth");
-        assertNumberRange(settings.maxHeight, "media.settings.maxHeight", 80, 1600, true);
-        assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], "media.settings.objectFit");
+        assertSettingKeys(settings, MEDIA_SETTING_KEYS, field.type);
+        assertMediaSettingValues(settings, "media.settings");
       }
 
       if (field.type === "headline") {
         assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"], field.type);
+        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"], field.type);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
+        assertOneOf(settings.mediaPlacement, ["left", "middle", "right"], "headline.settings.mediaPlacement");
+        assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
       if (field.type === "spacer") {
@@ -2590,7 +2831,8 @@
       assertString(schema.createdAt, "schema.createdAt");
       assertString(schema.updatedAt, "schema.updatedAt");
       assertObject(schema.settings, "schema.settings");
-      assertExactKeys(schema.settings, ["theme"], "schema.settings");
+      assertExactKeys(schema.settings, ["name", "theme", "layout", "typography"], "schema.settings");
+      assertString(schema.settings.name, "schema.settings.name");
       assertObject(schema.settings.theme, "schema.settings.theme");
       assertExactKeys(schema.settings.theme, Object.keys(DEFAULT_THEME), "schema.settings.theme");
       Object.keys(DEFAULT_THEME).forEach((key) => {
@@ -2600,6 +2842,7 @@
           assertHexColor(schema.settings.theme[key], `schema.settings.theme.${key}`);
         }
       });
+      assertAppearanceSettings(schema.settings);
       assertArray(schema.fields, "schema.fields");
       const seenIds = new Set();
       schema.fields.forEach((field, index) => {
@@ -2612,13 +2855,8 @@
       return schema;
     }
 
-    function primaryHeadlineField(schema) {
-      return schema?.fields?.find((field) => field.type === "headline") || null;
-    }
-
     function schemaDisplayName(schema) {
-      const headline = primaryHeadlineField(schema);
-      return String(headline?.label || "").trim() || "Untitled Form";
+      return String(schema.settings.name || "").trim() || DEFAULT_FORM_NAME;
     }
 
     function initialValuesFor(schema) {
@@ -2717,6 +2955,8 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
+        mediaPlacement: ["left", "middle", "right"].includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
+        media: settings.media,
         outline: fieldOutline(field),
         background: fieldBackground(field)
       };
@@ -2747,6 +2987,10 @@
         outline: fieldOutline(field),
         background: fieldBackground(field)
       };
+    }
+
+    function splitMediaField(field) {
+      return field.settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: field.settings.media } : null;
     }
 
     function mediaSource(settings) {
@@ -3459,7 +3703,7 @@
         <div class="calendar-control" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
           <div class="calendar-frame">
             <div class="calendar-nav">
-              <div class="calendar-month-label">${monthLabel(monthDate)}</div>
+              <input class="calendar-month-label calendar-month-input" type="month" value=${viewMonth} aria-label="Calendar month" title=${monthLabel(monthDate)} onInput=${(event) => { if (event.currentTarget.value) setViewMonth(event.currentTarget.value); }} />
               <div class="calendar-nav-buttons">
                 <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
                 <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
@@ -3592,11 +3836,24 @@
           const title = visibleLabel;
           const description = String(field.description || "").trim();
           const settings = headlineSettings(field);
-          if (!title && !description) return null;
+          const mediaField = splitMediaField(field);
+          const hasCopy = title || description;
+          if (!hasCopy && !mediaField) return null;
           return html`
             <section class=${`headline-field${settings.outline ? " with-outline" : ""}${settings.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
-              ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
-              ${description ? html`<p class="headline-description" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+              <div class=${`headline-content${mediaField && hasCopy ? " has-media media-" + settings.mediaPlacement : ""}`}>
+                ${mediaField && settings.mediaPlacement === "middle" ? html`
+                  ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
+                  <div class="headline-media"><${MediaPreview} field=${mediaField} /></div>
+                  ${description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+                ` : html`
+                  ${hasCopy ? html`<div class="headline-copy">
+                    ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
+                    ${description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+                  </div>` : null}
+                  ${mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null}
+                `}
+              </div>
             </section>
           `;
         }
@@ -4138,6 +4395,49 @@
       }
     }
 
+    function csvEscape(value) {
+      const text = String(value ?? "");
+      return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    function csvAnswer(field, value) {
+      if (value === null || value === undefined || value === "") return "";
+      if (field.type === "checkbox") return Array.isArray(value) ? value.join("; ") : "";
+      if (field.type === "calendar" && value && typeof value === "object" && !Array.isArray(value)) {
+        return [
+          value.startDate ? `Start: ${value.startDate}` : "",
+          value.endDate ? `End: ${value.endDate}` : "",
+          ...(Array.isArray(value.milestones) ? value.milestones.filter((item) => item.date || item.label).map((item) => `${item.label || "Milestone"}: ${item.date || "No date"}`) : [])
+        ].filter(Boolean).join("; ");
+      }
+      if (field.type === "radar") {
+        if (Array.isArray(value)) return radarAxes(field.settings.axes).map((axis, index) => `${axis}: ${value[index] ?? ""}`).join("; ");
+        if (value && typeof value === "object") return `Angle: ${formatRadarNumber(value.angle)}; Value: ${formatRadarNumber(value.value)}`;
+      }
+      if (field.type === "media_upload" && value && typeof value === "object") return value.name || value.type || (value.dataUrl ? "Uploaded file" : "");
+      return typeof value === "object" ? JSON.stringify(value) : value;
+    }
+
+    function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportCsv(schema, values) {
+      const fields = schema.fields.filter((field) => !["headline", "media", "spacer"].includes(field.type));
+      const rows = [
+        fields.map((field) => csvEscape(fieldAccessibleName(field))),
+        fields.map((field) => csvEscape(csvAnswer(field, values[field.id])))
+      ];
+      downloadBlob(new Blob([rows.map((row) => row.join(",")).join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" }), safeFileName(schemaDisplayName(schema)) + ".csv");
+    }
+
     function downloadDataUrl(dataUrl, fileName) {
       const link = document.createElement("a");
       link.href = dataUrl;
@@ -4169,7 +4469,11 @@
       }, [schema]);
 
       useEffect(() => {
-        if (schema) ensureGoogleFontLoaded(themeSettings(schema.settings.theme).fontFamily);
+        if (!schema) return;
+        const theme = themeSettings(schema.settings.theme);
+        const typography = typographySettings(schema.settings.typography, theme);
+        ensureGoogleFontLoaded(theme.fontFamily);
+        TYPOGRAPHY_ROLES.forEach((role) => ensureGoogleFontLoaded(typography[role.key].fontFamily));
       }, [schema]);
 
       useEffect(() => {
@@ -4305,13 +4609,17 @@
 
         setExporting(true);
         try {
+          if (kind === "csv") {
+            exportCsv(schema, values);
+            return;
+          }
           await exportFormDocument(kind, schema, captureRef.current);
         } finally {
           setExporting(false);
         }
       }
 
-      const exportIcon = exportFormat === "pdf"
+      const exportIcon = exportFormat === "pdf" || exportFormat === "csv"
         ? "fa-regular fa-file-lines"
         : exportFormat === "jpg"
           ? "fa-regular fa-file-image"
@@ -4372,6 +4680,7 @@
                   <option value="pdf">PDF</option>
                   <option value="png">PNG</option>
                   <option value="jpg">JPG</option>
+                  <option value="csv">CSV</option>
                 </select>
                 <${Icon} icon="fa-solid fa-chevron-down" className="select-icon" />
               </div>
