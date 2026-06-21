@@ -619,7 +619,8 @@
       min-width: 0;
     }
 
-    .headline-content.has-media:not(.media-middle) {
+    .headline-content.has-media.media-left,
+    .headline-content.has-media.media-right {
       grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
       align-items: center;
       gap: 16px;
@@ -2061,8 +2062,10 @@
     }
 
     @media (max-width: 720px) {
-      .headline-preview.has-media:not(.media-middle),
-      .headline-content.has-media:not(.media-middle) {
+      .headline-preview.has-media.media-left,
+      .headline-preview.has-media.media-right,
+      .headline-content.has-media.media-left,
+      .headline-content.has-media.media-right {
         grid-template-columns: 1fr;
       }
 
@@ -2139,6 +2142,7 @@
     const TYPOGRAPHY_ROLE_KEYS = TYPOGRAPHY_ROLES.map((role) => role.key);
     const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
+    const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
     const RADAR_AXIS_SNAP_ENTER_PX = 8;
     const RADAR_AXIS_SNAP_EXIT_PX = 14;
     const RADAR_RING_SNAP_ENTER_PX = 5;
@@ -2809,7 +2813,7 @@
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
-        assertOneOf(settings.mediaPlacement, ["left", "middle", "right"], "headline.settings.mediaPlacement");
+        assertOneOf(settings.mediaPlacement, HEADLINE_MEDIA_PLACEMENTS, "headline.settings.mediaPlacement");
         assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
@@ -2955,7 +2959,7 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        mediaPlacement: ["left", "middle", "right"].includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
+        mediaPlacement: HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
         media: settings.media,
         outline: fieldOutline(field),
         background: fieldBackground(field)
@@ -3838,20 +3842,24 @@
           const settings = headlineSettings(field);
           const mediaField = splitMediaField(field);
           const hasCopy = title || description;
+          const mediaCenter = mediaField && settings.mediaPlacement === "center";
+          const mediaFirst = mediaField && settings.mediaPlacement === "top";
+          const mediaNode = mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null;
+          const titleNode = title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null;
+          const descriptionNode = description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null;
+          const copyNode = hasCopy ? html`<div class="headline-copy">${titleNode}${descriptionNode}</div>` : null;
           if (!hasCopy && !mediaField) return null;
           return html`
             <section class=${`headline-field${settings.outline ? " with-outline" : ""}${settings.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
               <div class=${`headline-content${mediaField && hasCopy ? " has-media media-" + settings.mediaPlacement : ""}`}>
-                ${mediaField && settings.mediaPlacement === "middle" ? html`
-                  ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
-                  <div class="headline-media"><${MediaPreview} field=${mediaField} /></div>
-                  ${description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+                ${mediaCenter && hasCopy ? html`
+                  ${titleNode}
+                  ${mediaNode}
+                  ${descriptionNode}
                 ` : html`
-                  ${hasCopy ? html`<div class="headline-copy">
-                    ${title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null}
-                    ${description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
-                  </div>` : null}
-                  ${mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null}
+                  ${mediaFirst ? mediaNode : null}
+                  ${copyNode}
+                  ${mediaFirst ? null : mediaNode}
                 `}
               </div>
             </section>

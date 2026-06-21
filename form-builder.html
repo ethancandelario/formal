@@ -1278,7 +1278,8 @@
       min-width: 0;
     }
 
-    .headline-preview.has-media:not(.media-middle) {
+    .headline-preview.has-media.media-left,
+    .headline-preview.has-media.media-right {
       grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
       align-items: center;
       gap: 16px;
@@ -1296,63 +1297,103 @@
       position: relative;
     }
 
-    .headline-drop-indicator {
+    .headline-drop-preview {
       position: absolute;
+      inset: 0;
       z-index: 4;
-      display: flex;
-      align-items: center;
       pointer-events: none;
-      transition: opacity 70ms ease;
     }
 
-    .headline-drop-indicator::before {
+    .headline-drop-preview.media-top .headline-drop-media-slot {
+      inset: 0 0 calc(50% + 6px) 0;
+    }
+
+    .headline-drop-preview.media-left .headline-drop-media-slot {
+      inset: 0 calc(50% + 8px) 0 0;
+    }
+
+    .headline-drop-preview.media-center .headline-drop-media-slot {
+      inset: 25% 14%;
+    }
+
+    .headline-drop-preview.media-right .headline-drop-media-slot {
+      inset: 0 0 0 calc(50% + 8px);
+    }
+
+    .headline-drop-preview.media-bottom .headline-drop-media-slot {
+      inset: calc(50% + 6px) 0 0 0;
+    }
+
+    .headline-preview.is-replacing-media .headline-media {
+      visibility: hidden;
+    }
+
+    .headline-drop-media-slot {
+      position: absolute;
+      min-height: 78px;
+      min-width: 0;
+      border: 1px dashed #b8b2aa;
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 12px;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    .headline-drop-copy-slot {
+      position: absolute;
+      display: grid;
+      align-content: center;
+      gap: 7px;
+      min-width: 0;
+      padding: 10px;
+      pointer-events: none;
+    }
+
+    .headline-drop-copy-slot::before,
+    .headline-drop-copy-slot::after {
       content: "";
+      height: 5px;
+      width: min(76%, 180px);
       border-radius: 999px;
-      background: rgba(134, 31, 65, 0.42);
+      background: rgba(95, 99, 102, 0.28);
     }
 
-    .headline-drop-indicator.middle {
-      left: 0;
-      right: 0;
-      top: 50%;
-      height: 8px;
-      transform: translateY(-50%);
+    .headline-drop-copy-slot::after {
+      width: min(54%, 130px);
     }
 
-    .headline-drop-indicator.middle::before {
-      width: 100%;
-      height: 1px;
+    .headline-drop-copy-slot.copy-top {
+      inset: 0 0 calc(50% + 6px) 0;
     }
 
-    .headline-drop-indicator.left,
-    .headline-drop-indicator.right {
-      top: 0;
-      bottom: 0;
-      width: 8px;
-      justify-content: center;
+    .headline-drop-copy-slot.copy-bottom {
+      inset: calc(50% + 6px) 0 0 0;
     }
 
-    .headline-drop-indicator.left {
-      left: 0;
-      transform: translateX(-50%);
+    .headline-drop-copy-slot.copy-left {
+      inset: 0 calc(50% + 8px) 0 0;
     }
 
-    .headline-drop-indicator.right {
-      right: 0;
-      transform: translateX(50%);
+    .headline-drop-copy-slot.copy-right {
+      inset: 0 0 0 calc(50% + 8px);
     }
 
-    .headline-drop-indicator.left::before,
-    .headline-drop-indicator.right::before {
-      width: 1px;
-      height: 100%;
+    .headline-drop-copy-slot.copy-center {
+      display: none;
     }
 
-    .headline-media.is-draggable {
+    .headline-media.is-draggable,
+    .headline-copy.is-draggable,
+    .headline-preview-title.is-draggable,
+    .headline-preview-subhead.is-draggable {
       cursor: grab;
     }
 
-    .headline-media.is-draggable:active {
+    .headline-media.is-draggable:active,
+    .headline-copy.is-draggable:active,
+    .headline-preview-title.is-draggable:active,
+    .headline-preview-subhead.is-draggable:active {
       cursor: grabbing;
     }
 
@@ -2875,8 +2916,10 @@
     }
 
     @media (max-width: 720px) {
-      .headline-preview.has-media:not(.media-middle),
-      .headline-content.has-media:not(.media-middle) {
+      .headline-preview.has-media.media-left,
+      .headline-preview.has-media.media-right,
+      .headline-content.has-media.media-left,
+      .headline-content.has-media.media-right {
         grid-template-columns: 1fr;
       }
 
@@ -2960,6 +3003,8 @@
     const FONT_WEIGHT_OPTIONS = [300, 400, 500, 600, 700, 750, 800, 900];
     const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
+    const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
+    const OPPOSITE_HEADLINE_PLACEMENT = { top: "bottom", left: "right", center: "center", right: "left", bottom: "top" };
 
     const fieldTypes = [
       { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true, background: false } } },
@@ -3662,7 +3707,7 @@
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
-        assertOneOf(settings.mediaPlacement, ["left", "middle", "right"], "headline.settings.mediaPlacement");
+        assertOneOf(settings.mediaPlacement, HEADLINE_MEDIA_PLACEMENTS, "headline.settings.mediaPlacement");
         assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
@@ -3796,7 +3841,7 @@
         headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
         descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
         descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        mediaPlacement: ["left", "middle", "right"].includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
+        mediaPlacement: HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
         media: settings.media,
         outline: fieldOutline(field),
         background: fieldBackground(field)
@@ -4080,31 +4125,44 @@
       `;
     }
 
-    function HeadlineDropIndicator({ placement }) {
-      return html`<div class=${`headline-drop-indicator ${placement}`} aria-hidden="true"></div>`;
+    function HeadlineDropPreview({ placement, copyPlacement }) {
+      return html`
+        <div class=${`headline-drop-preview media-${placement}`} aria-hidden="true">
+          <div class="headline-drop-media-slot"></div>
+          ${copyPlacement ? html`<div class=${`headline-drop-copy-slot copy-${copyPlacement}`}></div>` : null}
+        </div>
+      `;
     }
 
-    function HeadlinePreview({ field, dropPlacement, onMediaDragStart, onMediaDragEnd }) {
+    function HeadlinePreview({ field, dropPlacement, dropKind, onMediaDragStart, onMediaDragEnd }) {
       const title = String(field.label || "").trim();
       const description = String(field.description || "").trim();
       const settings = headlineSettings(field);
       const mediaField = splitMediaField(field);
-      const mediaMiddle = mediaField && settings.mediaPlacement === "middle";
+      const mediaCenter = mediaField && settings.mediaPlacement === "center";
+      const mediaFirst = mediaField && settings.mediaPlacement === "top";
+      const previewPlacement = dropPlacement ? dropKind === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[dropPlacement] : dropPlacement : null;
+      const replacingMedia = !!(mediaField && previewPlacement);
+      const previewCopyPlacement = replacingMedia && OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] !== OPPOSITE_HEADLINE_PLACEMENT[settings.mediaPlacement] ? OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] : null;
+      const copyDraggable = !!(mediaField && onMediaDragStart);
+      const copyDragStart = copyDraggable ? (event) => onMediaDragStart(event, field.id, "copy") : null;
+      const copyDragAttrs = { draggable: copyDraggable, title: copyDraggable ? "Drag to reposition headline text" : null, onDragStart: copyDragStart, onDragEnd: copyDraggable ? onMediaDragEnd : null };
       const mediaNode = mediaField ? html`<div class=${`headline-media${onMediaDragStart ? " is-draggable" : ""}`} draggable=${!!onMediaDragStart} title="Drag to reposition media" onDragStart=${(event) => onMediaDragStart?.(event, field.id)} onDragEnd=${onMediaDragEnd}><${MediaPreview} field=${mediaField} /></div>` : null;
+      const titleNode = (draggable = copyDraggable) => html`<h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}${draggable ? " is-draggable" : ""}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${title || "Heading"}</h1>`;
+      const descriptionNode = (draggable = copyDraggable) => description ? html`<p class=${`headline-preview-subhead${draggable ? " is-draggable" : ""}`} style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${description}</p>` : null;
+      const copyNode = (draggable = copyDraggable) => html`<div class=${`headline-copy${draggable ? " is-draggable" : ""}`} ...${draggable ? copyDragAttrs : {}}>${titleNode(draggable)}${descriptionNode(draggable)}</div>`;
       return html`
-        <div class=${`headline-preview${mediaField ? " has-media media-" + settings.mediaPlacement : ""}`}>
-          ${dropPlacement ? html`<${HeadlineDropIndicator} placement=${dropPlacement} />` : null}
-          ${mediaMiddle ? html`
-            <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Heading"}</h1>
+        <div class=${`headline-preview${mediaField ? " has-media media-" + settings.mediaPlacement : ""}${replacingMedia ? " is-replacing-media" : ""}`}>
+          ${mediaCenter ? html`
+            ${titleNode()}
             ${mediaNode}
-            ${description ? html`<p class="headline-preview-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
+            ${descriptionNode()}
           ` : html`
-            <div class="headline-copy">
-              <h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Heading"}</h1>
-              ${description ? html`<p class="headline-preview-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null}
-            </div>
-            ${mediaNode}
+            ${mediaFirst ? mediaNode : null}
+            ${copyNode()}
+            ${mediaFirst ? null : mediaNode}
           `}
+          ${previewPlacement ? html`<${HeadlineDropPreview} placement=${previewPlacement} copyPlacement=${previewCopyPlacement} />` : null}
         </div>
       `;
     }
@@ -4188,11 +4246,11 @@
       `;
     }
 
-    function FieldPreview({ field, headlineDropPlacement, onHeadlineMediaDragStart, onFieldDragEnd }) {
+    function FieldPreview({ field, headlineDropPlacement, headlineDropKind, onHeadlineMediaDragStart, onFieldDragEnd }) {
       const options = field.options;
       switch (field.type) {
         case "headline":
-          return html`<${HeadlinePreview} field=${field} dropPlacement=${headlineDropPlacement} onMediaDragStart=${onHeadlineMediaDragStart} onMediaDragEnd=${onFieldDragEnd} />`;
+          return html`<${HeadlinePreview} field=${field} dropPlacement=${headlineDropPlacement} dropKind=${headlineDropKind} onMediaDragStart=${onHeadlineMediaDragStart} onMediaDragEnd=${onFieldDragEnd} />`;
         case "short_answer":
         case "email":
         case "number":
@@ -4702,7 +4760,7 @@
       return html`<div class="drop-indicator" style=${`--drop-y: ${Math.round(y)}px;`} aria-hidden="true"></div>`;
     }
 
-    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, headlineDropId, headlineDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
+    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, headlineDropId, headlineDropPlacement, headlineDropKind, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
       if (!fields.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
 
       return fields.map((field) => html`
@@ -4713,6 +4771,7 @@
           removing=${field.id === removingId}
           dragging=${field.id === draggingFieldId}
           headlineDropPlacement=${field.id === headlineDropId ? headlineDropPlacement : null}
+          headlineDropKind=${field.id === headlineDropId ? headlineDropKind : null}
           onSelect=${() => onSelect(field.id)}
           onMove=${(direction) => onMove(field.id, direction)}
           onDuplicate=${() => onDuplicate(field.id)}
@@ -4728,7 +4787,7 @@
       `);
     }
 
-    function FieldCard({ field, selected, removing, dragging, headlineDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
+    function FieldCard({ field, selected, removing, dragging, headlineDropPlacement, headlineDropKind, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
       const meta = fieldMeta(field);
       const visibleLabel = String(field.label ?? "").trim();
       const selectLabel = `Select ${visibleLabel || meta.name} field`;
@@ -4770,7 +4829,7 @@
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
             ${["headline", "spacer"].includes(field.type) ? html`
-              <${FieldPreview} field=${field} headlineDropPlacement=${headlineDropPlacement} onHeadlineMediaDragStart=${onHeadlineMediaDragStart} onFieldDragEnd=${onDragEnd} />
+              <${FieldPreview} field=${field} headlineDropPlacement=${headlineDropPlacement} headlineDropKind=${headlineDropKind} onHeadlineMediaDragStart=${onHeadlineMediaDragStart} onFieldDragEnd=${onDragEnd} />
             ` : html`
               ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
               ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
@@ -5053,9 +5112,11 @@
             <div class="property">
               <label for="headlineMediaPlacement">Media position</label>
               <select class="control" id="headlineMediaPlacement" value=${settings.mediaPlacement} onChange=${(event) => patchSettings({ mediaPlacement: event.currentTarget.value })}>
+                <option value="top">Top</option>
                 <option value="left">Left</option>
-                <option value="middle">Middle</option>
+                <option value="center">Center</option>
                 <option value="right">Right</option>
+                <option value="bottom">Bottom</option>
               </select>
             </div>
             <${MediaSettingsControls} field=${mediaField} onFieldChange=${updateMedia} />
@@ -5331,6 +5392,7 @@
       const fieldsRef = useRef(null);
       const fieldRectsRef = useRef(null);
       const dragPayloadRef = useRef(null);
+      const headlineDropRectRef = useRef(null);
       const exportMenuRef = useRef(null);
       const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
 
@@ -5454,6 +5516,7 @@
         return Math.max(0, Math.min(targetIndex, length));
       }
 
+      // TODO use a more generalized comparison function
       function sameDragPayload(first, second) {
         if (!first || !second || first.kind !== second.kind) return false;
         return first.kind === "new" ? first.type === second.type : first.id === second.id;
@@ -5465,14 +5528,25 @@
         if (payload.startsWith("new:")) return { kind: "new", type: payload.slice(4) };
         if (payload.startsWith("move:")) return { kind: "move", id: payload.slice(5) };
         if (payload.startsWith("split:")) return { kind: "split", id: payload.slice(6) };
+        if (payload.startsWith("copy:")) return { kind: "copy", id: payload.slice(5) };
         return null;
       }
 
+      // TODO use payload object, not one-off specific payload type functions
       function payloadIsMedia(payload, fields = schema.fields) {
         if (payload?.kind === "new") return payload.type === "media";
         if (payload?.kind === "move") return fields.some((field) => field.id === payload.id && field.type === "media");
         if (payload?.kind === "split") return fields.some((field) => field.id === payload.id && field.type === "headline" && splitMediaField(field));
         return false;
+      }
+
+      function payloadIsHeadlineCopy(payload, headlineId, fields = schema.fields) {
+        return payload?.kind === "copy" && payload.id === headlineId && fields.some((field) => field.id === headlineId && field.type === "headline" && splitMediaField(field));
+      }
+
+      function setHeadlineMediaPlacement(headlineId, placement) {
+        setSchema((current) => ({ ...current, fields: current.fields.map((field) => field.id === headlineId && field.type === "headline" && splitMediaField(field) ? { ...field, settings: { ...field.settings, mediaPlacement: placement } } : field) }));
+        setSelectedId(headlineId);
       }
 
       function splitMediaIntoHeadline(headlineId, payload, placement = "right") {
@@ -5533,23 +5607,25 @@
         setDragState({ ...payload, index: schema.fields.findIndex((field) => field.id === id) });
       }
 
-      function beginHeadlineMediaDrag(event, id) {
-        const payload = { kind: "split", id };
+      function beginHeadlineMediaDrag(event, id, part = "media") {
+        const payload = { kind: part === "copy" ? "copy" : "split", id };
+        const mediaPlacement = headlineSettings(schema.fields.find((field) => field.id === id)).mediaPlacement;
         event.stopPropagation();
         dragPayloadRef.current = payload;
-        event.dataTransfer.setData("text/plain", "split:" + id);
+        event.dataTransfer.setData("text/plain", payload.kind + ":" + id);
         event.dataTransfer.effectAllowed = "move";
-        setDragState({ ...payload, headlineId: id, headlinePlacement: headlineSettings(schema.fields.find((field) => field.id === id)).mediaPlacement });
+        setDragState({ ...payload, headlineId: id, headlinePlacement: part === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[mediaPlacement] : mediaPlacement });
       }
 
       function clearDragState() {
         dragPayloadRef.current = null;
+        headlineDropRectRef.current = null;
         setDragState(null);
       }
 
       function updateDropTarget(event) {
         const payload = payloadFromEvent(event);
-        if (!payload || payload.kind === "split") return;
+        if (!payload || !["new", "move"].includes(payload.kind)) return;
         event.preventDefault();
         event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
         const target = insertionTargetFromPointer(event.clientY);
@@ -5559,16 +5635,30 @@
         });
       }
 
-      function headlinePlacementFromPointer(event) {
-        const rect = event.currentTarget.getBoundingClientRect();
+      function headlinePlacementFromPointer(event, headlineId) {
+        let rect = headlineDropRectRef.current?.headlineId === headlineId ? headlineDropRectRef.current : null;
+        if (!rect) {
+          const measured = (event.currentTarget.querySelector(".field-card-body") || event.currentTarget).getBoundingClientRect();
+          rect = headlineDropRectRef.current = { headlineId, left: measured.left, top: measured.top, width: measured.width, height: measured.height };
+        }
         const x = rect.width ? (event.clientX - rect.left) / rect.width : 1;
-        return x < 0.33 ? "left" : x > 0.67 ? "right" : "middle";
+        const y = rect.height ? (event.clientY - rect.top) / rect.height : 0.5;
+        if (x < 0.28) return "left";
+        if (x > 0.72) return "right";
+        if (y < 0.30) return "top";
+        if (y > 0.70) return "bottom";
+        return "center";
+      }
+
+      function pointerInsideElement(event, element) {
+        const rect = element.getBoundingClientRect();
+        return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
       }
 
       function updateHeadlineDropTarget(event, headlineId) {
         const payload = payloadFromEvent(event);
-        if (!payloadIsMedia(payload)) return;
-        const headlinePlacement = headlinePlacementFromPointer(event);
+        if (!payloadIsMedia(payload) && !payloadIsHeadlineCopy(payload, headlineId)) return;
+        const headlinePlacement = headlinePlacementFromPointer(event, headlineId);
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
@@ -5577,17 +5667,21 @@
 
       function clearHeadlineDropTarget(event, headlineId) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
+        if (pointerInsideElement(event, event.currentTarget)) return;
+        if (headlineDropRectRef.current?.headlineId === headlineId) headlineDropRectRef.current = null;
         setDragState((current) => current?.headlineId === headlineId ? { ...current, headlineId: null, headlinePlacement: null } : current);
       }
 
       function handleHeadlineDrop(event, headlineId) {
         const payload = payloadFromEvent(event);
-        if (!payloadIsMedia(payload)) return;
+        const isCopy = payloadIsHeadlineCopy(payload, headlineId);
+        if (!payloadIsMedia(payload) && !isCopy) return;
         event.preventDefault();
         event.stopPropagation();
-        const placement = headlinePlacementFromPointer(event);
+        const placement = headlinePlacementFromPointer(event, headlineId);
         clearDragState();
-        splitMediaIntoHeadline(headlineId, payload, placement);
+        if (isCopy) setHeadlineMediaPlacement(headlineId, OPPOSITE_HEADLINE_PLACEMENT[placement] || "center");
+        else splitMediaIntoHeadline(headlineId, payload, placement);
       }
 
       function clearDropTarget(event) {
@@ -5713,6 +5807,7 @@
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
       const headlineDropId = dragState?.headlineId || null;
       const headlineDropPlacement = dragState?.headlinePlacement || null;
+      const headlineDropKind = dragState?.headlineId ? dragState.kind : null;
       const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
@@ -5816,6 +5911,7 @@
                     draggingFieldId=${draggingFieldId}
                     headlineDropId=${headlineDropId}
                     headlineDropPlacement=${headlineDropPlacement}
+                    headlineDropKind=${headlineDropKind}
                     onSelect=${setSelectedId}
                     onMove=${moveField}
                     onDuplicate=${duplicateField}
