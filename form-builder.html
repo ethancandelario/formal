@@ -196,7 +196,7 @@
     }
 
     .export-menu-item .svg-icon {
-      color: var(--accent);
+      color: var(--muted);
       justify-self: center;
     }
 
@@ -1114,7 +1114,7 @@
       border-radius: 8px;
       padding: 0;
       box-shadow: 0 8px 20px rgba(31, 31, 31, 0.045);
-      cursor: grab;
+      cursor: default;
       position: relative;
       align-self: start;
       transition: border-color 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease), opacity 140ms ease;
@@ -1145,7 +1145,8 @@
       box-shadow: none;
     }
 
-    .field-card:active {
+    .field-type:active,
+    .block-container-preview.is-draggable:active {
       cursor: grabbing;
     }
 
@@ -1172,7 +1173,7 @@
       border: 0;
       padding: 7px 8px;
       border-radius: 8px;
-      cursor: pointer;
+      cursor: grab;
       transition: background 160ms ease, color 160ms ease;
     }
 
@@ -1294,123 +1295,135 @@
       min-width: 0;
     }
 
-    .headline-preview.has-media.media-left,
-    .headline-preview.has-media.media-right {
-      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
-      align-items: center;
-      gap: 16px;
-    }
-
-    .headline-media {
-      min-width: 0;
-    }
-
-    .headline-preview.media-left .headline-media {
-      order: -1;
-    }
-
-    .field-card.is-split-target .headline-preview {
+    .block-preview {
       position: relative;
-    }
-
-    .headline-drop-preview {
-      position: absolute;
-      inset: 0;
-      z-index: 4;
-      pointer-events: none;
-    }
-
-    .headline-drop-preview.media-top .headline-drop-media-slot {
-      inset: 0 0 calc(50% + 6px) 0;
-    }
-
-    .headline-drop-preview.media-left .headline-drop-media-slot {
-      inset: 0 calc(50% + 8px) 0 0;
-    }
-
-    .headline-drop-preview.media-center .headline-drop-media-slot {
-      inset: 25% 14%;
-    }
-
-    .headline-drop-preview.media-right .headline-drop-media-slot {
-      inset: 0 0 0 calc(50% + 8px);
-    }
-
-    .headline-drop-preview.media-bottom .headline-drop-media-slot {
-      inset: calc(50% + 6px) 0 0 0;
-    }
-
-    .headline-preview.is-replacing-media .headline-media {
-      visibility: hidden;
-    }
-
-    .headline-drop-media-slot {
-      position: absolute;
-      min-height: 78px;
-      min-width: 0;
-      border: 1px dashed #b8b2aa;
-      border-radius: 8px;
-      background: var(--panel-2);
-      padding: 12px;
-      color: var(--muted);
-      user-select: none;
-    }
-
-    .headline-drop-copy-slot {
-      position: absolute;
       display: grid;
-      align-content: center;
-      gap: 7px;
+      gap: 10px;
       min-width: 0;
+    }
+
+    .block-preview-middle {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      min-width: 0;
+      align-items: stretch;
+    }
+
+    .block-preview.has-left.has-right .block-preview-middle {
+      grid-template-columns: minmax(130px, 0.45fr) minmax(0, 1fr) minmax(130px, 0.45fr);
+    }
+
+    .block-preview.has-left:not(.has-right) .block-preview-middle {
+      grid-template-columns: minmax(130px, 0.45fr) minmax(0, 1fr);
+    }
+
+    .block-preview.has-right:not(.has-left) .block-preview-middle {
+      grid-template-columns: minmax(0, 1fr) minmax(130px, 0.45fr);
+    }
+
+    .block-preview-stack {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      align-content: stretch;
+    }
+
+    .block-container-preview {
+      position: relative;
+      display: grid;
+      gap: 8px;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      container-type: inline-size;
+      border: 1px solid transparent;
+      border-radius: 8px;
       padding: 10px;
-      pointer-events: none;
+      cursor: default;
+      transition: border-color 140ms ease, background 140ms ease;
     }
 
-    .headline-drop-copy-slot::before,
-    .headline-drop-copy-slot::after {
-      content: "";
-      height: 5px;
-      width: min(76%, 180px);
-      border-radius: 999px;
-      background: rgba(95, 99, 102, 0.28);
-    }
-
-    .headline-drop-copy-slot::after {
-      width: min(54%, 130px);
-    }
-
-    .headline-drop-copy-slot.copy-top {
-      inset: 0 0 calc(50% + 6px) 0;
-    }
-
-    .headline-drop-copy-slot.copy-bottom {
-      inset: calc(50% + 6px) 0 0 0;
-    }
-
-    .headline-drop-copy-slot.copy-left {
-      inset: 0 calc(50% + 8px) 0 0;
-    }
-
-    .headline-drop-copy-slot.copy-right {
-      inset: 0 0 0 calc(50% + 8px);
-    }
-
-    .headline-drop-copy-slot.copy-center {
-      display: none;
-    }
-
-    .headline-media.is-draggable,
-    .headline-copy.is-draggable,
-    .headline-preview-title.is-draggable,
-    .headline-preview-subhead.is-draggable {
+    .block-container-preview.is-draggable {
       cursor: grab;
     }
 
-    .headline-media.is-draggable:active,
-    .headline-copy.is-draggable:active,
-    .headline-preview-title.is-draggable:active,
-    .headline-preview-subhead.is-draggable:active {
-      cursor: grabbing;
+    .block-container-preview:hover,
+    .block-container-preview:focus-within {
+      border-color: rgba(134, 31, 65, 0.18);
+      background: rgba(134, 31, 65, 0.035);
+    }
+
+    .block-container-preview.selected {
+      border-color: rgba(134, 31, 65, 0.34);
+      background: rgba(134, 31, 65, 0.06);
+    }
+
+    .block-container-preview:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    .container-elements {
+      display: grid;
+      gap: 10px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .container-element {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .container-tools {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 130ms ease;
+    }
+
+    .block-container-preview:hover .container-tools,
+    .block-container-preview:focus-within .container-tools,
+    .block-container-preview.selected .container-tools {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .block-drop-preview {
+      position: absolute;
+      z-index: 6;
+      pointer-events: none;
+      border: 1px dashed #b8b2aa;
+      border-radius: 8px;
+      background: rgba(244, 242, 239, 0.84);
+      box-shadow: inset 0 0 0 2px rgba(134, 31, 65, 0.06);
+    }
+
+    .block-drop-preview.placement-top {
+      inset: 0 0 auto;
+      height: min(42%, 110px);
+    }
+
+    .block-drop-preview.placement-bottom {
+      inset: auto 0 0;
+      height: min(42%, 110px);
+    }
+
+    .block-drop-preview.placement-left {
+      inset: 0 auto 0 0;
+      width: min(42%, 220px);
+    }
+
+    .block-drop-preview.placement-right {
+      inset: 0 0 0 auto;
+      width: min(42%, 220px);
     }
 
     .preview-line,
@@ -2891,6 +2904,12 @@
     }
 
     @media (max-width: 780px) {
+      .block-preview.has-left .block-preview-middle,
+      .block-preview.has-right .block-preview-middle,
+      .block-preview.has-left.has-right .block-preview-middle {
+        grid-template-columns: 1fr;
+      }
+
       .calendar-preview,
       .calendar-control {
         grid-template-columns: 1fr;
@@ -2938,17 +2957,69 @@
       padding: 2px 0;
     }
 
-    @media (max-width: 720px) {
-      .headline-preview.has-media.media-left,
-      .headline-preview.has-media.media-right,
-      .headline-content.has-media.media-left,
-      .headline-content.has-media.media-right {
-        grid-template-columns: 1fr;
+    @container (max-width: 520px) {
+      .scale-preview {
+        align-items: stretch;
       }
 
-      .headline-preview.media-left .headline-media,
-      .headline-content.media-left .headline-media {
-        order: 0;
+      .scale-track {
+        min-width: 0;
+        flex-basis: 100%;
+        width: 100%;
+      }
+
+      .radar-preview {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .radar-preview svg {
+        width: min(130px, 100%);
+        height: auto;
+        justify-self: center;
+      }
+
+      .calendar-preview,
+      .calendar-control {
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        gap: 14px;
+        max-width: 100%;
+      }
+
+      .calendar-frame {
+        width: min(300px, 100%);
+        max-width: 100%;
+      }
+
+      .calendar-properties {
+        max-width: none;
+      }
+
+      .calendar-range-summary,
+      .calendar-milestone-list {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .calendar-date-field {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .calendar-date-field .control {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-milestone-row {
+        grid-template-columns: minmax(0, 1fr) 28px;
+      }
+
+      .calendar-milestone-row .control[type="date"] {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-milestone-row .icon-button {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
       }
     }
 
@@ -3027,8 +3098,8 @@
     const FONT_WEIGHT_OPTIONS = [300, 400, 500, 600, 700, 750, 800, 900];
     const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
-    const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
-    const OPPOSITE_HEADLINE_PLACEMENT = { top: "bottom", left: "right", center: "center", right: "left", bottom: "top" };
+    const CONTAINER_PLACEMENTS = ["main", "top", "left", "right", "bottom"];
+    const DEFAULT_BLOCK_ALIGNMENT = { horizontalAlignment: "stretch", verticalAlignment: "top" };
     const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
     const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
     const NON_REQUIRED_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
@@ -3050,13 +3121,13 @@
       { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, showLabel: true, outline: true, background: false } } },
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", showLabel: true, outline: true, background: false } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { showLabel: true, outline: true, background: false } } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", mediaPlacement: "right", media: null, showLabel: true, outline: false, background: false } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", showLabel: true, outline: false, background: false } } },
       { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", showLabel: true, outline: false, background: false } } },
       { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, showLabel: true, outline: false, background: false } } }
     ];
 
-    function uid() {
-      return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    function uid(prefix = "field") {
+      return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
     }
 
     function clone(value) {
@@ -3069,9 +3140,17 @@
       return meta;
     }
 
-    function fieldFromType(type) {
+    function elementFromType(type) {
       const meta = typeMeta(type);
-      return { id: uid(), type: meta.type, ...clone(meta.defaults) };
+      return { id: uid("field"), type: meta.type, ...clone(meta.defaults) };
+    }
+
+    function containerFromElements(elements, placement = "main") {
+      return { id: uid("container"), placement, elements };
+    }
+
+    function blockFromType(type) {
+      return { id: uid("block"), ...DEFAULT_BLOCK_ALIGNMENT, containers: [containerFromElements([elementFromType(type)])] };
     }
 
     function defaultSchema() {
@@ -3079,8 +3158,66 @@
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         settings: { name: DEFAULT_FORM_NAME, theme: clone(DEFAULT_THEME), layout: clone(DEFAULT_LAYOUT), typography: clone(DEFAULT_TYPOGRAPHY) },
-        fields: []
+        blocks: []
       };
+    }
+
+    function blockContainers(block) {
+      return Array.isArray(block?.containers) ? block.containers : [];
+    }
+
+    function containerElements(container) {
+      return Array.isArray(container?.elements) ? container.elements : [];
+    }
+
+    function blockElements(block) {
+      return blockContainers(block).flatMap(containerElements);
+    }
+
+    function schemaElements(schema) {
+      return (schema.blocks || []).flatMap(blockElements);
+    }
+
+    function firstBlockElement(block) {
+      return blockElements(block)[0] || null;
+    }
+
+    function isCompositeBlock(block) { return blockContainers(block).length > 1 || blockElements(block).length > 1; }
+
+    function blockForElement(schema, elementId) {
+      return (schema.blocks || []).find((block) => blockElements(block).some((element) => element.id === elementId)) || null;
+    }
+
+    function selectedBlockId(schema, elementId) {
+      return blockForElement(schema, elementId)?.id || null;
+    }
+
+    function cloneElementWithNewId(element) {
+      return schemaField({ ...clone(element), id: uid("field") });
+    }
+
+    function cloneContainerWithNewIds(container) {
+      return {
+        ...clone(container),
+        id: uid("container"),
+        elements: containerElements(container).map(cloneElementWithNewId)
+      };
+    }
+
+    function cloneBlockWithNewIds(block) {
+      return {
+        ...clone(block),
+        id: uid("block"),
+        containers: blockContainers(block).map(cloneContainerWithNewIds)
+      };
+    }
+
+    function resetElement(element) {
+      return schemaField({ ...elementFromType(element.type), id: element.id });
+    }
+
+    function resetContainer(container) {
+      return { ...container, elements: containerElements(container).map(resetElement) };
     }
 
     function hexColor(value) {
@@ -3610,16 +3747,6 @@
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
-    function assertNestedMediaSettings(settings, name) {
-      if (settings === null) return;
-      assertObject(settings, name);
-      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "showLabel", "outline", "background"], name);
-      assertBoolean(settings.showLabel, `${name}.showLabel`);
-      assertBoolean(settings.outline, `${name}.outline`);
-      assertBoolean(settings.background, `${name}.background`);
-      assertMediaSettingValues(settings, name);
-    }
-
     const FIELD_SCHEMA_VALIDATORS = {
       calendar: "calendar",
       mood_meter: "moodMeter",
@@ -3721,13 +3848,11 @@
 
       headline() {
         const settings = this.settings;
-        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"]);
+        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"]);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
-        assertOneOf(settings.mediaPlacement, HEADLINE_MEDIA_PLACEMENTS, "headline.settings.mediaPlacement");
-        assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
       spacer() {
@@ -3753,9 +3878,32 @@
       return validator.field;
     }
 
+    function schemaContainer(raw, path) {
+      const container = assertObject(raw, path);
+      assertExactKeys(container, ["id", "placement", "elements"], path);
+      assertString(container.id, `${path}.id`);
+      assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
+      assertArray(container.elements, `${path}.elements`);
+      if (!container.elements.length) throw new Error(`${path}.elements must contain at least one element.`);
+      container.elements.forEach(schemaField);
+      return container;
+    }
+
+    function schemaBlock(raw, path) {
+      const block = assertObject(raw, path);
+      assertExactKeys(block, ["id", "horizontalAlignment", "verticalAlignment", "containers"], path);
+      assertString(block.id, `${path}.id`);
+      assertOneOf(block.horizontalAlignment, ["left", "center", "right", "stretch"], `${path}.horizontalAlignment`);
+      assertOneOf(block.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
+      assertArray(block.containers, `${path}.containers`);
+      if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
+      block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
+      return block;
+    }
+
     function schemaDocument(input) {
       const schema = assertObject(input, "schema");
-      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "fields"], "schema");
+      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "blocks"], "schema");
       assertString(schema.createdAt, "schema.createdAt");
       assertString(schema.updatedAt, "schema.updatedAt");
       assertObject(schema.settings, "schema.settings");
@@ -3766,13 +3914,23 @@
       THEME_COLOR_FIELDS.forEach(([key]) => assertHexColor(schema.settings.theme[key], `schema.settings.theme.${key}`));
       assertFontFamily(schema.settings.theme.fontFamily, "schema.settings.theme.fontFamily");
       assertAppearanceSettings(schema.settings);
-      assertArray(schema.fields, "schema.fields");
-      const seenIds = new Set();
-      schema.fields.forEach((field, index) => {
-        schemaField(field);
-        if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
-        seenIds.add(field.id);
-        if (NON_REQUIRED_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+      assertArray(schema.blocks, "schema.blocks");
+      const seenBlockIds = new Set();
+      const seenContainerIds = new Set();
+      const seenElementIds = new Set();
+      schema.blocks.forEach((block, blockIndex) => {
+        schemaBlock(block, `schema.blocks[${blockIndex}]`);
+        if (seenBlockIds.has(block.id)) throw new Error(`Duplicate block id: ${block.id}`);
+        seenBlockIds.add(block.id);
+        block.containers.forEach((container, containerIndex) => {
+          if (seenContainerIds.has(container.id)) throw new Error(`Duplicate container id: ${container.id}`);
+          seenContainerIds.add(container.id);
+          container.elements.forEach((field, elementIndex) => {
+            if (seenElementIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
+            seenElementIds.add(field.id);
+            if (NON_REQUIRED_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.blocks[${blockIndex}].containers[${containerIndex}].elements[${elementIndex}].required must be false for ${field.type}.`);
+          });
+        });
       });
       return schema;
     }
@@ -3786,7 +3944,7 @@
         || JSON.stringify(schema.settings.theme) !== JSON.stringify(DEFAULT_THEME)
         || JSON.stringify(schema.settings.layout) !== JSON.stringify(DEFAULT_LAYOUT)
         || JSON.stringify(typographySettings(schema.settings.typography, schema.settings.theme)) !== JSON.stringify(DEFAULT_TYPOGRAPHY)
-        || schema.fields.length > 0;
+        || schema.blocks.length > 0;
     }
 
     function loadInitialSchema() {
@@ -3838,6 +3996,18 @@
       return value;
     }
 
+    function gridAlignmentValue(value) {
+      if (value === "left" || value === "top") return "start";
+      if (value === "right" || value === "bottom") return "end";
+      return value;
+    }
+
+    function blockAlignmentStyle(block) {
+      const horizontal = gridAlignmentValue(horizontalAlignmentSetting(block.horizontalAlignment, ["left", "center", "right", "stretch"]));
+      const vertical = gridAlignmentValue(verticalAlignmentSetting(block.verticalAlignment));
+      return `align-self: ${vertical}; justify-items: ${horizontal}; align-content: ${vertical};`;
+    }
+
     function horizontalFlexValue(value) {
       if (value === "left") return "flex-start";
       if (value === "right") return "flex-end";
@@ -3863,19 +4033,9 @@
         this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
         this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
         this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
-        this.mediaPlacement = HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right";
-        this.mediaField = settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: settings.media } : null;
         this.showLabel = settings.showLabel;
         this.outline = settings.outline;
         this.background = settings.background;
-      }
-
-      get mediaCenter() {
-        return Boolean(this.mediaField && this.mediaPlacement === "center");
-      }
-
-      get mediaFirst() {
-        return Boolean(this.mediaField && this.mediaPlacement === "top");
       }
 
       textStyle(horizontalKey, verticalKey) {
@@ -4042,6 +4202,11 @@
         className: "svg-icon-stroke",
         content: () => html`<path d="m18 16 4-4-4-4"></path><path d="M6 8l-4 4 4 4"></path><path d="m14.5 4-5 16"></path>`
       },
+      "lucide-component": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="M15.536 11.293a1 1 0 0 0 0 1.414l2.376 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z"></path><path d="M2.297 11.293a1 1 0 0 0 0 1.414l2.377 2.377a1 1 0 0 0 1.414 0l2.377-2.377a1 1 0 0 0 0-1.414L6.088 8.916a1 1 0 0 0-1.414 0z"></path><path d="M8.916 17.912a1 1 0 0 0 0 1.415l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.415l-2.377-2.376a1 1 0 0 0-1.414 0z"></path><path d="M8.916 4.674a1 1 0 0 0 0 1.414l2.377 2.376a1 1 0 0 0 1.414 0l2.377-2.376a1 1 0 0 0 0-1.414l-2.377-2.377a1 1 0 0 0-1.414 0z"></path>`
+      },
       "lucide-package-open": {
         viewBox: "0 0 24 24",
         className: "svg-icon-stroke",
@@ -4099,43 +4264,16 @@
       `;
     }
 
-    function HeadlineDropPreview({ placement, copyPlacement }) {
-      return html`
-        <div class=${`headline-drop-preview media-${placement}`} aria-hidden="true">
-          <div class="headline-drop-media-slot"></div>
-          ${copyPlacement ? html`<div class=${`headline-drop-copy-slot copy-${copyPlacement}`}></div>` : null}
-        </div>
-      `;
-    }
-
-    function HeadlinePreview({ field, dropPlacement, dropKind, onMediaDragStart, onMediaDragEnd }) {
+    function HeadlinePreview({ field }) {
       const description = String(field.description || "").trim();
       const headline = new HeadlineModel(field);
       const title = headline.showLabel ? String(field.label || "").trim() : "";
-      const mediaField = headline.mediaField;
       const hasCopy = Boolean(headline.showLabel || description);
-      const previewPlacement = dropPlacement ? dropKind === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[dropPlacement] : dropPlacement : null;
-      const replacingMedia = !!(mediaField && previewPlacement);
-      const previewCopyPlacement = replacingMedia && OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] !== OPPOSITE_HEADLINE_PLACEMENT[headline.mediaPlacement] ? OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] : null;
-      const copyDraggable = !!(mediaField && onMediaDragStart);
-      const copyDragStart = copyDraggable ? (event) => onMediaDragStart(event, { kind: "copy", id: field.id }) : null;
-      const copyDragAttrs = { draggable: copyDraggable, title: copyDraggable ? "Drag to reposition headline text" : null, onDragStart: copyDragStart, onDragEnd: copyDraggable ? onMediaDragEnd : null };
-      const mediaNode = mediaField ? html`<div class=${`headline-media${onMediaDragStart ? " is-draggable" : ""}`} draggable=${!!onMediaDragStart} title="Drag to reposition media" onDragStart=${(event) => onMediaDragStart?.(event, { kind: "split", id: field.id })} onDragEnd=${onMediaDragEnd}><${MediaPreview} field=${mediaField} /></div>` : null;
-      const titleNode = (draggable = copyDraggable) => headline.showLabel ? html`<h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}${draggable ? " is-draggable" : ""}`} style=${headline.textStyle("headingHorizontalAlignment", "headingVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${title || "Heading"}</h1>` : null;
-      const descriptionNode = (draggable = copyDraggable) => description ? html`<p class=${`headline-preview-subhead${draggable ? " is-draggable" : ""}`} style=${headline.textStyle("descriptionHorizontalAlignment", "descriptionVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${description}</p>` : null;
-      const copyNode = (draggable = copyDraggable) => hasCopy ? html`<div class=${`headline-copy${draggable ? " is-draggable" : ""}`} ...${draggable ? copyDragAttrs : {}}>${titleNode(draggable)}${descriptionNode(draggable)}</div>` : null;
+      const titleNode = headline.showLabel ? html`<h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}`} style=${headline.textStyle("headingHorizontalAlignment", "headingVerticalAlignment")}>${title || "Heading"}</h1>` : null;
+      const descriptionNode = description ? html`<p class="headline-preview-subhead" style=${headline.textStyle("descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null;
       return html`
-        <div class=${`headline-preview${mediaField && hasCopy ? " has-media media-" + headline.mediaPlacement : ""}${replacingMedia ? " is-replacing-media" : ""}`}>
-          ${headline.mediaCenter && hasCopy ? html`
-            ${titleNode()}
-            ${mediaNode}
-            ${descriptionNode()}
-          ` : html`
-            ${headline.mediaFirst ? mediaNode : null}
-            ${copyNode()}
-            ${headline.mediaFirst ? null : mediaNode}
-          `}
-          ${previewPlacement ? html`<${HeadlineDropPreview} placement=${previewPlacement} copyPlacement=${previewCopyPlacement} />` : null}
+        <div class="headline-preview">
+          ${hasCopy ? html`<div class="headline-copy">${titleNode}${descriptionNode}</div>` : null}
         </div>
       `;
     }
@@ -4224,7 +4362,7 @@
     }
 
     const FIELD_PREVIEW_RENDERERS = {
-      headline: (field, props) => html`<${HeadlinePreview} field=${field} dropPlacement=${props.headlineDropPlacement} dropKind=${props.headlineDropKind} onMediaDragStart=${props.onHeadlineMediaDragStart} onMediaDragEnd=${props.onFieldDragEnd} />`,
+      headline: (field) => html`<${HeadlinePreview} field=${field} />`,
       short_answer: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
       email: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
       number: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
@@ -4712,64 +4850,176 @@
       return html`<div class="drop-indicator" style=${`--drop-y: ${Math.round(y)}px;`} aria-hidden="true"></div>`;
     }
 
-    function FieldListContent({ fields, selectedId, removingId, draggingFieldId, headlineDropId, headlineDropPlacement, headlineDropKind, onSelect, onMove, onDuplicate, onReset, onDelete, onFieldDragStart, onFieldDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
-      if (!fields.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
-
-      return fields.map((field) => html`
-        <${FieldCard}
-          key=${field.id}
-          field=${field}
-          selected=${field.id === selectedId}
-          removing=${field.id === removingId}
-          dragging=${field.id === draggingFieldId}
-          headlineDropPlacement=${field.id === headlineDropId ? headlineDropPlacement : null}
-          headlineDropKind=${field.id === headlineDropId ? headlineDropKind : null}
-          onSelect=${() => onSelect(field.id)}
-          onMove=${(direction) => onMove(field.id, direction)}
-          onDuplicate=${() => onDuplicate(field.id)}
-          onReset=${() => onReset(field.id)}
-          onDelete=${() => onDelete(field.id)}
-          onDragStart=${(event) => onFieldDragStart(event, { kind: "move", id: field.id })}
-          onDragEnd=${onFieldDragEnd}
-          onHeadlineDragOver=${(event) => onHeadlineDragOver(event, field.id)}
-          onHeadlineDragLeave=${(event) => onHeadlineDragLeave(event, field.id)}
-          onHeadlineDrop=${(event) => onHeadlineDrop(event, field.id)}
-          onHeadlineMediaDragStart=${onHeadlineMediaDragStart}
-        />
-      `);
+    function BlockDropPreview({ placement }) {
+      return html`<div class=${`block-drop-preview placement-${placement}`} aria-hidden="true"></div>`;
     }
 
-    function FieldCard({ field, selected, removing, dragging, headlineDropPlacement, headlineDropKind, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
-      const meta = typeMeta(field?.type);
+    function ElementPreview({ field }) {
       const labelText = String(field.label ?? "").trim();
       const visibleLabel = field.settings.showLabel ? labelText : "";
-      const selectLabel = `Select ${labelText || meta.name} field`;
+      if (LABELLESS_PREVIEW_FIELD_TYPES.has(field.type)) return html`<${FieldPreview} field=${field} />`;
+      return html`
+        ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
+        ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
+        <${FieldPreview} field=${field} />
+      `;
+    }
+
+    function ContainerPreview({ block, container, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+      const elements = containerElements(container);
+      const selected = container.id === selectedContainerId;
+      const primary = elements[0];
+      const draggable = blockContainers(block).length > 1;
+      const label = primary ? `Select ${String(primary.label || typeMeta(primary.type).name).trim()} container` : "Select container";
+
+      function selectContainer() {
+        if (primary) onSelectElement(primary.id, container.id);
+      }
+
+      function handleClick(event) {
+        event.stopPropagation();
+        if (event.target?.closest?.(".container-tools")) return;
+        selectContainer();
+      }
+
+      function handleKey(event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        event.stopPropagation();
+        selectContainer();
+      }
+
+      function handleDragStart(event) {
+        if (!draggable || event.target?.closest?.(".container-tools")) return event.preventDefault();
+        event.stopPropagation();
+        selectContainer();
+        onContainerDragStart(event, { kind: "container", sourceBlockId: block.id, containerId: container.id });
+      }
+
+      function handleDragEnd(event) {
+        event.stopPropagation();
+        onContainerDragEnd(event);
+      }
+
+      return html`
+        <div class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${draggable ? " is-draggable" : ""}`} style=${blockAlignmentStyle(block)} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${label} draggable=${draggable} onClick=${handleClick} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
+          <div class="container-tools">
+            <button class="icon-button" type="button" onClick=${() => onResetContainer(block.id, container.id)} title="Reset container" aria-label="Reset container"><${Icon} icon="fa-solid fa-rotate-left" /></button>
+            <button class="icon-button" type="button" onClick=${() => onDuplicateContainer(block.id, container.id)} title="Duplicate container" aria-label="Duplicate container"><${Icon} icon="fa-regular fa-copy" /></button>
+            <button class="icon-button danger" type="button" onClick=${() => onDeleteContainer(block.id, container.id)} title="Delete container" aria-label="Delete container"><${Icon} icon="fa-regular fa-trash-can" /></button>
+          </div>
+          <div class="container-elements">
+            ${elements.map((element) => html`<div class="container-element" key=${element.id}><${ElementPreview} field=${element} /></div>`)}
+          </div>
+        </div>
+      `;
+    }
+
+    function ContainerPreviewStack({ containers, className, block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+      if (!containers.length) return null;
+      return html`
+        <div class=${className}>
+          ${containers.map((container) => html`
+            <${ContainerPreview}
+              key=${container.id}
+              block=${block}
+              container=${container}
+              selectedContainerId=${selectedContainerId}
+              onSelectElement=${onSelectElement}
+              onDuplicateContainer=${onDuplicateContainer}
+              onResetContainer=${onResetContainer}
+              onDeleteContainer=${onDeleteContainer}
+              onContainerDragStart=${onContainerDragStart}
+              onContainerDragEnd=${onContainerDragEnd}
+            />
+          `)}
+        </div>
+      `;
+    }
+
+    function BlockPreview({ block, selectedContainerId, dropPlacement, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+      const containers = blockContainers(block);
+      const top = containers.filter((container) => container.placement === "top");
+      const left = containers.filter((container) => container.placement === "left");
+      const main = containers.filter((container) => container.placement === "main");
+      const right = containers.filter((container) => container.placement === "right");
+      const bottom = containers.filter((container) => container.placement === "bottom");
+      return html`
+        <div class=${`block-preview${left.length ? " has-left" : ""}${right.length ? " has-right" : ""}${dropPlacement ? " is-container-target target-" + dropPlacement : ""}`}>
+          <${ContainerPreviewStack} containers=${top} className="block-preview-stack block-preview-top" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <div class="block-preview-middle">
+            <${ContainerPreviewStack} containers=${left} className="block-preview-stack block-preview-left" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+            <${ContainerPreviewStack} containers=${main} className="block-preview-stack block-preview-main" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+            <${ContainerPreviewStack} containers=${right} className="block-preview-stack block-preview-right" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          </div>
+          <${ContainerPreviewStack} containers=${bottom} className="block-preview-stack block-preview-bottom" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          ${dropPlacement ? html`<${BlockDropPreview} placement=${dropPlacement} />` : null}
+        </div>
+      `;
+    }
+
+    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+      if (!blocks.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
+
+      return blocks.map((block) => {
+        const selected = !selectedContainerId && firstBlockElement(block)?.id === selectedId;
+        return html`
+          <${FieldCard}
+            key=${block.id}
+            block=${block}
+            selectedContainerId=${selectedContainerId}
+            selected=${selected}
+            removing=${block.id === removingId}
+            dragging=${block.id === draggingBlockId}
+            blockDropPlacement=${block.id === blockDropId ? blockDropPlacement : null}
+            onSelect=${onSelect}
+            onMove=${(direction) => onMove(block.id, direction)}
+            onDuplicate=${() => onDuplicate(block.id)}
+            onReset=${() => onReset(block.id)}
+            onDelete=${() => onDelete(block.id)}
+            onDuplicateContainer=${onDuplicateContainer}
+            onResetContainer=${onResetContainer}
+            onDeleteContainer=${onDeleteContainer}
+            onDragStart=${onFieldDragStart}
+            onDragEnd=${onFieldDragEnd}
+            onBlockDragOver=${(event) => onBlockDragOver(event, block.id)}
+            onBlockDragLeave=${(event) => onBlockDragLeave(event, block.id)}
+            onBlockDrop=${(event) => onBlockDrop(event, block.id)}
+          />
+        `;
+      });
+    }
+
+    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+      const primary = firstBlockElement(block);
+      const composite = isCompositeBlock(block);
+      const meta = primary && !composite ? typeMeta(primary.type) : { icon: "lucide-component", name: "Block" };
+      const labelText = composite ? "" : String(primary?.label ?? "").trim();
+      const selectLabel = `Select ${labelText || meta.name} block`;
+      const hasBackground = blockElements(block).some((element) => element.settings?.background);
       function handleCardClick(event) {
         const target = event.target;
         if (target?.closest?.("button, a, input, textarea, select")) return;
-        onSelect();
+        if (primary) onSelect(primary.id);
       }
 
       function handleSelectKey(event) {
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
-        onSelect();
+        if (primary) onSelect(primary.id);
       }
 
       return html`
         <article
-          class=${`field-card${field.settings.background ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${headlineDropPlacement ? " is-split-target split-" + headlineDropPlacement : ""}`}
-          data-field-id=${field.id}
-          draggable=${true}
+          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropPlacement ? " is-container-target target-" + blockDropPlacement : ""}`}
+          data-field-id=${block.id}
           onClick=${handleCardClick}
-          onDragStart=${onDragStart}
-          onDragEnd=${onDragEnd}
-          onDragOver=${field.type === "headline" ? onHeadlineDragOver : null}
-          onDragLeave=${field.type === "headline" ? onHeadlineDragLeave : null}
-          onDrop=${field.type === "headline" ? onHeadlineDrop : null}
+          onDragOver=${onBlockDragOver}
+          onDragLeave=${onBlockDragLeave}
+          onDrop=${onBlockDrop}
         >
           <div class="field-card-head">
-            <button class="field-type" type="button" aria-pressed=${selected} aria-label=${selectLabel} onClick=${onSelect}>
+            <button class="field-type" type="button" aria-pressed=${selected} aria-label=${selectLabel} draggable=${true} onDragStart=${(event) => onDragStart(event, { kind: "move", id: block.id })} onDragEnd=${onDragEnd} onClick=${() => primary && onSelect(primary.id)}>
               <${Icon} icon=${meta.icon} /><span>${meta.name}</span>
             </button>
             <div class="field-tools">
@@ -4781,13 +5031,17 @@
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
-            ${LABELLESS_PREVIEW_FIELD_TYPES.has(field.type) ? html`
-              <${FieldPreview} field=${field} headlineDropPlacement=${headlineDropPlacement} headlineDropKind=${headlineDropKind} onHeadlineMediaDragStart=${onHeadlineMediaDragStart} onFieldDragEnd=${onDragEnd} />
-            ` : html`
-              ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
-              ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
-              <${FieldPreview} field=${field} />
-            `}
+            <${BlockPreview}
+              block=${block}
+              selectedContainerId=${selectedContainerId}
+              dropPlacement=${blockDropPlacement}
+              onSelectElement=${onSelect}
+              onDuplicateContainer=${onDuplicateContainer}
+              onResetContainer=${onResetContainer}
+              onDeleteContainer=${onDeleteContainer}
+              onContainerDragStart=${onDragStart}
+              onContainerDragEnd=${onDragEnd}
+            />
           </div>
         </article>
       `;
@@ -4811,10 +5065,6 @@
         this.patch({ [key]: value }, extras);
       };
 
-      patchNestedMedia = (patch) => {
-        if (patch.settings) this.patchNonData({ media: patch.settings });
-      };
-
       updateListItem = (key, index, patch) => {
         const items = this.field.settings[key].map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
         this.patch({ [key]: items });
@@ -4829,8 +5079,14 @@
       };
     }
 
-    function Inspector({ schema, selectedField, onSchemaChange, onFieldChange }) {
+    function Inspector({ schema, selectedField, selectedBlock, onSchemaChange, onFieldChange, onBlockChange }) {
       if (!selectedField) {
+        if (selectedBlock) return html`
+          <h2 class="panel-title"><${Icon} icon="lucide-component" /><span>Block</span></h2>
+          <div class="property-stack">
+            <${BlockSettings} block=${selectedBlock} onBlockChange=${onBlockChange} />
+          </div>
+        `;
         return html`
           <h2 class="panel-title"><${Icon} icon="fa-solid fa-sliders" /><span>Form Details</span></h2>
           <div class="property-stack">
@@ -4860,6 +5116,7 @@
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
+          <${BlockSettings} block=${selectedBlock} onBlockChange=${onBlockChange} />
           <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           ${!NON_REQUIRED_FIELD_TYPES.has(selectedField.type) ? html`
             <label class="toggle-row">
@@ -4867,6 +5124,26 @@
               <span>Required</span>
             </label>
           ` : null}
+        </div>
+      `;
+    }
+
+    function BlockSettings({ block, onBlockChange }) {
+      if (!block) return null;
+      return html`
+        <div class="settings-grid">
+          <div class="property">
+            <label for="blockHorizontalAlignment">Sub horizontal alignment</label>
+            <select class="control" id="blockHorizontalAlignment" value=${block.horizontalAlignment} onChange=${(event) => onBlockChange({ horizontalAlignment: event.currentTarget.value })}>
+              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option><option value="stretch">Stretch</option>
+            </select>
+          </div>
+          <div class="property">
+            <label for="blockVerticalAlignment">Sub vertical alignment</label>
+            <select class="control" id="blockVerticalAlignment" value=${block.verticalAlignment} onChange=${(event) => onBlockChange({ verticalAlignment: event.currentTarget.value })}>
+              <option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option>
+            </select>
+          </div>
         </div>
       `;
     }
@@ -5062,7 +5339,6 @@
 
     function HeadlineSettingsControls({ field, editor }) {
       const headline = new HeadlineModel(field);
-      const mediaField = headline.mediaField;
       return html`
         <div class="settings-grid">
           <div class="property">
@@ -5098,21 +5374,6 @@
             </select>
           </div>
         </div>
-        ${mediaField ? html`
-          <div class="mini-label">Split media</div>
-          <div class="property">
-            <label for="headlineMediaPlacement">Media position</label>
-            <select class="control" id="headlineMediaPlacement" value=${headline.mediaPlacement} onChange=${(event) => editor.patchNonData({ mediaPlacement: event.currentTarget.value })}>
-              <option value="top">Top</option>
-              <option value="left">Left</option>
-              <option value="center">Center</option>
-              <option value="right">Right</option>
-              <option value="bottom">Bottom</option>
-            </select>
-          </div>
-          <${MediaSettingsControls} field=${mediaField} onFieldChange=${editor.patchNestedMedia} />
-          <button class="button ghost" type="button" onClick=${() => editor.patchNonData({ media: null })}>Remove split media</button>
-        ` : html`<div class="radar-mode-note">Drop a Media block onto this headline to split it.</div>`}
       `;
     }
 
@@ -5368,7 +5629,8 @@
 
       static key(payload) {
         if (payload?.kind === "new" && payload.type) return `new:${payload.type}`;
-        if (["move", "split", "copy"].includes(payload?.kind) && payload.id) return `${payload.kind}:${payload.id}`;
+        if (payload?.kind === "move" && payload.id) return `move:${payload.id}`;
+        if (payload?.kind === "container" && payload.sourceBlockId && payload.containerId) return `container:${payload.sourceBlockId}:${payload.containerId}`;
         return "";
       }
 
@@ -5379,7 +5641,11 @@
         const kind = text.slice(0, index);
         const target = text.slice(index + 1);
         if (kind === "new" && target) return { kind, type: target };
-        if (["move", "split", "copy"].includes(kind) && target) return { kind, id: target };
+        if (kind === "move" && target) return { kind, id: target };
+        if (kind === "container") {
+          const [sourceBlockId, containerId] = target.split(":");
+          if (sourceBlockId && containerId) return { kind, sourceBlockId, containerId };
+        }
         return null;
       }
 
@@ -5392,60 +5658,72 @@
         return payload?.kind === "new" ? "copy" : "move";
       }
 
-      static info(payload, fields, headlineId = null) {
-        const field = payload?.id ? fields.find((item) => item.id === payload.id) || null : null;
-        const splitMedia = field?.type === "headline" ? new HeadlineModel(field).mediaField : null;
-        const providesMedia = payload?.kind === "new"
-          ? payload.type === "media"
-          : payload?.kind === "move"
-            ? field?.type === "media"
-            : payload?.kind === "split"
-              ? Boolean(splitMedia)
-              : false;
-        const repositionsHeadlineCopy = payload?.kind === "copy" && payload.id === headlineId && Boolean(splitMedia);
-        return { field, splitMedia, providesMedia, repositionsHeadlineCopy };
+      static singleElementBlock(block) {
+        const containers = blockContainers(block);
+        if (containers.length !== 1) return null;
+        const elements = containerElements(containers[0]);
+        return elements.length === 1 ? elements[0] : null;
       }
 
-      static canDropOnHeadline(payload, fields, headlineId) {
-        const info = DragPayloadModel.info(payload, fields, headlineId);
-        return info.providesMedia || info.repositionsHeadlineCopy;
+      static elementFromPayload(payload, blocks) {
+        if (payload?.kind === "new" && fieldTypes.some((item) => item.type === payload.type)) return elementFromType(payload.type);
+        if (payload?.kind === "move") {
+          const sourceBlock = blocks.find((block) => block.id === payload.id);
+          const sourceElement = DragPayloadModel.singleElementBlock(sourceBlock);
+          return sourceElement ? clone(sourceElement) : null;
+        }
+        return null;
       }
 
-      static mediaFromPayload(payload, fields) {
-        const info = DragPayloadModel.info(payload, fields);
-        if (!info.providesMedia) return null;
-        if (payload.kind === "new") return typeMeta("media").defaults.settings;
-        if (payload.kind === "split") return info.splitMedia?.settings || null;
-        return info.field?.settings || null;
+      static canDropOnBlock(payload, blocks, blockId) {
+        if (payload?.kind === "new") return fieldTypes.some((item) => item.type === payload.type);
+        if (payload?.kind === "container") return payload.sourceBlockId === blockId && blocks.some((block) => block.id === blockId && block.containers.some((container) => container.id === payload.containerId));
+        if (payload?.kind !== "move" || payload.id === blockId) return false;
+        return Boolean(DragPayloadModel.singleElementBlock(blocks.find((block) => block.id === payload.id)));
       }
 
-      static splitMediaIntoHeadline(schema, headlineId, payload, placement = "right") {
-        const headline = schema.fields.find((field) => field.id === headlineId);
-        const media = DragPayloadModel.mediaFromPayload(payload, schema.fields);
-        if (!headline || headline.type !== "headline" || !media || (payload?.kind !== "split" && payload?.id === headlineId)) return schema;
-        const fields = payload.kind === "move" ? schema.fields.filter((field) => field.id !== payload.id) : schema.fields;
-        return {
-          ...schema,
-          fields: fields.map((field) => {
-            if (field.id === headlineId) return { ...field, required: false, settings: { ...field.settings, mediaPlacement: placement, media: clone(media) } };
-            if (payload.kind === "split" && field.id === payload.id) return { ...field, settings: { ...field.settings, media: null } };
-            return field;
-          })
-        };
+      static moveContainer(schema, blockId, payload, placement) {
+        if (!DragPayloadModel.canDropOnBlock(payload, schema.blocks, blockId)) return null;
+        let selectedId = null;
+        let selectedContainerId = null;
+        const blocks = schema.blocks.map((block) => {
+          if (block.id !== blockId) return block;
+          const index = block.containers.findIndex((container) => container.id === payload.containerId);
+          const container = { ...block.containers[index], placement };
+          const containers = [...block.containers];
+          containers.splice(index, 1);
+          containers.push(container);
+          selectedId = firstBlockElement({ containers: [container] })?.id || null;
+          selectedContainerId = container.id;
+          return { ...block, containers };
+        });
+        return { schema: { ...schema, blocks }, selectedId, selectedContainerId };
+      }
+
+      static addElementToBlock(schema, blockId, payload, placement = "right") {
+        if (!DragPayloadModel.canDropOnBlock(payload, schema.blocks, blockId)) return null;
+        const element = DragPayloadModel.elementFromPayload(payload, schema.blocks);
+        if (!element) return null;
+        const container = containerFromElements([schemaField(element)], placement);
+        const sourceBlockId = payload.kind === "move" ? payload.id : null;
+        const blocks = schema.blocks
+          .filter((block) => block.id !== sourceBlockId)
+          .map((block) => block.id === blockId ? { ...block, containers: [...block.containers, container] } : block);
+        return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: container.id };
       }
     }
 
     function initialBuilderState() {
       const schema = loadInitialSchema();
-      return { schema, selectedId: schema.fields[0]?.id || null, removingId: null };
+      return { schema, selectedId: firstBlockElement(schema.blocks[0])?.id || null, selectedContainerId: null, removingId: null };
     }
 
     function builderReducer(state, action) {
       switch (action.type) {
         case "replace-schema":
-          return { schema: action.schema, selectedId: action.schema.fields[0]?.id || null, removingId: null };
+          return { schema: action.schema, selectedId: firstBlockElement(action.schema.blocks[0])?.id || null, selectedContainerId: null, removingId: null };
         case "commit-schema":
-          return { ...state, schema: action.schema, selectedId: action.selectedId ?? state.selectedId };
+          return { ...state, schema: action.schema, selectedId: action.selectedId ?? state.selectedId, selectedContainerId: action.selectedContainerId === undefined ? state.selectedContainerId : action.selectedContainerId };
         case "patch-schema": {
           const schema = { ...state.schema, ...action.patch };
           if (action.patch.settings) schema.settings = { ...state.schema.settings, ...action.patch.settings };
@@ -5456,83 +5734,125 @@
             ...state,
             schema: {
               ...state.schema,
-              fields: state.schema.fields.map((field) => field.id === action.id
-                ? { ...field, ...action.patch, settings: action.patch.settings ? { ...field.settings, ...action.patch.settings } : field.settings }
-                : field)
+              blocks: state.schema.blocks.map((block) => ({
+                ...block,
+                containers: block.containers.map((container) => ({
+                  ...container,
+                  elements: container.elements.map((field) => field.id === action.id
+                    ? { ...field, ...action.patch, settings: action.patch.settings ? { ...field.settings, ...action.patch.settings } : field.settings }
+                    : field)
+                }))
+              }))
             }
           };
+        case "patch-block":
+          return { ...state, schema: { ...state.schema, blocks: state.schema.blocks.map((block) => block.id === action.id ? { ...block, ...action.patch } : block) } };
         case "select-field":
-          return state.selectedId === action.id ? state : { ...state, selectedId: action.id };
+          return state.selectedId === action.id && state.selectedContainerId === (action.containerId || null) ? state : { ...state, selectedId: action.id, selectedContainerId: action.containerId || null };
         case "insert-field": {
-          const fields = [...state.schema.fields];
-          fields.splice(DragPayloadModel.clampIndex(action.index, fields.length), 0, action.field);
-          return { ...state, schema: { ...state.schema, fields }, selectedId: action.field.id };
+          const blocks = [...state.schema.blocks];
+          blocks.splice(DragPayloadModel.clampIndex(action.index, blocks.length), 0, action.block);
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement(action.block)?.id || state.selectedId, selectedContainerId: null };
         }
         case "move-field": {
-          const from = state.schema.fields.findIndex((field) => field.id === action.id);
+          const from = state.schema.blocks.findIndex((block) => block.id === action.id);
           const to = from + action.direction;
-          return from < 0 || to < 0 || to >= state.schema.fields.length ? state : { ...state, schema: { ...state.schema, fields: reorder(state.schema.fields, from, to) } };
+          return from < 0 || to < 0 || to >= state.schema.blocks.length ? state : { ...state, schema: { ...state.schema, blocks: reorder(state.schema.blocks, from, to) } };
         }
         case "move-field-to-index": {
-          const from = state.schema.fields.findIndex((field) => field.id === action.id);
+          const from = state.schema.blocks.findIndex((block) => block.id === action.id);
           if (from < 0) return state;
-          const insertionIndex = DragPayloadModel.clampIndex(action.index, state.schema.fields.length);
+          const insertionIndex = DragPayloadModel.clampIndex(action.index, state.schema.blocks.length);
           const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
-          const boundedTo = Math.max(0, Math.min(to, state.schema.fields.length - 1));
-          return boundedTo === from ? state : { ...state, schema: { ...state.schema, fields: reorder(state.schema.fields, from, boundedTo) } };
+          const boundedTo = Math.max(0, Math.min(to, state.schema.blocks.length - 1));
+          return boundedTo === from ? state : { ...state, schema: { ...state.schema, blocks: reorder(state.schema.blocks, from, boundedTo) } };
         }
         case "duplicate-field": {
-          const index = state.schema.fields.findIndex((field) => field.id === action.id);
+          const index = state.schema.blocks.findIndex((block) => block.id === action.id);
           if (index < 0) return state;
-          const fields = [...state.schema.fields];
-          fields.splice(index + 1, 0, action.copy);
-          return { ...state, schema: { ...state.schema, fields }, selectedId: action.copy.id };
+          const blocks = [...state.schema.blocks];
+          blocks.splice(index + 1, 0, action.copy);
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement(action.copy)?.id || state.selectedId, selectedContainerId: null };
         }
         case "reset-field": {
-          const source = state.schema.fields.find((field) => field.id === action.id);
+          const source = state.schema.blocks.find((block) => block.id === action.id);
           if (!source) return state;
-          const reset = schemaField({ ...fieldFromType(source.type), id: action.id });
-          return { ...state, schema: { ...state.schema, fields: state.schema.fields.map((field) => field.id === action.id ? reset : field) }, selectedId: action.id };
+          const reset = { ...source, containers: source.containers.map(resetContainer) };
+          return { ...state, schema: { ...state.schema, blocks: state.schema.blocks.map((block) => block.id === action.id ? reset : block) }, selectedId: firstBlockElement(reset)?.id || state.selectedId, selectedContainerId: null };
         }
         case "mark-removing":
-          return state.removingId === action.id || !state.schema.fields.some((field) => field.id === action.id) ? state : { ...state, removingId: action.id };
+          return state.removingId === action.id || !state.schema.blocks.some((block) => block.id === action.id) ? state : { ...state, removingId: action.id };
         case "remove-field": {
-          const index = state.schema.fields.findIndex((field) => field.id === action.id);
+          const index = state.schema.blocks.findIndex((block) => block.id === action.id);
           if (index < 0) return { ...state, removingId: null };
-          const fields = state.schema.fields.filter((field) => field.id !== action.id);
-          const selectedId = state.selectedId === action.id ? fields[Math.min(index, fields.length - 1)]?.id || null : state.selectedId;
-          return { ...state, schema: { ...state.schema, fields }, selectedId, removingId: null };
+          const blocks = state.schema.blocks.filter((block) => block.id !== action.id);
+          const removedSelected = selectedBlockId(state.schema, state.selectedId) === action.id;
+          const selectedId = removedSelected ? firstBlockElement(blocks[Math.min(index, blocks.length - 1)])?.id || null : state.selectedId;
+          return { ...state, schema: { ...state.schema, blocks }, selectedId, selectedContainerId: removedSelected ? null : state.selectedContainerId, removingId: null };
         }
-        case "reposition-headline-copy":
+        case "duplicate-container": {
+          let copy = null;
+          const blocks = state.schema.blocks.map((block) => {
+            if (block.id !== action.blockId) return block;
+            const index = block.containers.findIndex((container) => container.id === action.containerId);
+            if (index < 0) return block;
+            copy = cloneContainerWithNewIds(block.containers[index]);
+            const containers = [...block.containers];
+            containers.splice(index + 1, 0, copy);
+            return { ...block, containers };
+          });
+          return copy ? { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement({ containers: [copy] })?.id || state.selectedId, selectedContainerId: copy.id } : state;
+        }
+        case "reset-container":
           return {
             ...state,
             schema: {
               ...state.schema,
-              fields: state.schema.fields.map((field) => field.id === action.headlineId && field.type === "headline" && new HeadlineModel(field).mediaField
-                ? { ...field, settings: { ...field.settings, mediaPlacement: OPPOSITE_HEADLINE_PLACEMENT[action.placement] || "center" } }
-                : field)
+              blocks: state.schema.blocks.map((block) => block.id === action.blockId
+                ? { ...block, containers: block.containers.map((container) => container.id === action.containerId ? resetContainer(container) : container) }
+                : block)
             },
-            selectedId: action.headlineId
+            selectedId: state.selectedId
           };
+        case "delete-container": {
+          let nextSelectedId = state.selectedId;
+          let nextSelectedContainerId = state.selectedContainerId;
+          const blocks = state.schema.blocks.flatMap((block) => {
+            if (block.id !== action.blockId) return [block];
+            const removing = block.containers.find((container) => container.id === action.containerId);
+            const containers = block.containers.filter((container) => container.id !== action.containerId);
+            if (removing && (action.containerId === state.selectedContainerId || containerElements(removing).some((element) => element.id === state.selectedId))) {
+              nextSelectedId = firstBlockElement({ containers })?.id || null;
+              nextSelectedContainerId = null;
+            }
+            return containers.length ? [{ ...block, containers }] : [];
+          });
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: nextSelectedId, selectedContainerId: nextSelectedContainerId };
+        }
         default:
           return state;
       }
     }
 
-    function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, headlineDropRectRef }) {
+    function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, blockDropRectRef }) {
       const current = () => stateRef.current;
       const currentSchema = () => current().schema;
       const replaceSchema = (schema) => dispatch({ type: "replace-schema", schema });
       const patchSchema = (patch) => dispatch({ type: "patch-schema", patch });
-      const selectField = (id) => dispatch({ type: "select-field", id });
+      const selectField = (id, containerId = null) => dispatch({ type: "select-field", id, containerId });
 
       function patchSelectedField(patch) {
         const id = current().selectedId;
         if (id) dispatch({ type: "patch-field", id, patch });
       }
 
-      function addField(type, index = currentSchema().fields.length) {
-        dispatch({ type: "insert-field", field: fieldFromType(type), index });
+      function patchSelectedBlock(patch) {
+        const block = current().selectedContainerId ? null : blockForElement(currentSchema(), current().selectedId);
+        if (block) dispatch({ type: "patch-block", id: block.id, patch });
+      }
+
+      function addField(type, index = currentSchema().blocks.length) {
+        dispatch({ type: "insert-field", block: blockFromType(type), index });
       }
 
       function snapshotFieldRects() {
@@ -5540,30 +5860,29 @@
       }
 
       function moveField(id, direction) {
-        const fields = currentSchema().fields;
-        const index = fields.findIndex((field) => field.id === id);
+        const blocks = currentSchema().blocks;
+        const index = blocks.findIndex((block) => block.id === id);
         const nextIndex = index + direction;
-        if (index < 0 || nextIndex < 0 || nextIndex >= fields.length) return;
+        if (index < 0 || nextIndex < 0 || nextIndex >= blocks.length) return;
         snapshotFieldRects();
         dispatch({ type: "move-field", id, direction });
       }
 
       function moveFieldToDropIndex(id, index) {
-        const fields = currentSchema().fields;
-        const from = fields.findIndex((field) => field.id === id);
-        const insertionIndex = DragPayloadModel.clampIndex(index, fields.length);
+        const blocks = currentSchema().blocks;
+        const from = blocks.findIndex((block) => block.id === id);
+        const insertionIndex = DragPayloadModel.clampIndex(index, blocks.length);
         const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
-        const boundedTo = Math.max(0, Math.min(to, fields.length - 1));
+        const boundedTo = Math.max(0, Math.min(to, blocks.length - 1));
         if (from < 0 || boundedTo === from) return;
         snapshotFieldRects();
         dispatch({ type: "move-field-to-index", id, index });
       }
 
       function duplicateField(id) {
-        const source = currentSchema().fields.find((field) => field.id === id);
+        const source = currentSchema().blocks.find((block) => block.id === id);
         if (!source) return;
-        const copyLabel = String(source.label ?? "").trim() ? source.label + " copy" : "";
-        dispatch({ type: "duplicate-field", id, copy: schemaField({ ...clone(source), id: uid(), label: copyLabel }) });
+        dispatch({ type: "duplicate-field", id, copy: cloneBlockWithNewIds(source) });
       }
 
       function resetField(id) {
@@ -5572,19 +5891,29 @@
 
       function deleteField(id) {
         const { schema, removingId } = current();
-        if (removingId === id || !schema.fields.some((field) => field.id === id)) return;
+        if (removingId === id || !schema.blocks.some((block) => block.id === id)) return;
         dispatch({ type: "mark-removing", id });
         window.setTimeout(() => dispatch({ type: "remove-field", id }), 150);
       }
 
+      function duplicateContainer(blockId, containerId) {
+        dispatch({ type: "duplicate-container", blockId, containerId });
+      }
+
+      function resetContainer(blockId, containerId) {
+        dispatch({ type: "reset-container", blockId, containerId });
+      }
+
+      function deleteContainer(blockId, containerId) {
+        dispatch({ type: "delete-container", blockId, containerId });
+      }
+
       function dragStateFor(payload) {
         const schema = currentSchema();
-        if (payload.kind === "new") return { ...payload, index: schema.fields.length };
-        if (payload.kind === "move") return { ...payload, index: schema.fields.findIndex((field) => field.id === payload.id) };
-        const field = schema.fields.find((item) => item.id === payload.id);
-        if (!field) return null;
-        const placement = new HeadlineModel(field).mediaPlacement;
-        return { ...payload, headlineId: payload.id, headlinePlacement: payload.kind === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[placement] : placement };
+        if (payload.kind === "new") return { ...payload, index: schema.blocks.length };
+        if (payload.kind === "move") return { ...payload, index: schema.blocks.findIndex((block) => block.id === payload.id) };
+        if (payload.kind === "container") return payload;
+        return null;
       }
 
       function payloadFromEvent(event) {
@@ -5594,18 +5923,17 @@
       function beginDrag(event, payload) {
         const dragState = payload && dragStateFor(payload);
         if (!dragState) return;
-        if (payload.kind === "copy" || payload.kind === "split") event.stopPropagation();
         dragPayloadRef.current = payload;
         event.dataTransfer.setData("text/plain", DragPayloadModel.key(payload));
         event.dataTransfer.effectAllowed = payload.kind === "new" ? "copy" : "move";
-        const card = payload.kind === "move" ? event.currentTarget.closest(".field-card") : null;
+        const card = payload.kind === "container" ? event.currentTarget.closest(".block-container-preview") : payload.kind === "move" ? event.currentTarget.closest(".field-card") : null;
         if (card) event.dataTransfer.setDragImage(card, 24, 24);
         setDragState(dragState);
       }
 
       function clearDragState() {
         dragPayloadRef.current = null;
-        headlineDropRectRef.current = null;
+        blockDropRectRef.current = null;
         setDragState(null);
       }
 
@@ -5645,57 +5973,51 @@
         setDragState((state) => state ? { ...state, index: null } : state);
       }
 
-      function headlinePlacementFromPointer(event, headlineId) {
-        let rect = headlineDropRectRef.current?.headlineId === headlineId ? headlineDropRectRef.current : null;
+      function containerPlacementFromPointer(event, blockId) {
+        let rect = blockDropRectRef.current?.blockId === blockId ? blockDropRectRef.current : null;
         if (!rect) {
           const measured = (event.currentTarget.querySelector(".field-card-body") || event.currentTarget).getBoundingClientRect();
-          rect = headlineDropRectRef.current = { headlineId, left: measured.left, top: measured.top, width: measured.width, height: measured.height };
+          rect = blockDropRectRef.current = { blockId, left: measured.left, top: measured.top, width: measured.width, height: measured.height };
         }
         const x = rect.width ? (event.clientX - rect.left) / rect.width : 1;
         const y = rect.height ? (event.clientY - rect.top) / rect.height : 0.5;
         if (x < 0.28) return "left";
         if (x > 0.72) return "right";
-        if (y < 0.30) return "top";
-        if (y > 0.70) return "bottom";
-        return "center";
+        if (y < 0.34) return "top";
+        return "bottom";
       }
 
-      function updateHeadlineDropTarget(event, headlineId) {
+      function updateBlockDropTarget(event, blockId) {
         const payload = payloadFromEvent(event);
-        if (!DragPayloadModel.canDropOnHeadline(payload, currentSchema().fields, headlineId)) return;
-        const headlinePlacement = headlinePlacementFromPointer(event, headlineId);
+        if (!DragPayloadModel.canDropOnBlock(payload, currentSchema().blocks, blockId)) return;
+        const blockPlacement = containerPlacementFromPointer(event, blockId);
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
-        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.headlineId === headlineId && state.headlinePlacement === headlinePlacement ? state : { ...payload, index: null, y: null, headlineId, headlinePlacement });
+        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.blockId === blockId && state.blockPlacement === blockPlacement ? state : { ...payload, index: null, y: null, blockId, blockPlacement });
       }
 
-      function clearHeadlineDropTarget(event, headlineId) {
+      function clearBlockDropTarget(event, blockId) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
         const rect = event.currentTarget.getBoundingClientRect();
         const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
         if (inside) return;
-        if (headlineDropRectRef.current?.headlineId === headlineId) headlineDropRectRef.current = null;
-        setDragState((state) => state?.headlineId === headlineId ? { ...state, headlineId: null, headlinePlacement: null } : state);
+        if (blockDropRectRef.current?.blockId === blockId) blockDropRectRef.current = null;
+        setDragState((state) => state?.blockId === blockId ? { ...state, blockId: null, blockPlacement: null } : state);
       }
 
-      function handleHeadlineDrop(event, headlineId) {
+      function handleBlockDrop(event, blockId) {
         const payload = payloadFromEvent(event);
         const schema = currentSchema();
-        const info = DragPayloadModel.info(payload, schema.fields, headlineId);
-        if (!info.providesMedia && !info.repositionsHeadlineCopy) return;
+        if (!DragPayloadModel.canDropOnBlock(payload, schema.blocks, blockId)) return;
         event.preventDefault();
         event.stopPropagation();
-        const placement = headlinePlacementFromPointer(event, headlineId);
+        const placement = containerPlacementFromPointer(event, blockId);
         clearDragState();
-        if (info.repositionsHeadlineCopy) {
-          dispatch({ type: "reposition-headline-copy", headlineId, placement });
-          return;
-        }
-        const nextSchema = DragPayloadModel.splitMediaIntoHeadline(schema, headlineId, payload, placement);
-        if (nextSchema === schema) return;
+        const result = payload.kind === "container" ? DragPayloadModel.moveContainer(schema, blockId, payload, placement) : DragPayloadModel.addElementToBlock(schema, blockId, payload, placement);
+        if (!result) return;
         snapshotFieldRects();
-        dispatch({ type: "commit-schema", schema: nextSchema, selectedId: headlineId });
+        dispatch({ type: "commit-schema", schema: result.schema, selectedId: result.selectedId, selectedContainerId: result.selectedContainerId });
       }
 
       function handleDrop(event) {
@@ -5790,28 +6112,32 @@
       return {
         addField,
         beginDrag,
+        clearBlockDropTarget,
         clearDragState,
         clearDropTarget,
-        clearHeadlineDropTarget,
         clearSelectionFromCanvas,
+        deleteContainer,
         deleteField,
+        duplicateContainer,
         duplicateField,
         exportRuntime,
         exportSchema,
         handleDrop,
-        handleHeadlineDrop,
+        handleBlockDrop,
         importSchema,
         moveField,
         patchSchema,
+        patchSelectedBlock,
         patchSelectedField,
         patchTheme,
         patchTypographyRole,
         previewForm,
+        resetContainer,
         resetField,
         resetForm,
         selectField,
         updateDropTarget,
-        updateHeadlineDropTarget
+        updateBlockDropTarget
       };
     }
 
@@ -5864,7 +6190,7 @@
 
     function BuilderApp() {
       const [builderState, dispatchBuilder] = useReducer(builderReducer, null, initialBuilderState);
-      const { schema, selectedId, removingId } = builderState;
+      const { schema, selectedId, selectedContainerId, removingId } = builderState;
       const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
       const [dragState, setDragState] = useState(null);
       const [activeColorItem, setActiveColorItem] = useState(null);
@@ -5875,18 +6201,19 @@
       const fieldsRef = useRef(null);
       const fieldRectsRef = useRef(null);
       const dragPayloadRef = useRef(null);
-      const headlineDropRectRef = useRef(null);
+      const blockDropRectRef = useRef(null);
       const exportMenuRef = useRef(null);
 
       stateRef.current = builderState;
       dragStateRef.current = dragState;
 
-      const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, headlineDropRectRef });
-      const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
+      const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, blockDropRectRef });
+      const selectedBlock = useMemo(() => selectedContainerId ? null : blockForElement(schema, selectedId), [schema.blocks, selectedId, selectedContainerId]);
+      const selectedField = useMemo(() => selectedBlock && isCompositeBlock(selectedBlock) ? null : schemaElements(schema).find((field) => field.id === selectedId) || null, [schema.blocks, selectedId, selectedBlock]);
 
       useStoredSchema(schema);
       useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
-      useFieldListAnimation(fieldsRef, fieldRectsRef, schema.fields);
+      useFieldListAnimation(fieldsRef, fieldRectsRef, schema.blocks);
 
       const formName = formDisplayName(schema);
       const theme = schema.settings.theme;
@@ -5894,9 +6221,8 @@
       const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
       const activeDropY = Number.isFinite(dragState?.y) ? dragState.y : null;
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
-      const headlineDropId = dragState?.headlineId || null;
-      const headlineDropPlacement = dragState?.headlinePlacement || null;
-      const headlineDropKind = dragState?.headlineId ? dragState.kind : null;
+      const blockDropId = dragState?.blockId || null;
+      const blockDropPlacement = dragState?.blockPlacement || null;
       const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
@@ -5909,9 +6235,9 @@
           <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <header class="topbar">
             <div class="toolbar-actions">
+              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${builder.resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
               <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><${Icon} icon="fa-regular fa-folder-open" /></label>
               <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${builder.importSchema} />
-              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${builder.resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
               <input
                 class="current-form-name"
                 value=${formName}
@@ -5977,24 +6303,26 @@
                   onDrop=${builder.handleDrop}
                 >
                   <${FieldListContent}
-                    fields=${schema.fields}
+                    blocks=${schema.blocks}
                     selectedId=${selectedId}
+                    selectedContainerId=${selectedContainerId}
                     removingId=${removingId}
-                    draggingFieldId=${draggingFieldId}
-                    headlineDropId=${headlineDropId}
-                    headlineDropPlacement=${headlineDropPlacement}
-                    headlineDropKind=${headlineDropKind}
+                    draggingBlockId=${draggingFieldId}
+                    blockDropId=${blockDropId}
+                    blockDropPlacement=${blockDropPlacement}
                     onSelect=${builder.selectField}
                     onMove=${builder.moveField}
                     onDuplicate=${builder.duplicateField}
                     onReset=${builder.resetField}
                     onDelete=${builder.deleteField}
+                    onDuplicateContainer=${builder.duplicateContainer}
+                    onResetContainer=${builder.resetContainer}
+                    onDeleteContainer=${builder.deleteContainer}
                     onFieldDragStart=${builder.beginDrag}
                     onFieldDragEnd=${builder.clearDragState}
-                    onHeadlineDragOver=${builder.updateHeadlineDropTarget}
-                    onHeadlineDragLeave=${builder.clearHeadlineDropTarget}
-                    onHeadlineDrop=${builder.handleHeadlineDrop}
-                    onHeadlineMediaDragStart=${builder.beginDrag}
+                    onBlockDragOver=${builder.updateBlockDropTarget}
+                    onBlockDragLeave=${builder.clearBlockDropTarget}
+                    onBlockDrop=${builder.handleBlockDrop}
                   />
                   ${listDragActive && activeDropY !== null ? html`<${DropIndicator} y=${activeDropY} />` : null}
                 </div>
@@ -6005,8 +6333,10 @@
               <${Inspector}
                 schema=${schema}
                 selectedField=${selectedField}
+                selectedBlock=${selectedBlock}
                 onSchemaChange=${builder.patchSchema}
                 onFieldChange=${builder.patchSelectedField}
+                onBlockChange=${builder.patchSelectedBlock}
               />
             </aside>
           </main>

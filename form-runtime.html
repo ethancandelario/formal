@@ -563,6 +563,46 @@
       grid-auto-rows: max-content;
     }
 
+    .form-block {
+      display: grid;
+      gap: var(--form-field-spacing);
+      min-width: 0;
+      align-content: start;
+    }
+
+    .block-middle {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--form-field-spacing);
+      min-width: 0;
+      align-items: stretch;
+    }
+
+    .form-block.has-left.has-right .block-middle {
+      grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1fr) minmax(150px, 0.45fr);
+    }
+
+    .form-block.has-left:not(.has-right) .block-middle {
+      grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1fr);
+    }
+
+    .form-block.has-right:not(.has-left) .block-middle {
+      grid-template-columns: minmax(0, 1fr) minmax(150px, 0.45fr);
+    }
+
+    .block-stack,
+    .block-container {
+      display: grid;
+      gap: var(--form-field-spacing);
+      min-width: 0;
+      align-content: stretch;
+    }
+
+    .block-container {
+      width: 100%;
+      container-type: inline-size;
+    }
+
     .field {
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -570,6 +610,9 @@
       padding: var(--form-field-padding);
       display: grid;
       gap: var(--form-field-spacing);
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
       color: var(--body-color);
       font-family: var(--body-font-family);
       font-size: var(--body-font-size);
@@ -615,6 +658,9 @@
       padding: var(--form-field-padding);
       display: grid;
       gap: var(--form-field-spacing);
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
       color: var(--body-color);
       font-family: var(--body-font-family);
       font-size: var(--body-font-size);
@@ -641,21 +687,6 @@
       display: grid;
       gap: var(--form-field-spacing);
       min-width: 0;
-    }
-
-    .headline-content.has-media.media-left,
-    .headline-content.has-media.media-right {
-      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.72fr);
-      align-items: center;
-      gap: 16px;
-    }
-
-    .headline-media {
-      min-width: 0;
-    }
-
-    .headline-content.media-left .headline-media {
-      order: -1;
     }
 
     .headline-title {
@@ -1737,6 +1768,12 @@
         grid-template-columns: 1fr;
       }
 
+      .form-block.has-left .block-middle,
+      .form-block.has-right .block-middle,
+      .form-block.has-left.has-right .block-middle {
+        grid-template-columns: 1fr;
+      }
+
       .runtime-sidebar {
         position: fixed;
         inset: 0 auto 0 0;
@@ -2118,17 +2155,104 @@
       }
     }
 
-    @media (max-width: 720px) {
-      .headline-preview.has-media.media-left,
-      .headline-preview.has-media.media-right,
-      .headline-content.has-media.media-left,
-      .headline-content.has-media.media-right {
-        grid-template-columns: 1fr;
+    @container (max-width: 560px) {
+      .range-wrap {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: stretch;
       }
 
-      .headline-preview.media-left .headline-media,
-      .headline-content.media-left .headline-media {
-        order: 0;
+      .range-wrap > span,
+      .range-value {
+        justify-self: start;
+        text-align: left;
+      }
+
+      .linear-scale-control {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .radar-wrap,
+      .radar-wrap.point-mode {
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        gap: 14px;
+        max-width: 100%;
+      }
+
+      .radar-chart {
+        width: min(300px, 100%);
+        max-width: 100%;
+        justify-self: center;
+      }
+
+      .radar-values,
+      .radar-values.point-readout {
+        width: 100%;
+        max-width: none;
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .calendar-preview,
+      .calendar-control {
+        grid-template-columns: minmax(0, 1fr);
+        justify-content: stretch;
+        gap: 14px;
+        max-width: 100%;
+      }
+
+      .calendar-frame {
+        width: min(300px, 100%);
+        max-width: 100%;
+      }
+
+      .calendar-properties {
+        max-width: none;
+      }
+
+      .calendar-nav {
+        grid-template-columns: minmax(0, 1fr) auto;
+        justify-items: start;
+        text-align: left;
+      }
+
+      .calendar-nav .calendar-month-label,
+      .calendar-nav .calendar-month-input {
+        grid-column: 1;
+        padding: 0;
+        text-align: left;
+      }
+
+      .calendar-nav-buttons {
+        grid-column: 2;
+        justify-self: end;
+      }
+
+      .calendar-range-summary,
+      .calendar-milestone-list {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .calendar-date-field {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .calendar-date-field .control {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-milestone-row {
+        grid-template-columns: minmax(0, 1fr) 28px;
+      }
+
+      .calendar-milestone-row .control[type="date"] {
+        grid-column: 1 / -1;
+      }
+
+      .calendar-milestone-row .icon-button {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
       }
     }
 
@@ -2200,7 +2324,7 @@
     const TYPOGRAPHY_ROLE_KEYS = TYPOGRAPHY_ROLES.map((role) => role.key);
     const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
-    const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
+    const CONTAINER_PLACEMENTS = ["main", "top", "left", "right", "bottom"];
     const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
     const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
     const NON_DATA_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
@@ -2265,6 +2389,22 @@
 
     function uid() {
       return "field_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function blockContainers(block) {
+      return Array.isArray(block?.containers) ? block.containers : [];
+    }
+
+    function containerElements(container) {
+      return Array.isArray(container?.elements) ? container.elements : [];
+    }
+
+    function blockElements(block) {
+      return blockContainers(block).flatMap(containerElements);
+    }
+
+    function schemaElements(schema) {
+      return (schema.blocks || []).flatMap(blockElements);
     }
 
     function hexColor(value) {
@@ -2875,16 +3015,6 @@
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
-    function assertNestedMediaSettings(settings, name) {
-      if (settings === null) return;
-      assertObject(settings, name);
-      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "showLabel", "outline", "background"], name);
-      assertBoolean(settings.showLabel, `${name}.showLabel`);
-      assertBoolean(settings.outline, `${name}.outline`);
-      assertBoolean(settings.background, `${name}.background`);
-      assertMediaSettingValues(settings, name);
-    }
-
     const FIELD_SCHEMA_VALIDATORS = {
       calendar: "calendar",
       mood_meter: "moodMeter",
@@ -2986,13 +3116,11 @@
 
       headline() {
         const settings = this.settings;
-        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"]);
+        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"]);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
         assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
-        assertOneOf(settings.mediaPlacement, HEADLINE_MEDIA_PLACEMENTS, "headline.settings.mediaPlacement");
-        assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
       spacer() {
@@ -3018,9 +3146,32 @@
       return validator.field;
     }
 
+    function schemaContainer(raw, path) {
+      const container = assertObject(raw, path);
+      assertExactKeys(container, ["id", "placement", "elements"], path);
+      assertString(container.id, `${path}.id`);
+      assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
+      assertArray(container.elements, `${path}.elements`);
+      if (!container.elements.length) throw new Error(`${path}.elements must contain at least one element.`);
+      container.elements.forEach(schemaField);
+      return container;
+    }
+
+    function schemaBlock(raw, path) {
+      const block = assertObject(raw, path);
+      assertExactKeys(block, ["id", "horizontalAlignment", "verticalAlignment", "containers"], path);
+      assertString(block.id, `${path}.id`);
+      assertOneOf(block.horizontalAlignment, ["left", "center", "right", "stretch"], `${path}.horizontalAlignment`);
+      assertOneOf(block.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
+      assertArray(block.containers, `${path}.containers`);
+      if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
+      block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
+      return block;
+    }
+
     function schemaDocument(input) {
       const schema = assertObject(input, "schema");
-      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "fields"], "schema");
+      assertExactKeys(schema, ["createdAt", "updatedAt", "settings", "blocks"], "schema");
       assertString(schema.createdAt, "schema.createdAt");
       assertString(schema.updatedAt, "schema.updatedAt");
       assertObject(schema.settings, "schema.settings");
@@ -3036,13 +3187,23 @@
         }
       });
       assertAppearanceSettings(schema.settings);
-      assertArray(schema.fields, "schema.fields");
-      const seenIds = new Set();
-      schema.fields.forEach((field, index) => {
-        schemaField(field);
-        if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
-        seenIds.add(field.id);
-        if (NON_DATA_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+      assertArray(schema.blocks, "schema.blocks");
+      const seenBlockIds = new Set();
+      const seenContainerIds = new Set();
+      const seenElementIds = new Set();
+      schema.blocks.forEach((block, blockIndex) => {
+        schemaBlock(block, `schema.blocks[${blockIndex}]`);
+        if (seenBlockIds.has(block.id)) throw new Error(`Duplicate block id: ${block.id}`);
+        seenBlockIds.add(block.id);
+        block.containers.forEach((container, containerIndex) => {
+          if (seenContainerIds.has(container.id)) throw new Error(`Duplicate container id: ${container.id}`);
+          seenContainerIds.add(container.id);
+          container.elements.forEach((field, elementIndex) => {
+            if (seenElementIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
+            seenElementIds.add(field.id);
+            if (NON_DATA_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.blocks[${blockIndex}].containers[${containerIndex}].elements[${elementIndex}].required must be false for ${field.type}.`);
+          });
+        });
       });
       return schema;
     }
@@ -3063,7 +3224,7 @@
       }
 
       static initialValues(schema) {
-        return schema.fields.reduce((values, field) => {
+        return schemaElements(schema).reduce((values, field) => {
           const value = RuntimeFormModel.initialValue(field);
           if (value !== undefined) values[field.id] = value;
           return values;
@@ -3086,7 +3247,7 @@
       }
 
       static invalidIds(schema, values) {
-        return new Set(schema.fields.filter((field) => field.required && RuntimeFormModel.isEmpty(field, values[field.id])).map((field) => field.id));
+        return new Set(schemaElements(schema).filter((field) => field.required && RuntimeFormModel.isEmpty(field, values[field.id])).map((field) => field.id));
       }
 
       static csvAnswer(field, value) {
@@ -3147,6 +3308,18 @@
       return value;
     }
 
+    function gridAlignmentValue(value) {
+      if (value === "left" || value === "top") return "start";
+      if (value === "right" || value === "bottom") return "end";
+      return value;
+    }
+
+    function blockAlignmentStyle(block) {
+      const horizontal = gridAlignmentValue(horizontalAlignmentSetting(block.horizontalAlignment, ["left", "center", "right", "stretch"]));
+      const vertical = gridAlignmentValue(verticalAlignmentSetting(block.verticalAlignment));
+      return `align-self: ${vertical}; justify-items: ${horizontal}; align-content: ${vertical};`;
+    }
+
     function horizontalFlexValue(value) {
       if (value === "left") return "flex-start";
       if (value === "right") return "flex-end";
@@ -3172,19 +3345,9 @@
         this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
         this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
         this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
-        this.mediaPlacement = HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right";
-        this.mediaField = settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: settings.media } : null;
         this.showLabel = settings.showLabel;
         this.outline = settings.outline;
         this.background = settings.background;
-      }
-
-      get mediaCenter() {
-        return Boolean(this.mediaField && this.mediaPlacement === "center");
-      }
-
-      get mediaFirst() {
-        return Boolean(this.mediaField && this.mediaPlacement === "top");
       }
 
       textStyle(horizontalKey, verticalKey) {
@@ -3884,18 +4047,14 @@
       const field = model.field;
       const description = String(field.description || "").trim();
       const headline = new HeadlineModel(field);
-      const mediaField = headline.mediaField;
       const hasCopy = model.visibleLabel || description;
-      const mediaNode = mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null;
       const titleNode = model.visibleLabel ? html`<h1 class="headline-title" style=${headline.textStyle("headingHorizontalAlignment", "headingVerticalAlignment")}>${model.visibleLabel}</h1>` : null;
       const descriptionNode = description ? html`<p class="headline-subhead" style=${headline.textStyle("descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null;
       const copyNode = hasCopy ? html`<div class="headline-copy">${titleNode}${descriptionNode}</div>` : null;
-      if (!hasCopy && !mediaField) return null;
+      if (!hasCopy) return null;
       return html`
         <section class=${`headline-field${headline.outline ? " with-outline" : ""}${headline.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
-          <div class=${`headline-content${mediaField && hasCopy ? " has-media media-" + headline.mediaPlacement : ""}`}>
-            ${headline.mediaCenter && hasCopy ? html`${titleNode}${mediaNode}${descriptionNode}` : html`${headline.mediaFirst ? mediaNode : null}${copyNode}${headline.mediaFirst ? null : mediaNode}`}
-          </div>
+          <div class="headline-content">${copyNode}</div>
         </section>
       `;
     }
@@ -4229,6 +4388,60 @@
     function RuntimeField({ field, value, invalid, onValue }) {
       const model = new RuntimeFieldModel(field, invalid);
       return (RUNTIME_FIELD_RENDERERS[field.type] || renderTextInputRuntimeField)(model, value, onValue);
+    }
+
+    function RuntimeContainer({ block, container, values, invalidIds, onValue }) {
+      return html`
+        <div class=${`block-container placement-${container.placement}`} style=${blockAlignmentStyle(block)} data-container-id=${container.id}>
+          ${container.elements.map((field) => html`
+            <${RuntimeField}
+              key=${field.id}
+              field=${field}
+              value=${values[field.id]}
+              invalid=${invalidIds.has(field.id)}
+              onValue=${(value) => onValue(field.id, value)}
+            />
+          `)}
+        </div>
+      `;
+    }
+
+    function RuntimeContainerStack({ block, containers, className, values, invalidIds, onValue }) {
+      if (!containers.length) return null;
+      return html`
+        <div class=${className}>
+          ${containers.map((container) => html`
+            <${RuntimeContainer}
+              key=${container.id}
+              block=${block}
+              container=${container}
+              values=${values}
+              invalidIds=${invalidIds}
+              onValue=${onValue}
+            />
+          `)}
+        </div>
+      `;
+    }
+
+    function RuntimeBlock({ block, values, invalidIds, onValue }) {
+      const containers = blockContainers(block);
+      const top = containers.filter((container) => container.placement === "top");
+      const left = containers.filter((container) => container.placement === "left");
+      const main = containers.filter((container) => container.placement === "main");
+      const right = containers.filter((container) => container.placement === "right");
+      const bottom = containers.filter((container) => container.placement === "bottom");
+      return html`
+        <section class=${`form-block${left.length ? " has-left" : ""}${right.length ? " has-right" : ""}`} data-block-id=${block.id}>
+          <${RuntimeContainerStack} block=${block} containers=${top} className="block-stack block-top" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          <div class="block-middle">
+            <${RuntimeContainerStack} block=${block} containers=${left} className="block-stack block-left" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+            <${RuntimeContainerStack} block=${block} containers=${main.length ? main : containers.filter((container) => !["top", "left", "right", "bottom"].includes(container.placement))} className="block-stack block-main" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+            <${RuntimeContainerStack} block=${block} containers=${right} className="block-stack block-right" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          </div>
+          <${RuntimeContainerStack} block=${block} containers=${bottom} className="block-stack block-bottom" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+        </section>
+      `;
     }
 
     function decodeSchemaToken(token) {
@@ -4606,7 +4819,7 @@
     }
 
     function exportCsv(schema, values) {
-      const fields = schema.fields.filter((field) => !NON_DATA_FIELD_TYPES.has(field.type));
+      const fields = schemaElements(schema).filter((field) => !NON_DATA_FIELD_TYPES.has(field.type));
       const rows = [
         fields.map((field) => csvEscape(fieldAccessibleName(field))),
         fields.map((field) => csvEscape(RuntimeFormModel.csvAnswer(field, values[field.id])))
@@ -4828,14 +5041,14 @@
             <section class="capture" ref=${captureRef}>
               ${schema ? html`
                 <div class="fields">
-                  ${schema.fields.length
-            ? schema.fields.map((field) => html`
-                      <${RuntimeField}
-                        key=${field.id}
-                        field=${field}
-                        value=${values[field.id]}
-                        invalid=${invalidIds.has(field.id)}
-                        onValue=${(value) => updateValue(field.id, value)}
+                  ${schema.blocks.length
+            ? schema.blocks.map((block) => html`
+                      <${RuntimeBlock}
+                        key=${block.id}
+                        block=${block}
+                        values=${values}
+                        invalidIds=${invalidIds}
+                        onValue=${updateValue}
                       />
                     `)
             : html`<div class="empty"><strong>Blank form</strong></div>`}
