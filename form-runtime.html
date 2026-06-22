@@ -19,7 +19,7 @@
       --muted: #5f6366;
       --line: #d7d2cb;
       --accent: #861f41;
-      --accent-soft: #f3e8ed;
+      --accent-highlight: #f3e8ed;
       --accent-2: #ca4f00;
       --success: #2e7d32;
       --warning: #946200;
@@ -29,6 +29,14 @@
       --danger-soft: rgba(179, 38, 30, 0.12);
       --focus: #861f41;
       --form-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --body-font-family: var(--form-font-family);
+      --body-color: var(--ink);
+      --body-font-size: 14px;
+      --body-font-weight: 400;
+      --body-font-style: normal;
+      --body-line-height: 1.45;
+      --body-letter-spacing: 0px;
+      --body-text-transform: none;
       --sidebar: #2f3033;
       --sidebar-2: #383a3d;
       --sidebar-line: #4a4d50;
@@ -562,6 +570,14 @@
       padding: var(--form-field-padding);
       display: grid;
       gap: var(--form-field-spacing);
+      color: var(--body-color);
+      font-family: var(--body-font-family);
+      font-size: var(--body-font-size);
+      font-weight: var(--body-font-weight);
+      font-style: var(--body-font-style);
+      line-height: var(--body-line-height);
+      letter-spacing: var(--body-letter-spacing);
+      text-transform: var(--body-text-transform);
       align-self: start;
       animation: field-in 160ms var(--ease) both;
       transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
@@ -599,6 +615,14 @@
       padding: var(--form-field-padding);
       display: grid;
       gap: var(--form-field-spacing);
+      color: var(--body-color);
+      font-family: var(--body-font-family);
+      font-size: var(--body-font-size);
+      font-weight: var(--body-font-weight);
+      font-style: var(--body-font-style);
+      line-height: var(--body-line-height);
+      letter-spacing: var(--body-letter-spacing);
+      text-transform: var(--body-text-transform);
       align-self: start;
       animation: field-in 160ms var(--ease) both;
       transition: border-color 150ms ease, background 150ms ease, box-shadow 150ms ease, transform 160ms var(--ease);
@@ -703,10 +727,16 @@
       border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--field-control-bg, var(--panel-2));
-      color: var(--ink);
+      color: var(--body-color);
       padding: 9px 10px;
       min-height: 40px;
-      font-size: 14px;
+      font-family: var(--body-font-family);
+      font-size: var(--body-font-size);
+      font-weight: var(--body-font-weight);
+      font-style: var(--body-font-style);
+      line-height: var(--body-line-height);
+      letter-spacing: var(--body-letter-spacing);
+      text-transform: var(--body-text-transform);
       outline: none;
       transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
     }
@@ -733,9 +763,9 @@
       display: flex;
       align-items: flex-start;
       gap: 8px;
-      color: var(--ink);
-      line-height: 1.45;
-      font-size: 14px;
+      color: var(--body-color);
+      line-height: var(--body-line-height);
+      font-size: inherit;
     }
 
     .choice-row input {
@@ -767,9 +797,9 @@
       gap: 7px;
       padding: 0 10px;
       background: var(--field-control-bg, var(--panel-2));
-      color: var(--ink);
+      color: var(--body-color);
       cursor: pointer;
-      font-size: 14px;
+      font-size: inherit;
       transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
     }
 
@@ -796,7 +826,7 @@
     .meter-option.selected,
     .star-option.selected {
       border-color: var(--accent);
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
       color: var(--accent);
       box-shadow: 0 4px 12px rgba(134, 31, 65, 0.08);
     }
@@ -810,8 +840,8 @@
       grid-template-columns: auto minmax(160px, 1fr) auto auto;
       align-items: center;
       gap: 10px;
-      color: var(--muted);
-      font-size: 14px;
+      color: var(--body-color);
+      font-size: inherit;
     }
 
     .linear-scale-control {
@@ -967,7 +997,7 @@
 
     .radar-handle:hover,
     .radar-handle:focus {
-      fill: var(--accent-soft);
+      fill: var(--accent-highlight);
       stroke-width: 3;
       outline: none;
     }
@@ -998,8 +1028,8 @@
       grid-template-columns: minmax(86px, max-content) minmax(0, 1fr);
       align-items: start;
       gap: 9px;
-      color: var(--muted);
-      font-size: 13px;
+      color: var(--body-color);
+      font-size: inherit;
       min-height: 36px;
       padding: 7px 9px;
       border: 1px solid var(--line);
@@ -1013,7 +1043,7 @@
 
     .radar-value-row span {
       min-width: 0;
-      color: var(--muted);
+      color: var(--body-color);
       line-height: 1.35;
       overflow-wrap: anywhere;
     }
@@ -1022,7 +1052,7 @@
       min-width: 0;
       max-width: none;
       text-align: left;
-      color: var(--ink);
+      color: var(--body-color);
       font-weight: 750;
       line-height: 1.35;
       border-radius: 8px;
@@ -1279,7 +1309,7 @@
 
     .calendar-day.is-range::before,
     .calendar-day-button.is-range::before {
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
       border-radius: 0;
     }
 
@@ -1399,7 +1429,7 @@
 
     .calendar-day-button.is-range:hover::before,
     .calendar-day-button.is-range:focus-visible::before {
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
     }
 
     .calendar-day-button.is-boundary:hover::before,
@@ -1574,15 +1604,15 @@
       border-radius: 8px;
       padding: 12px;
       text-align: center;
-      color: var(--muted);
+      color: var(--body-color);
       user-select: none;
     }
 
     .media-caption {
       margin: 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
+      color: var(--body-color);
+      font-size: inherit;
+      line-height: var(--body-line-height);
     }
 
     .media-link {
@@ -2101,7 +2131,7 @@
 
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.23.1";
-    import { useEffect, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
+    import { useEffect, useReducer, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
     import htm from "https://esm.sh/htm@3.1.1";
 
     const html = htm.bind(h);
@@ -2121,7 +2151,7 @@
       line: "#d7d2cb",
       accent: "#861f41",
       accent2: "#ca4f00",
-      accentSoft: "#f3e8ed",
+      accentHighlight: "#f3e8ed",
       success: "#2e7d32",
       warning: "#946200",
       danger: "#b3261e",
@@ -2129,12 +2159,13 @@
     };
     const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
     const DEFAULT_TYPOGRAPHY = {
+      body: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 14, weight: 400, style: "normal", lineHeight: 1.45, letterSpacing: 0, textTransform: "none" },
       heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
       description: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.muted, size: 14, weight: 400, style: "normal", lineHeight: 1.5, letterSpacing: 0, textTransform: "none" },
       label: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 16, weight: 700, style: "normal", lineHeight: 1.35, letterSpacing: 0, textTransform: "none" }
     };
-    const LEGACY_TYPOGRAPHY_KEYS = ["headingSize", "headingWeight", "headingStyle", "descriptionSize", "descriptionWeight", "descriptionStyle", "labelSize", "labelWeight", "labelStyle"];
     const TYPOGRAPHY_ROLES = [
+      { key: "body", colorSource: "ink" },
       { key: "heading", colorSource: "ink" },
       { key: "description", colorSource: "muted" },
       { key: "label", colorSource: "ink" }
@@ -2143,6 +2174,10 @@
     const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
     const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
+    const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
+    const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
+    const NON_DATA_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
+    const MOOD_METER_ICONS = ["fa-regular fa-face-angry", "fa-regular fa-face-frown", "fa-regular fa-face-meh", "fa-regular fa-face-smile", "fa-regular fa-face-laugh"];
     const RADAR_AXIS_SNAP_ENTER_PX = 8;
     const RADAR_AXIS_SNAP_EXIT_PX = 14;
     const RADAR_RING_SNAP_ENTER_PX = 5;
@@ -2250,14 +2285,9 @@
       document.head.appendChild(link);
     }
 
-    function typographyRoleMeta(key) {
+    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
       const role = TYPOGRAPHY_ROLES.find((item) => item.key === key);
       if (!role) throw new Error(`Unsupported typography role: ${key}`);
-      return role;
-    }
-
-    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
-      const role = typographyRoleMeta(key);
       const base = DEFAULT_TYPOGRAPHY[key];
       return {
         ...base,
@@ -2270,23 +2300,6 @@
       return value && typeof value === "object" && !Array.isArray(value);
     }
 
-    function isLegacyTypography(value) {
-      return isPlainObject(value) && LEGACY_TYPOGRAPHY_KEYS.some((key) => key in value);
-    }
-
-    function legacyTypographySettings(input, theme = DEFAULT_THEME) {
-      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
-        const defaults = typographyRoleDefault(role.key, theme);
-        settings[role.key] = {
-          ...defaults,
-          size: input[role.key + "Size"] ?? defaults.size,
-          weight: input[role.key + "Weight"] ?? defaults.weight,
-          style: input[role.key + "Style"] ?? defaults.style
-        };
-        return settings;
-      }, {});
-    }
-
     function typographyRoleSettings(value, key, theme = DEFAULT_THEME) {
       const defaults = typographyRoleDefault(key, theme);
       const source = isPlainObject(value) ? value : {};
@@ -2297,16 +2310,11 @@
     }
 
     function typographySettings(input, theme = DEFAULT_THEME) {
-      if (isLegacyTypography(input)) return legacyTypographySettings(input, theme);
       const source = isPlainObject(input) ? input : {};
       return TYPOGRAPHY_ROLES.reduce((settings, role) => {
         settings[role.key] = typographyRoleSettings(source[role.key], role.key, theme);
         return settings;
       }, {});
-    }
-
-    function themeSettings(input) {
-      return input;
     }
 
     function hexToRgba(hex, alpha) {
@@ -2318,19 +2326,19 @@
     }
 
     function themeStyle(schema) {
-      const theme = themeSettings(schema.settings.theme);
+      const theme = schema.settings.theme;
       const layout = schema.settings.layout;
       const type = typographySettings(schema.settings.typography, theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
         `--panel-2: ${theme.panel2}`,
-        `--ink: ${theme.ink}`,
+        `--ink: ${type.body.color}`,
         `--muted: ${theme.muted}`,
         `--line: ${theme.line}`,
         `--accent: ${theme.accent}`,
         `--accent-2: ${theme.accent2}`,
-        `--accent-soft: ${theme.accentSoft}`,
+        `--accent-highlight: ${theme.accentHighlight}`,
         `--success: ${theme.success}`,
         `--warning: ${theme.warning}`,
         `--danger: ${theme.danger}`,
@@ -2339,7 +2347,7 @@
         `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
         `--focus: ${theme.accent}`,
         `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
-        `--form-font-family: ${theme.fontFamily}`,
+        `--form-font-family: ${type.body.fontFamily}`,
         `--form-page-margin: ${layout.pageMargin}px`,
         `--form-page-padding: ${layout.pagePadding}px`,
         `--form-field-spacing: ${layout.fieldSpacing}px`,
@@ -2372,48 +2380,228 @@
       return Number.isFinite(number) ? number : defaultValue;
     }
 
-    function radarAxes(axes) {
-      return axes;
-    }
+    class RadarModel {
+      constructor(field) {
+        const settings = field.settings || field;
+        this.mode = settings.mode === "point" ? "point" : "shape";
+        this.max = settingNumber(settings.max, DEFAULT_RADAR_MAX);
+        this.axes = Array.isArray(settings.axes) && settings.axes.length ? settings.axes : [];
+        this.defaultValues = settings.defaultValues;
+        this.defaultPoint = settings.defaultPoint;
+      }
 
-    function radarMode(mode) {
-      return mode;
-    }
+      get midpoint() {
+        return Math.round(RADAR_MIN_VALUE + (this.max - RADAR_MIN_VALUE) / 2);
+      }
 
-    function radarMax(value) {
-      return value;
-    }
+      get values() {
+        return RadarModel.values(this.defaultValues, this.axes, this.max);
+      }
 
-    function clampRadarValue(value, max) {
-      const number = settingNumber(value, Number.NaN);
-      if (!Number.isFinite(number)) return null;
-      return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
-    }
+      get point() {
+        return RadarModel.point(this.defaultPoint, this.max);
+      }
 
-    function radarValues(values, axes, max) {
-      const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
-      const source = Array.isArray(values) ? values : DEFAULT_RADAR_VALUES;
-      return axes.map((_, index) => clampRadarValue(source[index], max) ?? midpoint);
-    }
+      initialValue() {
+        return this.mode === "point" ? this.point : this.values;
+      }
 
-    function radarAngle(value) {
-      const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
-      const wrapped = ((number % 360) + 360) % 360;
-      return Math.round(wrapped * 100) / 100;
-    }
+      valuesFor(value) {
+        return RadarModel.values(value, this.axes, this.max);
+      }
 
-    function clampRadarPointValue(value, max) {
-      const number = settingNumber(value, Number.NaN);
-      if (!Number.isFinite(number)) return null;
-      return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
-    }
+      pointFor(value) {
+        return RadarModel.point(value, this.max);
+      }
 
-    function radarPointSetting(point, max) {
-      const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
-      return {
-        angle: radarAngle(source.angle),
-        value: clampRadarPointValue(source.value, max) ?? clampRadarPointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
-      };
+      static clampValue(value, max) {
+        const number = settingNumber(value, Number.NaN);
+        return Number.isFinite(number) ? Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number))) : null;
+      }
+
+      static values(values, axes, max) {
+        const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
+        const source = Array.isArray(values) ? values : DEFAULT_RADAR_VALUES;
+        return axes.map((_, index) => RadarModel.clampValue(source[index], max) ?? midpoint);
+      }
+
+      static angle(value) {
+        const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
+        const wrapped = ((number % 360) + 360) % 360;
+        return Math.round(wrapped * 100) / 100;
+      }
+
+      static pointValue(value, max) {
+        const number = settingNumber(value, Number.NaN);
+        return Number.isFinite(number) ? Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100 : null;
+      }
+
+      static point(point, max) {
+        const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
+        return {
+          angle: RadarModel.angle(source.angle),
+          value: RadarModel.pointValue(source.value, max) ?? RadarModel.pointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
+        };
+      }
+
+      static scale(value, max) {
+        return clamp(Number(value) / Math.max(1, max), 0, 1);
+      }
+
+      static vertex(index, count, center, radius) {
+        const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
+        return {
+          x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
+          y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+        };
+      }
+
+      static polygon(values, max, center, radius) {
+        return values.map((value, index) => {
+          const point = RadarModel.vertex(index, values.length, center, radius * RadarModel.scale(value, max));
+          return `${point.x},${point.y}`;
+        }).join(" ");
+      }
+
+      static polar(angle, value, max, center, radius) {
+        const radians = -Math.PI / 2 + (RadarModel.angle(angle) * Math.PI / 180);
+        const scaled = RadarModel.scale(value, max);
+        return {
+          x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
+          y: Math.round((center + Math.sin(radians) * radius * scaled) * 100) / 100
+        };
+      }
+
+      static format(value) {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "";
+        return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+      }
+
+      static angleDelta(a, b) {
+        return Math.abs(((RadarModel.angle(a) - RadarModel.angle(b) + 540) % 360) - 180);
+      }
+
+      static nearestAxis(angle, axes) {
+        const step = 360 / axes.length;
+        const cleaned = RadarModel.angle(angle);
+        const index = Math.round(cleaned / step) % axes.length;
+        const axisAngle = RadarModel.angle(index * step);
+        return { index, angle: axisAngle, delta: RadarModel.angleDelta(cleaned, axisAngle), label: axes[index] };
+      }
+
+      static describe(angle, axes) {
+        const step = 360 / axes.length;
+        const cleaned = RadarModel.angle(angle);
+        const position = cleaned / step;
+        const lower = Math.floor(position) % axes.length;
+        const upper = (lower + 1) % axes.length;
+        const blend = position - lower;
+        if (blend < 0.06) return axes[lower];
+        if (blend > 0.94) return axes[upper];
+        return `${axes[lower]} / ${axes[upper]}`;
+      }
+
+      static snapPoint(rawPoint, axes, max, radius, snapState) {
+        const state = snapState || { axisIndex: null, ringValue: null };
+        let angle = RadarModel.angle(rawPoint.angle);
+        let value = RadarModel.pointValue(rawPoint.value, max) ?? RADAR_MIN_VALUE;
+        const distance = Math.max(0, Number(rawPoint.distance) || 0);
+        const canAxisSnap = distance >= RADAR_AXIS_SNAP_MIN_RADIUS_PX;
+        const step = 360 / axes.length;
+
+        if (!canAxisSnap) {
+          state.axisIndex = null;
+        } else if (state.axisIndex !== null && state.axisIndex !== undefined) {
+          const lockedAngle = RadarModel.angle(state.axisIndex * step);
+          const lockedDelta = RadarModel.angleDelta(angle, lockedAngle);
+          const lockedPerpendicularDistance = Math.abs(Math.sin(lockedDelta * Math.PI / 180) * distance);
+          if (lockedPerpendicularDistance <= RADAR_AXIS_SNAP_EXIT_PX) {
+            angle = lockedAngle;
+          } else {
+            state.axisIndex = null;
+          }
+        }
+
+        if (canAxisSnap && (state.axisIndex === null || state.axisIndex === undefined)) {
+          const nearest = RadarModel.nearestAxis(angle, axes);
+          const perpendicularDistance = Math.abs(Math.sin(nearest.delta * Math.PI / 180) * distance);
+          if (perpendicularDistance <= RADAR_AXIS_SNAP_ENTER_PX) {
+            state.axisIndex = nearest.index;
+            angle = nearest.angle;
+          }
+        }
+
+        if (state.ringValue !== null && state.ringValue !== undefined) {
+          const lockedRingRadius = radius * RadarModel.scale(state.ringValue, max);
+          if (Math.abs(distance - lockedRingRadius) <= RADAR_RING_SNAP_EXIT_PX) {
+            value = state.ringValue;
+          } else {
+            state.ringValue = null;
+          }
+        }
+
+        if (state.ringValue === null || state.ringValue === undefined) {
+          const nearestValue = clamp(Math.round((distance / radius) * max), RADAR_MIN_VALUE, max);
+          const nearestRingRadius = radius * RadarModel.scale(nearestValue, max);
+          if (Math.abs(distance - nearestRingRadius) <= RADAR_RING_SNAP_ENTER_PX) {
+            state.ringValue = nearestValue;
+            value = nearestValue;
+          }
+        }
+
+        return RadarModel.point({ angle, value }, max);
+      }
+
+      static pointerSvgPoint(event) {
+        const svg = event.currentTarget.ownerSVGElement || event.currentTarget.closest("svg");
+        const matrix = svg?.getScreenCTM();
+        if (!svg || !matrix) return null;
+        const pointer = svg.createSVGPoint();
+        pointer.x = event.clientX;
+        pointer.y = event.clientY;
+        return pointer.matrixTransform(matrix.inverse());
+      }
+
+      static dragMetrics(event) {
+        const svg = event.currentTarget.ownerSVGElement || event.currentTarget.closest("svg");
+        const rect = svg?.getBoundingClientRect();
+        return svg && rect?.width && rect?.height ? { left: rect.left, top: rect.top, width: rect.width, height: rect.height, viewBoxWidth: 300, viewBoxHeight: 300 } : null;
+      }
+
+      static pointerSvgPointFromDrag(event, metrics) {
+        return metrics ? {
+          x: ((event.clientX - metrics.left) / metrics.width) * metrics.viewBoxWidth,
+          y: ((event.clientY - metrics.top) / metrics.height) * metrics.viewBoxHeight
+        } : null;
+      }
+
+      static valueFromPointer(event, index, count, max, center, radius) {
+        const local = RadarModel.pointerSvgPoint(event);
+        if (!local) return null;
+        const edge = RadarModel.vertex(index, count, center, radius);
+        const axisX = edge.x - center;
+        const axisY = edge.y - center;
+        const pointerX = local.x - center;
+        const pointerY = local.y - center;
+        const lengthSquared = axisX * axisX + axisY * axisY || 1;
+        const scaled = clamp((pointerX * axisX + pointerY * axisY) / lengthSquared, 0, 1);
+        return clamp(Math.round(scaled * max), RADAR_MIN_VALUE, max);
+      }
+
+      static pointFromPointer(event, axes, max, center, radius, snapState, dragMetrics) {
+        const local = RadarModel.pointerSvgPointFromDrag(event, dragMetrics) || RadarModel.pointerSvgPoint(event);
+        if (!local) return null;
+        const pointerX = local.x - center;
+        const pointerY = local.y - center;
+        const distance = Math.sqrt(pointerX * pointerX + pointerY * pointerY);
+        const scaled = clamp(distance / radius, RADAR_MIN_VALUE / max, 1);
+        return RadarModel.snapPoint({
+          angle: RadarModel.angle((Math.atan2(pointerY, pointerX) * 180 / Math.PI) + 90),
+          value: scaled * max,
+          distance
+        }, axes, max, radius, snapState);
+      }
     }
 
     function padDatePart(value) {
@@ -2433,11 +2621,6 @@
       return date;
     }
 
-    function cleanDate(value) {
-      const date = dateFromISO(value);
-      return date ? isoFromDate(date) : "";
-    }
-
     function todayISO() {
       return isoFromDate(new Date());
     }
@@ -2452,131 +2635,82 @@
       return date ? date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Not set";
     }
 
-    function monthStartFromDate(value) {
-      const date = dateFromISO(value) || new Date();
-      return new Date(date.getFullYear(), date.getMonth(), 1);
-    }
-
     function monthLabel(date) {
       return date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
     }
 
-    function calendarGridDates(monthDate) {
-      const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-      const start = new Date(first);
-      start.setDate(first.getDate() - first.getDay());
-      return Array.from({ length: 42 }, (_, index) => {
-        const date = new Date(start);
-        date.setDate(start.getDate() + index);
-        return date;
-      });
-    }
-
-    function calendarMilestones(items) {
-      const source = Array.isArray(items) ? items : [];
-      return source
-        .map((item, index) => ({
-          id: sanitizeId(item?.id || `milestone_${index + 1}`),
-          date: cleanDate(item?.date),
-          label: String(item?.label || "").trim()
-        }))
-        .filter((item) => item.date || item.label)
-        .sort((a, b) => (dateTime(a.date) ?? Number.MAX_SAFE_INTEGER) - (dateTime(b.date) ?? Number.MAX_SAFE_INTEGER) || a.label.localeCompare(b.label));
-    }
-
-    function calendarSettings(field) {
-      const settings = field.settings;
-      return {
-        startDate: settings.startDate,
-        endDate: settings.endDate,
-        allowMilestones: settings.allowMilestones,
-        milestones: settings.milestones
-      };
-    }
-
-    function calendarAnchorDate(settings) {
-      return settings.startDate || settings.endDate || settings.milestones.find((item) => item.date)?.date || todayISO();
-    }
-
-    function calendarMilestonesForDate(milestones, iso) {
-      return milestones
-        .map((item, index) => ({ ...item, index }))
-        .filter((item) => item.date === iso);
-    }
-
-    function calendarMilestoneDetails(items) {
-      return items.map((item) => `${item.label} - ${readableDate(item.date)}`).join(" | ");
-    }
-
-
-    function calendarValue(value, settings) {
-      const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
-      let startDate = cleanDate(source.startDate ?? settings.startDate);
-      let endDate = cleanDate(source.endDate ?? settings.endDate);
-      if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) {
-        [startDate, endDate] = [endDate, startDate];
+    class CalendarModel {
+      constructor(field) {
+        Object.assign(this, field.settings);
       }
-      return {
-        startDate,
-        endDate,
-        milestones: settings.allowMilestones
-          ? source.milestones === undefined
-            ? settings.milestones
-            : calendarMilestones(source.milestones)
-          : []
-      };
-    }
 
-    function calendarMonthKey(value) {
-      const date = dateFromISO(value) || new Date();
-      return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}`;
-    }
+      static cleanDate(value) {
+        const date = dateFromISO(value);
+        return date ? isoFromDate(date) : "";
+      }
 
-    function monthFromKey(key) {
-      const [year, month] = String(key || "").split("-").map(Number);
-      if (!Number.isFinite(year) || !Number.isFinite(month)) return monthStartFromDate(todayISO());
-      return new Date(year, month - 1, 1);
-    }
+      static milestones(items) {
+        const source = Array.isArray(items) ? items : [];
+        return source
+          .map((item, index) => ({
+            id: sanitizeId(item?.id || `milestone_${index + 1}`),
+            date: CalendarModel.cleanDate(item?.date),
+            label: String(item?.label || "").trim()
+          }))
+          .filter((item) => item.date || item.label)
+          .sort((a, b) => (dateTime(a.date) ?? Number.MAX_SAFE_INTEGER) - (dateTime(b.date) ?? Number.MAX_SAFE_INTEGER) || a.label.localeCompare(b.label));
+      }
 
-    function shiftMonthKey(key, amount) {
-      const date = monthFromKey(key);
-      date.setMonth(date.getMonth() + amount);
-      return calendarMonthKey(isoFromDate(date));
-    }
+      value(input) {
+        const source = input && typeof input === "object" && !Array.isArray(input) ? input : {};
+        let startDate = CalendarModel.cleanDate(source.startDate ?? this.startDate);
+        let endDate = CalendarModel.cleanDate(source.endDate ?? this.endDate);
+        if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) [startDate, endDate] = [endDate, startDate];
+        return {
+          startDate,
+          endDate,
+          milestones: this.allowMilestones ? source.milestones === undefined ? this.milestones : CalendarModel.milestones(source.milestones) : []
+        };
+      }
 
-    function spacerSettings(field) {
-      const settings = field.settings;
-      return {
-        height: settings.height,
-        showLine: settings.showLine,
-        lineStyle: settings.lineStyle,
-        lineThickness: settings.lineThickness
-      };
-    }
+      anchorDate(value = this) {
+        return value.startDate || value.endDate || value.milestones.find((item) => item.date)?.date || todayISO();
+      }
 
-    function linearScaleSettings(field) {
-      const settings = field.settings;
-      return {
-        min: settings.min,
-        max: settings.max,
-        minLabel: settings.minLabel,
-        maxLabel: settings.maxLabel
-      };
-    }
+      milestonesForDate(iso, value = this) {
+        return value.milestones.map((item, index) => ({ ...item, index })).filter((item) => item.date === iso);
+      }
 
-    function starRatingSettings(field) {
-      const settings = field.settings;
-      return { max: settings.max };
-    }
+      milestoneDetails(items) {
+        return items.map((item) => `${item.label} - ${readableDate(item.date)}`).join(" | ");
+      }
 
-    function spacerStyle(settings) {
-      const spacer = spacerSettings({ settings });
-      return `height: ${spacer.height}px;`;
-    }
+      static monthKey(value) {
+        const date = dateFromISO(value) || new Date();
+        return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}`;
+      }
 
-    function spacerLineStyle(settings) {
-      const spacer = spacerSettings({ settings });
-      return `border-top-width: ${spacer.lineThickness}px; border-top-style: ${spacer.lineStyle};`;
+      static monthFromKey(key) {
+        const [year, month] = String(key || "").split("-").map(Number);
+        return Number.isFinite(year) && Number.isFinite(month) ? new Date(year, month - 1, 1) : new Date();
+      }
+
+      static shiftMonthKey(key, amount) {
+        const date = CalendarModel.monthFromKey(key);
+        date.setMonth(date.getMonth() + amount);
+        return CalendarModel.monthKey(isoFromDate(date));
+      }
+
+      static gridDates(monthDate) {
+        const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+        const start = new Date(first);
+        start.setDate(first.getDate() - first.getDay());
+        return Array.from({ length: 42 }, (_, index) => {
+          const date = new Date(start);
+          date.setDate(start.getDate() + index);
+          return date;
+        });
+      }
     }
 
     function assertObject(value, name) {
@@ -2660,7 +2794,6 @@
       assertObject(settings.layout, "schema.settings.layout");
       assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
       Object.keys(DEFAULT_LAYOUT).forEach((key) => assertNumberRange(settings.layout[key], `schema.settings.layout.${key}`, 0, key === "fieldSpacing" ? 48 : 80, true));
-      settings.typography = typographySettings(settings.typography, settings.theme);
       assertObject(settings.typography, "schema.settings.typography");
       assertExactKeys(settings.typography, TYPOGRAPHY_ROLE_KEYS, "schema.settings.typography");
       TYPOGRAPHY_ROLE_KEYS.forEach((key) => assertTypographyRole(settings.typography[key], key));
@@ -2697,7 +2830,8 @@
     }
 
     function assertSettingKeys(settings, keys, fieldType) {
-      assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
+      assertExactKeys(settings, [...keys, "showLabel", "outline", "background"], `${fieldType}.settings`);
+      assertBoolean(settings.showLabel, `${fieldType}.settings.showLabel`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
       assertBoolean(settings.background, `${fieldType}.settings.background`);
     }
@@ -2717,58 +2851,73 @@
     function assertNestedMediaSettings(settings, name) {
       if (settings === null) return;
       assertObject(settings, name);
-      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "outline", "background"], name);
+      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "showLabel", "outline", "background"], name);
+      assertBoolean(settings.showLabel, `${name}.showLabel`);
       assertBoolean(settings.outline, `${name}.outline`);
       assertBoolean(settings.background, `${name}.background`);
       assertMediaSettingValues(settings, name);
     }
 
-    function schemaField(raw) {
-      const field = assertObject(raw, "field");
-      if (!fieldTypes[field.type]) throw new Error(`Unsupported field type: ${field.type}`);
-      const baseKeys = ["id", "type", "label", "description", "required", "settings"];
-      assertString(field.id, "field.id");
-      assertString(field.type, "field.type");
-      assertString(field.label, `${field.type}.label`);
-      assertString(field.description, `${field.type}.description`);
-      assertBoolean(field.required, `${field.type}.required`);
-      const settings = assertObject(field.settings, `${field.type}.settings`);
+    const FIELD_SCHEMA_VALIDATORS = {
+      calendar: "calendar",
+      mood_meter: "moodMeter",
+      linear_scale: "linearScale",
+      star_rating: "starRating",
+      radar: "radar",
+      media_upload: "mediaUpload",
+      media: "media",
+      headline: "headline",
+      spacer: "spacer"
+    };
 
-      if (["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) {
-        assertExactKeys(field, [...baseKeys, "placeholder"], "field");
-        assertString(field.placeholder, `${field.type}.placeholder`);
-        assertSettingKeys(settings, [], field.type);
+    class FieldSchemaValidator {
+      constructor(raw) {
+        this.field = assertObject(raw, "field");
+        if (!fieldTypes[this.field.type]) throw new Error(`Unsupported field type: ${this.field.type}`);
+        this.baseKeys = ["id", "type", "label", "description", "required", "settings"];
+        assertString(this.field.id, "field.id");
+        assertString(this.field.type, "field.type");
+        assertString(this.field.label, `${this.field.type}.label`);
+        assertString(this.field.description, `${this.field.type}.description`);
+        assertBoolean(this.field.required, `${this.field.type}.required`);
+        this.settings = assertObject(this.field.settings, `${this.field.type}.settings`);
       }
 
-      if (["multiple_choice", "checkbox", "poll"].includes(field.type)) {
-        assertExactKeys(field, [...baseKeys, "options"], "field");
-        assertArray(field.options, `${field.type}.options`);
-        field.options.forEach((option, index) => assertString(option, `${field.type}.options[${index}]`));
-        assertSettingKeys(settings, [], field.type);
+      fieldShape(extraKeys = [], settingKeys = []) {
+        assertExactKeys(this.field, [...this.baseKeys, ...extraKeys], "field");
+        assertSettingKeys(this.settings, settingKeys, this.field.type);
       }
 
-      if (field.type === "calendar") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["startDate", "endDate", "allowMilestones", "milestones"], field.type);
+      placeholder() {
+        this.fieldShape(["placeholder"]);
+        assertString(this.field.placeholder, `${this.field.type}.placeholder`);
+      }
+
+      options() {
+        this.fieldShape(["options"]);
+        assertArray(this.field.options, `${this.field.type}.options`);
+        this.field.options.forEach((option, index) => assertString(option, `${this.field.type}.options[${index}]`));
+      }
+
+      calendar() {
+        const settings = this.settings;
+        this.fieldShape([], ["startDate", "endDate", "allowMilestones", "milestones"]);
         assertDateSetting(settings.startDate, "calendar.settings.startDate");
         assertDateSetting(settings.endDate, "calendar.settings.endDate");
-        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) {
-          throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
-        }
+        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
         assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
         assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
       }
 
-      if (field.type === "mood_meter") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["minLabel", "maxLabel"], field.type);
-        assertString(settings.minLabel, "mood_meter.settings.minLabel");
-        assertString(settings.maxLabel, "mood_meter.settings.maxLabel");
+      moodMeter() {
+        this.fieldShape([], ["minLabel", "maxLabel"]);
+        assertString(this.settings.minLabel, "mood_meter.settings.minLabel");
+        assertString(this.settings.maxLabel, "mood_meter.settings.maxLabel");
       }
 
-      if (field.type === "linear_scale") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["min", "max", "minLabel", "maxLabel"], field.type);
+      linearScale() {
+        const settings = this.settings;
+        this.fieldShape([], ["min", "max", "minLabel", "maxLabel"]);
         assertNumber(settings.min, "linear_scale.settings.min");
         assertNumber(settings.max, "linear_scale.settings.max");
         if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
@@ -2776,15 +2925,14 @@
         assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
       }
 
-      if (field.type === "star_rating") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["max"], field.type);
-        assertNumberRange(settings.max, "star_rating.settings.max", 3, 10, true);
+      starRating() {
+        this.fieldShape([], ["max"]);
+        assertNumberRange(this.settings.max, "star_rating.settings.max", 3, 10, true);
       }
 
-      if (field.type === "radar") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["mode", "max", "axes", "defaultValues", "defaultPoint"], field.type);
+      radar() {
+        const settings = this.settings;
+        this.fieldShape([], ["mode", "max", "axes", "defaultValues", "defaultPoint"]);
         assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
         assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
         assertArray(settings.axes, "radar.settings.axes");
@@ -2794,21 +2942,19 @@
         assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
       }
 
-      if (field.type === "media_upload") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["accept"], field.type);
-        assertString(settings.accept, "media_upload.settings.accept");
+      mediaUpload() {
+        this.fieldShape([], ["accept"]);
+        assertString(this.settings.accept, "media_upload.settings.accept");
       }
 
-      if (field.type === "media") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, MEDIA_SETTING_KEYS, field.type);
-        assertMediaSettingValues(settings, "media.settings");
+      media() {
+        this.fieldShape([], MEDIA_SETTING_KEYS);
+        assertMediaSettingValues(this.settings, "media.settings");
       }
 
-      if (field.type === "headline") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"], field.type);
+      headline() {
+        const settings = this.settings;
+        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"]);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
@@ -2817,16 +2963,25 @@
         assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
-      if (field.type === "spacer") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["height", "showLine", "lineStyle", "lineThickness"], field.type);
+      spacer() {
+        const settings = this.settings;
+        this.fieldShape([], ["height", "showLine", "lineStyle", "lineThickness"]);
         assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
         assertBoolean(settings.showLine, "spacer.settings.showLine");
         assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
         assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
       }
+    }
 
-      return field;
+    function schemaField(raw) {
+      const validator = new FieldSchemaValidator(raw);
+      const method = PLACEHOLDER_FIELD_TYPES.has(validator.field.type)
+        ? "placeholder"
+        : OPTION_FIELD_TYPES.has(validator.field.type)
+          ? "options"
+          : FIELD_SCHEMA_VALIDATORS[validator.field.type];
+      validator[method]?.();
+      return validator.field;
     }
 
     function schemaDocument(input) {
@@ -2853,8 +3008,7 @@
         schemaField(field);
         if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
         seenIds.add(field.id);
-        if (field.type === "headline" && field.required) throw new Error(`schema.fields[${index}].required must be false for headline.`);
-        if (["media", "spacer"].includes(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+        if (NON_DATA_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
       });
       return schema;
     }
@@ -2863,29 +3017,54 @@
       return String(schema.settings.name || "").trim() || DEFAULT_FORM_NAME;
     }
 
-    function initialValuesFor(schema) {
-      const values = {};
-      schema.fields.forEach((field) => {
+    class RuntimeFormModel {
+      static initialValue(field) {
         if (field.type === "linear_scale") {
-          const { min, max } = linearScaleSettings(field);
-          values[field.id] = Math.round(min + (max - min) / 2);
+          const { min, max } = field.settings;
+          return Math.round(min + (max - min) / 2);
         }
+        if (field.type === "radar") return new RadarModel(field).initialValue();
+        if (field.type === "calendar") return new CalendarModel(field).value({});
+        return undefined;
+      }
 
+      static initialValues(schema) {
+        return schema.fields.reduce((values, field) => {
+          const value = RuntimeFormModel.initialValue(field);
+          if (value !== undefined) values[field.id] = value;
+          return values;
+        }, {});
+      }
+
+      static isEmpty(field, value) {
+        if (NON_DATA_FIELD_TYPES.has(field.type)) return false;
+        if (Array.isArray(value)) return value.length === 0;
+        if (field.type === "media_upload" && value && typeof value === "object") return !value.dataUrl;
+        if (field.type === "calendar") return !value || !value.startDate || !value.endDate;
+        return value === undefined || value === null || value === "";
+      }
+
+      static invalidIds(schema, values) {
+        return new Set(schema.fields.filter((field) => field.required && RuntimeFormModel.isEmpty(field, values[field.id])).map((field) => field.id));
+      }
+
+      static csvAnswer(field, value) {
+        if (value === null || value === undefined || value === "") return "";
+        if (field.type === "checkbox") return Array.isArray(value) ? value.join("; ") : "";
+        if (field.type === "calendar" && value && typeof value === "object" && !Array.isArray(value)) {
+          return [
+            value.startDate ? `Start: ${value.startDate}` : "",
+            value.endDate ? `End: ${value.endDate}` : "",
+            ...(Array.isArray(value.milestones) ? value.milestones.filter((item) => item.date || item.label).map((item) => `${item.label || "Milestone"}: ${item.date || "No date"}`) : [])
+          ].filter(Boolean).join("; ");
+        }
         if (field.type === "radar") {
-          const axes = radarAxes(field.settings.axes);
-          const mode = radarMode(field.settings.mode);
-          const max = radarMax(field.settings.max);
-          values[field.id] = mode === "point"
-            ? radarPointSetting(field.settings.defaultPoint, max)
-            : radarValues(field.settings.defaultValues, axes, max);
+          if (Array.isArray(value)) return field.settings.axes.map((axis, index) => `${axis}: ${value[index] ?? ""}`).join("; ");
+          if (value && typeof value === "object") return `Angle: ${RadarModel.format(value.angle)}; Value: ${RadarModel.format(value.value)}`;
         }
-
-        if (field.type === "calendar") {
-          const settings = calendarSettings(field);
-          values[field.id] = calendarValue({}, settings);
-        }
-      });
-      return values;
+        if (field.type === "media_upload" && value && typeof value === "object") return value.name || value.type || (value.dataUrl ? "Uploaded file" : "");
+        return typeof value === "object" ? JSON.stringify(value) : value;
+      }
     }
 
     function safeFileName(value) {
@@ -2944,123 +3123,113 @@
       return "center";
     }
 
-    function fieldOutline(field) {
-      return field.settings.outline === true;
+    class HeadlineModel {
+      constructor(field) {
+        const settings = field.settings;
+        this.field = field;
+        this.headingHorizontalAlignment = horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]);
+        this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
+        this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
+        this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
+        this.mediaPlacement = HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right";
+        this.mediaField = settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: settings.media } : null;
+        this.showLabel = settings.showLabel;
+        this.outline = settings.outline;
+        this.background = settings.background;
+      }
+
+      get mediaCenter() {
+        return Boolean(this.mediaField && this.mediaPlacement === "center");
+      }
+
+      get mediaFirst() {
+        return Boolean(this.mediaField && this.mediaPlacement === "top");
+      }
+
+      textStyle(horizontalKey, verticalKey) {
+        const horizontal = this[horizontalKey];
+        const vertical = this[verticalKey];
+        return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+      }
     }
 
-    function fieldBackground(field) {
-      return field.settings.background === true;
-    }
+    class MediaModel {
+      constructor(field) {
+        const settings = field.settings;
+        const objectFit = settings.objectFit;
+        if (!["contain", "cover", "fill", "scale-down"].includes(objectFit)) throw new Error(`Unsupported media fit: ${objectFit}`);
+        this.field = field;
+        this.sourceType = settings.sourceType;
+        this.url = settings.url;
+        this.dataUrl = settings.dataUrl;
+        this.mimeType = settings.mimeType;
+        this.fileName = settings.fileName;
+        this.alt = settings.alt;
+        this.caption = settings.caption;
+        this.html = settings.html;
+        this.iframeHeight = settings.iframeHeight;
+        this.horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
+        this.verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
+        this.scale = settings.scale;
+        this.maxWidth = settings.maxWidth;
+        this.maxHeight = settings.maxHeight;
+        this.objectFit = objectFit;
+        this.outline = settings.outline;
+        this.background = settings.background;
+      }
 
-    function headlineSettings(field) {
-      const settings = field.settings;
-      return {
-        headingHorizontalAlignment: horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]),
-        headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
-        descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
-        descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        mediaPlacement: HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
-        media: settings.media,
-        outline: fieldOutline(field),
-        background: fieldBackground(field)
-      };
-    }
+      get source() {
+        return this.sourceType === "file" ? this.dataUrl : this.url;
+      }
 
-    function mediaSettings(field) {
-      const settings = field.settings;
-      const horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-      const verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
-      const fits = new Set(["contain", "cover", "fill", "scale-down"]);
-      if (!fits.has(settings.objectFit)) throw new Error(`Unsupported media fit: ${settings.objectFit}`);
-      return {
-        sourceType: settings.sourceType,
-        url: settings.url,
-        dataUrl: settings.dataUrl,
-        mimeType: settings.mimeType,
-        fileName: settings.fileName,
-        alt: settings.alt,
-        caption: settings.caption,
-        html: settings.html,
-        iframeHeight: settings.iframeHeight,
-        horizontalAlignment,
-        verticalAlignment,
-        scale: settings.scale,
-        maxWidth: settings.maxWidth,
-        maxHeight: settings.maxHeight,
-        objectFit: settings.objectFit,
-        outline: fieldOutline(field),
-        background: fieldBackground(field)
-      };
-    }
+      get kind() {
+        if (this.sourceType === "html") return "html";
+        const source = String(this.source || "").toLowerCase().split(/[?#]/)[0];
+        const mime = String(this.mimeType || "").toLowerCase();
+        if (mime.startsWith("image/") || source.startsWith("data:image/") || /\.(apng|avif|gif|jpe?g|png|svg|webp)$/i.test(source)) return "image";
+        if (mime.startsWith("video/") || source.startsWith("data:video/") || /\.(mp4|m4v|mov|ogv|webm)$/i.test(source)) return "video";
+        if (mime.startsWith("audio/") || source.startsWith("data:audio/") || /\.(aac|flac|m4a|mp3|oga|ogg|wav|webm)$/i.test(source)) return "audio";
+        if (mime === "application/pdf" || source.startsWith("data:application/pdf") || /\.pdf$/i.test(source)) return "document";
+        return "unknown";
+      }
 
-    function splitMediaField(field) {
-      return field.settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: field.settings.media } : null;
-    }
+      get title() {
+        return this.alt || this.fileName || this.field.label;
+      }
 
-    function mediaSource(settings) {
-      return settings.sourceType === "file" ? settings.dataUrl : settings.url;
-    }
+      get alignmentStyle() {
+        const justify = this.horizontalAlignment === "stretch" ? "stretch" : horizontalFlexValue(this.horizontalAlignment);
+        return `justify-content: ${justify}; align-items: ${verticalFlexValue(this.verticalAlignment)}; text-align: ${textAlignValue(this.horizontalAlignment)};`;
+      }
 
-    function mediaKind(settings) {
-      if (settings.sourceType === "html") return "html";
-      const source = mediaSource(settings).toLowerCase().split(/[?#]/)[0];
-      const mime = settings.mimeType.toLowerCase();
-      if (mime.startsWith("image/") || source.startsWith("data:image/") || /\.(apng|avif|gif|jpe?g|png|svg|webp)$/i.test(source)) return "image";
-      if (mime.startsWith("video/") || source.startsWith("data:video/") || /\.(mp4|m4v|mov|ogv|webm)$/i.test(source)) return "video";
-      if (mime.startsWith("audio/") || source.startsWith("data:audio/") || /\.(aac|flac|m4a|mp3|oga|ogg|wav|webm)$/i.test(source)) return "audio";
-      if (mime === "application/pdf" || source.startsWith("data:application/pdf") || /\.pdf$/i.test(source)) return "document";
-      return "unknown";
-    }
+      get audioStyle() {
+        return this.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
+      }
 
-    function objectPositionX(value) {
-      if (value === "left") return "left";
-      if (value === "right") return "right";
-      return "center";
-    }
-
-    function objectPositionY(value) {
-      if (value === "top") return "top";
-      if (value === "bottom") return "bottom";
-      return "center";
-    }
-
-    function headlineTextStyle(settings, horizontalKey, verticalKey) {
-      const horizontal = settings[horizontalKey];
-      const vertical = settings[verticalKey];
-      return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
-    }
-
-    function mediaAlignmentStyle(settings) {
-      const horizontal = settings.horizontalAlignment;
-      const vertical = settings.verticalAlignment;
-      const justify = horizontal === "stretch" ? "stretch" : horizontalFlexValue(horizontal);
-      return `justify-content: ${justify}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
-    }
-
-    function mediaVisualStyle(settings, extra = "") {
-      const width = settings.horizontalAlignment === "stretch" ? "100%" : `${settings.scale}%`;
-      const maxWidth = settings.maxWidth ? `max-width: ${settings.maxWidth};` : "";
-      const maxHeight = `max-height: ${settings.maxHeight}px;`;
-      const objectPosition = `object-position: ${objectPositionX(settings.horizontalAlignment)} ${objectPositionY(settings.verticalAlignment)};`;
-      return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${settings.objectFit}; ${objectPosition} ${extra}`.trim();
+      visualStyle(extra = "") {
+        const width = this.horizontalAlignment === "stretch" ? "100%" : `${this.scale}%`;
+        const maxWidth = this.maxWidth ? `max-width: ${this.maxWidth};` : "";
+        const maxHeight = `max-height: ${this.maxHeight}px;`;
+        const positionX = this.horizontalAlignment === "left" || this.horizontalAlignment === "right" ? this.horizontalAlignment : "center";
+        const positionY = this.verticalAlignment === "top" || this.verticalAlignment === "bottom" ? this.verticalAlignment : "center";
+        return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${this.objectFit}; object-position: ${positionX} ${positionY}; ${extra}`.trim();
+      }
     }
 
     function MediaPreview({ field }) {
-      const settings = mediaSettings(field);
-      const source = mediaSource(settings);
-      const kind = mediaKind(settings);
-      const title = settings.alt || settings.fileName || field.label;
-      const wrapStyle = mediaAlignmentStyle(settings);
-      const visualStyle = mediaVisualStyle(settings);
+      const media = new MediaModel(field);
+      const source = media.source;
+      const kind = media.kind;
+      const visualStyle = media.visualStyle();
 
       if (kind === "html") {
-        if (!settings.html) return null;
+        if (!media.html) return null;
         return html`
           <div class="media-preview">
-            <div class="media-content-wrap" style=${wrapStyle}>
-              <iframe class="media-embed media-visual" title=${title} srcdoc=${settings.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}></iframe>
+            <div class="media-content-wrap" style=${media.alignmentStyle}>
+              <iframe class="media-embed media-visual" title=${media.title} srcdoc=${media.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${media.visualStyle(`height: ${media.iframeHeight}px; max-height: none;`)}></iframe>
             </div>
-            ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+            ${media.caption ? html`<p class="media-caption">${media.caption}</p>` : null}
           </div>
         `;
       }
@@ -3069,225 +3238,35 @@
 
       return html`
         <div class="media-preview">
-          <div class="media-content-wrap" style=${wrapStyle}>
-            ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${settings.alt || ""} style=${visualStyle} />` : null}
-            ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${title} style=${visualStyle}></video>` : null}
-            ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${title} style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${settings.scale}%; ${settings.maxWidth ? `max-width: ${settings.maxWidth};` : ""}`}></audio>` : null}
-            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a></object>` : null}
-            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a>` : null}
+          <div class="media-content-wrap" style=${media.alignmentStyle}>
+            ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${media.alt || ""} style=${visualStyle} />` : null}
+            ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${media.title} style=${visualStyle}></video>` : null}
+            ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${media.title} style=${media.audioStyle}></audio>` : null}
+            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${media.title} style=${media.visualStyle(`height: ${media.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${media.fileName || source}</span></a></object>` : null}
+            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${media.fileName || source}</span></a>` : null}
           </div>
-          ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+          ${media.caption ? html`<p class="media-caption">${media.caption}</p>` : null}
         </div>
       `;
     }
 
     function UploadedMediaPreview({ value, label }) {
       if (!value?.dataUrl) return null;
-      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: true, background: false } }} />`;
-    }
-
-    function radarPoint(index, count, center, radius) {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
-      return {
-        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
-        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
-      };
-    }
-
-    function radarValueScale(value, max) {
-      return clamp(Number(value) / Math.max(1, max), 0, 1);
-    }
-
-    function radarPoints(values, max, center, radius) {
-      return values.map((value, index) => {
-        const point = radarPoint(index, values.length, center, radius * radarValueScale(value, max));
-        return `${point.x},${point.y}`;
-      }).join(" ");
+      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", showLabel: true, outline: true, background: false } }} />`;
     }
 
     function clamp(value, min, max) {
       return Math.max(min, Math.min(max, value));
     }
 
-    function radarPointFromPolar(angle, value, max, center, radius) {
-      const radians = -Math.PI / 2 + (radarAngle(angle) * Math.PI / 180);
-      const scaled = radarValueScale(value, max);
-      return {
-        x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
-        y: Math.round((center + Math.sin(radians) * radius * scaled) * 100) / 100
-      };
-    }
-
-    function formatRadarNumber(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return "";
-      return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
-    }
-
-    function radarAngleDelta(a, b) {
-      return Math.abs(((radarAngle(a) - radarAngle(b) + 540) % 360) - 180);
-    }
-
-    function nearestRadarAxisCandidate(angle, axes) {
-      const labels = radarAxes(axes);
-      const step = 360 / labels.length;
-      const cleaned = radarAngle(angle);
-      const index = Math.round(cleaned / step) % labels.length;
-      const axisAngle = radarAngle(index * step);
-      return {
-        index,
-        angle: axisAngle,
-        delta: radarAngleDelta(cleaned, axisAngle),
-        label: labels[index]
-      };
-    }
-
-    function nearestRadarAxis(angle, axes) {
-      return nearestRadarAxisCandidate(angle, axes).label;
-    }
-
-    function radarPointDescription(angle, axes) {
-      const labels = radarAxes(axes);
-      const step = 360 / labels.length;
-      const cleaned = radarAngle(angle);
-      const position = cleaned / step;
-      const lower = Math.floor(position) % labels.length;
-      const upper = (lower + 1) % labels.length;
-      const blend = position - lower;
-      if (blend < 0.06) return labels[lower];
-      if (blend > 0.94) return labels[upper];
-      return `${labels[lower]} ↔ ${labels[upper]}`;
-    }
-
-    function roundedRadarPoint(point) {
-      return {
-        angle: radarAngle(point.angle),
-        value: clampRadarPointValue(point.value, point.max ?? DEFAULT_RADAR_MAX) ?? RADAR_MIN_VALUE
-      };
-    }
-
-    function applyRadarPointSnap(rawPoint, axes, max, radius, snapState) {
-      const labels = radarAxes(axes);
-      const state = snapState || { axisIndex: null, ringValue: null };
-      let angle = radarAngle(rawPoint.angle);
-      let value = clampRadarPointValue(rawPoint.value, max) ?? RADAR_MIN_VALUE;
-      const distance = Math.max(0, Number(rawPoint.distance) || 0);
-      const canAxisSnap = distance >= RADAR_AXIS_SNAP_MIN_RADIUS_PX;
-      const step = 360 / labels.length;
-
-      if (!canAxisSnap) {
-        state.axisIndex = null;
-      } else if (state.axisIndex !== null && state.axisIndex !== undefined) {
-        const lockedAngle = radarAngle(state.axisIndex * step);
-        const lockedDelta = radarAngleDelta(angle, lockedAngle);
-        const lockedPerpendicularDistance = Math.abs(Math.sin(lockedDelta * Math.PI / 180) * distance);
-        if (lockedPerpendicularDistance <= RADAR_AXIS_SNAP_EXIT_PX) {
-          angle = lockedAngle;
-        } else {
-          state.axisIndex = null;
-        }
-      }
-
-      if (canAxisSnap && (state.axisIndex === null || state.axisIndex === undefined)) {
-        const nearest = nearestRadarAxisCandidate(angle, labels);
-        const perpendicularDistance = Math.abs(Math.sin(nearest.delta * Math.PI / 180) * distance);
-        if (perpendicularDistance <= RADAR_AXIS_SNAP_ENTER_PX) {
-          state.axisIndex = nearest.index;
-          angle = nearest.angle;
-        }
-      }
-
-      if (state.ringValue !== null && state.ringValue !== undefined) {
-        const lockedRingRadius = radius * radarValueScale(state.ringValue, max);
-        if (Math.abs(distance - lockedRingRadius) <= RADAR_RING_SNAP_EXIT_PX) {
-          value = state.ringValue;
-        } else {
-          state.ringValue = null;
-        }
-      }
-
-      if (state.ringValue === null || state.ringValue === undefined) {
-        const nearestValue = clamp(Math.round((distance / radius) * max), RADAR_MIN_VALUE, max);
-        const nearestRingRadius = radius * radarValueScale(nearestValue, max);
-        if (Math.abs(distance - nearestRingRadius) <= RADAR_RING_SNAP_ENTER_PX) {
-          state.ringValue = nearestValue;
-          value = nearestValue;
-        }
-      }
-
-      return radarPointSetting({ angle, value }, max);
-    }
-
-    function pointerSvgPoint(event) {
-      const svg = event.currentTarget.ownerSVGElement || event.currentTarget.closest("svg");
-      const matrix = svg?.getScreenCTM();
-      if (!svg || !matrix) return null;
-      const pointer = svg.createSVGPoint();
-      pointer.x = event.clientX;
-      pointer.y = event.clientY;
-      return pointer.matrixTransform(matrix.inverse());
-    }
-
-    function radarDragMetrics(event) {
-      const svg = event.currentTarget.ownerSVGElement || event.currentTarget.closest("svg");
-      const rect = svg?.getBoundingClientRect();
-      if (!svg || !rect || !rect.width || !rect.height) return null;
-      return {
-        left: rect.left,
-        top: rect.top,
-        width: rect.width,
-        height: rect.height,
-        viewBoxWidth: 300,
-        viewBoxHeight: 300
-      };
-    }
-
-    function pointerSvgPointFromDrag(event, metrics) {
-      if (!metrics) return null;
-      return {
-        x: ((event.clientX - metrics.left) / metrics.width) * metrics.viewBoxWidth,
-        y: ((event.clientY - metrics.top) / metrics.height) * metrics.viewBoxHeight
-      };
-    }
-
-    function radarValueFromPointer(event, index, count, max, center, radius) {
-      const local = pointerSvgPoint(event);
-      if (!local) return null;
-
-      const edge = radarPoint(index, count, center, radius);
-      const axisX = edge.x - center;
-      const axisY = edge.y - center;
-      const pointerX = local.x - center;
-      const pointerY = local.y - center;
-      const lengthSquared = axisX * axisX + axisY * axisY || 1;
-      const scaled = clamp((pointerX * axisX + pointerY * axisY) / lengthSquared, 0, 1);
-
-      return clamp(Math.round(scaled * max), RADAR_MIN_VALUE, max);
-    }
-
-    function radarPointFromPointer(event, axes, max, center, radius, snapState, dragMetricsRef) {
-      const local = pointerSvgPointFromDrag(event, dragMetricsRef) || pointerSvgPoint(event);
-      if (!local) return null;
-      const pointerX = local.x - center;
-      const pointerY = local.y - center;
-      const distance = Math.sqrt(pointerX * pointerX + pointerY * pointerY);
-      const scaled = clamp(distance / radius, RADAR_MIN_VALUE / max, 1);
-      const rawAngle = radarAngle((Math.atan2(pointerY, pointerX) * 180 / Math.PI) + 90);
-      return applyRadarPointSnap({
-        angle: rawAngle,
-        value: scaled * max,
-        distance
-      }, axes, max, radius, snapState);
-    }
-
     function RadarChart({ axes, values, max, onValue }) {
-      const labels = radarAxes(axes);
+      const labels = axes;
       const center = 150;
       const radius = 92;
-      const current = radarValues(values, labels, max);
-      const polygon = radarPoints(current, max, center, radius);
+      const current = RadarModel.values(values, labels, max);
+      const polygon = RadarModel.polygon(current, max, center, radius);
       const handlePoints = current.map((value, index) => ({
-        ...radarPoint(index, labels.length, center, radius * radarValueScale(value, max)),
+        ...RadarModel.vertex(index, labels.length, center, radius * RadarModel.scale(value, max)),
         value
       }));
 
@@ -3299,7 +3278,7 @@
       }
 
       function updateFromPointer(event, index) {
-        const nextValue = radarValueFromPointer(event, index, labels.length, max, center, radius);
+        const nextValue = RadarModel.valueFromPointer(event, index, labels.length, max, center, radius);
         if (nextValue === null) return;
         commitValue(index, nextValue);
       }
@@ -3340,18 +3319,18 @@
           <g class="radar-grid">
             ${[0.25, 0.5, 0.75, 1].map((scale) => html`
               <polygon points=${labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius * scale);
+        const point = RadarModel.vertex(index, labels.length, center, radius * scale);
         return `${point.x},${point.y}`;
       }).join(" ")} />
             `)}
             ${labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius);
+        const point = RadarModel.vertex(index, labels.length, center, radius);
         return html`<line x1=${center} y1=${center} x2=${point.x} y2=${point.y} />`;
       })}
           </g>
           <polygon class="radar-fill" points=${polygon} />
           ${labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius);
+        const point = RadarModel.vertex(index, labels.length, center, radius);
         return html`
               <line
                 class="radar-hit"
@@ -3386,7 +3365,7 @@
             </circle>
           `)}
           ${labels.map((label, index) => {
-        const point = radarPoint(index, labels.length, center, radius + 24);
+        const point = RadarModel.vertex(index, labels.length, center, radius + 24);
         const anchor = Math.abs(point.x - center) < 8 ? "middle" : point.x > center ? "start" : "end";
         return html`<text class="radar-label" x=${point.x} y=${point.y} text-anchor=${anchor} dominant-baseline="middle">${label}</text>`;
       })}
@@ -3395,33 +3374,33 @@
     }
 
     function RadarPointChart({ axes, point, max, onPoint }) {
-      const labels = radarAxes(axes);
+      const labels = axes;
       const center = 150;
       const radius = 92;
       const snapRef = useRef({ axisIndex: null, ringValue: null });
       const dragMetricsRef = useRef(null);
       const dragPointRef = useRef(null);
       const [dragPoint, setDragPoint] = useState(null);
-      const committed = radarPointSetting(point, max);
-      const current = dragPoint ? radarPointSetting(dragPoint, max) : committed;
-      const handlePoint = radarPointFromPolar(current.angle, current.value, max, center, radius);
-      const pointDescription = radarPointDescription(current.angle, labels);
+      const committed = RadarModel.point(point, max);
+      const current = dragPoint ? RadarModel.point(dragPoint, max) : committed;
+      const handlePoint = RadarModel.polar(current.angle, current.value, max, center, radius);
+      const pointDescription = RadarModel.describe(current.angle, labels);
 
       function commitPoint(nextPoint) {
         if (!onPoint) return;
-        const cleaned = radarPointSetting(nextPoint, max);
+        const cleaned = RadarModel.point(nextPoint, max);
         if (cleaned.angle === committed.angle && cleaned.value === committed.value) return;
         onPoint(cleaned);
       }
 
       function previewPoint(nextPoint) {
-        const cleaned = radarPointSetting(nextPoint, max);
+        const cleaned = RadarModel.point(nextPoint, max);
         dragPointRef.current = cleaned;
         setDragPoint(cleaned);
       }
 
       function updateFromPointer(event) {
-        const nextPoint = radarPointFromPointer(event, labels, max, center, radius, snapRef.current, dragMetricsRef.current);
+        const nextPoint = RadarModel.pointFromPointer(event, labels, max, center, radius, snapRef.current, dragMetricsRef.current);
         if (!nextPoint) return;
         previewPoint(nextPoint);
       }
@@ -3430,7 +3409,7 @@
         if (!onPoint) return;
         event.preventDefault();
         snapRef.current = { axisIndex: null, ringValue: null };
-        dragMetricsRef.current = radarDragMetrics(event);
+        dragMetricsRef.current = RadarModel.dragMetrics(event);
         event.currentTarget.setPointerCapture?.(event.pointerId);
         updateFromPointer(event);
       }
@@ -3474,12 +3453,12 @@
               <g class="radar-grid">
                 ${[0.25, 0.5, 0.75, 1].map((scale) => html`
                   <polygon points=${labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius * scale);
+        const point = RadarModel.vertex(index, labels.length, center, radius * scale);
         return `${point.x},${point.y}`;
       }).join(" ")} />
                 `)}
                 ${labels.map((_, index) => {
-        const point = radarPoint(index, labels.length, center, radius);
+        const point = RadarModel.vertex(index, labels.length, center, radius);
         return html`<line x1=${center} y1=${center} x2=${point.x} y2=${point.y} />`;
       })}
               </g>
@@ -3506,18 +3485,18 @@
                 aria-label="Radar point"
                 aria-valuemin=${RADAR_MIN_VALUE}
                 aria-valuemax=${max}
-                aria-valuenow=${formatRadarNumber(current.value)}
-                aria-valuetext=${`${pointDescription}: ${formatRadarNumber(current.value)}`}
+                aria-valuenow=${RadarModel.format(current.value)}
+                aria-valuetext=${`${pointDescription}: ${RadarModel.format(current.value)}`}
                 onPointerDown=${handlePointerDown}
                 onPointerMove=${handlePointerMove}
                 onPointerUp=${handlePointerUp}
                 onPointerCancel=${handlePointerUp}
                 onKeyDown=${handleKeyDown}
               >
-                <title>${pointDescription}: ${formatRadarNumber(current.value)}</title>
+                <title>${pointDescription}: ${RadarModel.format(current.value)}</title>
               </circle>
               ${labels.map((label, index) => {
-        const point = radarPoint(index, labels.length, center, radius + 24);
+        const point = RadarModel.vertex(index, labels.length, center, radius + 24);
         const anchor = Math.abs(point.x - center) < 8 ? "middle" : point.x > center ? "start" : "end";
         return html`<text class="radar-label" x=${point.x} y=${point.y} text-anchor=${anchor} dominant-baseline="middle">${label}</text>`;
       })}
@@ -3530,7 +3509,7 @@
             </div>
             <div class="radar-value-row">
               <span>Value</span>
-              <output class="radar-value">${formatRadarNumber(current.value)}</output>
+              <output class="radar-value">${RadarModel.format(current.value)}</output>
             </div>
           </div>
         </div>
@@ -3546,14 +3525,14 @@
     }
 
     function FieldShell({ field, invalid, children }) {
-      const visibleLabel = fieldLabelText(field);
+      const visibleLabel = field.settings.showLabel ? fieldLabelText(field) : "";
       const labelId = visibleLabel ? field.id + "_label" : null;
       const helpId = field.description ? field.id + "_help" : null;
       const errorId = invalid ? field.id + "_error" : null;
       const hasHead = Boolean(visibleLabel || field.description);
       const typeClass = field.type ? ` ${String(field.type).replace(/_/g, "-")}-field` : "";
-      const outlineClass = fieldOutline(field) ? "" : " no-outline";
-      const backgroundClass = fieldBackground(field) ? " with-background" : "";
+      const outlineClass = field.settings.outline ? "" : " no-outline";
+      const backgroundClass = field.settings.background ? " with-background" : "";
       return html`
         <section class=${`field${typeClass}${outlineClass}${backgroundClass}${invalid ? " invalid" : ""}`} data-field-wrap=${field.id} aria-invalid=${invalid ? "true" : null} aria-describedby=${[helpId, errorId].filter(Boolean).join(" ") || null}>
           ${hasHead ? html`
@@ -3568,20 +3547,18 @@
       `;
     }
 
-
-
     function CalendarInput({ field, value, invalid, onValue, labelProps, describedBy }) {
-      const settings = calendarSettings(field);
-      const current = calendarValue(value, settings);
-      const anchorDate = calendarAnchorDate({ ...settings, startDate: current.startDate, endDate: current.endDate, milestones: current.milestones });
-      const [viewMonth, setViewMonth] = useState(() => calendarMonthKey(anchorDate));
+      const calendar = new CalendarModel(field);
+      const current = calendar.value(value);
+      const anchorDate = calendar.anchorDate(current);
+      const [viewMonth, setViewMonth] = useState(() => CalendarModel.monthKey(anchorDate));
       const [draggingBoundary, setDraggingBoundary] = useState(null);
       const [draggingMilestoneIndex, setDraggingMilestoneIndex] = useState(null);
       const [armedBoundary, setArmedBoundary] = useState(null);
       const suppressClickRef = useRef(false);
       const dragMovedRef = useRef(false);
       const dragSourceIsoRef = useRef("");
-      const monthDate = monthFromKey(viewMonth);
+      const monthDate = CalendarModel.monthFromKey(viewMonth);
       const month = monthDate.getMonth();
       const startTime = dateTime(current.startDate);
       const endTime = dateTime(current.endDate);
@@ -3591,7 +3568,7 @@
       const rangeEnd = hasRange ? Math.max(startTime, endTime) : endTime;
 
       useEffect(() => {
-        if (anchorDate) setViewMonth(calendarMonthKey(anchorDate));
+        if (anchorDate) setViewMonth(CalendarModel.monthKey(anchorDate));
       }, [anchorDate]);
 
       useEffect(() => {
@@ -3610,18 +3587,18 @@
       }, [draggingBoundary, draggingMilestoneIndex]);
 
       function commit(patch) {
-        onValue(calendarValue({ ...current, ...patch }, settings));
+        onValue(calendar.value({ ...current, ...patch }));
       }
 
       function updateStart(raw) {
-        const startDate = cleanDate(raw);
+        const startDate = CalendarModel.cleanDate(raw);
         let endDate = current.endDate;
         if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) endDate = startDate;
         commit({ startDate, endDate });
       }
 
       function updateEnd(raw) {
-        const endDate = cleanDate(raw);
+        const endDate = CalendarModel.cleanDate(raw);
         let startDate = current.startDate;
         if (startDate && endDate && dateTime(endDate) < dateTime(startDate)) startDate = endDate;
         commit({ startDate, endDate });
@@ -3635,7 +3612,7 @@
       }
 
       function dragBoundary(boundary, iso) {
-        setViewMonth(calendarMonthKey(iso));
+        setViewMonth(CalendarModel.monthKey(iso));
         if (boundary === "start") {
           let endDate = current.endDate;
           if (endDate && dateTime(endDate) < dateTime(iso)) endDate = iso;
@@ -3648,7 +3625,7 @@
       }
 
       function dragMilestone(index, iso) {
-        setViewMonth(calendarMonthKey(iso));
+        setViewMonth(CalendarModel.monthKey(iso));
         updateMilestone(index, { date: iso });
       }
 
@@ -3661,7 +3638,7 @@
       }
 
       function pickDate(iso) {
-        setViewMonth(calendarMonthKey(iso));
+        setViewMonth(CalendarModel.monthKey(iso));
         if (!current.startDate || current.endDate) {
           commit({ startDate: iso, endDate: "" });
           return;
@@ -3683,7 +3660,7 @@
       }
 
       function addMilestone(date = "") {
-        commit({ milestones: [...current.milestones, { id: uid(), date: cleanDate(date), label: "Milestone " + (current.milestones.length + 1) }] });
+        commit({ milestones: [...current.milestones, { id: uid(), date: CalendarModel.cleanDate(date), label: "Milestone " + (current.milestones.length + 1) }] });
       }
 
       function handleDateClick(iso) {
@@ -3696,7 +3673,7 @@
           pickDate(iso);
           return;
         }
-        if (settings.allowMilestones) {
+        if (calendar.allowMilestones) {
           addMilestone(iso);
           return;
         }
@@ -3709,15 +3686,15 @@
             <div class="calendar-nav">
               <input class="calendar-month-label calendar-month-input" type="month" value=${viewMonth} aria-label="Calendar month" title=${monthLabel(monthDate)} onInput=${(event) => { if (event.currentTarget.value) setViewMonth(event.currentTarget.value); }} />
               <div class="calendar-nav-buttons">
-                <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
-                <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
+                <button class="icon-button" type="button" title="Previous month" aria-label="Previous month" onClick=${() => setViewMonth(CalendarModel.shiftMonthKey(viewMonth, -1))}><${Icon} icon="fa-solid fa-chevron-left" /></button>
+                <button class="icon-button" type="button" title="Next month" aria-label="Next month" onClick=${() => setViewMonth(CalendarModel.shiftMonthKey(viewMonth, 1))}><${Icon} icon="fa-solid fa-chevron-right" /></button>
               </div>
             </div>
             <div class="calendar-weekdays" aria-hidden="true">
               ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
             </div>
             <div class="calendar-grid">
-            ${calendarGridDates(monthDate).map((date) => {
+            ${CalendarModel.gridDates(monthDate).map((date) => {
         const iso = isoFromDate(date);
         const time = date.getTime();
         const inRange = rangeStart !== null && rangeEnd !== null && time >= rangeStart && time <= rangeEnd;
@@ -3725,8 +3702,8 @@
         const isRangeStart = inRange && (iso === current.startDate || date.getDay() === 0);
         const isRangeEnd = inRange && (iso === current.endDate || date.getDay() === 6);
         const isOutside = date.getMonth() !== month;
-        const dayMilestones = calendarMilestonesForDate(current.milestones, iso);
-        const milestoneDetails = calendarMilestoneDetails(dayMilestones);
+        const dayMilestones = calendar.milestonesForDate(iso, current);
+        const milestoneDetails = calendar.milestoneDetails(dayMilestones);
         const milestoneIndex = dayMilestones[0]?.index ?? -1;
         const boundary = boundaryForDate(iso);
         return html`
@@ -3750,7 +3727,7 @@
               setDraggingBoundary(boundary);
               return;
             }
-            if (settings.allowMilestones && milestoneIndex >= 0) {
+            if (calendar.allowMilestones && milestoneIndex >= 0) {
               event.preventDefault();
               dragMovedRef.current = false;
               dragSourceIsoRef.current = iso;
@@ -3800,7 +3777,7 @@
                 <input class="control" type="date" value=${current.endDate} onInput=${(event) => updateEnd(event.currentTarget.value)} />
               </label>
             </div>
-            ${settings.allowMilestones ? html`
+            ${calendar.allowMilestones ? html`
               <div class="calendar-milestone-editor">
                 <div class="calendar-milestone-editor-head">
                   <div class="mini-label">Milestones</div>
@@ -3820,229 +3797,228 @@
       `;
     }
 
-    function RuntimeField({ field, value, invalid, onValue }) {
-      const visibleLabel = fieldLabelText(field);
-      const accessibleName = fieldAccessibleName(field);
-      const describedBy = [field.description ? field.id + "_help" : null, invalid ? field.id + "_error" : null].filter(Boolean).join(" ") || null;
-      const labelledBy = visibleLabel ? field.id + "_label" : null;
-      const labelProps = labelledBy ? { "aria-labelledby": labelledBy } : { "aria-label": accessibleName };
-      const common = {
-        id: field.id,
-        class: "control",
-        "aria-invalid": invalid ? "true" : null,
-        "aria-required": field.required ? "true" : null,
-        "aria-describedby": describedBy,
-        ...(labelledBy ? {} : { "aria-label": accessibleName })
-      };
-      const textareaCommon = { ...common, class: "textarea" };
-      switch (field.type) {
-        case "headline": {
-          const title = visibleLabel;
-          const description = String(field.description || "").trim();
-          const settings = headlineSettings(field);
-          const mediaField = splitMediaField(field);
-          const hasCopy = title || description;
-          const mediaCenter = mediaField && settings.mediaPlacement === "center";
-          const mediaFirst = mediaField && settings.mediaPlacement === "top";
-          const mediaNode = mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null;
-          const titleNode = title ? html`<h1 class="headline-title" style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")}>${title}</h1>` : null;
-          const descriptionNode = description ? html`<p class="headline-subhead" style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null;
-          const copyNode = hasCopy ? html`<div class="headline-copy">${titleNode}${descriptionNode}</div>` : null;
-          if (!hasCopy && !mediaField) return null;
-          return html`
-            <section class=${`headline-field${settings.outline ? " with-outline" : ""}${settings.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
-              <div class=${`headline-content${mediaField && hasCopy ? " has-media media-" + settings.mediaPlacement : ""}`}>
-                ${mediaCenter && hasCopy ? html`
-                  ${titleNode}
-                  ${mediaNode}
-                  ${descriptionNode}
-                ` : html`
-                  ${mediaFirst ? mediaNode : null}
-                  ${copyNode}
-                  ${mediaFirst ? null : mediaNode}
-                `}
-              </div>
-            </section>
-          `;
-        }
-        case "short_answer":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
-        case "long_answer":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><textarea ...${textareaCommon} value=${value || ""} placeholder=${field.placeholder} style=${longAnswerStyle(field.placeholder)} onInput=${(event) => onValue(event.currentTarget.value)}></textarea></${FieldShell}>`;
-        case "email":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="email" value=${value || ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
-        case "number":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="number" value=${value ?? ""} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
-        case "calendar":
-          return html`<${FieldShell} field=${field} invalid=${invalid}><${CalendarInput} field=${field} value=${value} invalid=${invalid} onValue=${onValue} labelProps=${labelProps} describedBy=${describedBy} /></${FieldShell}>`;
-        case "multiple_choice":
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="choice-list" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                ${field.options.map((option) => html`
-                  <label class="choice-row" key=${option}>
-                    <input type="radio" name=${field.id} value=${option} checked=${value === option} onChange=${() => onValue(option)} />
-                    <span>${option}</span>
-                  </label>
-                `)}
-              </div>
-            </${FieldShell}>
-          `;
-        case "checkbox":
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="choice-list" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                ${field.options.map((option) => {
-            const selected = Array.isArray(value) ? value : [];
-            return html`
-                    <label class="choice-row" key=${option}>
-                      <input type="checkbox" value=${option} checked=${selected.includes(option)} onChange=${(event) => {
-                const next = event.currentTarget.checked ? [...selected, option] : selected.filter((item) => item !== option);
-                onValue(next);
-              }} />
-                      <span>${option}</span>
-                    </label>
-                  `;
-          })}
-              </div>
-            </${FieldShell}>
-          `;
-        case "poll":
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="poll-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                ${field.options.map((option) => html`
-                  <button class=${`poll-option${value === option ? " selected" : ""}`} type="button" key=${option} onClick=${() => onValue(option)}>${option}</button>
-                `)}
-              </div>
-            </${FieldShell}>
-          `;
-        case "mood_meter": {
-          const icons = ["fa-regular fa-face-angry", "fa-regular fa-face-frown", "fa-regular fa-face-meh", "fa-regular fa-face-smile", "fa-regular fa-face-laugh"];
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="meter-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                <span>${field.settings.minLabel}</span>
-                ${icons.map((icon, index) => {
-            const rating = index + 1;
-            return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon=${icon} /></button>`;
-          })}
-                <span>${field.settings.maxLabel}</span>
-              </div>
-            </${FieldShell}>
-          `;
-        }
-        case "linear_scale": {
-          const settings = linearScaleSettings(field);
-          const { min, max } = settings;
-          const current = Number(value ?? Math.round(min + (max - min) / 2));
-          const span = Math.max(1, max - min);
-          const percent = clamp(((current - min) / span) * 100, 0, 100);
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="range-wrap">
-                <span>${settings.minLabel}</span>
-                <div class="linear-scale-control">
-                  <div class="linear-scale-track" aria-hidden="true">
-                    <div class="linear-scale-fill" style=${`width: ${percent}%;`}></div>
-                  </div>
-                  <div class="linear-scale-thumb" style=${`left: ${percent}%;`} aria-hidden="true"></div>
-                  <input class="linear-scale-native" id=${field.id} type="range" min=${min} max=${max} value=${current} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy} ...${labelledBy ? { "aria-labelledby": labelledBy } : { "aria-label": accessibleName }} onInput=${(event) => onValue(Number(event.currentTarget.value))} />
-                </div>
-                <span>${settings.maxLabel}</span>
-                <output class="range-value">${current}</output>
-              </div>
-            </${FieldShell}>
-          `;
-        }
-        case "star_rating": {
-          const max = starRatingSettings(field).max;
-          const selected = Number(value || 0);
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="star-grid" role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                ${Array.from({ length: max }, (_, index) => {
-            const rating = index + 1;
-            return html`<button class=${`star-option${selected >= rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon="fa-regular fa-star" /></button>`;
-          })}
-              </div>
-            </${FieldShell}>
-          `;
-        }
-        case "radar": {
-          const axes = radarAxes(field.settings.axes);
-          const mode = radarMode(field.settings.mode);
-          const max = radarMax(field.settings.max);
-          const defaults = radarValues(field.settings.defaultValues, axes, max);
-          const current = radarValues(value, axes, max);
-          const defaultPoint = radarPointSetting(field.settings.defaultPoint, max);
-          const currentPoint = radarPointSetting(value && !Array.isArray(value) ? value : defaultPoint, max);
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class=${`radar-wrap${mode === "point" ? " point-mode" : ""}`} role="group" ...${labelProps} aria-invalid=${invalid ? "true" : null} aria-required=${field.required ? "true" : null} aria-describedby=${describedBy}>
-                ${mode === "point" ? html`
-                  <${RadarPointChart} axes=${axes} point=${currentPoint} max=${max} onPoint=${onValue} />
-                ` : html`
-                  <div class="radar-chart">
-                    <${RadarChart} axes=${axes} values=${Array.isArray(value) ? current : defaults} max=${max} onValue=${onValue} />
-                  </div>
-                  <div class="radar-values">
-                    ${axes.map((axis, index) => ({ axis, index, value: (Array.isArray(value) ? current : defaults)[index] }))
-                .sort((a, b) => b.value - a.value || a.index - b.index)
-                .map((item) => html`
-                        <div class="radar-value-row" key=${item.index}>
-                          <span>${item.axis}</span>
-                          <output class="radar-value">${formatRadarNumber(item.value)}</output>
-                        </div>
-                      `)}
-                  </div>
-                `}
-              </div>
-            </${FieldShell}>
-          `;
-        }
-        case "media_upload":
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <div class="media-upload-preview">
-                <input ...${common} type="file" accept=${field.settings.accept} onChange=${async (event) => {
-              const file = event.currentTarget.files?.[0];
-              if (!file) return;
-              onValue({ name: file.name, type: file.type, dataUrl: await readFileAsDataUrl(file) });
-            }} />
-                <${UploadedMediaPreview} value=${value} label=${accessibleName} />
-              </div>
-            </${FieldShell}>
-          `;
-        case "spacer": {
-          const settings = spacerSettings(field);
-          return html`
-            <section class=${`field spacer-field${fieldOutline(field) ? " with-outline" : " no-outline"}${fieldBackground(field) ? " with-background" : ""}`} data-field-wrap=${field.id} aria-hidden="true">
-              <div class="spacer-preview" style=${spacerStyle(settings)}>
-                ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
-              </div>
-            </section>
-          `;
-        }
-        case "media":
-          return html`
-            <${FieldShell} field=${field} invalid=${false}>
-              <${MediaPreview} field=${field} />
-            </${FieldShell}>
-          `;
-        case "link": {
-          const text = String(value || "");
-          const href = urlWithProtocol(text);
-          return html`
-            <${FieldShell} field=${field} invalid=${invalid}>
-              <input ...${common} type="url" value=${text} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} />
-              ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${text}</span></a>` : null}
-            </${FieldShell}>
-          `;
-        }
-        default:
-          return html`<${FieldShell} field=${field} invalid=${invalid}><input ...${common} type="text" value=${value || ""} onInput=${(event) => onValue(event.currentTarget.value)} /></${FieldShell}>`;
+    class RuntimeFieldModel {
+      constructor(field, invalid) {
+        this.field = field;
+        this.invalid = invalid;
+        this.visibleLabel = field.settings.showLabel ? fieldLabelText(field) : "";
+        this.accessibleName = fieldAccessibleName(field);
+        this.describedBy = [field.description ? field.id + "_help" : null, invalid ? field.id + "_error" : null].filter(Boolean).join(" ") || null;
+        this.labelledBy = this.visibleLabel ? field.id + "_label" : null;
       }
+
+      get labelProps() {
+        return this.labelledBy ? { "aria-labelledby": this.labelledBy } : { "aria-label": this.accessibleName };
+      }
+
+      get controlLabelProps() {
+        return this.labelledBy ? { "aria-labelledby": this.labelledBy } : { "aria-label": this.accessibleName };
+      }
+
+      get inputProps() {
+        return {
+          id: this.field.id,
+          class: "control",
+          "aria-invalid": this.invalid ? "true" : null,
+          "aria-required": this.field.required ? "true" : null,
+          "aria-describedby": this.describedBy,
+          ...(this.labelledBy ? {} : { "aria-label": this.accessibleName })
+        };
+      }
+
+      get textareaProps() {
+        return { ...this.inputProps, class: "textarea" };
+      }
+
+      shell(content, invalid = this.invalid) {
+        return html`<${FieldShell} field=${this.field} invalid=${invalid}>${content}</${FieldShell}>`;
+      }
+
+      grouped(className, content) {
+        return this.shell(html`<div class=${className} role="group" ...${this.labelProps} aria-invalid=${this.invalid ? "true" : null} aria-required=${this.field.required ? "true" : null} aria-describedby=${this.describedBy}>${content}</div>`);
+      }
+    }
+
+    function renderHeadlineRuntimeField(model) {
+      const field = model.field;
+      const description = String(field.description || "").trim();
+      const headline = new HeadlineModel(field);
+      const mediaField = headline.mediaField;
+      const hasCopy = model.visibleLabel || description;
+      const mediaNode = mediaField ? html`<div class="headline-media"><${MediaPreview} field=${mediaField} /></div>` : null;
+      const titleNode = model.visibleLabel ? html`<h1 class="headline-title" style=${headline.textStyle("headingHorizontalAlignment", "headingVerticalAlignment")}>${model.visibleLabel}</h1>` : null;
+      const descriptionNode = description ? html`<p class="headline-subhead" style=${headline.textStyle("descriptionHorizontalAlignment", "descriptionVerticalAlignment")}>${description}</p>` : null;
+      const copyNode = hasCopy ? html`<div class="headline-copy">${titleNode}${descriptionNode}</div>` : null;
+      if (!hasCopy && !mediaField) return null;
+      return html`
+        <section class=${`headline-field${headline.outline ? " with-outline" : ""}${headline.background ? " with-background" : ""}`} data-field-wrap=${field.id}>
+          <div class=${`headline-content${mediaField && hasCopy ? " has-media media-" + headline.mediaPlacement : ""}`}>
+            ${headline.mediaCenter && hasCopy ? html`${titleNode}${mediaNode}${descriptionNode}` : html`${headline.mediaFirst ? mediaNode : null}${copyNode}${headline.mediaFirst ? null : mediaNode}`}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderTextInputRuntimeField(model, value, onValue) {
+      const field = model.field;
+      const inputType = field.type === "email" ? "email" : field.type === "number" ? "number" : "text";
+      const inputValue = field.type === "number" ? value ?? "" : value || "";
+      return model.shell(html`<input ...${model.inputProps} type=${inputType} value=${inputValue} placeholder=${field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} />`);
+    }
+
+    function renderLongAnswerRuntimeField(model, value, onValue) {
+      const field = model.field;
+      return model.shell(html`<textarea ...${model.textareaProps} value=${value || ""} placeholder=${field.placeholder} style=${longAnswerStyle(field.placeholder)} onInput=${(event) => onValue(event.currentTarget.value)}></textarea>`);
+    }
+
+    function renderCalendarRuntimeField(model, value, onValue) {
+      return model.shell(html`<${CalendarInput} field=${model.field} value=${value} invalid=${model.invalid} onValue=${onValue} labelProps=${model.labelProps} describedBy=${model.describedBy} />`);
+    }
+
+    function renderMultipleChoiceRuntimeField(model, value, onValue) {
+      const field = model.field;
+      return model.grouped("choice-list", field.options.map((option) => html`
+        <label class="choice-row" key=${option}>
+          <input type="radio" name=${field.id} value=${option} checked=${value === option} onChange=${() => onValue(option)} />
+          <span>${option}</span>
+        </label>
+      `));
+    }
+
+    function renderCheckboxRuntimeField(model, value, onValue) {
+      const selected = Array.isArray(value) ? value : [];
+      return model.grouped("choice-list", model.field.options.map((option) => html`
+        <label class="choice-row" key=${option}>
+          <input type="checkbox" value=${option} checked=${selected.includes(option)} onChange=${(event) => onValue(event.currentTarget.checked ? [...selected, option] : selected.filter((item) => item !== option))} />
+          <span>${option}</span>
+        </label>
+      `));
+    }
+
+    function renderPollRuntimeField(model, value, onValue) {
+      return model.grouped("poll-grid", model.field.options.map((option) => html`
+        <button class=${`poll-option${value === option ? " selected" : ""}`} type="button" key=${option} onClick=${() => onValue(option)}>${option}</button>
+      `));
+    }
+
+    function renderMoodMeterRuntimeField(model, value, onValue) {
+      const settings = model.field.settings;
+      return model.grouped("meter-grid", html`
+        <span>${settings.minLabel}</span>
+        ${MOOD_METER_ICONS.map((icon, index) => {
+          const rating = index + 1;
+          return html`<button class=${`meter-option${Number(value || 0) === rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon=${icon} /></button>`;
+        })}
+        <span>${settings.maxLabel}</span>
+      `);
+    }
+
+    function renderLinearScaleRuntimeField(model, value, onValue) {
+      const settings = model.field.settings;
+      const current = Number(value ?? RuntimeFormModel.initialValue(model.field));
+      const percent = clamp(((current - settings.min) / Math.max(1, settings.max - settings.min)) * 100, 0, 100);
+      return model.shell(html`
+        <div class="range-wrap">
+          <span>${settings.minLabel}</span>
+          <div class="linear-scale-control">
+            <div class="linear-scale-track" aria-hidden="true"><div class="linear-scale-fill" style=${`width: ${percent}%;`}></div></div>
+            <div class="linear-scale-thumb" style=${`left: ${percent}%;`} aria-hidden="true"></div>
+            <input class="linear-scale-native" id=${model.field.id} type="range" min=${settings.min} max=${settings.max} value=${current} aria-invalid=${model.invalid ? "true" : null} aria-required=${model.field.required ? "true" : null} aria-describedby=${model.describedBy} ...${model.controlLabelProps} onInput=${(event) => onValue(Number(event.currentTarget.value))} />
+          </div>
+          <span>${settings.maxLabel}</span>
+          <output class="range-value">${current}</output>
+        </div>
+      `);
+    }
+
+    function renderStarRatingRuntimeField(model, value, onValue) {
+      const selected = Number(value || 0);
+      return model.grouped("star-grid", Array.from({ length: model.field.settings.max }, (_, index) => {
+        const rating = index + 1;
+        return html`<button class=${`star-option${selected >= rating ? " selected" : ""}`} type="button" key=${rating} title=${String(rating)} aria-label=${String(rating)} onClick=${() => onValue(rating)}><${Icon} icon="fa-regular fa-star" /></button>`;
+      }));
+    }
+
+    function renderRadarRuntimeField(model, value, onValue) {
+      const radar = new RadarModel(model.field);
+      const current = radar.valuesFor(value);
+      const values = Array.isArray(value) ? current : radar.values;
+      return model.shell(html`
+        <div class=${`radar-wrap${radar.mode === "point" ? " point-mode" : ""}`} role="group" ...${model.labelProps} aria-invalid=${model.invalid ? "true" : null} aria-required=${model.field.required ? "true" : null} aria-describedby=${model.describedBy}>
+          ${radar.mode === "point" ? html`
+            <${RadarPointChart} axes=${radar.axes} point=${radar.pointFor(value && !Array.isArray(value) ? value : radar.point)} max=${radar.max} onPoint=${onValue} />
+          ` : html`
+            <div class="radar-chart"><${RadarChart} axes=${radar.axes} values=${values} max=${radar.max} onValue=${onValue} /></div>
+            <div class="radar-values">
+              ${radar.axes.map((axis, index) => ({ axis, index, value: values[index] }))
+                .sort((a, b) => b.value - a.value || a.index - b.index)
+                .map((item) => html`<div class="radar-value-row" key=${item.index}><span>${item.axis}</span><output class="radar-value">${RadarModel.format(item.value)}</output></div>`)}
+            </div>
+          `}
+        </div>
+      `);
+    }
+
+    function renderMediaUploadRuntimeField(model, value, onValue) {
+      return model.shell(html`
+        <div class="media-upload-preview">
+          <input ...${model.inputProps} type="file" accept=${model.field.settings.accept} onChange=${async (event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) onValue({ name: file.name, type: file.type, dataUrl: await readFileAsDataUrl(file) });
+          }} />
+          <${UploadedMediaPreview} value=${value} label=${model.accessibleName} />
+        </div>
+      `);
+    }
+
+    function renderSpacerRuntimeField(model) {
+      const field = model.field;
+      const settings = field.settings;
+      return html`
+        <section class=${`field spacer-field${settings.outline ? " with-outline" : " no-outline"}${settings.background ? " with-background" : ""}`} data-field-wrap=${field.id} aria-hidden="true">
+          <div class="spacer-preview" style=${`height: ${settings.height}px;`}>
+            ${settings.showLine ? html`<hr class="spacer-line" style=${`border-top-width: ${settings.lineThickness}px; border-top-style: ${settings.lineStyle};`} />` : null}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderMediaRuntimeField(model) {
+      return model.shell(html`<${MediaPreview} field=${model.field} />`, false);
+    }
+
+    function renderLinkRuntimeField(model, value, onValue) {
+      const text = String(value || "");
+      const href = urlWithProtocol(text);
+      return model.shell(html`
+        <input ...${model.inputProps} type="url" value=${text} placeholder=${model.field.placeholder} onInput=${(event) => onValue(event.currentTarget.value)} />
+        ${href ? html`<a class="link-preview" href=${href} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${text}</span></a>` : null}
+      `);
+    }
+
+    const RUNTIME_FIELD_RENDERERS = {
+      headline: renderHeadlineRuntimeField,
+      short_answer: renderTextInputRuntimeField,
+      email: renderTextInputRuntimeField,
+      number: renderTextInputRuntimeField,
+      long_answer: renderLongAnswerRuntimeField,
+      calendar: renderCalendarRuntimeField,
+      multiple_choice: renderMultipleChoiceRuntimeField,
+      checkbox: renderCheckboxRuntimeField,
+      poll: renderPollRuntimeField,
+      mood_meter: renderMoodMeterRuntimeField,
+      linear_scale: renderLinearScaleRuntimeField,
+      star_rating: renderStarRatingRuntimeField,
+      radar: renderRadarRuntimeField,
+      media_upload: renderMediaUploadRuntimeField,
+      spacer: renderSpacerRuntimeField,
+      media: renderMediaRuntimeField,
+      link: renderLinkRuntimeField
+    };
+
+    function RuntimeField({ field, value, invalid, onValue }) {
+      const model = new RuntimeFieldModel(field, invalid);
+      return (RUNTIME_FIELD_RENDERERS[field.type] || renderTextInputRuntimeField)(model, value, onValue);
     }
 
     function decodeSchemaToken(token) {
@@ -4384,7 +4360,7 @@
     }
 
     async function exportFormDocument(kind, schema, captureNode) {
-      const theme = themeSettings(schema.settings.theme);
+      const theme = schema.settings.theme;
       const exportDoc = buildRuntimeExportDocument(schema, captureNode);
       try {
         if (document.fonts?.ready) await document.fonts.ready;
@@ -4408,24 +4384,6 @@
       return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
     }
 
-    function csvAnswer(field, value) {
-      if (value === null || value === undefined || value === "") return "";
-      if (field.type === "checkbox") return Array.isArray(value) ? value.join("; ") : "";
-      if (field.type === "calendar" && value && typeof value === "object" && !Array.isArray(value)) {
-        return [
-          value.startDate ? `Start: ${value.startDate}` : "",
-          value.endDate ? `End: ${value.endDate}` : "",
-          ...(Array.isArray(value.milestones) ? value.milestones.filter((item) => item.date || item.label).map((item) => `${item.label || "Milestone"}: ${item.date || "No date"}`) : [])
-        ].filter(Boolean).join("; ");
-      }
-      if (field.type === "radar") {
-        if (Array.isArray(value)) return radarAxes(field.settings.axes).map((axis, index) => `${axis}: ${value[index] ?? ""}`).join("; ");
-        if (value && typeof value === "object") return `Angle: ${formatRadarNumber(value.angle)}; Value: ${formatRadarNumber(value.value)}`;
-      }
-      if (field.type === "media_upload" && value && typeof value === "object") return value.name || value.type || (value.dataUrl ? "Uploaded file" : "");
-      return typeof value === "object" ? JSON.stringify(value) : value;
-    }
-
     function downloadBlob(blob, fileName) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -4438,10 +4396,10 @@
     }
 
     function exportCsv(schema, values) {
-      const fields = schema.fields.filter((field) => !["headline", "media", "spacer"].includes(field.type));
+      const fields = schema.fields.filter((field) => !NON_DATA_FIELD_TYPES.has(field.type));
       const rows = [
         fields.map((field) => csvEscape(fieldAccessibleName(field))),
-        fields.map((field) => csvEscape(csvAnswer(field, values[field.id])))
+        fields.map((field) => csvEscape(RuntimeFormModel.csvAnswer(field, values[field.id])))
       ];
       downloadBlob(new Blob([rows.map((row) => row.join(",")).join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" }), safeFileName(schemaDisplayName(schema)) + ".csv");
     }
@@ -4455,21 +4413,42 @@
       link.remove();
     }
 
+    function initialRuntimeState() {
+      return { schema: null, values: {}, invalidIds: new Set() };
+    }
+
+    function runtimeReducer(state, action) {
+      switch (action.type) {
+        case "load-schema": {
+          const schema = schemaDocument(action.schema);
+          return { schema, values: RuntimeFormModel.initialValues(schema), invalidIds: new Set() };
+        }
+        case "clear-schema":
+          return initialRuntimeState();
+        case "set-value": {
+          const invalidIds = new Set(state.invalidIds);
+          invalidIds.delete(action.id);
+          return { ...state, values: { ...state.values, [action.id]: action.value }, invalidIds };
+        }
+        case "reset-values":
+          return state.schema ? { ...state, values: RuntimeFormModel.initialValues(state.schema), invalidIds: new Set() } : state;
+        case "set-invalid":
+          return { ...state, invalidIds: action.invalidIds };
+        default:
+          return state;
+      }
+    }
+
 
     function RuntimeApp() {
-      const [schema, setSchemaState] = useState(null);
-      const [values, setValues] = useState({});
-      const [invalidIds, setInvalidIds] = useState(new Set());
+      const [{ schema, values, invalidIds }, dispatchRuntime] = useReducer(runtimeReducer, null, initialRuntimeState);
       const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
       const [exportFormat, setExportFormat] = useState("pdf");
       const [exporting, setExporting] = useState(false);
       const captureRef = useRef(null);
 
       function setLoadedSchema(nextSchema) {
-        const validated = schemaDocument(nextSchema);
-        setSchemaState(validated);
-        setValues(initialValuesFor(validated));
-        setInvalidIds(new Set());
+        dispatchRuntime({ type: "load-schema", schema: nextSchema });
       }
 
       useEffect(() => {
@@ -4478,7 +4457,7 @@
 
       useEffect(() => {
         if (!schema) return;
-        const theme = themeSettings(schema.settings.theme);
+        const theme = schema.settings.theme;
         const typography = typographySettings(schema.settings.typography, theme);
         ensureGoogleFontLoaded(theme.fontFamily);
         TYPOGRAPHY_ROLES.forEach((role) => ensureGoogleFontLoaded(typography[role.key].fontFamily));
@@ -4532,9 +4511,7 @@
             }
           }
 
-          setSchemaState(null);
-          setValues({});
-          setInvalidIds(new Set());
+          dispatchRuntime({ type: "clear-schema" });
         }
 
         bootstrap();
@@ -4579,32 +4556,18 @@
       }
 
       function updateValue(id, value) {
-        setValues((current) => ({ ...current, [id]: value }));
-        setInvalidIds((current) => {
-          const next = new Set(current);
-          next.delete(id);
-          return next;
-        });
+        dispatchRuntime({ type: "set-value", id, value });
       }
 
       function resetForm() {
         if (!schema) return;
-        setValues(initialValuesFor(schema));
-        setInvalidIds(new Set());
+        dispatchRuntime({ type: "reset-values" });
       }
 
       function validateRequired() {
         if (!schema) return false;
-        const invalid = new Set();
-        schema.fields.forEach((field) => {
-          if (!field.required || field.type === "headline" || field.type === "media" || field.type === "spacer") return;
-          const value = values[field.id];
-          const emptyArray = Array.isArray(value) && value.length === 0;
-          const emptyMediaObject = field.type === "media_upload" && typeof value === "object" && value && !Array.isArray(value) && !value.dataUrl;
-          const emptyCalendar = field.type === "calendar" && (!value || !value.startDate || !value.endDate);
-          if (value === undefined || value === null || value === "" || emptyArray || emptyMediaObject || emptyCalendar) invalid.add(field.id);
-        });
-        setInvalidIds(invalid);
+        const invalid = RuntimeFormModel.invalidIds(schema, values);
+        dispatchRuntime({ type: "set-invalid", invalidIds: invalid });
         if (invalid.size) {
           setTimeout(() => document.querySelector(".field.invalid")?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
           return false;
@@ -4626,12 +4589,6 @@
           setExporting(false);
         }
       }
-
-      const exportIcon = exportFormat === "pdf" || exportFormat === "csv"
-        ? "fa-regular fa-file-lines"
-        : exportFormat === "jpg"
-          ? "fa-regular fa-file-image"
-          : "fa-regular fa-image";
 
       return html`
         <div class=${`runtime-shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
@@ -4693,7 +4650,7 @@
                 <${Icon} icon="fa-solid fa-chevron-down" className="select-icon" />
               </div>
               <button class="button primary" type="button" data-export disabled=${!schema || exporting} onClick=${() => exportFilledForm(exportFormat)}>
-                <${Icon} icon=${exportIcon} /><span>${exporting ? "Preparing" : "Download"}</span>
+                <span>${exporting ? "Preparing" : "Download"}</span>
               </button>
             </div>
           </main>

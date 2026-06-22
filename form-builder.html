@@ -21,7 +21,7 @@
       --sidebar-line: #4a4d50;
       --accent: #861f41;
       --accent-2: #ca4f00;
-      --accent-soft: #f3e8ed;
+      --accent-highlight: #f3e8ed;
       --success: #2e7d32;
       --warning: #946200;
       --danger: #b3261e;
@@ -32,6 +32,14 @@
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --focus-ring: rgba(134, 31, 65, 0.28);
       --form-font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --body-font-family: var(--form-font-family);
+      --body-color: var(--ink);
+      --body-font-size: 14px;
+      --body-font-weight: 400;
+      --body-font-style: normal;
+      --body-line-height: 1.45;
+      --body-letter-spacing: 0px;
+      --body-text-transform: none;
       --form-page-margin: 20px;
       --form-page-padding: 16px;
       --form-field-spacing: 10px;
@@ -1169,7 +1177,7 @@
     }
 
     .field-card.selected .field-type {
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
       color: var(--accent);
     }
 
@@ -1191,6 +1199,14 @@
     .field-card-body {
       padding: 8px var(--form-field-padding) var(--form-field-padding);
       border-radius: 0 0 8px 8px;
+      color: var(--body-color);
+      font-family: var(--body-font-family);
+      font-size: var(--body-font-size);
+      font-weight: var(--body-font-weight);
+      font-style: var(--body-font-style);
+      line-height: var(--body-line-height);
+      letter-spacing: var(--body-letter-spacing);
+      text-transform: var(--body-text-transform);
     }
 
     .field-card.with-background .field-card-body {
@@ -1402,7 +1418,7 @@
       border: 1px solid var(--line);
       background: var(--panel-2);
       border-radius: 8px;
-      color: #747b73;
+      color: var(--body-color);
     }
 
     .preview-line {
@@ -1426,7 +1442,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted);
+      color: var(--body-color);
     }
 
     .choice-dot,
@@ -1452,7 +1468,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--muted);
+      color: var(--body-color);
       flex-wrap: wrap;
     }
 
@@ -1461,8 +1477,8 @@
       background: var(--panel-2);
       border-radius: 8px;
       padding: 7px 9px;
-      font-size: 13px;
-      color: var(--muted);
+      font-size: inherit;
+      color: var(--body-color);
     }
 
     .scale-track {
@@ -1526,8 +1542,8 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: var(--muted);
-      font-size: 12.5px;
+      color: var(--body-color);
+      font-size: inherit;
     }
 
 
@@ -1757,7 +1773,7 @@
 
     .calendar-day.is-range::before,
     .calendar-day-button.is-range::before {
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
       border-radius: 0;
     }
 
@@ -1877,7 +1893,7 @@
 
     .calendar-day-button.is-range:hover::before,
     .calendar-day-button.is-range:focus-visible::before {
-      background: var(--accent-soft);
+      background: var(--accent-highlight);
     }
 
     .calendar-day-button.is-boundary:hover::before,
@@ -2007,15 +2023,15 @@
       border-radius: 8px;
       padding: 12px;
       text-align: center;
-      color: var(--muted);
+      color: var(--body-color);
       user-select: none;
     }
 
     .media-caption {
       margin: 0;
-      color: var(--muted);
-      font-size: 12.5px;
-      line-height: 1.45;
+      color: var(--body-color);
+      font-size: inherit;
+      line-height: var(--body-line-height);
     }
 
     .media-link {
@@ -2948,7 +2964,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.23.1";
-    import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
+    import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from "https://esm.sh/preact@10.23.1/hooks";
     import htm from "https://esm.sh/htm@3.1.1";
 
     const html = htm.bind(h);
@@ -2968,7 +2984,7 @@
       line: "#d7d2cb",
       accent: "#861f41",
       accent2: "#ca4f00",
-      accentSoft: "#f3e8ed",
+      accentHighlight: "#f3e8ed",
       success: "#2e7d32",
       warning: "#946200",
       danger: "#b3261e",
@@ -2976,24 +2992,25 @@
     };
     const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
     const DEFAULT_TYPOGRAPHY = {
+      body: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 14, weight: 400, style: "normal", lineHeight: 1.45, letterSpacing: 0, textTransform: "none" },
       heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
       description: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.muted, size: 14, weight: 400, style: "normal", lineHeight: 1.5, letterSpacing: 0, textTransform: "none" },
       label: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 16, weight: 700, style: "normal", lineHeight: 1.35, letterSpacing: 0, textTransform: "none" }
     };
-    const LEGACY_TYPOGRAPHY_KEYS = ["headingSize", "headingWeight", "headingStyle", "descriptionSize", "descriptionWeight", "descriptionStyle", "labelSize", "labelWeight", "labelStyle"];
     const GOOGLE_FONT_METADATA_URL = "https://cdn.jsdelivr.net/npm/google-font-metadata@6.0.7/data/api-response.json";
     const GOOGLE_FONT_PREVIEW_LIMIT = 36;
     const SYSTEM_FONT_OPTION = { family: "System UI", stack: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', system: true };
     let googleFontCatalogPromise = null;
     const THEME_COLOR_GROUPS = [
-      { title: "Surfaces", fields: [["bg", "Background"], ["panel", "Panel"], ["panel2", "Soft panel"], ["line", "Lines"]] },
-      { title: "Base", fields: [["ink", "Body text"], ["muted", "Muted UI"]] },
-      { title: "Brand", fields: [["accent", "Accent"], ["accent2", "Secondary accent"], ["accentSoft", "Accent soft"]] },
-      { title: "Semantic", fields: [["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]] }
+      { title: "Canvas", fields: [["bg", "Page background"], ["panel", "Form surface"]] },
+      { title: "Interface", fields: [["panel2", "Soft surface"], ["line", "Borders"], ["muted", "Muted UI"]] },
+      { title: "Accent", fields: [["accent", "Primary"], ["accent2", "Secondary"], ["accentHighlight", "Accent highlight"]] },
+      { title: "Feedback", fields: [["success", "Success"], ["warning", "Warning"], ["danger", "Danger"]] }
     ];
-    const THEME_COLOR_FIELDS = THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), []);
+    const THEME_COLOR_FIELDS = [["ink", "Body text"], ...THEME_COLOR_GROUPS.reduce((items, group) => items.concat(group.fields), [])];
     const LAYOUT_CONTROLS = [["pageMargin", "Outer margin", 0, 80], ["pagePadding", "Page padding", 0, 80], ["fieldSpacing", "Block spacing", 0, 48], ["fieldPadding", "Block padding", 0, 64]];
     const TYPOGRAPHY_ROLES = [
+      { key: "body", label: "Body text", icon: "fa-solid fa-align-left", sample: "Body text", colorSource: "ink" },
       { key: "heading", label: "Heading", icon: "lucide-heading", sample: "Heading", colorSource: "ink" },
       { key: "description", label: "Subhead", icon: "fa-solid fa-align-left", sample: "Supporting subhead", colorSource: "muted" },
       { key: "label", label: "Labels", icon: "fa-solid fa-list-ul", sample: "Field label", colorSource: "ink" }
@@ -3005,25 +3022,30 @@
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
     const HEADLINE_MEDIA_PLACEMENTS = ["top", "left", "center", "right", "bottom"];
     const OPPOSITE_HEADLINE_PLACEMENT = { top: "bottom", left: "right", center: "center", right: "left", bottom: "top" };
+    const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
+    const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
+    const NON_REQUIRED_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
+    const LABELLESS_PREVIEW_FIELD_TYPES = new Set(["headline", "spacer"]);
+    const MOOD_METER_ICONS = ["fa-regular fa-face-angry", "fa-regular fa-face-frown", "fa-regular fa-face-meh", "fa-regular fa-face-smile", "fa-regular fa-face-laugh"];
 
     const fieldTypes = [
-      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { outline: true, background: false } } },
-      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { outline: true, background: false } } },
-      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { outline: true, background: false } } },
-      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { outline: true, background: false } } },
-      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { outline: true, background: false } } },
-      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { outline: true, background: false } } },
-      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], outline: true, background: false } } },
-      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"], settings: { outline: true, background: false } } },
-      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High", outline: true, background: false } } },
-      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High", outline: true, background: false } } },
-      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5, outline: true, background: false } } },
-      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, outline: true, background: false } } },
-      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", outline: true, background: false } } },
-      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { outline: true, background: false } } },
-      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", mediaPlacement: "right", media: null, outline: false, background: false } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", outline: false, background: false } } },
-      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, outline: false, background: false } } }
+      { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { showLabel: true, outline: true, background: false } } },
+      { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { showLabel: true, outline: true, background: false } } },
+      { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { showLabel: true, outline: true, background: false } } },
+      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { showLabel: true, outline: true, background: false } } },
+      { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { showLabel: true, outline: true, background: false } } },
+      { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { showLabel: true, outline: true, background: false } } },
+      { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], showLabel: true, outline: true, background: false } } },
+      { type: "poll", name: "Poll", icon: "fa-solid fa-chart-simple", category: "input", defaults: { label: "Poll", description: "", required: false, options: ["Yes", "No", "Maybe"], settings: { showLabel: true, outline: true, background: false } } },
+      { type: "mood_meter", name: "Mood meter", icon: "fa-regular fa-face-smile", category: "input", defaults: { label: "Mood meter", description: "", required: false, settings: { minLabel: "Low", maxLabel: "High", showLabel: true, outline: true, background: false } } },
+      { type: "linear_scale", name: "Linear scale", icon: "fa-solid fa-sliders", category: "input", defaults: { label: "Linear scale", description: "", required: false, settings: { min: 1, max: 10, minLabel: "Low", maxLabel: "High", showLabel: true, outline: true, background: false } } },
+      { type: "star_rating", name: "Star rating", icon: "fa-regular fa-star", category: "input", defaults: { label: "Star rating", description: "", required: false, settings: { max: 5, showLabel: true, outline: true, background: false } } },
+      { type: "radar", name: "Radar", icon: "radar-graph", category: "input", defaults: { label: "Radar", description: "", required: false, settings: { mode: "shape", max: DEFAULT_RADAR_MAX, axes: DEFAULT_RADAR_AXES, defaultValues: DEFAULT_RADAR_VALUES, defaultPoint: DEFAULT_RADAR_POINT, showLabel: true, outline: true, background: false } } },
+      { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", showLabel: true, outline: true, background: false } } },
+      { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { showLabel: true, outline: true, background: false } } },
+      { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", mediaPlacement: "right", media: null, showLabel: true, outline: false, background: false } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", showLabel: true, outline: false, background: false } } },
+      { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, showLabel: true, outline: false, background: false } } }
     ];
 
     function uid() {
@@ -3145,14 +3167,9 @@
       return googleFontCatalogPromise;
     }
 
-    function typographyRoleMeta(key) {
+    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
       const role = TYPOGRAPHY_ROLES.find((item) => item.key === key);
       if (!role) throw new Error(`Unsupported typography role: ${key}`);
-      return role;
-    }
-
-    function typographyRoleDefault(key, theme = DEFAULT_THEME) {
-      const role = typographyRoleMeta(key);
       const base = DEFAULT_TYPOGRAPHY[key];
       return {
         ...base,
@@ -3165,23 +3182,6 @@
       return value && typeof value === "object" && !Array.isArray(value);
     }
 
-    function isLegacyTypography(value) {
-      return isPlainObject(value) && LEGACY_TYPOGRAPHY_KEYS.some((key) => key in value);
-    }
-
-    function legacyTypographySettings(input, theme = DEFAULT_THEME) {
-      return TYPOGRAPHY_ROLES.reduce((settings, role) => {
-        const defaults = typographyRoleDefault(role.key, theme);
-        settings[role.key] = {
-          ...defaults,
-          size: input[role.key + "Size"] ?? defaults.size,
-          weight: input[role.key + "Weight"] ?? defaults.weight,
-          style: input[role.key + "Style"] ?? defaults.style
-        };
-        return settings;
-      }, {});
-    }
-
     function typographyRoleSettings(value, key, theme = DEFAULT_THEME) {
       const defaults = typographyRoleDefault(key, theme);
       const source = isPlainObject(value) ? value : {};
@@ -3192,7 +3192,6 @@
     }
 
     function typographySettings(input, theme = DEFAULT_THEME) {
-      if (isLegacyTypography(input)) return legacyTypographySettings(input, theme);
       const source = isPlainObject(input) ? input : {};
       return TYPOGRAPHY_ROLES.reduce((settings, role) => {
         settings[role.key] = typographyRoleSettings(source[role.key], role.key, theme);
@@ -3217,25 +3216,20 @@
       return `${fontNameFromStack(style.fontFamily)} / ${style.size}px / ${style.weight}`;
     }
 
-    // TODO Why does this function exist? It just returns the input.
-    function themeSettings(input) {
-      return input;
-    }
-
     function themeStyle(schema) {
-      const theme = themeSettings(schema.settings.theme);
+      const theme = schema.settings.theme;
       const layout = schema.settings.layout;
       const type = typographySettings(schema.settings.typography, theme);
       return [
         `--bg: ${theme.bg}`,
         `--panel: ${theme.panel}`,
         `--panel-2: ${theme.panel2}`,
-        `--ink: ${theme.ink}`,
+        `--ink: ${type.body.color}`,
         `--muted: ${theme.muted}`,
         `--line: ${theme.line}`,
         `--accent: ${theme.accent}`,
         `--accent-2: ${theme.accent2}`,
-        `--accent-soft: ${theme.accentSoft}`,
+        `--accent-highlight: ${theme.accentHighlight}`,
         `--success: ${theme.success}`,
         `--warning: ${theme.warning}`,
         `--danger: ${theme.danger}`,
@@ -3243,7 +3237,7 @@
         `--warning-soft: ${hexToRgba(theme.warning, 0.12)}`,
         `--danger-soft: ${hexToRgba(theme.danger, 0.12)}`,
         `--focus-ring: ${hexToRgba(theme.accent, 0.28)}`,
-        `--form-font-family: ${theme.fontFamily}`,
+        `--form-font-family: ${type.body.fontFamily}`,
         `--form-page-margin: ${layout.pageMargin}px`,
         `--form-page-padding: ${layout.pagePadding}px`,
         `--form-field-spacing: ${layout.fieldSpacing}px`,
@@ -3316,22 +3310,8 @@
       return date;
     }
 
-    function cleanDate(value) {
-      const date = dateFromISO(value);
-      return date ? isoFromDate(date) : "";
-    }
-
     function todayISO() {
       return isoFromDate(new Date());
-    }
-
-    function defaultCalendarSettings() {
-      return {
-        startDate: "",
-        endDate: "",
-        allowMilestones: true,
-        milestones: []
-      };
     }
 
     function dateTime(value) {
@@ -3344,46 +3324,42 @@
       return date ? date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "Not set";
     }
 
-    function monthStartFromDate(value) {
-      const date = dateFromISO(value) || new Date();
-      return new Date(date.getFullYear(), date.getMonth(), 1);
-    }
-
     function monthLabel(date) {
       return date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
     }
 
-    function calendarGridDates(monthDate) {
-      const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-      const start = new Date(first);
-      start.setDate(first.getDate() - first.getDay());
-      return Array.from({ length: 42 }, (_, index) => {
-        const date = new Date(start);
-        date.setDate(start.getDate() + index);
-        return date;
-      });
-    }
+    class CalendarModel {
+      constructor(field) {
+        Object.assign(this, field.settings);
+      }
 
-    function calendarSettings(field) {
-      const settings = field.settings;
-      return {
-        startDate: settings.startDate,
-        endDate: settings.endDate,
-        allowMilestones: settings.allowMilestones,
-        milestones: settings.milestones
-      };
-    }
+      get anchorDate() {
+        return this.startDate || this.endDate || this.milestones.find((item) => item.date)?.date || todayISO();
+      }
 
-    function calendarAnchorDate(settings) {
-      return settings.startDate || settings.endDate || settings.milestones.find((item) => item.date)?.date || todayISO();
-    }
+      get monthDate() {
+        const date = dateFromISO(this.anchorDate) || new Date();
+        return new Date(date.getFullYear(), date.getMonth(), 1);
+      }
 
-    function calendarMilestonesForDate(milestones, iso) {
-      return milestones.filter((item) => item.date === iso);
-    }
+      get visibleMilestones() {
+        return this.milestones.filter((item) => item.date || item.label);
+      }
 
-    function calendarMilestoneDetails(items) {
-      return items.map((item) => `${item.label} - ${readableDate(item.date)}`).join(" | ");
+      milestonesForDate(iso) {
+        return this.milestones.filter((item) => item.date === iso);
+      }
+
+      static gridDates(monthDate) {
+        const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+        const start = new Date(first);
+        start.setDate(first.getDate() - first.getDay());
+        return Array.from({ length: 42 }, (_, index) => {
+          const date = new Date(start);
+          date.setDate(start.getDate() + index);
+          return date;
+        });
+      }
     }
 
     function settingNumber(value, defaultValue) {
@@ -3393,86 +3369,103 @@
       return Number.isFinite(number) ? number : defaultValue;
     }
 
-    function linearScaleSettings(field) {
-      const settings = field.settings;
-      return {
-        min: settings.min,
-        max: settings.max,
-        minLabel: settings.minLabel,
-        maxLabel: settings.maxLabel
-      };
-    }
+    class RadarModel {
+      constructor(field) {
+        const settings = field.settings || field;
+        this.mode = settings.mode === "point" ? "point" : "shape";
+        this.max = settingNumber(settings.max, DEFAULT_RADAR_MAX);
+        this.axes = Array.isArray(settings.axes) && settings.axes.length ? settings.axes : DEFAULT_RADAR_AXES;
+        this.defaultValues = settings.defaultValues;
+        this.defaultPoint = settings.defaultPoint;
+      }
 
-    function starRatingSettings(field) {
-      const settings = field.settings;
-      return { max: settings.max };
-    }
+      get midpoint() {
+        return Math.round(RADAR_MIN_VALUE + (this.max - RADAR_MIN_VALUE) / 2);
+      }
 
-    function spacerSettings(field) {
-      const settings = field.settings;
-      return {
-        height: settings.height,
-        showLine: settings.showLine,
-        lineStyle: settings.lineStyle,
-        lineThickness: settings.lineThickness
-      };
-    }
+      get values() {
+        return RadarModel.values(this.defaultValues, this.axes, this.max);
+      }
 
-    function spacerStyle(settings) {
-      return `height: ${settings.height}px;`;
-    }
+      get point() {
+        return RadarModel.point(this.defaultPoint, this.max);
+      }
 
-    function spacerLineStyle(settings) {
-      return `border-top-width: ${settings.lineThickness}px; border-top-style: ${settings.lineStyle};`;
-    }
+      static clampValue(value, max) {
+        const number = settingNumber(value, Number.NaN);
+        return Number.isFinite(number) ? Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number))) : null;
+      }
 
-    // TODO Why do these functions exist? They just return the input.
-    function radarAxes(axes) {
-      return axes;
-    }
+      static values(values, axes, max) {
+        const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
+        const source = Array.isArray(values) ? values : [];
+        return axes.map((_, index) => RadarModel.clampValue(source[index], max) ?? midpoint);
+      }
 
-    function radarMode(mode) {
-      return mode;
-    }
+      static angle(value) {
+        const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
+        const wrapped = ((number % 360) + 360) % 360;
+        return Math.round(wrapped * 100) / 100;
+      }
 
-    function radarMax(value) {
-      return value;
-    }
+      static pointValue(value, max) {
+        const number = settingNumber(value, Number.NaN);
+        return Number.isFinite(number) ? Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100 : null;
+      }
 
-    function clampRadarValue(value, max) {
-      const number = settingNumber(value, Number.NaN);
-      if (!Number.isFinite(number)) return null;
-      return Math.max(RADAR_MIN_VALUE, Math.min(max, Math.round(number)));
-    }
+      static point(point, max) {
+        const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
+        return {
+          angle: RadarModel.angle(source.angle),
+          value: RadarModel.pointValue(source.value, max) ?? RadarModel.pointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
+        };
+      }
 
-    function radarValues(values, axes, max) {
-      const midpoint = Math.round(RADAR_MIN_VALUE + (max - RADAR_MIN_VALUE) / 2);
-      const source = Array.isArray(values) ? values : [];
-      return axes.map((_, index) => clampRadarValue(source[index], max) ?? midpoint);
-    }
+      static scale(value, max) {
+        return Math.max(0, Math.min(1, Number(value) / Math.max(1, max)));
+      }
 
-    function radarAngle(value) {
-      const number = settingNumber(value, DEFAULT_RADAR_POINT.angle);
-      const wrapped = ((number % 360) + 360) % 360;
-      return Math.round(wrapped * 100) / 100;
-    }
+      static vertex(index, count, center, radius) {
+        const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
+        return {
+          x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
+          y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
+        };
+      }
 
-    function clampRadarPointValue(value, max) {
-      const number = settingNumber(value, Number.NaN);
-      if (!Number.isFinite(number)) return null;
-      return Math.round(Math.max(RADAR_MIN_VALUE, Math.min(max, number)) * 100) / 100;
-    }
+      static polygon(values, max, center, radius) {
+        return values.map((value, index) => {
+          const point = RadarModel.vertex(index, values.length, center, radius * RadarModel.scale(value, max));
+          return `${point.x},${point.y}`;
+        }).join(" ");
+      }
 
-    function radarPointSetting(point, max) {
-      const source = point && typeof point === "object" && !Array.isArray(point) ? point : DEFAULT_RADAR_POINT;
-      return {
-        angle: radarAngle(source.angle),
-        value: clampRadarPointValue(source.value, max) ?? clampRadarPointValue(DEFAULT_RADAR_POINT.value, max) ?? RADAR_MIN_VALUE
-      };
-    }
+      static polar(angle, value, max, center, radius) {
+        const radians = -Math.PI / 2 + (RadarModel.angle(angle) * Math.PI / 180);
+        const scaled = RadarModel.scale(value, max);
+        return {
+          x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
+          y: Math.round((center + Math.sin(radians) * radius * scaled) * 100) / 100
+        };
+      }
 
-    function fieldMeta(field) {
-      return typeMeta(field?.type);
+      static format(value) {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "";
+        return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
+      }
+
+      static describe(angle, axes) {
+        const step = 360 / axes.length;
+        const cleaned = RadarModel.angle(angle);
+        const position = cleaned / step;
+        const lower = Math.floor(position) % axes.length;
+        const upper = (lower + 1) % axes.length;
+        const blend = position - lower;
+        if (blend < 0.06) return axes[lower];
+        if (blend > 0.94) return axes[upper];
+        return `${axes[lower]} / ${axes[upper]}`;
+      }
     }
 
     function assertObject(value, name) {
@@ -3556,7 +3549,6 @@
       assertObject(settings.layout, "schema.settings.layout");
       assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
       Object.keys(DEFAULT_LAYOUT).forEach((key) => assertNumberRange(settings.layout[key], `schema.settings.layout.${key}`, 0, key === "fieldSpacing" ? 48 : 80, true));
-      settings.typography = typographySettings(settings.typography, settings.theme);
       assertObject(settings.typography, "schema.settings.typography");
       assertExactKeys(settings.typography, TYPOGRAPHY_ROLE_KEYS, "schema.settings.typography");
       TYPOGRAPHY_ROLE_KEYS.forEach((key) => assertTypographyRole(settings.typography[key], key));
@@ -3593,7 +3585,8 @@
     }
 
     function assertSettingKeys(settings, keys, fieldType) {
-      assertExactKeys(settings, [...keys, "outline", "background"], `${fieldType}.settings`);
+      assertExactKeys(settings, [...keys, "showLabel", "outline", "background"], `${fieldType}.settings`);
+      assertBoolean(settings.showLabel, `${fieldType}.settings.showLabel`);
       assertBoolean(settings.outline, `${fieldType}.settings.outline`);
       assertBoolean(settings.background, `${fieldType}.settings.background`);
     }
@@ -3613,58 +3606,73 @@
     function assertNestedMediaSettings(settings, name) {
       if (settings === null) return;
       assertObject(settings, name);
-      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "outline", "background"], name);
+      assertExactKeys(settings, [...MEDIA_SETTING_KEYS, "showLabel", "outline", "background"], name);
+      assertBoolean(settings.showLabel, `${name}.showLabel`);
       assertBoolean(settings.outline, `${name}.outline`);
       assertBoolean(settings.background, `${name}.background`);
       assertMediaSettingValues(settings, name);
     }
 
-    function schemaField(raw) {
-      const field = assertObject(raw, "field");
-      typeMeta(field.type);
-      const baseKeys = ["id", "type", "label", "description", "required", "settings"];
-      assertString(field.id, "field.id");
-      assertString(field.type, "field.type");
-      assertString(field.label, `${field.type}.label`);
-      assertString(field.description, `${field.type}.description`);
-      assertBoolean(field.required, `${field.type}.required`);
-      const settings = assertObject(field.settings, `${field.type}.settings`);
+    const FIELD_SCHEMA_VALIDATORS = {
+      calendar: "calendar",
+      mood_meter: "moodMeter",
+      linear_scale: "linearScale",
+      star_rating: "starRating",
+      radar: "radar",
+      media_upload: "mediaUpload",
+      media: "media",
+      headline: "headline",
+      spacer: "spacer"
+    };
 
-      if (["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) {
-        assertExactKeys(field, [...baseKeys, "placeholder"], "field");
-        assertString(field.placeholder, `${field.type}.placeholder`);
-        assertSettingKeys(settings, [], field.type);
+    class FieldSchemaValidator {
+      constructor(raw) {
+        this.field = assertObject(raw, "field");
+        typeMeta(this.field.type);
+        this.baseKeys = ["id", "type", "label", "description", "required", "settings"];
+        assertString(this.field.id, "field.id");
+        assertString(this.field.type, "field.type");
+        assertString(this.field.label, `${this.field.type}.label`);
+        assertString(this.field.description, `${this.field.type}.description`);
+        assertBoolean(this.field.required, `${this.field.type}.required`);
+        this.settings = assertObject(this.field.settings, `${this.field.type}.settings`);
       }
 
-      if (["multiple_choice", "checkbox", "poll"].includes(field.type)) {
-        assertExactKeys(field, [...baseKeys, "options"], "field");
-        assertArray(field.options, `${field.type}.options`);
-        field.options.forEach((option, index) => assertString(option, `${field.type}.options[${index}]`));
-        assertSettingKeys(settings, [], field.type);
+      fieldShape(extraKeys = [], settingKeys = []) {
+        assertExactKeys(this.field, [...this.baseKeys, ...extraKeys], "field");
+        assertSettingKeys(this.settings, settingKeys, this.field.type);
       }
 
-      if (field.type === "calendar") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["startDate", "endDate", "allowMilestones", "milestones"], field.type);
+      placeholder() {
+        this.fieldShape(["placeholder"]);
+        assertString(this.field.placeholder, `${this.field.type}.placeholder`);
+      }
+
+      options() {
+        this.fieldShape(["options"]);
+        assertArray(this.field.options, `${this.field.type}.options`);
+        this.field.options.forEach((option, index) => assertString(option, `${this.field.type}.options[${index}]`));
+      }
+
+      calendar() {
+        const settings = this.settings;
+        this.fieldShape([], ["startDate", "endDate", "allowMilestones", "milestones"]);
         assertDateSetting(settings.startDate, "calendar.settings.startDate");
         assertDateSetting(settings.endDate, "calendar.settings.endDate");
-        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) {
-          throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
-        }
+        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
         assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
         assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
       }
 
-      if (field.type === "mood_meter") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["minLabel", "maxLabel"], field.type);
-        assertString(settings.minLabel, "mood_meter.settings.minLabel");
-        assertString(settings.maxLabel, "mood_meter.settings.maxLabel");
+      moodMeter() {
+        this.fieldShape([], ["minLabel", "maxLabel"]);
+        assertString(this.settings.minLabel, "mood_meter.settings.minLabel");
+        assertString(this.settings.maxLabel, "mood_meter.settings.maxLabel");
       }
 
-      if (field.type === "linear_scale") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["min", "max", "minLabel", "maxLabel"], field.type);
+      linearScale() {
+        const settings = this.settings;
+        this.fieldShape([], ["min", "max", "minLabel", "maxLabel"]);
         assertNumber(settings.min, "linear_scale.settings.min");
         assertNumber(settings.max, "linear_scale.settings.max");
         if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
@@ -3672,15 +3680,14 @@
         assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
       }
 
-      if (field.type === "star_rating") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["max"], field.type);
-        assertNumberRange(settings.max, "star_rating.settings.max", 3, 10, true);
+      starRating() {
+        this.fieldShape([], ["max"]);
+        assertNumberRange(this.settings.max, "star_rating.settings.max", 3, 10, true);
       }
 
-      if (field.type === "radar") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["mode", "max", "axes", "defaultValues", "defaultPoint"], field.type);
+      radar() {
+        const settings = this.settings;
+        this.fieldShape([], ["mode", "max", "axes", "defaultValues", "defaultPoint"]);
         assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
         assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
         assertArray(settings.axes, "radar.settings.axes");
@@ -3690,21 +3697,19 @@
         assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
       }
 
-      if (field.type === "media_upload") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["accept"], field.type);
-        assertString(settings.accept, "media_upload.settings.accept");
+      mediaUpload() {
+        this.fieldShape([], ["accept"]);
+        assertString(this.settings.accept, "media_upload.settings.accept");
       }
 
-      if (field.type === "media") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, MEDIA_SETTING_KEYS, field.type);
-        assertMediaSettingValues(settings, "media.settings");
+      media() {
+        this.fieldShape([], MEDIA_SETTING_KEYS);
+        assertMediaSettingValues(this.settings, "media.settings");
       }
 
-      if (field.type === "headline") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"], field.type);
+      headline() {
+        const settings = this.settings;
+        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment", "mediaPlacement", "media"]);
         assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
         assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
         assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
@@ -3713,16 +3718,25 @@
         assertNestedMediaSettings(settings.media, "headline.settings.media");
       }
 
-      if (field.type === "spacer") {
-        assertExactKeys(field, baseKeys, "field");
-        assertSettingKeys(settings, ["height", "showLine", "lineStyle", "lineThickness"], field.type);
+      spacer() {
+        const settings = this.settings;
+        this.fieldShape([], ["height", "showLine", "lineStyle", "lineThickness"]);
         assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
         assertBoolean(settings.showLine, "spacer.settings.showLine");
         assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
         assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
       }
+    }
 
-      return field;
+    function schemaField(raw) {
+      const validator = new FieldSchemaValidator(raw);
+      const method = PLACEHOLDER_FIELD_TYPES.has(validator.field.type)
+        ? "placeholder"
+        : OPTION_FIELD_TYPES.has(validator.field.type)
+          ? "options"
+          : FIELD_SCHEMA_VALIDATORS[validator.field.type];
+      validator[method]?.();
+      return validator.field;
     }
 
     function schemaDocument(input) {
@@ -3744,8 +3758,7 @@
         schemaField(field);
         if (seenIds.has(field.id)) throw new Error(`Duplicate field id: ${field.id}`);
         seenIds.add(field.id);
-        if (field.type === "headline" && field.required) throw new Error(`schema.fields[${index}].required must be false for headline.`);
-        if (["media", "spacer"].includes(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
+        if (NON_REQUIRED_FIELD_TYPES.has(field.type) && field.required) throw new Error(`schema.fields[${index}].required must be false for ${field.type}.`);
       });
       return schema;
     }
@@ -3756,9 +3769,9 @@
 
     function formHasContent(schema) {
       return schema.settings.name !== DEFAULT_FORM_NAME
-        || JSON.stringify(themeSettings(schema.settings.theme)) !== JSON.stringify(DEFAULT_THEME)
+        || JSON.stringify(schema.settings.theme) !== JSON.stringify(DEFAULT_THEME)
         || JSON.stringify(schema.settings.layout) !== JSON.stringify(DEFAULT_LAYOUT)
-        || JSON.stringify(typographySettings(schema.settings.typography, themeSettings(schema.settings.theme))) !== JSON.stringify(DEFAULT_TYPOGRAPHY)
+        || JSON.stringify(typographySettings(schema.settings.typography, schema.settings.theme)) !== JSON.stringify(DEFAULT_TYPOGRAPHY)
         || schema.fields.length > 0;
     }
 
@@ -3828,124 +3841,114 @@
       return "center";
     }
 
-    function fieldOutline(field) {
-      return field.settings.outline === true;
+    class HeadlineModel {
+      constructor(field) {
+        const settings = field.settings;
+        this.field = field;
+        this.headingHorizontalAlignment = horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]);
+        this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
+        this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
+        this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
+        this.mediaPlacement = HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right";
+        this.mediaField = settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: settings.media } : null;
+        this.showLabel = settings.showLabel;
+        this.outline = settings.outline;
+        this.background = settings.background;
+      }
+
+      get mediaCenter() {
+        return Boolean(this.mediaField && this.mediaPlacement === "center");
+      }
+
+      get mediaFirst() {
+        return Boolean(this.mediaField && this.mediaPlacement === "top");
+      }
+
+      textStyle(horizontalKey, verticalKey) {
+        const horizontal = this[horizontalKey];
+        const vertical = this[verticalKey];
+        return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+      }
     }
 
-    function fieldBackground(field) {
-      return field.settings.background === true;
-    }
+    class MediaModel {
+      constructor(field) {
+        const settings = field.settings;
+        const objectFit = settings.objectFit;
+        if (!["contain", "cover", "fill", "scale-down"].includes(objectFit)) throw new Error(`Unsupported media fit: ${objectFit}`);
+        this.field = field;
+        this.sourceType = settings.sourceType;
+        this.url = settings.url;
+        this.dataUrl = settings.dataUrl;
+        this.mimeType = settings.mimeType;
+        this.fileName = settings.fileName;
+        this.alt = settings.alt;
+        this.caption = settings.caption;
+        this.html = settings.html;
+        this.iframeHeight = settings.iframeHeight;
+        this.horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
+        this.verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
+        this.scale = settings.scale;
+        this.maxWidth = settings.maxWidth;
+        this.maxHeight = settings.maxHeight;
+        this.objectFit = objectFit;
+        this.outline = settings.outline;
+        this.background = settings.background;
+      }
 
-    function headlineSettings(field) {
-      const settings = field.settings;
-      return {
-        headingHorizontalAlignment: horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]),
-        headingVerticalAlignment: verticalAlignmentSetting(settings.headingVerticalAlignment),
-        descriptionHorizontalAlignment: horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]),
-        descriptionVerticalAlignment: verticalAlignmentSetting(settings.descriptionVerticalAlignment),
-        mediaPlacement: HEADLINE_MEDIA_PLACEMENTS.includes(settings.mediaPlacement) ? settings.mediaPlacement : "right",
-        media: settings.media,
-        outline: fieldOutline(field),
-        background: fieldBackground(field)
-      };
-    }
+      get source() {
+        return this.sourceType === "file" ? this.dataUrl : this.url;
+      }
 
-    function mediaSettings(field) {
-      const settings = field.settings;
-      const horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-      const verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
-      const fits = new Set(["contain", "cover", "fill", "scale-down"]);
-      if (!fits.has(settings.objectFit)) throw new Error(`Unsupported media fit: ${settings.objectFit}`);
-      return {
-        sourceType: settings.sourceType,
-        url: settings.url,
-        dataUrl: settings.dataUrl,
-        mimeType: settings.mimeType,
-        fileName: settings.fileName,
-        alt: settings.alt,
-        caption: settings.caption,
-        html: settings.html,
-        iframeHeight: settings.iframeHeight,
-        horizontalAlignment,
-        verticalAlignment,
-        scale: settings.scale,
-        maxWidth: settings.maxWidth,
-        maxHeight: settings.maxHeight,
-        objectFit: settings.objectFit,
-        outline: fieldOutline(field),
-        background: fieldBackground(field)
-      };
-    }
+      get kind() {
+        if (this.sourceType === "html") return "html";
+        const source = String(this.source || "").toLowerCase().split(/[?#]/)[0];
+        const mime = String(this.mimeType || "").toLowerCase();
+        if (mime.startsWith("image/") || source.startsWith("data:image/") || /\.(apng|avif|gif|jpe?g|png|svg|webp)$/i.test(source)) return "image";
+        if (mime.startsWith("video/") || source.startsWith("data:video/") || /\.(mp4|m4v|mov|ogv|webm)$/i.test(source)) return "video";
+        if (mime.startsWith("audio/") || source.startsWith("data:audio/") || /\.(aac|flac|m4a|mp3|oga|ogg|wav|webm)$/i.test(source)) return "audio";
+        if (mime === "application/pdf" || source.startsWith("data:application/pdf") || /\.pdf$/i.test(source)) return "document";
+        return "unknown";
+      }
 
-    function splitMediaField(field) {
-      return field.settings.media ? { id: field.id + "_media", type: "media", label: field.label, description: "", required: false, settings: field.settings.media } : null;
-    }
+      get title() {
+        return this.alt || this.fileName || this.field.label;
+      }
 
-    function mediaSource(settings) {
-      return settings.sourceType === "file" ? settings.dataUrl : settings.url;
-    }
+      get alignmentStyle() {
+        const justify = this.horizontalAlignment === "stretch" ? "stretch" : horizontalFlexValue(this.horizontalAlignment);
+        return `justify-content: ${justify}; align-items: ${verticalFlexValue(this.verticalAlignment)}; text-align: ${textAlignValue(this.horizontalAlignment)};`;
+      }
 
-    function mediaKind(settings) {
-      if (settings.sourceType === "html") return "html";
-      const source = mediaSource(settings).toLowerCase().split(/[?#]/)[0];
-      const mime = settings.mimeType.toLowerCase();
-      if (mime.startsWith("image/") || source.startsWith("data:image/") || /\.(apng|avif|gif|jpe?g|png|svg|webp)$/i.test(source)) return "image";
-      if (mime.startsWith("video/") || source.startsWith("data:video/") || /\.(mp4|m4v|mov|ogv|webm)$/i.test(source)) return "video";
-      if (mime.startsWith("audio/") || source.startsWith("data:audio/") || /\.(aac|flac|m4a|mp3|oga|ogg|wav|webm)$/i.test(source)) return "audio";
-      if (mime === "application/pdf" || source.startsWith("data:application/pdf") || /\.pdf$/i.test(source)) return "document";
-      return "unknown";
-    }
+      get audioStyle() {
+        return this.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
+      }
 
-    function objectPositionX(value) {
-      if (value === "left") return "left";
-      if (value === "right") return "right";
-      return "center";
-    }
-
-    function objectPositionY(value) {
-      if (value === "top") return "top";
-      if (value === "bottom") return "bottom";
-      return "center";
-    }
-
-    function headlineTextStyle(settings, horizontalKey, verticalKey) {
-      const horizontal = settings[horizontalKey];
-      const vertical = settings[verticalKey];
-      return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
-    }
-
-    function mediaAlignmentStyle(settings) {
-      const horizontal = settings.horizontalAlignment;
-      const vertical = settings.verticalAlignment;
-      const justify = horizontal === "stretch" ? "stretch" : horizontalFlexValue(horizontal);
-      return `justify-content: ${justify}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
-    }
-
-    function mediaVisualStyle(settings, extra = "") {
-      const width = settings.horizontalAlignment === "stretch" ? "100%" : `${settings.scale}%`;
-      const maxWidth = settings.maxWidth ? `max-width: ${settings.maxWidth};` : "";
-      const maxHeight = `max-height: ${settings.maxHeight}px;`;
-      const objectPosition = `object-position: ${objectPositionX(settings.horizontalAlignment)} ${objectPositionY(settings.verticalAlignment)};`;
-      return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${settings.objectFit}; ${objectPosition} ${extra}`.trim();
+      visualStyle(extra = "") {
+        const width = this.horizontalAlignment === "stretch" ? "100%" : `${this.scale}%`;
+        const maxWidth = this.maxWidth ? `max-width: ${this.maxWidth};` : "";
+        const maxHeight = `max-height: ${this.maxHeight}px;`;
+        const positionX = this.horizontalAlignment === "left" || this.horizontalAlignment === "right" ? this.horizontalAlignment : "center";
+        const positionY = this.verticalAlignment === "top" || this.verticalAlignment === "bottom" ? this.verticalAlignment : "center";
+        return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${this.objectFit}; object-position: ${positionX} ${positionY}; ${extra}`.trim();
+      }
     }
 
     function MediaPreview({ field }) {
-      const settings = mediaSettings(field);
-      const source = mediaSource(settings);
-      const kind = mediaKind(settings);
-      const title = settings.alt || settings.fileName || field.label;
-      const wrapStyle = mediaAlignmentStyle(settings);
-      const visualStyle = mediaVisualStyle(settings);
+      const media = new MediaModel(field);
+      const source = media.source;
+      const kind = media.kind;
+      const visualStyle = media.visualStyle();
 
       if (kind === "html") {
         return html`
           <div class="media-preview">
-            <div class="media-content-wrap" style=${wrapStyle}>
-              ${settings.html
-            ? html`<iframe class="media-embed media-visual" title=${title} srcdoc=${settings.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}></iframe>`
-            : html`<div class="media-placeholder" style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : ""}>Embedded HTML</div>`}
+            <div class="media-content-wrap" style=${media.alignmentStyle}>
+              ${media.html
+            ? html`<iframe class="media-embed media-visual" title=${media.title} srcdoc=${media.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${media.visualStyle(`height: ${media.iframeHeight}px; max-height: none;`)}></iframe>`
+            : html`<div class="media-placeholder" style=${media.horizontalAlignment === "stretch" ? "width: 100%;" : ""}>Embedded HTML</div>`}
             </div>
-            ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+            ${media.caption ? html`<p class="media-caption">${media.caption}</p>` : null}
           </div>
         `;
       }
@@ -3956,14 +3959,14 @@
 
       return html`
         <div class="media-preview">
-          <div class="media-content-wrap" style=${wrapStyle}>
-            ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${settings.alt || ""} style=${visualStyle} />` : null}
-            ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${title} style=${visualStyle}></video>` : null}
-            ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${title} style=${settings.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${settings.scale}%; ${settings.maxWidth ? `max-width: ${settings.maxWidth};` : ""}`}></audio>` : null}
-            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${title} style=${mediaVisualStyle(settings, `height: ${settings.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a></object>` : null}
-            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${settings.fileName || source}</span></a>` : null}
+          <div class="media-content-wrap" style=${media.alignmentStyle}>
+            ${kind === "image" ? html`<img class="media-visual" src=${source} alt=${media.alt || ""} style=${visualStyle} />` : null}
+            ${kind === "video" ? html`<video class="media-visual" src=${source} controls playsinline title=${media.title} style=${visualStyle}></video>` : null}
+            ${kind === "audio" ? html`<audio class="media-visual" src=${source} controls title=${media.title} style=${media.audioStyle}></audio>` : null}
+            ${kind === "document" ? html`<object class="media-visual" data=${source} type="application/pdf" title=${media.title} style=${media.visualStyle(`height: ${media.iframeHeight}px; max-height: none;`)}><a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${media.fileName || source}</span></a></object>` : null}
+            ${kind === "unknown" ? html`<a class="media-link" href=${source} target="_blank" rel="noreferrer"><${Icon} icon="fa-solid fa-arrow-up-right-from-square" /><span>${media.fileName || source}</span></a>` : null}
           </div>
-          ${settings.caption ? html`<p class="media-caption">${settings.caption}</p>` : null}
+          ${media.caption ? html`<p class="media-caption">${media.caption}</p>` : null}
         </div>
       `;
     }
@@ -4019,6 +4022,16 @@
         viewBox: "0 0 24 24",
         className: "svg-icon-stroke",
         content: () => html`<path d="M12 3v12"></path><path d="m17 8-5-5-5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>`
+      },
+      "lucide-code-xml": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="m18 16 4-4-4-4"></path><path d="M6 8l-4 4 4 4"></path><path d="m14.5 4-5 16"></path>`
+      },
+      "lucide-package-open": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="M12 22v-9"></path><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"></path><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"></path><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"></path>`
       }
     };
 
@@ -4032,70 +4045,15 @@
       return html`<svg class=${svgClass} viewBox=${viewBox} focusable="false" ...${labelProps}>${title ? html`<title>${title}</title>` : null}${content}</svg>`;
     }
 
-    function radarPoint(index, count, center, radius) {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * index / count);
-      return {
-        x: Math.round((center + Math.cos(angle) * radius) * 100) / 100,
-        y: Math.round((center + Math.sin(angle) * radius) * 100) / 100
-      };
-    }
-
-    function radarValueScale(value, max) {
-      return Math.max(0, Math.min(1, Number(value) / Math.max(1, max)));
-    }
-
-    function radarPoints(values, max, center, radius) {
-      return values.map((value, index) => {
-        const point = radarPoint(index, values.length, center, radius * radarValueScale(value, max));
-        return `${point.x},${point.y}`;
-      }).join(" ");
-    }
-
-    function radarPointFromPolar(angle, value, max, center, radius) {
-      const radians = -Math.PI / 2 + (radarAngle(angle) * Math.PI / 180);
-      const scaled = radarValueScale(value, max);
-      return {
-        x: Math.round((center + Math.cos(radians) * radius * scaled) * 100) / 100,
-        y: Math.round((center + Math.sin(radians) * radius * scaled) * 100) / 100
-      };
-    }
-
-    function formatRadarNumber(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return "";
-      return Number.isInteger(number) ? String(number) : number.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
-    }
-
-    function nearestRadarAxis(angle, axes) {
-      const labels = radarAxes(axes);
-      const step = 360 / labels.length;
-      const index = Math.round(radarAngle(angle) / step) % labels.length;
-      return labels[index];
-    }
-
-    function radarPointDescription(angle, axes) {
-      const labels = radarAxes(axes);
-      const step = 360 / labels.length;
-      const cleaned = radarAngle(angle);
-      const position = cleaned / step;
-      const lower = Math.floor(position) % labels.length;
-      const upper = (lower + 1) % labels.length;
-      const blend = position - lower;
-      if (blend < 0.06) return labels[lower];
-      if (blend > 0.94) return labels[upper];
-      return `${labels[lower]} ↔ ${labels[upper]}`;
-    }
-
     function RadarPreview({ field }) {
-      const axes = radarAxes(field.settings.axes);
-      const mode = radarMode(field.settings.mode);
-      const max = radarMax(field.settings.max);
+      const radar = new RadarModel(field);
+      const { axes, mode, max } = radar;
       const center = 65;
       const radius = 44;
-      const values = radarValues(field.settings.defaultValues, axes, max);
-      const point = radarPointSetting(field.settings.defaultPoint, max);
-      const polygon = radarPoints(values, max, center, radius);
-      const pointPosition = radarPointFromPolar(point.angle, point.value, max, center, radius);
+      const values = radar.values;
+      const point = radar.point;
+      const polygon = RadarModel.polygon(values, max, center, radius);
+      const pointPosition = RadarModel.polar(point.angle, point.value, max, center, radius);
 
       return html`
         <div class="radar-preview">
@@ -4103,12 +4061,12 @@
             <g class="radar-grid">
               ${[0.35, 0.7, 1].map((scale) => html`
                 <polygon points=${axes.map((_, index) => {
-        const gridPoint = radarPoint(index, axes.length, center, radius * scale);
+        const gridPoint = RadarModel.vertex(index, axes.length, center, radius * scale);
         return `${gridPoint.x},${gridPoint.y}`;
       }).join(" ")} />
               `)}
               ${axes.map((_, index) => {
-        const gridPoint = radarPoint(index, axes.length, center, radius);
+        const gridPoint = RadarModel.vertex(index, axes.length, center, radius);
         return html`<line x1=${center} y1=${center} x2=${gridPoint.x} y2=${gridPoint.y} />`;
       })}
             </g>
@@ -4120,7 +4078,7 @@
           <div class="radar-axis-list">
             ${mode === "point" ? html`
               <span>Single node</span>
-              <span>${radarPointDescription(point.angle, axes)}: ${formatRadarNumber(point.value)}</span>
+              <span>${RadarModel.describe(point.angle, axes)}: ${RadarModel.format(point.value)}</span>
             ` : axes.map((axis, index) => html`<span key=${`${axis}-${index}`}>${axis}: ${values[index]}</span>`)}
           </div>
         </div>
@@ -4137,32 +4095,31 @@
     }
 
     function HeadlinePreview({ field, dropPlacement, dropKind, onMediaDragStart, onMediaDragEnd }) {
-      const title = String(field.label || "").trim();
       const description = String(field.description || "").trim();
-      const settings = headlineSettings(field);
-      const mediaField = splitMediaField(field);
-      const mediaCenter = mediaField && settings.mediaPlacement === "center";
-      const mediaFirst = mediaField && settings.mediaPlacement === "top";
+      const headline = new HeadlineModel(field);
+      const title = headline.showLabel ? String(field.label || "").trim() : "";
+      const mediaField = headline.mediaField;
+      const hasCopy = Boolean(headline.showLabel || description);
       const previewPlacement = dropPlacement ? dropKind === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[dropPlacement] : dropPlacement : null;
       const replacingMedia = !!(mediaField && previewPlacement);
-      const previewCopyPlacement = replacingMedia && OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] !== OPPOSITE_HEADLINE_PLACEMENT[settings.mediaPlacement] ? OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] : null;
+      const previewCopyPlacement = replacingMedia && OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] !== OPPOSITE_HEADLINE_PLACEMENT[headline.mediaPlacement] ? OPPOSITE_HEADLINE_PLACEMENT[previewPlacement] : null;
       const copyDraggable = !!(mediaField && onMediaDragStart);
-      const copyDragStart = copyDraggable ? (event) => onMediaDragStart(event, field.id, "copy") : null;
+      const copyDragStart = copyDraggable ? (event) => onMediaDragStart(event, { kind: "copy", id: field.id }) : null;
       const copyDragAttrs = { draggable: copyDraggable, title: copyDraggable ? "Drag to reposition headline text" : null, onDragStart: copyDragStart, onDragEnd: copyDraggable ? onMediaDragEnd : null };
-      const mediaNode = mediaField ? html`<div class=${`headline-media${onMediaDragStart ? " is-draggable" : ""}`} draggable=${!!onMediaDragStart} title="Drag to reposition media" onDragStart=${(event) => onMediaDragStart?.(event, field.id)} onDragEnd=${onMediaDragEnd}><${MediaPreview} field=${mediaField} /></div>` : null;
-      const titleNode = (draggable = copyDraggable) => html`<h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}${draggable ? " is-draggable" : ""}`} style=${headlineTextStyle(settings, "headingHorizontalAlignment", "headingVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${title || "Heading"}</h1>`;
-      const descriptionNode = (draggable = copyDraggable) => description ? html`<p class=${`headline-preview-subhead${draggable ? " is-draggable" : ""}`} style=${headlineTextStyle(settings, "descriptionHorizontalAlignment", "descriptionVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${description}</p>` : null;
-      const copyNode = (draggable = copyDraggable) => html`<div class=${`headline-copy${draggable ? " is-draggable" : ""}`} ...${draggable ? copyDragAttrs : {}}>${titleNode(draggable)}${descriptionNode(draggable)}</div>`;
+      const mediaNode = mediaField ? html`<div class=${`headline-media${onMediaDragStart ? " is-draggable" : ""}`} draggable=${!!onMediaDragStart} title="Drag to reposition media" onDragStart=${(event) => onMediaDragStart?.(event, { kind: "split", id: field.id })} onDragEnd=${onMediaDragEnd}><${MediaPreview} field=${mediaField} /></div>` : null;
+      const titleNode = (draggable = copyDraggable) => headline.showLabel ? html`<h1 class=${`headline-preview-title${title ? "" : " headline-preview-placeholder"}${draggable ? " is-draggable" : ""}`} style=${headline.textStyle("headingHorizontalAlignment", "headingVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${title || "Heading"}</h1>` : null;
+      const descriptionNode = (draggable = copyDraggable) => description ? html`<p class=${`headline-preview-subhead${draggable ? " is-draggable" : ""}`} style=${headline.textStyle("descriptionHorizontalAlignment", "descriptionVerticalAlignment")} ...${draggable ? copyDragAttrs : {}}>${description}</p>` : null;
+      const copyNode = (draggable = copyDraggable) => hasCopy ? html`<div class=${`headline-copy${draggable ? " is-draggable" : ""}`} ...${draggable ? copyDragAttrs : {}}>${titleNode(draggable)}${descriptionNode(draggable)}</div>` : null;
       return html`
-        <div class=${`headline-preview${mediaField ? " has-media media-" + settings.mediaPlacement : ""}${replacingMedia ? " is-replacing-media" : ""}`}>
-          ${mediaCenter ? html`
+        <div class=${`headline-preview${mediaField && hasCopy ? " has-media media-" + headline.mediaPlacement : ""}${replacingMedia ? " is-replacing-media" : ""}`}>
+          ${headline.mediaCenter && hasCopy ? html`
             ${titleNode()}
             ${mediaNode}
             ${descriptionNode()}
           ` : html`
-            ${mediaFirst ? mediaNode : null}
+            ${headline.mediaFirst ? mediaNode : null}
             ${copyNode()}
-            ${mediaFirst ? null : mediaNode}
+            ${headline.mediaFirst ? null : mediaNode}
           `}
           ${previewPlacement ? html`<${HeadlineDropPreview} placement=${previewPlacement} copyPlacement=${previewCopyPlacement} />` : null}
         </div>
@@ -4170,10 +4127,10 @@
     }
 
     function SpacerPreview({ field }) {
-      const settings = spacerSettings(field);
+      const settings = field.settings;
       return html`
-        <div class="spacer-preview" style=${spacerStyle(settings)} aria-hidden="true">
-          ${settings.showLine ? html`<hr class="spacer-line" style=${spacerLineStyle(settings)} />` : null}
+        <div class="spacer-preview" style=${`height: ${settings.height}px;`} aria-hidden="true">
+          ${settings.showLine ? html`<hr class="spacer-line" style=${`border-top-width: ${settings.lineThickness}px; border-top-style: ${settings.lineStyle};`} />` : null}
         </div>
       `;
     }
@@ -4181,18 +4138,18 @@
 
 
     function CalendarPreview({ field }) {
-      const settings = calendarSettings(field);
-      const startTime = dateTime(settings.startDate);
-      const endTime = dateTime(settings.endDate);
+      const calendar = new CalendarModel(field);
+      const startTime = dateTime(calendar.startDate);
+      const endTime = dateTime(calendar.endDate);
       const hasRange = startTime !== null && endTime !== null;
       const rangeStart = hasRange ? Math.min(startTime, endTime) : null;
       const rangeEnd = hasRange ? Math.max(startTime, endTime) : null;
-      const monthDate = monthStartFromDate(calendarAnchorDate(settings));
+      const monthDate = calendar.monthDate;
       const month = monthDate.getMonth();
-      const milestones = settings.milestones.filter((item) => item.date || item.label);
+      const milestones = calendar.visibleMilestones;
 
       return html`
-        <div class=${`calendar-preview${settings.outline ? "" : " is-unboxed"}`}>
+        <div class=${`calendar-preview${calendar.outline ? "" : " is-unboxed"}`}>
           <div class="calendar-frame">
             <div class="calendar-preview-head">
               <div class="calendar-month-label">${monthLabel(monthDate)}</div>
@@ -4201,15 +4158,15 @@
               ${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => html`<div class="calendar-weekday" key=${day}>${day}</div>`)}
             </div>
             <div class="calendar-grid" aria-hidden="true">
-            ${calendarGridDates(monthDate).map((date) => {
+            ${CalendarModel.gridDates(monthDate).map((date) => {
               const iso = isoFromDate(date);
               const time = date.getTime();
               const inRange = rangeStart !== null && rangeEnd !== null && time >= rangeStart && time <= rangeEnd;
-              const isBoundary = iso === settings.startDate || iso === settings.endDate;
-              const isRangeStart = inRange && (iso === settings.startDate || date.getDay() === 0);
-              const isRangeEnd = inRange && (iso === settings.endDate || date.getDay() === 6);
+              const isBoundary = iso === calendar.startDate || iso === calendar.endDate;
+              const isRangeStart = inRange && (iso === calendar.startDate || date.getDay() === 0);
+              const isRangeEnd = inRange && (iso === calendar.endDate || date.getDay() === 6);
               const isOutside = date.getMonth() !== month;
-              const dayMilestones = calendarMilestonesForDate(settings.milestones, iso);
+              const dayMilestones = calendar.milestonesForDate(iso);
               return html`<div class=${`calendar-day${isOutside ? " is-outside" : ""}${inRange ? " is-range" : ""}${isRangeStart ? " is-range-start" : ""}${isRangeEnd ? " is-range-end" : ""}${isBoundary ? " is-boundary" : ""}${dayMilestones.length ? " is-milestone" : ""}`} key=${iso}>
                 <span class="calendar-day-number">${date.getDate()}</span>
                 ${dayMilestones.length ? html`
@@ -4225,14 +4182,14 @@
             <div class="calendar-range-summary">
               <div class="calendar-property-row">
                 <span>Start</span>
-                <output class="calendar-property-value">${readableDate(settings.startDate)}</output>
+                <output class="calendar-property-value">${readableDate(calendar.startDate)}</output>
               </div>
               <div class="calendar-property-row">
                 <span>End</span>
-                <output class="calendar-property-value">${readableDate(settings.endDate)}</output>
+                <output class="calendar-property-value">${readableDate(calendar.endDate)}</output>
               </div>
             </div>
-            ${settings.allowMilestones ? html`
+            ${calendar.allowMilestones ? html`
               <div class="calendar-milestone-list">
                 <div class="calendar-property-heading">Milestones</div>
                 ${milestones.length ? milestones.map((item) => html`
@@ -4248,59 +4205,38 @@
       `;
     }
 
-    function FieldPreview({ field, headlineDropPlacement, headlineDropKind, onHeadlineMediaDragStart, onFieldDragEnd }) {
-      const options = field.options;
-      switch (field.type) {
-        case "headline":
-          return html`<${HeadlinePreview} field=${field} dropPlacement=${headlineDropPlacement} dropKind=${headlineDropKind} onMediaDragStart=${onHeadlineMediaDragStart} onMediaDragEnd=${onFieldDragEnd} />`;
-        case "short_answer":
-        case "email":
-        case "number":
-        case "link":
-          return html`<div class="preview-line">${field.placeholder}</div>`;
-        case "calendar":
-          return html`<${CalendarPreview} field=${field} />`;
-        case "long_answer":
-          return html`<div class="preview-box">${field.placeholder}</div>`;
-        case "multiple_choice":
-          return html`<div class="choice-preview">${options.map((option) => html`<div class="choice-row" key=${option}><span class="choice-dot"></span><span>${option}</span></div>`)}</div>`;
-        case "checkbox":
-          return html`<div class="choice-preview">${options.map((option) => html`<div class="choice-row" key=${option}><span class="choice-square"></span><span>${option}</span></div>`)}</div>`;
-        case "poll":
-          return html`<div class="pill-preview">${options.map((option) => html`<span key=${option}>${option}</span>`)}</div>`;
-        case "mood_meter":
-          return html`
-            <div class="meter-preview">
-              <span>${field.settings.minLabel}</span>
-              <${Icon} icon="fa-regular fa-face-angry" />
-              <${Icon} icon="fa-regular fa-face-frown" />
-              <${Icon} icon="fa-regular fa-face-meh" />
-              <${Icon} icon="fa-regular fa-face-smile" />
-              <${Icon} icon="fa-regular fa-face-laugh" />
-              <span>${field.settings.maxLabel}</span>
-            </div>
-          `;
-        case "linear_scale":
-          return html`
-            <div class="scale-preview">
-              <span>${field.settings.minLabel}</span>
-              <span class="scale-track"></span>
-              <span>${field.settings.maxLabel}</span>
-            </div>
-          `;
-        case "star_rating":
-          return html`<div class="star-preview">${Array.from({ length: Number(field.settings.max) }, (_, index) => html`<${Icon} icon="fa-regular fa-star" key=${index} />`)}</div>`;
-        case "radar":
-          return html`<${RadarPreview} field=${field} />`;
-        case "media_upload":
-          return html`<div class="preview-line">Image, video, or audio file</div>`;
-        case "media":
-          return html`<${MediaPreview} field=${field} />`;
-        case "spacer":
-          return html`<${SpacerPreview} field=${field} />`;
-        default:
-          return html`<div class="preview-line"></div>`;
-      }
+    function choicePreview(field, markerClass) {
+      return html`<div class="choice-preview">${field.options.map((option) => html`<div class="choice-row" key=${option}><span class=${markerClass}></span><span>${option}</span></div>`)}</div>`;
+    }
+
+    const FIELD_PREVIEW_RENDERERS = {
+      headline: (field, props) => html`<${HeadlinePreview} field=${field} dropPlacement=${props.headlineDropPlacement} dropKind=${props.headlineDropKind} onMediaDragStart=${props.onHeadlineMediaDragStart} onMediaDragEnd=${props.onFieldDragEnd} />`,
+      short_answer: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
+      email: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
+      number: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
+      link: (field) => html`<div class="preview-line">${field.placeholder}</div>`,
+      calendar: (field) => html`<${CalendarPreview} field=${field} />`,
+      long_answer: (field) => html`<div class="preview-box">${field.placeholder}</div>`,
+      multiple_choice: (field) => choicePreview(field, "choice-dot"),
+      checkbox: (field) => choicePreview(field, "choice-square"),
+      poll: (field) => html`<div class="pill-preview">${field.options.map((option) => html`<span key=${option}>${option}</span>`)}</div>`,
+      mood_meter: (field) => html`
+        <div class="meter-preview">
+          <span>${field.settings.minLabel}</span>
+          ${MOOD_METER_ICONS.map((icon) => html`<${Icon} icon=${icon} key=${icon} />`)}
+          <span>${field.settings.maxLabel}</span>
+        </div>
+      `,
+      linear_scale: (field) => html`<div class="scale-preview"><span>${field.settings.minLabel}</span><span class="scale-track"></span><span>${field.settings.maxLabel}</span></div>`,
+      star_rating: (field) => html`<div class="star-preview">${Array.from({ length: Number(field.settings.max) }, (_, index) => html`<${Icon} icon="fa-regular fa-star" key=${index} />`)}</div>`,
+      radar: (field) => html`<${RadarPreview} field=${field} />`,
+      media_upload: () => html`<div class="preview-line">Image, video, or audio file</div>`,
+      media: (field) => html`<${MediaPreview} field=${field} />`,
+      spacer: (field) => html`<${SpacerPreview} field=${field} />`
+    };
+
+    function FieldPreview(props) {
+      return (FIELD_PREVIEW_RENDERERS[props.field.type] || (() => html`<div class="preview-line"></div>`))(props.field, props);
     }
 
     function Palette({ onAdd, onDragStart, onDragEnd }) {
@@ -4324,7 +4260,7 @@
                     aria-label=${`Add ${item.name}`}
                     key=${item.type}
                     onClick=${() => onAdd(item.type)}
-                    onDragStart=${(event) => onDragStart(event, item.type)}
+                    onDragStart=${(event) => onDragStart(event, { kind: "new", type: item.type })}
                     onDragEnd=${onDragEnd}
                   >
                     <span class="palette-icon"><${Icon} icon=${item.icon} /></span>
@@ -4693,7 +4629,7 @@
     }
 
     function SidebarSettings({ schema, onSchemaChange, onOpenColor, onOpenTypography }) {
-      const theme = themeSettings(schema.settings.theme);
+      const theme = schema.settings.theme;
       const layout = schema.settings.layout;
       const typography = typographySettings(schema.settings.typography, theme);
       const patchLayout = (patch) => onSchemaChange({ settings: { ...schema.settings, layout: { ...layout, ...patch } } });
@@ -4779,7 +4715,7 @@
           onDuplicate=${() => onDuplicate(field.id)}
           onReset=${() => onReset(field.id)}
           onDelete=${() => onDelete(field.id)}
-          onDragStart=${(event) => onFieldDragStart(event, field.id)}
+          onDragStart=${(event) => onFieldDragStart(event, { kind: "move", id: field.id })}
           onDragEnd=${onFieldDragEnd}
           onHeadlineDragOver=${(event) => onHeadlineDragOver(event, field.id)}
           onHeadlineDragLeave=${(event) => onHeadlineDragLeave(event, field.id)}
@@ -4790,9 +4726,10 @@
     }
 
     function FieldCard({ field, selected, removing, dragging, headlineDropPlacement, headlineDropKind, onSelect, onMove, onDuplicate, onReset, onDelete, onDragStart, onDragEnd, onHeadlineDragOver, onHeadlineDragLeave, onHeadlineDrop, onHeadlineMediaDragStart }) {
-      const meta = fieldMeta(field);
-      const visibleLabel = String(field.label ?? "").trim();
-      const selectLabel = `Select ${visibleLabel || meta.name} field`;
+      const meta = typeMeta(field?.type);
+      const labelText = String(field.label ?? "").trim();
+      const visibleLabel = field.settings.showLabel ? labelText : "";
+      const selectLabel = `Select ${labelText || meta.name} field`;
       function handleCardClick(event) {
         const target = event.target;
         if (target?.closest?.("button, a, input, textarea, select")) return;
@@ -4807,7 +4744,7 @@
 
       return html`
         <article
-          class=${`field-card${fieldBackground(field) ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${headlineDropPlacement ? " is-split-target split-" + headlineDropPlacement : ""}`}
+          class=${`field-card${field.settings.background ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${headlineDropPlacement ? " is-split-target split-" + headlineDropPlacement : ""}`}
           data-field-id=${field.id}
           draggable=${true}
           onClick=${handleCardClick}
@@ -4830,7 +4767,7 @@
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
-            ${["headline", "spacer"].includes(field.type) ? html`
+            ${LABELLESS_PREVIEW_FIELD_TYPES.has(field.type) ? html`
               <${FieldPreview} field=${field} headlineDropPlacement=${headlineDropPlacement} headlineDropKind=${headlineDropKind} onHeadlineMediaDragStart=${onHeadlineMediaDragStart} onFieldDragEnd=${onDragEnd} />
             ` : html`
               ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
@@ -4840,6 +4777,42 @@
           </div>
         </article>
       `;
+    }
+
+    class FieldSettingsEditor {
+      constructor(field, onFieldChange) {
+        Object.assign(this, { field, onFieldChange });
+      }
+
+      patch = (patch, extras = {}) => {
+        this.onFieldChange({ ...extras, settings: { ...this.field.settings, ...patch } });
+      };
+
+      patchNonData = (patch, extras = {}) => {
+        this.patch(patch, { required: false, ...extras });
+      };
+
+      patchChrome = (key, value) => {
+        const extras = NON_REQUIRED_FIELD_TYPES.has(this.field.type) ? { required: false } : {};
+        this.patch({ [key]: value }, extras);
+      };
+
+      patchNestedMedia = (patch) => {
+        if (patch.settings) this.patchNonData({ media: patch.settings });
+      };
+
+      updateListItem = (key, index, patch) => {
+        const items = this.field.settings[key].map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
+        this.patch({ [key]: items });
+      };
+
+      removeListItem = (key, index) => {
+        this.patch({ [key]: this.field.settings[key].filter((_, itemIndex) => itemIndex !== index) });
+      };
+
+      appendListItem = (key, item) => {
+        this.patch({ [key]: [...this.field.settings[key], item] });
+      };
     }
 
     function Inspector({ schema, selectedField, onSchemaChange, onFieldChange }) {
@@ -4856,7 +4829,7 @@
         `;
       }
 
-      const meta = fieldMeta(selectedField);
+      const meta = typeMeta(selectedField?.type);
       return html`
         <h2 class="panel-title"><${Icon} icon=${meta.icon} /><span>${meta.name}</span></h2>
         <div class="property-stack">
@@ -4874,7 +4847,7 @@
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
-          ${!["headline", "media", "spacer"].includes(selectedField.type) ? html`
+          ${!NON_REQUIRED_FIELD_TYPES.has(selectedField.type) ? html`
             <label class="toggle-row">
               <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
               <span>Required</span>
@@ -4885,25 +4858,25 @@
     }
 
     function OutlineSettings({ field, onFieldChange }) {
-      const patchSettings = (key, value) => {
-        const patch = { settings: { ...field.settings, [key]: value } };
-        if (["headline", "media", "spacer"].includes(field.type)) patch.required = false;
-        onFieldChange(patch);
-      };
+      const editor = new FieldSettingsEditor(field, onFieldChange);
       return html`
         <label class="toggle-row">
-          <input type="checkbox" checked=${fieldOutline(field)} onChange=${(event) => patchSettings("outline", event.currentTarget.checked)} />
+          <input type="checkbox" checked=${field.settings.showLabel} onChange=${(event) => editor.patchChrome("showLabel", event.currentTarget.checked)} />
+          <span>Show label</span>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" checked=${field.settings.outline} onChange=${(event) => editor.patchChrome("outline", event.currentTarget.checked)} />
           <span>Show outline</span>
         </label>
         <label class="toggle-row">
-          <input type="checkbox" checked=${fieldBackground(field)} onChange=${(event) => patchSettings("background", event.currentTarget.checked)} />
+          <input type="checkbox" checked=${field.settings.background} onChange=${(event) => editor.patchChrome("background", event.currentTarget.checked)} />
           <span>Show background</span>
         </label>
       `;
     }
 
     function PlaceholderSettings({ field, onFieldChange }) {
-      if (!["short_answer", "long_answer", "email", "number", "link"].includes(field.type)) return null;
+      if (!PLACEHOLDER_FIELD_TYPES.has(field.type)) return null;
       return html`
         <div class="property">
           <label for="fieldPlaceholder">Placeholder</label>
@@ -4913,7 +4886,7 @@
     }
 
     function OptionSettings({ field, onFieldChange }) {
-      if (!["multiple_choice", "checkbox", "poll"].includes(field.type)) return null;
+      if (!OPTION_FIELD_TYPES.has(field.type)) return null;
       const options = field.options;
       return html`
         <div class="property">
@@ -4948,15 +4921,14 @@
       `;
     }
 
-    function MediaSettingsControls({ field, onFieldChange }) {
+    function MediaSettingsControls({ field, onFieldChange, editor = new FieldSettingsEditor(field, onFieldChange) }) {
         const settings = field.settings;
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
         const fileInputId = field.id + "_mediaFile";
 
         return html`
           <div class="property">
             <label for="mediaSourceType">Source</label>
-            <select class="control" id="mediaSourceType" value=${settings.sourceType} onChange=${(event) => patchSettings({ sourceType: event.currentTarget.value })}>
+            <select class="control" id="mediaSourceType" value=${settings.sourceType} onChange=${(event) => editor.patchNonData({ sourceType: event.currentTarget.value })}>
               <option value="url">URL</option>
               <option value="file">File</option>
               <option value="html">HTML</option>
@@ -4966,7 +4938,7 @@
           ${settings.sourceType === "url" ? html`
             <div class="property">
               <label for="mediaUrl">Media URL</label>
-              <input class="control" id="mediaUrl" value=${settings.url} placeholder="https://example.com/media.mp4" onInput=${(event) => patchSettings({ url: event.currentTarget.value, dataUrl: "", fileName: "", mimeType: "" })} />
+              <input class="control" id="mediaUrl" value=${settings.url} placeholder="https://example.com/media.mp4" onInput=${(event) => editor.patchNonData({ url: event.currentTarget.value, dataUrl: "", fileName: "", mimeType: "" })} />
             </div>
           ` : null}
 
@@ -4981,7 +4953,7 @@
                 onChange=${async (event) => {
               const file = event.currentTarget.files?.[0];
               if (!file) return;
-              patchSettings({
+              editor.patchNonData({
                 sourceType: "file",
                 dataUrl: await readFileAsDataUrl(file),
                 mimeType: file.type || "",
@@ -4999,30 +4971,30 @@
           ${settings.sourceType === "html" ? html`
             <div class="property">
               <label for="mediaHtml">HTML</label>
-              <textarea class="textarea" id="mediaHtml" value=${settings.html} placeholder="<div>Embedded content</div>" onInput=${(event) => patchSettings({ html: event.currentTarget.value, url: "", dataUrl: "", fileName: "", mimeType: "" })}></textarea>
+              <textarea class="textarea" id="mediaHtml" value=${settings.html} placeholder="<div>Embedded content</div>" onInput=${(event) => editor.patchNonData({ html: event.currentTarget.value, url: "", dataUrl: "", fileName: "", mimeType: "" })}></textarea>
             </div>
             <div class="property">
               <label for="mediaIframeHeight">HTML height</label>
-              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => patchSettings({ iframeHeight: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => editor.patchNonData({ iframeHeight: Number(event.currentTarget.value) })} />
             </div>
           ` : null}
 
           ${settings.sourceType !== "html" ? html`
             <div class="property">
               <label for="mediaAlt">Alt text</label>
-              <input class="control" id="mediaAlt" value=${settings.alt} onInput=${(event) => patchSettings({ alt: event.currentTarget.value })} />
+              <input class="control" id="mediaAlt" value=${settings.alt} onInput=${(event) => editor.patchNonData({ alt: event.currentTarget.value })} />
             </div>
           ` : null}
 
           <div class="property">
             <label for="mediaCaption">Caption</label>
-            <input class="control" id="mediaCaption" value=${settings.caption} onInput=${(event) => patchSettings({ caption: event.currentTarget.value })} />
+            <input class="control" id="mediaCaption" value=${settings.caption} onInput=${(event) => editor.patchNonData({ caption: event.currentTarget.value })} />
           </div>
 
           <div class="settings-grid">
             <div class="property">
               <label for="mediaHorizontalAlignment">Horizontal alignment</label>
-              <select class="control" id="mediaHorizontalAlignment" value=${settings.horizontalAlignment} onChange=${(event) => patchSettings({ horizontalAlignment: event.currentTarget.value })}>
+              <select class="control" id="mediaHorizontalAlignment" value=${settings.horizontalAlignment} onChange=${(event) => editor.patchNonData({ horizontalAlignment: event.currentTarget.value })}>
                 <option value="left">Left</option>
                 <option value="center">Center</option>
                 <option value="right">Right</option>
@@ -5031,7 +5003,7 @@
             </div>
             <div class="property">
               <label for="mediaVerticalAlignment">Vertical alignment</label>
-              <select class="control" id="mediaVerticalAlignment" value=${settings.verticalAlignment} onChange=${(event) => patchSettings({ verticalAlignment: event.currentTarget.value })}>
+              <select class="control" id="mediaVerticalAlignment" value=${settings.verticalAlignment} onChange=${(event) => editor.patchNonData({ verticalAlignment: event.currentTarget.value })}>
                 <option value="top">Top</option>
                 <option value="center">Center</option>
                 <option value="bottom">Bottom</option>
@@ -5042,22 +5014,22 @@
           <div class="settings-grid">
             <div class="property">
               <label for="mediaScale">Scale %</label>
-              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => patchSettings({ scale: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => editor.patchNonData({ scale: Number(event.currentTarget.value) })} />
             </div>
             <div class="property">
               <label for="mediaMaxWidth">Max width</label>
-              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => patchSettings({ maxWidth: event.currentTarget.value })} />
+              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => editor.patchNonData({ maxWidth: event.currentTarget.value })} />
             </div>
           </div>
 
           <div class="settings-grid">
             <div class="property">
               <label for="mediaMaxHeight">Max height</label>
-              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => patchSettings({ maxHeight: Number(event.currentTarget.value) })} />
+              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => editor.patchNonData({ maxHeight: Number(event.currentTarget.value) })} />
             </div>
             <div class="property">
               <label for="mediaObjectFit">Fit</label>
-              <select class="control" id="mediaObjectFit" value=${settings.objectFit} onChange=${(event) => patchSettings({ objectFit: event.currentTarget.value })}>
+              <select class="control" id="mediaObjectFit" value=${settings.objectFit} onChange=${(event) => editor.patchNonData({ objectFit: event.currentTarget.value })}>
                 <option value="contain">Contain</option>
                 <option value="cover">Cover</option>
                 <option value="fill">Fill</option>
@@ -5068,402 +5040,479 @@
         `;
     }
 
-    function TypeSettings({ field, onFieldChange }) {
-      if (field.type === "headline") {
-        const settings = headlineSettings(field);
-        const mediaField = splitMediaField(field);
-        const patchSettings = (patch) => onFieldChange({ required: false, settings: { ...field.settings, ...patch } });
-        const updateMedia = (patch) => patch.settings && patchSettings({ media: patch.settings });
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="headingHorizontalAlignment">Heading horizontal</label>
-              <select class="control" id="headingHorizontalAlignment" value=${settings.headingHorizontalAlignment} onChange=${(event) => patchSettings({ headingHorizontalAlignment: event.currentTarget.value })}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="headingVerticalAlignment">Heading vertical</label>
-              <select class="control" id="headingVerticalAlignment" value=${settings.headingVerticalAlignment} onChange=${(event) => patchSettings({ headingVerticalAlignment: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="descriptionHorizontalAlignment">Subhead horizontal</label>
-              <select class="control" id="descriptionHorizontalAlignment" value=${settings.descriptionHorizontalAlignment} onChange=${(event) => patchSettings({ descriptionHorizontalAlignment: event.currentTarget.value })}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div class="property">
-              <label for="descriptionVerticalAlignment">Subhead vertical</label>
-              <select class="control" id="descriptionVerticalAlignment" value=${settings.descriptionVerticalAlignment} onChange=${(event) => patchSettings({ descriptionVerticalAlignment: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
-              </select>
-            </div>
-          </div>
-          ${mediaField ? html`
-            <div class="mini-label">Split media</div>
-            <div class="property">
-              <label for="headlineMediaPlacement">Media position</label>
-              <select class="control" id="headlineMediaPlacement" value=${settings.mediaPlacement} onChange=${(event) => patchSettings({ mediaPlacement: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-                <option value="bottom">Bottom</option>
-              </select>
-            </div>
-            <${MediaSettingsControls} field=${mediaField} onFieldChange=${updateMedia} />
-            <button class="button ghost" type="button" onClick=${() => patchSettings({ media: null })}>Remove split media</button>
-          ` : html`<div class="radar-mode-note">Drop a Media block onto this headline to split it.</div>`}
-        `;
-      }
-
-      if (field.type === "mood_meter") {
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="minLabel">Low label</label>
-              <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
-            </div>
-            <div class="property">
-              <label for="maxLabel">High label</label>
-              <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
-            </div>
-          </div>
-        `;
-      }
-
-      if (field.type === "linear_scale") {
-        const settings = field.settings;
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="scaleMin">Minimum</label>
-              <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => onFieldChange({ settings: { ...field.settings, min: Number(event.currentTarget.value) } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMax">Maximum</label>
-              <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMinLabel">Low label</label>
-              <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, minLabel: event.currentTarget.value } })} />
-            </div>
-            <div class="property">
-              <label for="scaleMaxLabel">High label</label>
-              <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => onFieldChange({ settings: { ...field.settings, maxLabel: event.currentTarget.value } })} />
-            </div>
-          </div>
-        `;
-      }
-
-      if (field.type === "star_rating") {
-        const settings = field.settings;
-        return html`
+    function HeadlineSettingsControls({ field, editor }) {
+      const headline = new HeadlineModel(field);
+      const mediaField = headline.mediaField;
+      return html`
+        <div class="settings-grid">
           <div class="property">
-            <label for="starMax">Stars</label>
-            <input class="control" id="starMax" type="number" min="3" max="10" value=${settings.max} onInput=${(event) => onFieldChange({ settings: { ...field.settings, max: Number(event.currentTarget.value) } })} />
-          </div>
-        `;
-      }
-
-
-
-      if (field.type === "calendar") {
-        const settings = field.settings;
-        const patchSettings = (patch) => onFieldChange({ settings: { ...field.settings, ...patch } });
-        const updateMilestone = (index, patch) => {
-          const milestones = settings.milestones.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item);
-          patchSettings({ milestones });
-        };
-        const removeMilestone = (index) => patchSettings({ milestones: settings.milestones.filter((_, itemIndex) => itemIndex !== index) });
-        return html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="calendarStartDate">Default start date</label>
-              <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => patchSettings({ startDate: event.currentTarget.value })} />
-            </div>
-            <div class="property">
-              <label for="calendarEndDate">Default end date</label>
-              <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => patchSettings({ endDate: event.currentTarget.value })} />
-            </div>
-          </div>
-          <label class="toggle-row">
-            <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => patchSettings({ allowMilestones: event.currentTarget.checked })} />
-            <span>Allow milestones</span>
-          </label>
-          ${settings.allowMilestones ? html`
-            <div class="property">
-              <div class="calendar-milestone-editor-head">
-                <div class="mini-label">Milestones</div>
-              </div>
-              ${settings.milestones.length ? settings.milestones.map((item, index) => html`
-                <div class="calendar-milestone-row" key=${item.id || index}>
-                  <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => updateMilestone(index, { date: event.currentTarget.value })} />
-                  <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => updateMilestone(index, { label: event.currentTarget.value })} />
-                  <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => removeMilestone(index)}><${Icon} icon="fa-solid fa-xmark" /></button>
-                </div>
-              `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-              <button class="button ghost" type="button" onClick=${() => patchSettings({ milestones: [...settings.milestones, { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) }] })}>
-                <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
-              </button>
-            </div>
-          ` : null}
-        `;
-      }
-
-      if (field.type === "media_upload") {
-        const settings = field.settings;
-        return html`
-          <div class="property">
-            <label for="mediaUploadAccept">Accepted types</label>
-            <input class="control" id="mediaUploadAccept" value=${settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => onFieldChange({ settings: { ...settings, accept: event.currentTarget.value } })} />
-          </div>
-        `;
-      }
-
-      if (field.type === "media") return html`<${MediaSettingsControls} field=${field} onFieldChange=${onFieldChange} />`;
-
-      if (field.type === "radar") {
-        const rawSettings = field.settings;
-        const axes = radarAxes(rawSettings.axes);
-        const mode = radarMode(rawSettings.mode);
-        const max = radarMax(rawSettings.max);
-        const settings = {
-          mode,
-          max,
-          axes,
-          defaultValues: radarValues(rawSettings.defaultValues, axes, max),
-          defaultPoint: radarPointSetting(rawSettings.defaultPoint, max)
-        };
-        const displayAxes = rawSettings.axes;
-        const displayValues = rawSettings.defaultValues;
-        const rawDefaultPoint = rawSettings.defaultPoint;
-        const midpoint = Math.round(RADAR_MIN_VALUE + (settings.max - RADAR_MIN_VALUE) / 2);
-
-        function commitRadarSettings(patch) {
-          onFieldChange({ settings: { ...rawSettings, ...patch } });
-        }
-
-        return html`
-          <div class="property">
-            <label for="radarMode">Mode</label>
-            <select class="control" id="radarMode" value=${settings.mode} onChange=${(event) => commitRadarSettings({ mode: event.currentTarget.value })}>
-              <option value="shape">Multi-node shape</option>
-              <option value="point">Single node</option>
+            <label for="headingHorizontalAlignment">Heading horizontal</label>
+            <select class="control" id="headingHorizontalAlignment" value=${headline.headingHorizontalAlignment} onChange=${(event) => editor.patchNonData({ headingHorizontalAlignment: event.currentTarget.value })}>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
             </select>
           </div>
           <div class="property">
-            <label for="radarMax">Maximum</label>
-            <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${rawSettings.max} onInput=${(event) => commitRadarSettings({ max: Number(event.currentTarget.value) })} />
+            <label for="headingVerticalAlignment">Heading vertical</label>
+            <select class="control" id="headingVerticalAlignment" value=${headline.headingVerticalAlignment} onChange=${(event) => editor.patchNonData({ headingVerticalAlignment: event.currentTarget.value })}>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
+              <option value="bottom">Bottom</option>
+            </select>
           </div>
-          ${settings.mode === "point" ? html`
-            <div class="settings-grid">
-              <div class="property">
-                <label for="radarDefaultAngle">Default angle</label>
-                <input
-                  class="control"
-                  id="radarDefaultAngle"
-                  type="number"
-                  min="0"
-                  max="359"
-                  step="1"
-                  value=${rawDefaultPoint.angle}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, angle: Number(event.currentTarget.value) } })}
-                />
+          <div class="property">
+            <label for="descriptionHorizontalAlignment">Subhead horizontal</label>
+            <select class="control" id="descriptionHorizontalAlignment" value=${headline.descriptionHorizontalAlignment} onChange=${(event) => editor.patchNonData({ descriptionHorizontalAlignment: event.currentTarget.value })}>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+          <div class="property">
+            <label for="descriptionVerticalAlignment">Subhead vertical</label>
+            <select class="control" id="descriptionVerticalAlignment" value=${headline.descriptionVerticalAlignment} onChange=${(event) => editor.patchNonData({ descriptionVerticalAlignment: event.currentTarget.value })}>
+              <option value="top">Top</option>
+              <option value="center">Center</option>
+              <option value="bottom">Bottom</option>
+            </select>
+          </div>
+        </div>
+        ${mediaField ? html`
+          <div class="mini-label">Split media</div>
+          <div class="property">
+            <label for="headlineMediaPlacement">Media position</label>
+            <select class="control" id="headlineMediaPlacement" value=${headline.mediaPlacement} onChange=${(event) => editor.patchNonData({ mediaPlacement: event.currentTarget.value })}>
+              <option value="top">Top</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="bottom">Bottom</option>
+            </select>
+          </div>
+          <${MediaSettingsControls} field=${mediaField} onFieldChange=${editor.patchNestedMedia} />
+          <button class="button ghost" type="button" onClick=${() => editor.patchNonData({ media: null })}>Remove split media</button>
+        ` : html`<div class="radar-mode-note">Drop a Media block onto this headline to split it.</div>`}
+      `;
+    }
+
+    function MoodMeterSettingsControls({ field, editor }) {
+      return html`
+        <div class="settings-grid">
+          <div class="property">
+            <label for="minLabel">Low label</label>
+            <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => editor.patch({ minLabel: event.currentTarget.value })} />
+          </div>
+          <div class="property">
+            <label for="maxLabel">High label</label>
+            <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => editor.patch({ maxLabel: event.currentTarget.value })} />
+          </div>
+        </div>
+      `;
+    }
+
+    function LinearScaleSettingsControls({ field, editor }) {
+      const settings = field.settings;
+      return html`
+        <div class="settings-grid">
+          <div class="property">
+            <label for="scaleMin">Minimum</label>
+            <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => editor.patch({ min: Number(event.currentTarget.value) })} />
+          </div>
+          <div class="property">
+            <label for="scaleMax">Maximum</label>
+            <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
+          </div>
+          <div class="property">
+            <label for="scaleMinLabel">Low label</label>
+            <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => editor.patch({ minLabel: event.currentTarget.value })} />
+          </div>
+          <div class="property">
+            <label for="scaleMaxLabel">High label</label>
+            <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => editor.patch({ maxLabel: event.currentTarget.value })} />
+          </div>
+        </div>
+      `;
+    }
+
+    function StarRatingSettingsControls({ field, editor }) {
+      return html`
+        <div class="property">
+          <label for="starMax">Stars</label>
+          <input class="control" id="starMax" type="number" min="3" max="10" value=${field.settings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
+        </div>
+      `;
+    }
+
+    function CalendarSettingsControls({ field, editor }) {
+      const settings = field.settings;
+      return html`
+        <div class="settings-grid">
+          <div class="property">
+            <label for="calendarStartDate">Default start date</label>
+            <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => editor.patch({ startDate: event.currentTarget.value })} />
+          </div>
+          <div class="property">
+            <label for="calendarEndDate">Default end date</label>
+            <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => editor.patch({ endDate: event.currentTarget.value })} />
+          </div>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => editor.patch({ allowMilestones: event.currentTarget.checked })} />
+          <span>Allow milestones</span>
+        </label>
+        ${settings.allowMilestones ? html`
+          <div class="property">
+            <div class="calendar-milestone-editor-head">
+              <div class="mini-label">Milestones</div>
+            </div>
+            ${settings.milestones.length ? settings.milestones.map((item, index) => html`
+              <div class="calendar-milestone-row" key=${item.id || index}>
+                <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => editor.updateListItem("milestones", index, { date: event.currentTarget.value })} />
+                <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => editor.updateListItem("milestones", index, { label: event.currentTarget.value })} />
+                <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => editor.removeListItem("milestones", index)}><${Icon} icon="fa-solid fa-xmark" /></button>
               </div>
-              <div class="property">
-                <label for="radarDefaultValue">Default value</label>
+            `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
+            <button class="button ghost" type="button" onClick=${() => editor.appendListItem("milestones", { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) })}>
+              <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
+            </button>
+          </div>
+        ` : null}
+      `;
+    }
+
+    function MediaUploadSettingsControls({ field, editor }) {
+      return html`
+        <div class="property">
+          <label for="mediaUploadAccept">Accepted types</label>
+          <input class="control" id="mediaUploadAccept" value=${field.settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => editor.patch({ accept: event.currentTarget.value })} />
+        </div>
+      `;
+    }
+
+    function RadarSettingsControls({ field, editor }) {
+      const rawSettings = field.settings;
+      const radar = new RadarModel(field);
+      const settings = { mode: radar.mode, max: radar.max, axes: radar.axes, defaultValues: radar.values, defaultPoint: radar.point };
+      const displayAxes = rawSettings.axes;
+      const displayValues = rawSettings.defaultValues;
+      const rawDefaultPoint = rawSettings.defaultPoint;
+      const midpoint = radar.midpoint;
+
+      return html`
+        <div class="property">
+          <label for="radarMode">Mode</label>
+          <select class="control" id="radarMode" value=${settings.mode} onChange=${(event) => editor.patch({ mode: event.currentTarget.value })}>
+            <option value="shape">Multi-node shape</option>
+            <option value="point">Single node</option>
+          </select>
+        </div>
+        <div class="property">
+          <label for="radarMax">Maximum</label>
+          <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${rawSettings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
+        </div>
+        ${settings.mode === "point" ? html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="radarDefaultAngle">Default angle</label>
+              <input
+                class="control"
+                id="radarDefaultAngle"
+                type="number"
+                min="0"
+                max="359"
+                step="1"
+                value=${rawDefaultPoint.angle}
+                onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, angle: Number(event.currentTarget.value) } })}
+              />
+            </div>
+            <div class="property">
+              <label for="radarDefaultValue">Default value</label>
+              <input
+                class="control"
+                id="radarDefaultValue"
+                type="number"
+                min=${RADAR_MIN_VALUE}
+                max=${settings.max}
+                step="0.1"
+                value=${rawDefaultPoint.value}
+                onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, value: Number(event.currentTarget.value) } })}
+              />
+            </div>
+          </div>
+          <div class="radar-mode-note">Default position: ${RadarModel.describe(settings.defaultPoint.angle, settings.axes)}</div>
+        ` : null}
+        <div class="property">
+          <div class="mini-label">${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}</div>
+          ${displayAxes.map((axis, index) => html`
+            <div class=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"} key=${index}>
+              <input
+                class="control"
+                value=${axis}
+                aria-label=${`Radar axis ${index + 1}`}
+                onInput=${(event) => {
+          const nextAxes = [...displayAxes];
+          nextAxes[index] = event.currentTarget.value;
+          editor.patch({ axes: nextAxes });
+        }}
+              />
+              ${settings.mode === "shape" ? html`
                 <input
                   class="control"
-                  id="radarDefaultValue"
                   type="number"
                   min=${RADAR_MIN_VALUE}
                   max=${settings.max}
-                  step="0.1"
-                  value=${rawDefaultPoint.value}
-                  onInput=${(event) => commitRadarSettings({ defaultPoint: { ...rawDefaultPoint, value: Number(event.currentTarget.value) } })}
-                />
-              </div>
-            </div>
-            <div class="radar-mode-note">Default position: ${radarPointDescription(settings.defaultPoint.angle, axes)}</div>
-          ` : null}
-          <div class="property">
-            <div class="mini-label">${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}</div>
-            ${displayAxes.map((axis, index) => html`
-              <div class=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"} key=${index}>
-                <input
-                  class="control"
-                  value=${axis}
-                  aria-label=${`Radar axis ${index + 1}`}
+                  value=${displayValues[index]}
+                  aria-label=${`Radar placeholder value ${index + 1}`}
                   onInput=${(event) => {
-            const nextAxes = [...displayAxes];
-            nextAxes[index] = event.currentTarget.value;
-            commitRadarSettings({ axes: nextAxes });
+            const nextValues = [...displayValues];
+            nextValues[index] = Number(event.currentTarget.value);
+            editor.patch({ defaultValues: nextValues });
           }}
                 />
-                ${settings.mode === "shape" ? html`
-                  <input
-                    class="control"
-                    type="number"
-                    min=${RADAR_MIN_VALUE}
-                    max=${settings.max}
-                    value=${displayValues[index]}
-                    aria-label=${`Radar placeholder value ${index + 1}`}
-                    onInput=${(event) => {
-              const nextValues = [...displayValues];
-              nextValues[index] = Number(event.currentTarget.value);
-              commitRadarSettings({ defaultValues: nextValues });
-            }}
-                  />
-                ` : null}
-                <button
-                  class="icon-button danger"
-                  type="button"
-                  title="Remove axis"
-                  aria-label="Remove axis"
-                  onClick=${() => {
-            const nextAxes = displayAxes.filter((_, itemIndex) => itemIndex !== index);
-            const nextValues = displayValues.filter((_, itemIndex) => itemIndex !== index);
-            commitRadarSettings({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
-          }}
-                >
-                  <${Icon} icon="fa-solid fa-xmark" />
-                </button>
-              </div>
-            `)}
-            <button class="button ghost" type="button" onClick=${() => commitRadarSettings({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}>
-              <${Icon} icon="fa-solid fa-plus" /><span>Add axis</span>
-            </button>
-          </div>
-        `;
-      }
-
-      if (field.type === "spacer") {
-        const settings = field.settings;
-        const patchSettings = (patch) => onFieldChange({ required: false, description: "", settings: { ...field.settings, ...patch } });
-        return html`
-          <div class="property">
-            <label for="spacerHeight">Height</label>
-            <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => patchSettings({ height: Number(event.currentTarget.value) })} />
-          </div>
-          <label class="toggle-row">
-            <input type="checkbox" checked=${settings.showLine} onChange=${(event) => patchSettings({ showLine: event.currentTarget.checked })} />
-            <span>Show line</span>
-          </label>
-          ${settings.showLine ? html`
-            <div class="settings-grid">
-              <div class="property">
-                <label for="spacerLineThickness">Line thickness</label>
-                <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => patchSettings({ lineThickness: Number(event.currentTarget.value) })} />
-              </div>
-              <div class="property">
-                <label for="spacerLineStyle">Line style</label>
-                <select class="control" id="spacerLineStyle" value=${settings.lineStyle} onChange=${(event) => patchSettings({ lineStyle: event.currentTarget.value })}>
-                  <option value="solid">Solid</option>
-                  <option value="dashed">Dashed</option>
-                  <option value="dotted">Dotted</option>
-                </select>
-              </div>
+              ` : null}
+              <button
+                class="icon-button danger"
+                type="button"
+                title="Remove axis"
+                aria-label="Remove axis"
+                onClick=${() => {
+          const nextAxes = displayAxes.filter((_, itemIndex) => itemIndex !== index);
+          const nextValues = displayValues.filter((_, itemIndex) => itemIndex !== index);
+          editor.patch({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
+        }}
+              >
+                <${Icon} icon="fa-solid fa-xmark" />
+              </button>
             </div>
-          ` : null}
-        `;
-      }
-
-      return null;
+          `)}
+          <button class="button ghost" type="button" onClick=${() => editor.patch({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}>
+            <${Icon} icon="fa-solid fa-plus" /><span>Add axis</span>
+          </button>
+        </div>
+      `;
     }
 
-    function BuilderApp() {
-      const [schema, setSchema] = useState(loadInitialSchema);
-      const [selectedId, setSelectedId] = useState(schema.fields[0]?.id || null);
-      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-      const [dragState, setDragState] = useState(null);
-      const [removingId, setRemovingId] = useState(null);
-      const [activeColorItem, setActiveColorItem] = useState(null);
-      const [activeTypographyRole, setActiveTypographyRole] = useState(null);
-      const [exportMenuOpen, setExportMenuOpen] = useState(false);
-      const fieldsRef = useRef(null);
-      const fieldRectsRef = useRef(null);
-      const dragPayloadRef = useRef(null);
-      const headlineDropRectRef = useRef(null);
-      const exportMenuRef = useRef(null);
-      const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
+    function SpacerSettingsControls({ field, editor }) {
+      const settings = field.settings;
+      return html`
+        <div class="property">
+          <label for="spacerHeight">Height</label>
+          <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => editor.patchNonData({ height: Number(event.currentTarget.value) }, { description: "" })} />
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" checked=${settings.showLine} onChange=${(event) => editor.patchNonData({ showLine: event.currentTarget.checked }, { description: "" })} />
+          <span>Show line</span>
+        </label>
+        ${settings.showLine ? html`
+          <div class="settings-grid">
+            <div class="property">
+              <label for="spacerLineThickness">Line thickness</label>
+              <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => editor.patchNonData({ lineThickness: Number(event.currentTarget.value) }, { description: "" })} />
+            </div>
+            <div class="property">
+              <label for="spacerLineStyle">Line style</label>
+              <select class="control" id="spacerLineStyle" value=${settings.lineStyle} onChange=${(event) => editor.patchNonData({ lineStyle: event.currentTarget.value }, { description: "" })}>
+                <option value="solid">Solid</option>
+                <option value="dashed">Dashed</option>
+                <option value="dotted">Dotted</option>
+              </select>
+            </div>
+          </div>
+        ` : null}
+      `;
+    }
 
-      useEffect(() => {
-        const next = { ...schema, updatedAt: new Date().toISOString() };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      }, [schema]);
+    const FIELD_SETTINGS_COMPONENTS = {
+      headline: HeadlineSettingsControls,
+      mood_meter: MoodMeterSettingsControls,
+      linear_scale: LinearScaleSettingsControls,
+      star_rating: StarRatingSettingsControls,
+      calendar: CalendarSettingsControls,
+      media_upload: MediaUploadSettingsControls,
+      media: MediaSettingsControls,
+      radar: RadarSettingsControls,
+      spacer: SpacerSettingsControls
+    };
 
-      useEffect(() => {
-        if (!exportMenuOpen) return undefined;
-        function handlePointerDown(event) {
-          if (exportMenuRef.current?.contains(event.target)) return;
-          setExportMenuOpen(false);
-        }
-        function handleKeyDown(event) {
-          if (event.key === "Escape") setExportMenuOpen(false);
-        }
-        window.addEventListener("pointerdown", handlePointerDown);
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-          window.removeEventListener("pointerdown", handlePointerDown);
-          window.removeEventListener("keydown", handleKeyDown);
-        };
-      }, [exportMenuOpen]);
+    function TypeSettings({ field, onFieldChange }) {
+      const Settings = FIELD_SETTINGS_COMPONENTS[field.type];
+      return Settings ? html`<${Settings} field=${field} onFieldChange=${onFieldChange} editor=${new FieldSettingsEditor(field, onFieldChange)} />` : null;
+    }
 
-      useLayoutEffect(() => {
-        const firstRects = fieldRectsRef.current;
-        if (!firstRects) return;
-        fieldRectsRef.current = null;
-        fieldsRef.current?.querySelectorAll(".field-card").forEach((card) => {
-          const first = firstRects.get(card.dataset.fieldId);
-          if (!first) return;
-          const last = card.getBoundingClientRect();
-          const dx = first.left - last.left;
-          const dy = first.top - last.top;
-          if (dx || dy) card.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration: 180, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
-        });
-      }, [schema.fields]);
-
-      function updateSchema(patch) {
-        setSchema((current) => {
-          const next = { ...current, ...patch };
-          if (patch.settings) next.settings = { ...current.settings, ...patch.settings };
-          return next;
-        });
+    class DragPayloadModel {
+      static clampIndex(index, length) {
+        const targetIndex = Number.isInteger(index) ? index : length;
+        return Math.max(0, Math.min(targetIndex, length));
       }
 
-      function updateField(id, patch) {
-        setSchema((current) => ({
-          ...current,
-          fields: current.fields.map((field) => {
-            if (field.id !== id) return field;
-            return {
-              ...field,
-              ...patch,
-              settings: patch.settings ? { ...field.settings, ...patch.settings } : field.settings
-            };
+      static key(payload) {
+        if (payload?.kind === "new" && payload.type) return `new:${payload.type}`;
+        if (["move", "split", "copy"].includes(payload?.kind) && payload.id) return `${payload.kind}:${payload.id}`;
+        return "";
+      }
+
+      static parse(value) {
+        const text = String(value || "");
+        const index = text.indexOf(":");
+        if (index < 0) return null;
+        const kind = text.slice(0, index);
+        const target = text.slice(index + 1);
+        if (kind === "new" && target) return { kind, type: target };
+        if (["move", "split", "copy"].includes(kind) && target) return { kind, id: target };
+        return null;
+      }
+
+      static same(first, second) {
+        const firstKey = DragPayloadModel.key(first);
+        return Boolean(firstKey && firstKey === DragPayloadModel.key(second));
+      }
+
+      static dropEffect(payload) {
+        return payload?.kind === "new" ? "copy" : "move";
+      }
+
+      static info(payload, fields, headlineId = null) {
+        const field = payload?.id ? fields.find((item) => item.id === payload.id) || null : null;
+        const splitMedia = field?.type === "headline" ? new HeadlineModel(field).mediaField : null;
+        const providesMedia = payload?.kind === "new"
+          ? payload.type === "media"
+          : payload?.kind === "move"
+            ? field?.type === "media"
+            : payload?.kind === "split"
+              ? Boolean(splitMedia)
+              : false;
+        const repositionsHeadlineCopy = payload?.kind === "copy" && payload.id === headlineId && Boolean(splitMedia);
+        return { field, splitMedia, providesMedia, repositionsHeadlineCopy };
+      }
+
+      static canDropOnHeadline(payload, fields, headlineId) {
+        const info = DragPayloadModel.info(payload, fields, headlineId);
+        return info.providesMedia || info.repositionsHeadlineCopy;
+      }
+
+      static mediaFromPayload(payload, fields) {
+        const info = DragPayloadModel.info(payload, fields);
+        if (!info.providesMedia) return null;
+        if (payload.kind === "new") return typeMeta("media").defaults.settings;
+        if (payload.kind === "split") return info.splitMedia?.settings || null;
+        return info.field?.settings || null;
+      }
+
+      static splitMediaIntoHeadline(schema, headlineId, payload, placement = "right") {
+        const headline = schema.fields.find((field) => field.id === headlineId);
+        const media = DragPayloadModel.mediaFromPayload(payload, schema.fields);
+        if (!headline || headline.type !== "headline" || !media || (payload?.kind !== "split" && payload?.id === headlineId)) return schema;
+        const fields = payload.kind === "move" ? schema.fields.filter((field) => field.id !== payload.id) : schema.fields;
+        return {
+          ...schema,
+          fields: fields.map((field) => {
+            if (field.id === headlineId) return { ...field, required: false, settings: { ...field.settings, mediaPlacement: placement, media: clone(media) } };
+            if (payload.kind === "split" && field.id === payload.id) return { ...field, settings: { ...field.settings, media: null } };
+            return field;
           })
-        }));
+        };
+      }
+    }
+
+    function initialBuilderState() {
+      const schema = loadInitialSchema();
+      return { schema, selectedId: schema.fields[0]?.id || null, removingId: null };
+    }
+
+    function builderReducer(state, action) {
+      switch (action.type) {
+        case "replace-schema":
+          return { schema: action.schema, selectedId: action.schema.fields[0]?.id || null, removingId: null };
+        case "commit-schema":
+          return { ...state, schema: action.schema, selectedId: action.selectedId ?? state.selectedId };
+        case "patch-schema": {
+          const schema = { ...state.schema, ...action.patch };
+          if (action.patch.settings) schema.settings = { ...state.schema.settings, ...action.patch.settings };
+          return { ...state, schema };
+        }
+        case "patch-field":
+          return {
+            ...state,
+            schema: {
+              ...state.schema,
+              fields: state.schema.fields.map((field) => field.id === action.id
+                ? { ...field, ...action.patch, settings: action.patch.settings ? { ...field.settings, ...action.patch.settings } : field.settings }
+                : field)
+            }
+          };
+        case "select-field":
+          return state.selectedId === action.id ? state : { ...state, selectedId: action.id };
+        case "insert-field": {
+          const fields = [...state.schema.fields];
+          fields.splice(DragPayloadModel.clampIndex(action.index, fields.length), 0, action.field);
+          return { ...state, schema: { ...state.schema, fields }, selectedId: action.field.id };
+        }
+        case "move-field": {
+          const from = state.schema.fields.findIndex((field) => field.id === action.id);
+          const to = from + action.direction;
+          return from < 0 || to < 0 || to >= state.schema.fields.length ? state : { ...state, schema: { ...state.schema, fields: reorder(state.schema.fields, from, to) } };
+        }
+        case "move-field-to-index": {
+          const from = state.schema.fields.findIndex((field) => field.id === action.id);
+          if (from < 0) return state;
+          const insertionIndex = DragPayloadModel.clampIndex(action.index, state.schema.fields.length);
+          const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
+          const boundedTo = Math.max(0, Math.min(to, state.schema.fields.length - 1));
+          return boundedTo === from ? state : { ...state, schema: { ...state.schema, fields: reorder(state.schema.fields, from, boundedTo) } };
+        }
+        case "duplicate-field": {
+          const index = state.schema.fields.findIndex((field) => field.id === action.id);
+          if (index < 0) return state;
+          const fields = [...state.schema.fields];
+          fields.splice(index + 1, 0, action.copy);
+          return { ...state, schema: { ...state.schema, fields }, selectedId: action.copy.id };
+        }
+        case "reset-field": {
+          const source = state.schema.fields.find((field) => field.id === action.id);
+          if (!source) return state;
+          const reset = schemaField({ ...fieldFromType(source.type), id: action.id });
+          return { ...state, schema: { ...state.schema, fields: state.schema.fields.map((field) => field.id === action.id ? reset : field) }, selectedId: action.id };
+        }
+        case "mark-removing":
+          return state.removingId === action.id || !state.schema.fields.some((field) => field.id === action.id) ? state : { ...state, removingId: action.id };
+        case "remove-field": {
+          const index = state.schema.fields.findIndex((field) => field.id === action.id);
+          if (index < 0) return { ...state, removingId: null };
+          const fields = state.schema.fields.filter((field) => field.id !== action.id);
+          const selectedId = state.selectedId === action.id ? fields[Math.min(index, fields.length - 1)]?.id || null : state.selectedId;
+          return { ...state, schema: { ...state.schema, fields }, selectedId, removingId: null };
+        }
+        case "reposition-headline-copy":
+          return {
+            ...state,
+            schema: {
+              ...state.schema,
+              fields: state.schema.fields.map((field) => field.id === action.headlineId && field.type === "headline" && new HeadlineModel(field).mediaField
+                ? { ...field, settings: { ...field.settings, mediaPlacement: OPPOSITE_HEADLINE_PLACEMENT[action.placement] || "center" } }
+                : field)
+            },
+            selectedId: action.headlineId
+          };
+        default:
+          return state;
+      }
+    }
+
+    function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, headlineDropRectRef }) {
+      const current = () => stateRef.current;
+      const currentSchema = () => current().schema;
+      const replaceSchema = (schema) => dispatch({ type: "replace-schema", schema });
+      const patchSchema = (patch) => dispatch({ type: "patch-schema", patch });
+      const selectField = (id) => dispatch({ type: "select-field", id });
+
+      function patchSelectedField(patch) {
+        const id = current().selectedId;
+        if (id) dispatch({ type: "patch-field", id, patch });
       }
 
-      function addField(type, index = schema.fields.length) {
-        const field = fieldFromType(type);
-        setSchema((current) => {
-          const fields = [...current.fields];
-          fields.splice(clampDropIndex(index, fields.length), 0, field);
-          return { ...current, fields };
-        });
-        setSelectedId(field.id);
+      function addField(type, index = currentSchema().fields.length) {
+        dispatch({ type: "insert-field", field: fieldFromType(type), index });
       }
 
       function snapshotFieldRects() {
@@ -5471,102 +5520,73 @@
       }
 
       function moveField(id, direction) {
-        const index = schema.fields.findIndex((field) => field.id === id);
+        const fields = currentSchema().fields;
+        const index = fields.findIndex((field) => field.id === id);
         const nextIndex = index + direction;
-        if (index < 0 || nextIndex < 0 || nextIndex >= schema.fields.length) return;
+        if (index < 0 || nextIndex < 0 || nextIndex >= fields.length) return;
         snapshotFieldRects();
-        setSchema((current) => ({ ...current, fields: reorder(current.fields, index, nextIndex) }));
+        dispatch({ type: "move-field", id, direction });
+      }
+
+      function moveFieldToDropIndex(id, index) {
+        const fields = currentSchema().fields;
+        const from = fields.findIndex((field) => field.id === id);
+        const insertionIndex = DragPayloadModel.clampIndex(index, fields.length);
+        const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
+        const boundedTo = Math.max(0, Math.min(to, fields.length - 1));
+        if (from < 0 || boundedTo === from) return;
+        snapshotFieldRects();
+        dispatch({ type: "move-field-to-index", id, index });
       }
 
       function duplicateField(id) {
-        const index = schema.fields.findIndex((field) => field.id === id);
-        if (index < 0) return;
-        const source = schema.fields[index];
+        const source = currentSchema().fields.find((field) => field.id === id);
+        if (!source) return;
         const copyLabel = String(source.label ?? "").trim() ? source.label + " copy" : "";
-        const copy = schemaField({ ...clone(source), id: uid(), label: copyLabel });
-        setSchema((current) => {
-          const fields = [...current.fields];
-          fields.splice(index + 1, 0, copy);
-          return { ...current, fields };
-        });
-        setSelectedId(copy.id);
+        dispatch({ type: "duplicate-field", id, copy: schemaField({ ...clone(source), id: uid(), label: copyLabel }) });
       }
 
       function resetField(id) {
-        const source = schema.fields.find((field) => field.id === id);
-        if (!source) return;
-        const reset = schemaField({ ...fieldFromType(source.type), id });
-        setSchema((current) => ({ ...current, fields: current.fields.map((field) => field.id === id ? reset : field) }));
-        setSelectedId(id);
+        dispatch({ type: "reset-field", id });
       }
 
       function deleteField(id) {
-        const index = schema.fields.findIndex((field) => field.id === id);
-        if (index < 0 || removingId === id) return;
-        const fields = schema.fields.filter((field) => field.id !== id);
-        const nextSelectedId = fields[Math.min(index, fields.length - 1)]?.id || null;
-        setRemovingId(id);
-        window.setTimeout(() => {
-          setSchema((current) => ({ ...current, fields: current.fields.filter((field) => field.id !== id) }));
-          setSelectedId((current) => current === id ? nextSelectedId : current);
-          setRemovingId(null);
-        }, 150);
+        const { schema, removingId } = current();
+        if (removingId === id || !schema.fields.some((field) => field.id === id)) return;
+        dispatch({ type: "mark-removing", id });
+        window.setTimeout(() => dispatch({ type: "remove-field", id }), 150);
       }
 
-      function clampDropIndex(index, length) {
-        const targetIndex = Number.isInteger(index) ? index : length;
-        return Math.max(0, Math.min(targetIndex, length));
-      }
-
-      // TODO use a more generalized comparison function
-      function sameDragPayload(first, second) {
-        if (!first || !second || first.kind !== second.kind) return false;
-        return first.kind === "new" ? first.type === second.type : first.id === second.id;
+      function dragStateFor(payload) {
+        const schema = currentSchema();
+        if (payload.kind === "new") return { ...payload, index: schema.fields.length };
+        if (payload.kind === "move") return { ...payload, index: schema.fields.findIndex((field) => field.id === payload.id) };
+        const field = schema.fields.find((item) => item.id === payload.id);
+        if (!field) return null;
+        const placement = new HeadlineModel(field).mediaPlacement;
+        return { ...payload, headlineId: payload.id, headlinePlacement: payload.kind === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[placement] : placement };
       }
 
       function payloadFromEvent(event) {
-        if (dragPayloadRef.current) return dragPayloadRef.current;
-        const payload = event.dataTransfer?.getData("text/plain") || "";
-        if (payload.startsWith("new:")) return { kind: "new", type: payload.slice(4) };
-        if (payload.startsWith("move:")) return { kind: "move", id: payload.slice(5) };
-        if (payload.startsWith("split:")) return { kind: "split", id: payload.slice(6) };
-        if (payload.startsWith("copy:")) return { kind: "copy", id: payload.slice(5) };
-        return null;
+        return dragPayloadRef.current || DragPayloadModel.parse(event.dataTransfer?.getData("text/plain"));
       }
 
-      // TODO use payload object, not one-off specific payload type functions
-      function payloadIsMedia(payload, fields = schema.fields) {
-        if (payload?.kind === "new") return payload.type === "media";
-        if (payload?.kind === "move") return fields.some((field) => field.id === payload.id && field.type === "media");
-        if (payload?.kind === "split") return fields.some((field) => field.id === payload.id && field.type === "headline" && splitMediaField(field));
-        return false;
+      function beginDrag(event, payload) {
+        const dragState = payload && dragStateFor(payload);
+        if (!dragState) return;
+        if (payload.kind === "copy" || payload.kind === "split") event.stopPropagation();
+        dragPayloadRef.current = payload;
+        event.dataTransfer.setData("text/plain", DragPayloadModel.key(payload));
+        event.dataTransfer.effectAllowed = payload.kind === "new" ? "copy" : "move";
+        const card = payload.kind === "move" ? event.currentTarget.closest(".field-card") : null;
+        if (card) event.dataTransfer.setDragImage(card, 24, 24);
+        setDragState(dragState);
       }
 
-      function payloadIsHeadlineCopy(payload, headlineId, fields = schema.fields) {
-        return payload?.kind === "copy" && payload.id === headlineId && fields.some((field) => field.id === headlineId && field.type === "headline" && splitMediaField(field));
-      }
-
-      function setHeadlineMediaPlacement(headlineId, placement) {
-        setSchema((current) => ({ ...current, fields: current.fields.map((field) => field.id === headlineId && field.type === "headline" && splitMediaField(field) ? { ...field, settings: { ...field.settings, mediaPlacement: placement } } : field) }));
-        setSelectedId(headlineId);
-      }
-
-      function splitMediaIntoHeadline(headlineId, payload, placement = "right") {
-        setSchema((current) => {
-          const headline = current.fields.find((field) => field.id === headlineId);
-          if (!headline || headline.type !== "headline" || !payloadIsMedia(payload, current.fields)) return current;
-          const source = payload.kind === "move" ? current.fields.find((field) => field.id === payload.id) : payload.kind === "split" ? current.fields.find((field) => field.id === payload.id) : fieldFromType("media");
-          const media = payload.kind === "split" ? source?.settings?.media : source?.settings;
-          if (!source || !media || source.id === headlineId && payload.kind !== "split") return current;
-          snapshotFieldRects();
-          const fields = payload.kind === "move" ? current.fields.filter((field) => field.id !== source.id) : current.fields;
-          return { ...current, fields: fields.map((field) => {
-            if (field.id === headlineId) return { ...field, required: false, settings: { ...field.settings, mediaPlacement: placement, media: clone(media) } };
-            if (payload.kind === "split" && field.id === source.id) return { ...field, settings: { ...field.settings, media: null } };
-            return field;
-          }) };
-        });
-        setSelectedId(headlineId);
+      function clearDragState() {
+        dragPayloadRef.current = null;
+        headlineDropRectRef.current = null;
+        setDragState(null);
       }
 
       function insertionTargetFromPointer(clientY) {
@@ -5591,50 +5611,18 @@
         return { index: rects.length, y: Math.round(yForIndex(rects.length)) };
       }
 
-      function beginPaletteDrag(event, type) {
-        const payload = { kind: "new", type };
-        dragPayloadRef.current = payload;
-        event.dataTransfer.setData("text/plain", "new:" + type);
-        event.dataTransfer.effectAllowed = "copy";
-        setDragState({ ...payload, index: schema.fields.length });
-      }
-
-      function beginFieldDrag(event, id) {
-        const payload = { kind: "move", id };
-        dragPayloadRef.current = payload;
-        event.dataTransfer.setData("text/plain", "move:" + id);
-        event.dataTransfer.effectAllowed = "move";
-        const card = event.currentTarget.closest(".field-card");
-        if (card) event.dataTransfer.setDragImage(card, 24, 24);
-        setDragState({ ...payload, index: schema.fields.findIndex((field) => field.id === id) });
-      }
-
-      function beginHeadlineMediaDrag(event, id, part = "media") {
-        const payload = { kind: part === "copy" ? "copy" : "split", id };
-        const mediaPlacement = headlineSettings(schema.fields.find((field) => field.id === id)).mediaPlacement;
-        event.stopPropagation();
-        dragPayloadRef.current = payload;
-        event.dataTransfer.setData("text/plain", payload.kind + ":" + id);
-        event.dataTransfer.effectAllowed = "move";
-        setDragState({ ...payload, headlineId: id, headlinePlacement: part === "copy" ? OPPOSITE_HEADLINE_PLACEMENT[mediaPlacement] : mediaPlacement });
-      }
-
-      function clearDragState() {
-        dragPayloadRef.current = null;
-        headlineDropRectRef.current = null;
-        setDragState(null);
-      }
-
       function updateDropTarget(event) {
         const payload = payloadFromEvent(event);
         if (!payload || !["new", "move"].includes(payload.kind)) return;
         event.preventDefault();
-        event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
+        event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
         const target = insertionTargetFromPointer(event.clientY);
-        setDragState((current) => {
-          if (current && sameDragPayload(current, payload) && current.index === target.index && current.y === target.y) return current;
-          return { ...payload, ...target };
-        });
+        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.index === target.index && state.y === target.y ? state : { ...payload, ...target });
+      }
+
+      function clearDropTarget(event) {
+        if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
+        setDragState((state) => state ? { ...state, index: null } : state);
       }
 
       function headlinePlacementFromPointer(event, headlineId) {
@@ -5652,76 +5640,58 @@
         return "center";
       }
 
-      function pointerInsideElement(event, element) {
-        const rect = element.getBoundingClientRect();
-        return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
-      }
-
       function updateHeadlineDropTarget(event, headlineId) {
         const payload = payloadFromEvent(event);
-        if (!payloadIsMedia(payload) && !payloadIsHeadlineCopy(payload, headlineId)) return;
+        if (!DragPayloadModel.canDropOnHeadline(payload, currentSchema().fields, headlineId)) return;
         const headlinePlacement = headlinePlacementFromPointer(event, headlineId);
         event.preventDefault();
         event.stopPropagation();
-        event.dataTransfer.dropEffect = payload.kind === "new" ? "copy" : "move";
-        setDragState((current) => current && sameDragPayload(current, payload) && current.headlineId === headlineId && current.headlinePlacement === headlinePlacement ? current : { ...payload, index: null, y: null, headlineId, headlinePlacement });
+        event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
+        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.headlineId === headlineId && state.headlinePlacement === headlinePlacement ? state : { ...payload, index: null, y: null, headlineId, headlinePlacement });
       }
 
       function clearHeadlineDropTarget(event, headlineId) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
-        if (pointerInsideElement(event, event.currentTarget)) return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+        if (inside) return;
         if (headlineDropRectRef.current?.headlineId === headlineId) headlineDropRectRef.current = null;
-        setDragState((current) => current?.headlineId === headlineId ? { ...current, headlineId: null, headlinePlacement: null } : current);
+        setDragState((state) => state?.headlineId === headlineId ? { ...state, headlineId: null, headlinePlacement: null } : state);
       }
 
       function handleHeadlineDrop(event, headlineId) {
         const payload = payloadFromEvent(event);
-        const isCopy = payloadIsHeadlineCopy(payload, headlineId);
-        if (!payloadIsMedia(payload) && !isCopy) return;
+        const schema = currentSchema();
+        const info = DragPayloadModel.info(payload, schema.fields, headlineId);
+        if (!info.providesMedia && !info.repositionsHeadlineCopy) return;
         event.preventDefault();
         event.stopPropagation();
         const placement = headlinePlacementFromPointer(event, headlineId);
         clearDragState();
-        if (isCopy) setHeadlineMediaPlacement(headlineId, OPPOSITE_HEADLINE_PLACEMENT[placement] || "center");
-        else splitMediaIntoHeadline(headlineId, payload, placement);
-      }
-
-      function clearDropTarget(event) {
-        if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
-        setDragState((current) => current ? { ...current, index: null } : current);
-      }
-
-      function moveFieldToDropIndex(id, index) {
-        setSchema((current) => {
-          const from = current.fields.findIndex((field) => field.id === id);
-          if (from < 0) return current;
-          const insertionIndex = clampDropIndex(index, current.fields.length);
-          const to = insertionIndex > from ? insertionIndex - 1 : insertionIndex;
-          const boundedTo = Math.max(0, Math.min(to, current.fields.length - 1));
-          if (boundedTo === from) return current;
-          snapshotFieldRects();
-          return { ...current, fields: reorder(current.fields, from, boundedTo) };
-        });
+        if (info.repositionsHeadlineCopy) {
+          dispatch({ type: "reposition-headline-copy", headlineId, placement });
+          return;
+        }
+        const nextSchema = DragPayloadModel.splitMediaIntoHeadline(schema, headlineId, payload, placement);
+        if (nextSchema === schema) return;
+        snapshotFieldRects();
+        dispatch({ type: "commit-schema", schema: nextSchema, selectedId: headlineId });
       }
 
       function handleDrop(event) {
         event.preventDefault();
         const payload = payloadFromEvent(event);
-        const target = Number.isInteger(dragState?.index) ? dragState : insertionTargetFromPointer(event.clientY);
+        const target = Number.isInteger(dragStateRef.current?.index) ? dragStateRef.current : insertionTargetFromPointer(event.clientY);
         clearDragState();
-        if (!payload) return;
-        if (payload.kind === "new") addField(payload.type, target.index);
-        if (payload.kind === "move") moveFieldToDropIndex(payload.id, target.index);
+        if (payload?.kind === "new") addField(payload.type, target.index);
+        if (payload?.kind === "move") moveFieldToDropIndex(payload.id, target.index);
       }
 
       async function importSchema(event) {
         const file = event.currentTarget.files?.[0];
         if (!file) return;
         try {
-          const text = await file.text();
-          const imported = schemaDocument(JSON.parse(text));
-          setSchema(imported);
-          setSelectedId(imported.fields[0]?.id || null);
+          replaceSchema(schemaDocument(JSON.parse(await file.text())));
         } catch (error) {
           window.alert("That JSON file could not be loaded.");
           console.error(error);
@@ -5742,11 +5712,10 @@
       }
 
       function exportSchema() {
+        setExportMenuOpen(false);
+        const schema = currentSchema();
         const output = schemaDocument(schema);
-        downloadBlob(
-          new Blob([JSON.stringify(output, null, 2)], { type: "application/json" }),
-          safeFileName(formDisplayName(schema) || "form-schema") + ".json"
-        );
+        downloadBlob(new Blob([JSON.stringify(output, null, 2)], { type: "application/json" }), safeFileName(formDisplayName(schema) || "form-schema") + ".json");
       }
 
       function runtimeHtmlWithSchema(runtimeHtml, output) {
@@ -5758,51 +5727,149 @@
       }
 
       async function exportRuntime() {
+        setExportMenuOpen(false);
+        const schema = currentSchema();
         const output = schemaDocument({ ...schema, updatedAt: new Date().toISOString() });
         try {
           const response = await fetch("form-runtime.html?standalone=" + Date.now(), { cache: "no-store" });
           if (!response.ok) throw new Error("Unable to load form-runtime.html");
-          const runtimeHtml = runtimeHtmlWithSchema(await response.text(), output);
-          downloadBlob(
-            new Blob([runtimeHtml], { type: "text/html" }),
-            safeFileName(formDisplayName(schema) || "form-runtime") + ".html"
-          );
+          downloadBlob(new Blob([runtimeHtmlWithSchema(await response.text(), output)], { type: "text/html" }), safeFileName(formDisplayName(schema) || "form-runtime") + ".html");
         } catch (error) {
           console.error(error);
           window.alert("The runtime HTML could not be exported. Make sure form-runtime.html is available next to the builder.");
         }
       }
 
-      function chooseExportSchema() {
-        setExportMenuOpen(false);
-        exportSchema();
-      }
-
-      function chooseExportRuntime() {
-        setExportMenuOpen(false);
-        exportRuntime();
-      }
-
       function previewForm() {
-        const previewSchema = schemaDocument({ ...schema, updatedAt: new Date().toISOString() });
+        const previewSchema = schemaDocument({ ...currentSchema(), updatedAt: new Date().toISOString() });
         localStorage.setItem(STORAGE_KEY, JSON.stringify(previewSchema));
-        const hash = "#s=" + encodeSchemaToken(previewSchema);
-        window.open("form-runtime.html?preview=1&refresh=" + Date.now() + hash, "formalRuntimePreview");
+        window.open("form-runtime.html?preview=1&refresh=" + Date.now() + "#s=" + encodeSchemaToken(previewSchema), "formalRuntimePreview");
       }
 
       function resetForm() {
-        const hasContent = formHasContent(schema);
-        const confirmed = !hasContent || window.confirm("Reset this form and clear all fields?");
-        if (!confirmed) return;
-        const next = defaultSchema();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        setSchema(next);
-        setSelectedId(next.fields[0]?.id || null);
-        setRemovingId(null);
+        if (formHasContent(currentSchema()) && !window.confirm("Reset this form and clear all fields?")) return;
+        replaceSchema(defaultSchema());
       }
 
+      function patchTheme(patch) {
+        const schema = currentSchema();
+        patchSchema({ settings: { theme: { ...schema.settings.theme, ...patch } } });
+      }
+
+      function patchTypographyRole(key, value) {
+        const schema = currentSchema();
+        const typography = typographySettings(schema.settings.typography, schema.settings.theme);
+        patchSchema({ settings: { typography: { ...typography, [key]: value } } });
+      }
+
+      function clearSelectionFromCanvas(event) {
+        if (event.target?.closest?.(".field-card, button, a, input, textarea, select")) return;
+        selectField(null);
+      }
+
+      return {
+        addField,
+        beginDrag,
+        clearDragState,
+        clearDropTarget,
+        clearHeadlineDropTarget,
+        clearSelectionFromCanvas,
+        deleteField,
+        duplicateField,
+        exportRuntime,
+        exportSchema,
+        handleDrop,
+        handleHeadlineDrop,
+        importSchema,
+        moveField,
+        patchSchema,
+        patchSelectedField,
+        patchTheme,
+        patchTypographyRole,
+        previewForm,
+        resetField,
+        resetForm,
+        selectField,
+        updateDropTarget,
+        updateHeadlineDropTarget
+      };
+    }
+
+    function useStoredSchema(schema) {
+      useEffect(() => {
+        const next = { ...schema, updatedAt: new Date().toISOString() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      }, [schema]);
+    }
+
+    function useDismissableLayer(open, ref, onDismiss) {
+      const onDismissRef = useRef(onDismiss);
+      useEffect(() => {
+        onDismissRef.current = onDismiss;
+      }, [onDismiss]);
+
+      useEffect(() => {
+        if (!open) return undefined;
+        function handlePointerDown(event) {
+          if (ref.current?.contains(event.target)) return;
+          onDismissRef.current();
+        }
+        function handleKeyDown(event) {
+          if (event.key === "Escape") onDismissRef.current();
+        }
+        window.addEventListener("pointerdown", handlePointerDown);
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+          window.removeEventListener("pointerdown", handlePointerDown);
+          window.removeEventListener("keydown", handleKeyDown);
+        };
+      }, [open, ref]);
+    }
+
+    function useFieldListAnimation(fieldsRef, fieldRectsRef, fields) {
+      useLayoutEffect(() => {
+        const firstRects = fieldRectsRef.current;
+        if (!firstRects) return;
+        fieldRectsRef.current = null;
+        fieldsRef.current?.querySelectorAll(".field-card").forEach((card) => {
+          const first = firstRects.get(card.dataset.fieldId);
+          if (!first) return;
+          const last = card.getBoundingClientRect();
+          const dx = first.left - last.left;
+          const dy = first.top - last.top;
+          if (dx || dy) card.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration: 180, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+        });
+      }, [fields]);
+    }
+
+    function BuilderApp() {
+      const [builderState, dispatchBuilder] = useReducer(builderReducer, null, initialBuilderState);
+      const { schema, selectedId, removingId } = builderState;
+      const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+      const [dragState, setDragState] = useState(null);
+      const [activeColorItem, setActiveColorItem] = useState(null);
+      const [activeTypographyRole, setActiveTypographyRole] = useState(null);
+      const [exportMenuOpen, setExportMenuOpen] = useState(false);
+      const stateRef = useRef(builderState);
+      const dragStateRef = useRef(dragState);
+      const fieldsRef = useRef(null);
+      const fieldRectsRef = useRef(null);
+      const dragPayloadRef = useRef(null);
+      const headlineDropRectRef = useRef(null);
+      const exportMenuRef = useRef(null);
+
+      stateRef.current = builderState;
+      dragStateRef.current = dragState;
+
+      const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, headlineDropRectRef });
+      const selectedField = useMemo(() => schema.fields.find((field) => field.id === selectedId) || null, [schema.fields, selectedId]);
+
+      useStoredSchema(schema);
+      useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
+      useFieldListAnimation(fieldsRef, fieldRectsRef, schema.fields);
+
       const formName = formDisplayName(schema);
-      const theme = themeSettings(schema.settings.theme);
+      const theme = schema.settings.theme;
       const typography = typographySettings(schema.settings.typography, theme);
       const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
       const activeDropY = Number.isFinite(dragState?.y) ? dragState.y : null;
@@ -5815,24 +5882,7 @@
       useEffect(() => {
         ensureGoogleFontLoaded(theme.fontFamily);
         TYPOGRAPHY_ROLES.forEach((role) => ensureGoogleFontLoaded(typography[role.key].fontFamily));
-      }, [theme.fontFamily, typography.heading.fontFamily, typography.description.fontFamily, typography.label.fontFamily]);
-
-      function patchTheme(patch) {
-        updateSchema({ settings: { ...schema.settings, theme: themeSettings({ ...theme, ...patch }) } });
-      }
-
-      function patchTypographyRole(key, value) {
-        updateSchema({ settings: { ...schema.settings, typography: { ...typography, [key]: value } } });
-      }
-
-      function patchColor(key, value) {
-        patchTheme({ [key]: value });
-      }
-
-      function clearSelectionFromCanvas(event) {
-        if (event.target?.closest?.(".field-card, button, a, input, textarea, select")) return;
-        setSelectedId(null);
-      }
+      }, [theme.fontFamily, typography.body.fontFamily, typography.heading.fontFamily, typography.description.fontFamily, typography.label.fontFamily]);
 
       return html`
         <div class="builder-root">
@@ -5840,8 +5890,8 @@
           <header class="topbar">
             <div class="toolbar-actions">
               <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><${Icon} icon="fa-regular fa-folder-open" /></label>
-              <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${importSchema} />
-              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
+              <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${builder.importSchema} />
+              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${builder.resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
               <input
                 class="current-form-name"
                 value=${formName}
@@ -5849,11 +5899,11 @@
                 title=${formName}
                 placeholder="Untitled form"
                 aria-label="Form title"
-                onInput=${(event) => updateSchema({ settings: { ...schema.settings, name: event.currentTarget.value } })}
+                onInput=${(event) => builder.patchSchema({ settings: { name: event.currentTarget.value } })}
               />
             </div>
             <div class="top-actions">
-              <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${previewForm}><${Icon} icon="fa-solid fa-play" /></button>
+              <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${builder.previewForm}><${Icon} icon="fa-solid fa-play" /></button>
               <div class="export-menu-wrap" ref=${exportMenuRef}>
                 <button
                   class="button primary"
@@ -5863,15 +5913,15 @@
                   aria-label="Export"
                   onClick=${() => setExportMenuOpen((open) => !open)}
                 >
-                  <${Icon} icon="fa-solid fa-download" /><span>Export</span><${Icon} icon="fa-solid fa-chevron-down" className="export-chevron" />
+                  <span>Export</span><${Icon} icon="fa-solid fa-chevron-down" className="export-chevron" />
                 </button>
                 ${exportMenuOpen ? html`
                   <div class="export-menu" role="menu" aria-label="Export options">
-                    <button class="export-menu-item" type="button" role="menuitem" onClick=${chooseExportSchema}>
-                      <${Icon} icon="fa-solid fa-download" /><span>Schema JSON</span>
+                    <button class="export-menu-item" type="button" role="menuitem" onClick=${builder.exportSchema}>
+                      <${Icon} icon="lucide-code-xml" /><span>Schema JSON</span>
                     </button>
-                    <button class="export-menu-item" type="button" role="menuitem" onClick=${chooseExportRuntime}>
-                      <${Icon} icon="fa-regular fa-file-code" /><span>Runtime HTML</span>
+                    <button class="export-menu-item" type="button" role="menuitem" onClick=${builder.exportRuntime}>
+                      <${Icon} icon="lucide-package-open" /><span>Runtime HTML</span>
                     </button>
                   </div>
                 ` : null}
@@ -5891,20 +5941,20 @@
                     <${Icon} icon="fa-solid fa-chevron-left" />
                   </button>
                 </div>
-                <${Palette} onAdd=${addField} onDragStart=${beginPaletteDrag} onDragEnd=${clearDragState} />
-                <${SidebarSettings} schema=${schema} onSchemaChange=${updateSchema} onOpenColor=${setActiveColorItem} onOpenTypography=${setActiveTypographyRole} />
+                <${Palette} onAdd=${builder.addField} onDragStart=${builder.beginDrag} onDragEnd=${builder.clearDragState} />
+                <${SidebarSettings} schema=${schema} onSchemaChange=${builder.patchSchema} onOpenColor=${setActiveColorItem} onOpenTypography=${setActiveTypographyRole} />
               </div>
             </aside>
 
-            <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)} onClick=${clearSelectionFromCanvas}>
+            <section class="canvas-shell" aria-label="Form canvas" style=${themeStyle(schema)} onClick=${builder.clearSelectionFromCanvas}>
               <article class="form-page">
                 <div
                   class=${`fields-list${listDragActive ? " is-drag-target" : ""}`}
                   ref=${fieldsRef}
-                  onDragOver=${updateDropTarget}
-                  onDragEnter=${updateDropTarget}
-                  onDragLeave=${clearDropTarget}
-                  onDrop=${handleDrop}
+                  onDragOver=${builder.updateDropTarget}
+                  onDragEnter=${builder.updateDropTarget}
+                  onDragLeave=${builder.clearDropTarget}
+                  onDrop=${builder.handleDrop}
                 >
                   <${FieldListContent}
                     fields=${schema.fields}
@@ -5914,17 +5964,17 @@
                     headlineDropId=${headlineDropId}
                     headlineDropPlacement=${headlineDropPlacement}
                     headlineDropKind=${headlineDropKind}
-                    onSelect=${setSelectedId}
-                    onMove=${moveField}
-                    onDuplicate=${duplicateField}
-                    onReset=${resetField}
-                    onDelete=${deleteField}
-                    onFieldDragStart=${beginFieldDrag}
-                    onFieldDragEnd=${clearDragState}
-                    onHeadlineDragOver=${updateHeadlineDropTarget}
-                    onHeadlineDragLeave=${clearHeadlineDropTarget}
-                    onHeadlineDrop=${handleHeadlineDrop}
-                    onHeadlineMediaDragStart=${beginHeadlineMediaDrag}
+                    onSelect=${builder.selectField}
+                    onMove=${builder.moveField}
+                    onDuplicate=${builder.duplicateField}
+                    onReset=${builder.resetField}
+                    onDelete=${builder.deleteField}
+                    onFieldDragStart=${builder.beginDrag}
+                    onFieldDragEnd=${builder.clearDragState}
+                    onHeadlineDragOver=${builder.updateHeadlineDropTarget}
+                    onHeadlineDragLeave=${builder.clearHeadlineDropTarget}
+                    onHeadlineDrop=${builder.handleHeadlineDrop}
+                    onHeadlineMediaDragStart=${builder.beginDrag}
                   />
                   ${listDragActive && activeDropY !== null ? html`<${DropIndicator} y=${activeDropY} />` : null}
                 </div>
@@ -5935,8 +5985,8 @@
               <${Inspector}
                 schema=${schema}
                 selectedField=${selectedField}
-                onSchemaChange=${updateSchema}
-                onFieldChange=${(patch) => selectedField && updateField(selectedField.id, patch)}
+                onSchemaChange=${builder.patchSchema}
+                onFieldChange=${builder.patchSelectedField}
               />
             </aside>
           </main>
@@ -5947,7 +5997,7 @@
             item=${activeColorItem}
             value=${theme[activeColorItem[0]]}
             defaultValue=${DEFAULT_THEME[activeColorItem[0]]}
-            onChange=${(value) => patchColor(activeColorItem[0], value)}
+            onChange=${(value) => builder.patchTheme({ [activeColorItem[0]]: value })}
             onClose=${() => setActiveColorItem(null)}
           />
         ` : null}
@@ -5957,7 +6007,7 @@
             role=${activeTypographyRole}
             value=${typography[activeTypographyRole.key]}
             defaultValue=${typographyRoleDefault(activeTypographyRole.key)}
-            onChange=${(value) => patchTypographyRole(activeTypographyRole.key, value)}
+            onChange=${(value) => builder.patchTypographyRole(activeTypographyRole.key, value)}
             onClose=${() => setActiveTypographyRole(null)}
           />
         ` : null}
