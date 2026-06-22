@@ -27,10 +27,21 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Build Pages artifact
+        shell: bash
         run: |
+          set -euo pipefail
+
           mkdir -p _site
           cp form-builder.html _site/index.html
           cp form-runtime.html _site/form-runtime.html
+
+          shopt -s nullglob
+          for file in demo/*.html; do
+            name="$(basename "$file" .html)"
+            mkdir -p "_site/$name"
+            cp "$file" "_site/$name/index.html"
+          done
+
           touch _site/.nojekyll
 
       - name: Configure Pages
