@@ -2144,6 +2144,13 @@
       gap: 8px;
       color: var(--ink);
       font-size: 13.5px;
+      font-weight: 400;
+    }
+
+    .property label.toggle-row {
+      color: var(--ink);
+      font-size: 13.5px;
+      font-weight: 400;
     }
 
     .toggle-row input {
@@ -3032,7 +3039,7 @@
       { type: "short_answer", name: "Short answer", icon: "fa-solid fa-align-left", category: "input", defaults: { label: "Short answer", description: "", required: false, placeholder: "Type a short answer", settings: { showLabel: true, outline: true, background: false } } },
       { type: "long_answer", name: "Long answer", icon: "fa-solid fa-align-justify", category: "input", defaults: { label: "Long answer", description: "", required: false, placeholder: "Type a longer response", settings: { showLabel: true, outline: true, background: false } } },
       { type: "multiple_choice", name: "Multiple choice", icon: "fa-solid fa-list-ul", category: "input", defaults: { label: "Multiple choice", description: "", required: false, options: ["Option 1", "Option 2", "Option 3"], settings: { showLabel: true, outline: true, background: false } } },
-      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { showLabel: true, outline: true, background: false } } },
+      { type: "checkbox", name: "Checkbox", icon: "fa-regular fa-square-check", category: "input", defaults: { label: "Checkbox", description: "", required: false, options: ["Option 1", "Option 2"], settings: { allowCustomOptions: false, showLabel: true, outline: true, background: false } } },
       { type: "email", name: "Email", icon: "fa-regular fa-envelope", category: "input", defaults: { label: "Email", description: "", required: false, placeholder: "name@example.com", settings: { showLabel: true, outline: true, background: false } } },
       { type: "number", name: "Number", icon: "fa-solid fa-hashtag", category: "input", defaults: { label: "Number", description: "", required: false, placeholder: "0", settings: { showLabel: true, outline: true, background: false } } },
       { type: "calendar", name: "Calendar", icon: "fa-regular fa-calendar-days", category: "input", defaults: { label: "Calendar", description: "", required: false, settings: { startDate: "", endDate: "", allowMilestones: true, milestones: [], showLabel: true, outline: true, background: false } } },
@@ -3648,10 +3655,15 @@
         assertString(this.field.placeholder, `${this.field.type}.placeholder`);
       }
 
-      options() {
-        this.fieldShape(["options"]);
+      options(settingKeys = []) {
+        this.fieldShape(["options"], settingKeys);
         assertArray(this.field.options, `${this.field.type}.options`);
         this.field.options.forEach((option, index) => assertString(option, `${this.field.type}.options[${index}]`));
+      }
+
+      checkboxOptions() {
+        this.options(["allowCustomOptions"]);
+        assertBoolean(this.settings.allowCustomOptions, "checkbox.settings.allowCustomOptions");
       }
 
       calendar() {
@@ -3732,8 +3744,10 @@
       const validator = new FieldSchemaValidator(raw);
       const method = PLACEHOLDER_FIELD_TYPES.has(validator.field.type)
         ? "placeholder"
-        : OPTION_FIELD_TYPES.has(validator.field.type)
-          ? "options"
+        : validator.field.type === "checkbox"
+          ? "checkboxOptions"
+          : OPTION_FIELD_TYPES.has(validator.field.type)
+            ? "options"
           : FIELD_SCHEMA_VALIDATORS[validator.field.type];
       validator[method]?.();
       return validator.field;
@@ -4917,6 +4931,12 @@
           <button class="button ghost" type="button" onClick=${() => onFieldChange({ options: [...options, "Option " + (options.length + 1)] })}>
             <${Icon} icon="fa-solid fa-plus" /><span>Add option</span>
           </button>
+          ${field.type === "checkbox" ? html`
+            <label class="toggle-row">
+              <input type="checkbox" checked=${field.settings.allowCustomOptions} onChange=${(event) => onFieldChange({ settings: { ...field.settings, allowCustomOptions: event.currentTarget.checked } })} />
+              <span>Allow custom options</span>
+            </label>
+          ` : null}
         </div>
       `;
     }

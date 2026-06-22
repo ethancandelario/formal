@@ -768,12 +768,36 @@
       font-size: inherit;
     }
 
-    .choice-row input {
+    .choice-row input[type="checkbox"],
+    .choice-row input[type="radio"] {
       width: 17px;
       height: 17px;
       margin-top: 1px;
       accent-color: var(--accent);
       flex: 0 0 auto;
+    }
+
+    .choice-row .control {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .choice-row [role="button"] {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      cursor: text;
+    }
+
+    .choice-row [role="button"]:focus-visible {
+      border-radius: 4px;
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    .choice-list > .button {
+      justify-self: start;
+      min-height: 34px;
+      margin-top: 4px;
     }
 
     .poll-grid,
@@ -2004,7 +2028,8 @@
     }
 
     .calendar-date-field .control,
-    .calendar-milestone-row .control {
+    .calendar-milestone-row .control,
+    .choice-row .control {
       min-height: 30px;
       border: 0;
       border-radius: 0;
@@ -2022,12 +2047,14 @@
     }
 
     .calendar-date-field .control:hover,
-    .calendar-milestone-row .control:hover {
+    .calendar-milestone-row .control:hover,
+    .choice-row .control:hover {
       box-shadow: inset 0 -1px 0 var(--line);
     }
 
     .calendar-date-field .control:focus,
-    .calendar-milestone-row .control:focus {
+    .calendar-milestone-row .control:focus,
+    .choice-row .control:focus {
       border-color: transparent;
       background: transparent;
       box-shadow: inset 0 -2px 0 var(--accent);
@@ -2893,10 +2920,15 @@
         assertString(this.field.placeholder, `${this.field.type}.placeholder`);
       }
 
-      options() {
-        this.fieldShape(["options"]);
+      options(settingKeys = []) {
+        this.fieldShape(["options"], settingKeys);
         assertArray(this.field.options, `${this.field.type}.options`);
         this.field.options.forEach((option, index) => assertString(option, `${this.field.type}.options[${index}]`));
+      }
+
+      checkboxOptions() {
+        this.options(["allowCustomOptions"]);
+        assertBoolean(this.settings.allowCustomOptions, "checkbox.settings.allowCustomOptions");
       }
 
       calendar() {
@@ -2977,8 +3009,10 @@
       const validator = new FieldSchemaValidator(raw);
       const method = PLACEHOLDER_FIELD_TYPES.has(validator.field.type)
         ? "placeholder"
-        : OPTION_FIELD_TYPES.has(validator.field.type)
-          ? "options"
+        : validator.field.type === "checkbox"
+          ? "checkboxOptions"
+          : OPTION_FIELD_TYPES.has(validator.field.type)
+            ? "options"
           : FIELD_SCHEMA_VALIDATORS[validator.field.type];
       validator[method]?.();
       return validator.field;
@@ -3036,8 +3070,15 @@
         }, {});
       }
 
+      static checkboxSelected(value) {
+        if (Array.isArray(value)) return value;
+        if (value && typeof value === "object" && Array.isArray(value.selected)) return value.selected;
+        return [];
+      }
+
       static isEmpty(field, value) {
         if (NON_DATA_FIELD_TYPES.has(field.type)) return false;
+        if (field.type === "checkbox") return RuntimeFormModel.checkboxSelected(value).length === 0;
         if (Array.isArray(value)) return value.length === 0;
         if (field.type === "media_upload" && value && typeof value === "object") return !value.dataUrl;
         if (field.type === "calendar") return !value || !value.startDate || !value.endDate;
@@ -3050,7 +3091,7 @@
 
       static csvAnswer(field, value) {
         if (value === null || value === undefined || value === "") return "";
-        if (field.type === "checkbox") return Array.isArray(value) ? value.join("; ") : "";
+        if (field.type === "checkbox") return RuntimeFormModel.checkboxSelected(value).join("; ");
         if (field.type === "calendar" && value && typeof value === "object" && !Array.isArray(value)) {
           return [
             value.startDate ? `Start: ${value.startDate}` : "",
@@ -3885,14 +3926,183 @@
       `));
     }
 
+    function CheckboxRuntimeField({ model, value, onValue }) {
+      const [editingOption, setEditingOption] = useState(null);
+      const [optionDraft, setOptionDraft] = useState("");
+      const editInputRef = useRef(null);
+      const field = model.field;
+      const editFocusKey = editingOption ? `${editingOption.kind}:${editingOption.index}:${editingOption.original}` : "";
+
+      useEffect(() => {
+        if (!editingOption) return undefined;
+        const frame = window.requestAnimationFrame(() => {
+          editInputRef.current?.focus();
+          editInputRef.current?.select();
+        });
+        return () => window.cancelAnimationFrame(frame);
+      }, [editFocusKey]);
+
+      function cleanOptionLabel(label) {
+        return String(label || "").trim().replace(/\s+/g, " ");
+      }
+
+      function optionMatches(first, second) {
+        return String(first).toLowerCase() === String(second).toLowerCase();
+      }
+
+      function uniqueOptions(options) {
+        return options.reduce((items, option) => {
+          const label = cleanOptionLabel(option);
+          if (label && !items.some((item) => optionMatches(item, label))) items.push(label);
+          return items;
+        }, []);
+      }
+
+      function isSchemaOption(label) {
+        return field.options.some((option) => optionMatches(option, label));
+      }
+
+      const rawSelected = Array.isArray(value) ? value : Array.isArray(value?.selected) ? value.selected : [];
+      const rawCustomOptions = value && typeof value === "object" && !Array.isArray(value) && Array.isArray(value.customOptions) ? value.customOptions : [];
+      const customOptions = uniqueOptions([...rawCustomOptions, ...rawSelected.filter((option) => !isSchemaOption(option))]);
+      const selected = uniqueOptions(rawSelected.map((option) => canonicalOption(option, customOptions)));
+
+      function canonicalOption(label, customOptionList = customOptions, ignoredCustomIndex = -1) {
+        return field.options.find((option) => optionMatches(option, label))
+          || customOptionList.find((option, index) => index !== ignoredCustomIndex && optionMatches(option, label))
+          || label;
+      }
+
+      function emitValue(nextSelected, nextCustomOptions = customOptions) {
+        const cleanCustomOptions = uniqueOptions(nextCustomOptions).filter((option) => !isSchemaOption(option));
+        const cleanSelected = uniqueOptions(nextSelected.map((option) => canonicalOption(option, cleanCustomOptions)));
+        if (cleanCustomOptions.length || (value && typeof value === "object" && !Array.isArray(value))) {
+          onValue({ selected: cleanSelected, customOptions: cleanCustomOptions });
+          return;
+        }
+        onValue(cleanSelected);
+      }
+
+      function cancelEdit() {
+        setEditingOption(null);
+        setOptionDraft("");
+      }
+
+      function commitEdit() {
+        if (!editingOption) return;
+        const label = cleanOptionLabel(optionDraft);
+        if (!label) {
+          cancelEdit();
+          return;
+        }
+
+        const customBase = editingOption.kind === "existing"
+          ? customOptions.filter((_, index) => index !== editingOption.index)
+          : customOptions;
+        const nextOption = canonicalOption(label, customBase);
+        const nextCustomOptions = isSchemaOption(nextOption) ? customBase : [...customBase, nextOption];
+        const shouldSelect = editingOption.kind === "new" || selected.some((option) => optionMatches(option, editingOption.original));
+        const withoutOriginal = editingOption.kind === "existing"
+          ? selected.filter((item) => !optionMatches(item, editingOption.original))
+          : selected;
+        emitValue(shouldSelect && !withoutOriginal.some((option) => optionMatches(option, nextOption)) ? [...withoutOriginal, nextOption] : withoutOriginal, nextCustomOptions);
+        cancelEdit();
+      }
+
+      function optionChecked(option, checked) {
+        if (!checked && editingOption?.original === option) cancelEdit();
+        if (checked && selected.some((item) => optionMatches(item, option))) return;
+        emitValue(checked ? [...selected, option] : selected.filter((item) => !optionMatches(item, option)), customOptions);
+      }
+
+      function startNewOption() {
+        setOptionDraft("");
+        setEditingOption({ kind: "new", index: customOptions.length, original: "" });
+      }
+
+      function startExistingEdit(index, option) {
+        setOptionDraft(option);
+        setEditingOption({ kind: "existing", index, original: option });
+      }
+
+      function editTriggerKey(event, index, option) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        startExistingEdit(index, option);
+      }
+
+      function draftKey(event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          commitEdit();
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          cancelEdit();
+        }
+      }
+
+      function editableCustomOption(option, index) {
+        const editing = editingOption?.kind === "existing" && editingOption.index === index && editingOption.original === option;
+        return html`
+          <div class="choice-row" key=${`custom_${option}_${index}`}>
+            <input type="checkbox" value=${option} checked=${selected.some((item) => optionMatches(item, option))} aria-label=${option} onChange=${(event) => optionChecked(option, event.currentTarget.checked)} />
+            ${editing ? html`
+              <input
+                class="control"
+                ref=${editInputRef}
+                value=${optionDraft}
+                placeholder="Custom option"
+                aria-label=${`Edit ${option}`}
+                onInput=${(event) => setOptionDraft(event.currentTarget.value)}
+                onBlur=${commitEdit}
+                onKeyDown=${draftKey}
+              />
+            ` : html`
+              <span role="button" tabIndex="0" title="Edit option" aria-label=${`Edit ${option}`} onClick=${() => startExistingEdit(index, option)} onKeyDown=${(event) => editTriggerKey(event, index, option)}>${option}</span>
+            `}
+          </div>
+        `;
+      }
+
+      function newOptionEditor() {
+        if (editingOption?.kind !== "new") return null;
+        return html`
+          <div class="choice-row" key="new_custom_option">
+            <input type="checkbox" checked=${true} aria-label="New option selected" onChange=${cancelEdit} />
+            <input
+              class="control"
+              ref=${editInputRef}
+              value=${optionDraft}
+              placeholder="Custom option"
+              aria-label=${`New ${model.accessibleName} option`}
+              onInput=${(event) => setOptionDraft(event.currentTarget.value)}
+              onBlur=${commitEdit}
+              onKeyDown=${draftKey}
+            />
+          </div>
+        `;
+      }
+
+      return model.grouped("choice-list", html`
+        ${field.options.map((option, index) => html`
+          <label class="choice-row" key=${`${option}_${index}`}>
+            <input type="checkbox" value=${option} checked=${selected.some((item) => optionMatches(item, option))} onChange=${(event) => optionChecked(option, event.currentTarget.checked)} />
+            <span>${option}</span>
+          </label>
+        `)}
+        ${customOptions.map(editableCustomOption)}
+        ${newOptionEditor()}
+        ${field.settings.allowCustomOptions && !editingOption ? html`
+          <button class="button ghost" type="button" data-export-hidden="true" title="Add option" aria-label="Add option" onClick=${startNewOption}>
+            <${Icon} icon="fa-solid fa-plus" /><span>Add option</span>
+          </button>
+        ` : null}
+      `);
+    }
+
     function renderCheckboxRuntimeField(model, value, onValue) {
-      const selected = Array.isArray(value) ? value : [];
-      return model.grouped("choice-list", model.field.options.map((option) => html`
-        <label class="choice-row" key=${option}>
-          <input type="checkbox" value=${option} checked=${selected.includes(option)} onChange=${(event) => onValue(event.currentTarget.checked ? [...selected, option] : selected.filter((item) => item !== option))} />
-          <span>${option}</span>
-        </label>
-      `));
+      return html`<${CheckboxRuntimeField} model=${model} value=${value} onValue=${onValue} />`;
     }
 
     function renderPollRuntimeField(model, value, onValue) {
@@ -4650,7 +4860,7 @@
                 <${Icon} icon="fa-solid fa-chevron-down" className="select-icon" />
               </div>
               <button class="button primary" type="button" data-export disabled=${!schema || exporting} onClick=${() => exportFilledForm(exportFormat)}>
-                <span>${exporting ? "Preparing" : "Download"}</span>
+                <span>${exporting ? "Preparing" : "Export"}</span>
               </button>
             </div>
           </main>
