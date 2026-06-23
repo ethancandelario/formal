@@ -1305,59 +1305,15 @@
     .block-preview-middle {
       /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "main";
       gap: 10px;
       min-width: 0;
       align-items: stretch;
     }
 
-    .block-preview-middle.layout-left-main-right {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-areas: "left main right";
-    }
-
-    .block-preview-middle.layout-left-main {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "left main";
-    }
-
-    .block-preview-middle.layout-main-right {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "main right";
-    }
-
-    .block-preview-middle.layout-left-right {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "left right";
-    }
-
-    .block-preview-middle.layout-left {
-      grid-template-areas: "left";
-    }
-
-    .block-preview-middle.layout-right {
-      grid-template-areas: "right";
-    }
-
-    .block-preview-left,
-    .block-preview-main,
-    .block-preview-right {
+    .block-preview-slot {
       width: auto;
       min-width: 0;
       max-width: 100%;
-    }
-
-    .block-preview-left {
-      grid-area: left;
-    }
-
-    .block-preview-main {
-      grid-area: main;
-    }
-
-    .block-preview-right {
-      grid-area: right;
     }
 
     .block-placement-zones {
@@ -1378,31 +1334,6 @@
     .block-placement-zone {
       min-width: 0;
       min-height: 0;
-    }
-
-    .block-placement-zone.placement-top {
-      grid-column: 2;
-      grid-row: 1;
-    }
-
-    .block-placement-zone.placement-left {
-      grid-column: 1;
-      grid-row: 1 / -1;
-    }
-
-    .block-placement-zone.placement-main {
-      grid-column: 2;
-      grid-row: 2;
-    }
-
-    .block-placement-zone.placement-right {
-      grid-column: 3;
-      grid-row: 1 / -1;
-    }
-
-    .block-placement-zone.placement-bottom {
-      grid-column: 2;
-      grid-row: 3;
     }
 
     .block-preview-stack {
@@ -1487,30 +1418,6 @@
       border-radius: 8px;
       background: rgba(244, 242, 239, 0.84);
       box-shadow: inset 0 0 0 2px rgba(134, 31, 65, 0.06);
-    }
-
-    .block-drop-preview.placement-top {
-      inset: 0 0 auto;
-      height: min(42%, 110px);
-    }
-
-    .block-drop-preview.placement-bottom {
-      inset: auto 0 0;
-      height: min(42%, 110px);
-    }
-
-    .block-drop-preview.placement-main {
-      inset: 32% 28%;
-    }
-
-    .block-drop-preview.placement-left {
-      inset: 0 auto 0 0;
-      width: min(42%, 220px);
-    }
-
-    .block-drop-preview.placement-right {
-      inset: 0 0 0 auto;
-      width: min(42%, 220px);
     }
 
     .preview-line,
@@ -2997,9 +2904,7 @@
         flex-direction: column;
       }
 
-      .block-preview-left,
-      .block-preview-main,
-      .block-preview-right {
+      .block-preview-slot {
         width: 100%;
       }
 
@@ -3191,9 +3096,18 @@
     const FONT_WEIGHT_OPTIONS = [300, 400, 500, 600, 700, 750, 800, 900];
     const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "horizontalSize", "scale", "maxWidth", "maxHeight", "padding", "objectFit"];
-    const CONTAINER_PLACEMENTS = ["main", "top", "left", "right", "bottom"];
-    const MIDDLE_CONTAINER_PLACEMENTS = ["left", "main", "right"];
     const PLACEMENT_HIT_BANDS = { side: 0.42, edge: 0.24 };
+    const CONTAINER_PLACEMENT_SLOTS = [
+      { key: "main", middle: true, displace: ["right", "left"], zoneStyle: "grid-column: 2; grid-row: 2;", previewStyle: "inset: 32% 28%;" },
+      { key: "top", zoneStyle: "grid-column: 2; grid-row: 1;", previewStyle: "inset: 0 0 auto; height: min(42%, 110px);", hit: ({ y }) => y < PLACEMENT_HIT_BANDS.edge },
+      { key: "left", middle: true, displace: ["main", "right"], zoneStyle: "grid-column: 1; grid-row: 1 / -1;", previewStyle: "inset: 0 auto 0 0; width: min(42%, 220px);", hit: ({ x }) => x < PLACEMENT_HIT_BANDS.side },
+      { key: "right", middle: true, displace: ["main", "left"], zoneStyle: "grid-column: 3; grid-row: 1 / -1;", previewStyle: "inset: 0 0 0 auto; width: min(42%, 220px);", hit: ({ x }) => x > 1 - PLACEMENT_HIT_BANDS.side },
+      { key: "bottom", zoneStyle: "grid-column: 2; grid-row: 3;", previewStyle: "inset: auto 0 0; height: min(42%, 110px);", hit: ({ y }) => y > 1 - PLACEMENT_HIT_BANDS.edge }
+    ];
+    const CONTAINER_PLACEMENTS = CONTAINER_PLACEMENT_SLOTS.map((slot) => slot.key);
+    const MIDDLE_CONTAINER_PLACEMENTS = ["left", "main", "right"];
+    const CONTAINER_PLACEMENT_BY_KEY = new Map(CONTAINER_PLACEMENT_SLOTS.map((slot) => [slot.key, slot]));
+    const CONTAINER_PLACEMENT_HIT_ORDER = ["left", "right", "top", "bottom"];
     const DEFAULT_CONTAINER_LAYOUT = { horizontalAlignment: "left", verticalAlignment: "top", horizontalSize: "stretch", verticalSize: "auto" };
     const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
     const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
@@ -3273,66 +3187,100 @@
       return blockContainers(block).flatMap(containerElements);
     }
 
-    function blockContainerRegions(block) {
-      const regions = Object.fromEntries(CONTAINER_PLACEMENTS.map((placement) => [placement, []]));
-      blockContainers(block).forEach((container) => {
-        regions[container.placement].push(container);
-      });
-      const middleLayout = MIDDLE_CONTAINER_PLACEMENTS
-        .filter((placement) => regions[placement].length)
-        .join("-") || "main";
-      return { ...regions, middleLayout: `layout-${middleLayout}` };
-    }
-
-    function isMiddlePlacement(placement) {
-      return MIDDLE_CONTAINER_PLACEMENTS.includes(placement);
-    }
-
-    function moveContainerIntoPlacement(containers, containerId, targetPlacement) {
-      if (!CONTAINER_PLACEMENTS.includes(targetPlacement)) return containers;
-      const moved = containers.find((container) => container.id === containerId);
-      if (!moved || moved.placement === targetPlacement) return containers;
-      if (!isMiddlePlacement(targetPlacement)) {
-        return containers.map((container) => container.id === containerId ? { ...container, placement: targetPlacement } : container);
+    class ContainerPlacementModel {
+      static has(placement) {
+        return CONTAINER_PLACEMENT_BY_KEY.has(placement);
       }
 
-      const sourcePlacement = moved.placement;
-      const targetOccupants = containers.filter((container) => container.id !== containerId && container.placement === targetPlacement);
-      const targetOccupantIds = new Set(targetOccupants.map((container) => container.id));
+      static slot(placement) {
+        return CONTAINER_PLACEMENT_BY_KEY.get(placement) || CONTAINER_PLACEMENT_BY_KEY.get("main");
+      }
 
-      return containers.map((container) => {
-        if (container.id === containerId) return { ...container, placement: targetPlacement };
-        if (targetOccupantIds.has(container.id)) return { ...container, placement: sourcePlacement };
-        return container;
-      });
+      static isMiddle(placement) {
+        return Boolean(ContainerPlacementModel.slot(placement).middle);
+      }
+
+      static regions(block) {
+        const regions = Object.fromEntries(CONTAINER_PLACEMENTS.map((placement) => [placement, []]));
+        blockContainers(block).forEach((container) => {
+          regions[ContainerPlacementModel.has(container.placement) ? container.placement : "main"].push(container);
+        });
+        const middlePlacements = MIDDLE_CONTAINER_PLACEMENTS.filter((placement) => regions[placement].length);
+        return {
+          ...regions,
+          middlePlacements,
+          middleStyle: ContainerPlacementModel.middleStyle(middlePlacements)
+        };
+      }
+
+      static middleStyle(placements) {
+        const active = placements.length ? placements : ["main"];
+        return `grid-template-columns: repeat(${active.length}, minmax(0, 1fr)); grid-template-areas: "${active.join(" ")}";`;
+      }
+
+      static zoneStyle(placement) {
+        return ContainerPlacementModel.slot(placement).zoneStyle;
+      }
+
+      static previewStyle(placement) {
+        return ContainerPlacementModel.slot(placement).previewStyle;
+      }
+
+      static placementFromPoint(point) {
+        return CONTAINER_PLACEMENT_HIT_ORDER.find((placement) => ContainerPlacementModel.slot(placement).hit?.(point)) || "main";
+      }
+
+      static displacementOrder(targetPlacement) {
+        return ContainerPlacementModel.slot(targetPlacement).displace || [];
+      }
+
+      static openDisplacement(containers, targetPlacement) {
+        const occupiedPlacements = new Set(containers.map((container) => container.placement));
+        return ContainerPlacementModel.displacementOrder(targetPlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
+      }
+
+      static placementForCopy(containers, sourcePlacement) {
+        return ContainerPlacementModel.isMiddle(sourcePlacement) ? ContainerPlacementModel.openDisplacement(containers, sourcePlacement) : sourcePlacement;
+      }
+
+      static move(containers, containerId, targetPlacement) {
+        if (!ContainerPlacementModel.has(targetPlacement)) return containers;
+        const moved = containers.find((container) => container.id === containerId);
+        if (!moved || moved.placement === targetPlacement) return containers;
+        if (!ContainerPlacementModel.isMiddle(targetPlacement)) {
+          return containers.map((container) => container.id === containerId ? { ...container, placement: targetPlacement } : container);
+        }
+
+        const sourcePlacement = moved.placement;
+        const targetOccupantIds = new Set(containers
+          .filter((container) => container.id !== containerId && container.placement === targetPlacement)
+          .map((container) => container.id));
+
+        return containers.map((container) => {
+          if (container.id === containerId) return { ...container, placement: targetPlacement };
+          if (targetOccupantIds.has(container.id)) return { ...container, placement: sourcePlacement };
+          return container;
+        });
+      }
+
+      static insert(containers, container, targetPlacement) {
+        if (!ContainerPlacementModel.has(targetPlacement)) return containers;
+        const nextContainer = { ...container, placement: targetPlacement };
+        if (!ContainerPlacementModel.isMiddle(targetPlacement)) return [...containers, nextContainer];
+
+        const displacedPlacement = ContainerPlacementModel.openDisplacement(containers, targetPlacement);
+        const displacedIds = new Set(containers
+          .filter((item) => item.placement === targetPlacement)
+          .map((item) => item.id));
+        return [
+          ...containers.map((item) => displacedIds.has(item.id) ? { ...item, placement: displacedPlacement } : item),
+          nextContainer
+        ];
+      }
     }
 
-    function middleDisplacementOrder(targetPlacement) {
-      if (targetPlacement === "left") return ["main", "right"];
-      if (targetPlacement === "right") return ["main", "left"];
-      return ["right", "left"];
-    }
-
-    function placementForContainerCopy(containers, sourcePlacement) {
-      if (!isMiddlePlacement(sourcePlacement)) return sourcePlacement;
-      const occupiedPlacements = new Set(containers.map((container) => container.placement));
-      return middleDisplacementOrder(sourcePlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
-    }
-
-    function insertContainerIntoPlacement(containers, container, targetPlacement) {
-      if (!CONTAINER_PLACEMENTS.includes(targetPlacement)) return containers;
-      const nextContainer = { ...container, placement: targetPlacement };
-      if (!isMiddlePlacement(targetPlacement)) return [...containers, nextContainer];
-
-      const occupiedPlacements = new Set(containers.map((item) => item.placement));
-      const displacedPlacement = middleDisplacementOrder(targetPlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
-
-      const displaced = new Set(containers
-        .filter((item) => item.placement === targetPlacement)
-        .map((item) => item.id));
-      const nextContainers = containers.map((item) => displaced.has(item.id) ? { ...item, placement: displacedPlacement } : item);
-      return [...nextContainers, nextContainer];
-    }
+    const blockContainerRegions = (block) => ContainerPlacementModel.regions(block);
+    const isMiddlePlacement = (placement) => ContainerPlacementModel.isMiddle(placement);
 
     function schemaElements(schema) {
       return (schema.blocks || []).flatMap(blockElements);
@@ -3922,16 +3870,67 @@
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
-    const FIELD_SCHEMA_VALIDATORS = {
-      calendar: "calendar",
-      mood_meter: "moodMeter",
-      linear_scale: "linearScale",
-      star_rating: "starRating",
-      radar: "radar",
-      media_upload: "mediaUpload",
-      media: "media",
-      headline: "headline",
-      spacer: "spacer"
+    const FIELD_SCHEMA_RULES = {
+      calendar: {
+        settings: ["startDate", "endDate", "allowMilestones", "milestones"],
+        validate: (settings) => {
+          assertDateSetting(settings.startDate, "calendar.settings.startDate");
+          assertDateSetting(settings.endDate, "calendar.settings.endDate");
+          if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
+          assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
+          assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
+        }
+      },
+      mood_meter: {
+        settings: ["minLabel", "maxLabel"],
+        validate: (settings) => {
+          assertString(settings.minLabel, "mood_meter.settings.minLabel");
+          assertString(settings.maxLabel, "mood_meter.settings.maxLabel");
+        }
+      },
+      linear_scale: {
+        settings: ["min", "max", "minLabel", "maxLabel"],
+        validate: (settings) => {
+          assertNumber(settings.min, "linear_scale.settings.min");
+          assertNumber(settings.max, "linear_scale.settings.max");
+          if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
+          assertString(settings.minLabel, "linear_scale.settings.minLabel");
+          assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
+        }
+      },
+      star_rating: { settings: ["max"], validate: (settings) => assertNumberRange(settings.max, "star_rating.settings.max", 3, 10, true) },
+      radar: {
+        settings: ["mode", "max", "axes", "defaultValues", "defaultPoint"],
+        validate: (settings) => {
+          assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
+          assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
+          assertArray(settings.axes, "radar.settings.axes");
+          if (!settings.axes.length) throw new Error("radar.settings.axes must contain at least one axis.");
+          settings.axes.forEach((axis, index) => assertString(axis, `radar.settings.axes[${index}]`));
+          assertRadarDefaults(settings.defaultValues, settings.axes, settings.max, "radar.settings.defaultValues");
+          assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
+        }
+      },
+      media_upload: { settings: ["accept"], validate: (settings) => assertString(settings.accept, "media_upload.settings.accept") },
+      media: { settings: MEDIA_SETTING_KEYS, validate: (settings) => assertMediaSettingValues(settings, "media.settings") },
+      headline: {
+        settings: ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"],
+        validate: (settings) => {
+          assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
+          assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
+          assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
+          assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
+        }
+      },
+      spacer: {
+        settings: ["height", "showLine", "lineStyle", "lineThickness"],
+        validate: (settings) => {
+          assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
+          assertBoolean(settings.showLine, "spacer.settings.showLine");
+          assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
+          assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
+        }
+      }
     };
 
     class FieldSchemaValidator {
@@ -3967,89 +3966,20 @@
         this.options(["allowCustomOptions"]);
         assertBoolean(this.settings.allowCustomOptions, "checkbox.settings.allowCustomOptions");
       }
-
-      calendar() {
-        const settings = this.settings;
-        this.fieldShape([], ["startDate", "endDate", "allowMilestones", "milestones"]);
-        assertDateSetting(settings.startDate, "calendar.settings.startDate");
-        assertDateSetting(settings.endDate, "calendar.settings.endDate");
-        if (settings.startDate && settings.endDate && dateTime(settings.endDate) < dateTime(settings.startDate)) throw new Error("calendar.settings.endDate must not be before calendar.settings.startDate.");
-        assertBoolean(settings.allowMilestones, "calendar.settings.allowMilestones");
-        assertCalendarMilestones(settings.milestones, "calendar.settings.milestones");
-      }
-
-      moodMeter() {
-        this.fieldShape([], ["minLabel", "maxLabel"]);
-        assertString(this.settings.minLabel, "mood_meter.settings.minLabel");
-        assertString(this.settings.maxLabel, "mood_meter.settings.maxLabel");
-      }
-
-      linearScale() {
-        const settings = this.settings;
-        this.fieldShape([], ["min", "max", "minLabel", "maxLabel"]);
-        assertNumber(settings.min, "linear_scale.settings.min");
-        assertNumber(settings.max, "linear_scale.settings.max");
-        if (settings.max <= settings.min) throw new Error("linear_scale.settings.max must be greater than linear_scale.settings.min.");
-        assertString(settings.minLabel, "linear_scale.settings.minLabel");
-        assertString(settings.maxLabel, "linear_scale.settings.maxLabel");
-      }
-
-      starRating() {
-        this.fieldShape([], ["max"]);
-        assertNumberRange(this.settings.max, "star_rating.settings.max", 3, 10, true);
-      }
-
-      radar() {
-        const settings = this.settings;
-        this.fieldShape([], ["mode", "max", "axes", "defaultValues", "defaultPoint"]);
-        assertOneOf(settings.mode, ["shape", "point"], "radar.settings.mode");
-        assertNumberRange(settings.max, "radar.settings.max", RADAR_MIN_VALUE + 1, 100, true);
-        assertArray(settings.axes, "radar.settings.axes");
-        if (!settings.axes.length) throw new Error("radar.settings.axes must contain at least one axis.");
-        settings.axes.forEach((axis, index) => assertString(axis, `radar.settings.axes[${index}]`));
-        assertRadarDefaults(settings.defaultValues, settings.axes, settings.max, "radar.settings.defaultValues");
-        assertRadarPoint(settings.defaultPoint, settings.max, "radar.settings.defaultPoint");
-      }
-
-      mediaUpload() {
-        this.fieldShape([], ["accept"]);
-        assertString(this.settings.accept, "media_upload.settings.accept");
-      }
-
-      media() {
-        this.fieldShape([], MEDIA_SETTING_KEYS);
-        assertMediaSettingValues(this.settings, "media.settings");
-      }
-
-      headline() {
-        const settings = this.settings;
-        this.fieldShape([], ["headingHorizontalAlignment", "headingVerticalAlignment", "descriptionHorizontalAlignment", "descriptionVerticalAlignment"]);
-        assertOneOf(settings.headingHorizontalAlignment, ["left", "center", "right"], "headline.settings.headingHorizontalAlignment");
-        assertOneOf(settings.headingVerticalAlignment, ["top", "center", "bottom"], "headline.settings.headingVerticalAlignment");
-        assertOneOf(settings.descriptionHorizontalAlignment, ["left", "center", "right"], "headline.settings.descriptionHorizontalAlignment");
-        assertOneOf(settings.descriptionVerticalAlignment, ["top", "center", "bottom"], "headline.settings.descriptionVerticalAlignment");
-      }
-
-      spacer() {
-        const settings = this.settings;
-        this.fieldShape([], ["height", "showLine", "lineStyle", "lineThickness"]);
-        assertNumberRange(settings.height, "spacer.settings.height", 0, 240, true);
-        assertBoolean(settings.showLine, "spacer.settings.showLine");
-        assertOneOf(settings.lineStyle, ["solid", "dashed", "dotted"], "spacer.settings.lineStyle");
-        assertNumberRange(settings.lineThickness, "spacer.settings.lineThickness", 1, 12, true);
-      }
     }
 
     function schemaField(raw) {
       const validator = new FieldSchemaValidator(raw);
-      const method = PLACEHOLDER_FIELD_TYPES.has(validator.field.type)
-        ? "placeholder"
-        : validator.field.type === "checkbox"
-          ? "checkboxOptions"
-          : OPTION_FIELD_TYPES.has(validator.field.type)
-            ? "options"
-          : FIELD_SCHEMA_VALIDATORS[validator.field.type];
-      validator[method]?.();
+      if (PLACEHOLDER_FIELD_TYPES.has(validator.field.type)) validator.placeholder();
+      else if (validator.field.type === "checkbox") validator.checkboxOptions();
+      else if (OPTION_FIELD_TYPES.has(validator.field.type)) validator.options();
+      else {
+        const rule = FIELD_SCHEMA_RULES[validator.field.type];
+        if (rule) {
+          validator.fieldShape([], rule.settings);
+          rule.validate?.(validator.settings, validator.field);
+        }
+      }
       return validator.field;
     }
 
@@ -4242,6 +4172,28 @@
     ]);
     const HORIZONTAL_SIZE = new SizeSetting("horizontal size");
     const VERTICAL_SIZE = new SizeSetting("vertical size");
+    const CONTAINER_LAYOUT_CONTROLS = [
+      ["horizontalAlignment", "Horizontal alignment", HORIZONTAL_ALIGNMENT.options],
+      ["horizontalSize", "Horizontal size", HORIZONTAL_SIZE.options],
+      ["verticalAlignment", "Vertical alignment", VERTICAL_ALIGNMENT.options],
+      ["verticalSize", "Vertical size", VERTICAL_SIZE.options]
+    ];
+    const HEADLINE_ALIGNMENT_CONTROLS = [
+      ["headingHorizontalAlignment", "Heading horizontal alignment", HORIZONTAL_ALIGNMENT.options],
+      ["headingVerticalAlignment", "Heading vertical alignment", VERTICAL_ALIGNMENT.options],
+      ["descriptionHorizontalAlignment", "Subhead horizontal alignment", HORIZONTAL_ALIGNMENT.options],
+      ["descriptionVerticalAlignment", "Subhead vertical alignment", VERTICAL_ALIGNMENT.options]
+    ];
+    const MEDIA_OBJECT_FIT_OPTIONS = [["contain", "Contain"], ["cover", "Cover"], ["fill", "Fill"], ["scale-down", "Scale down"]];
+    const MEDIA_LAYOUT_CONTROLS = [
+      ["mediaHorizontalAlignment", "horizontalAlignment", "Horizontal alignment", HORIZONTAL_ALIGNMENT.options],
+      ["mediaVerticalAlignment", "verticalAlignment", "Vertical alignment", VERTICAL_ALIGNMENT.options],
+      ["mediaHorizontalSize", "horizontalSize", "Horizontal size", HORIZONTAL_SIZE.options],
+      ["mediaObjectFit", "objectFit", "Object fit", MEDIA_OBJECT_FIT_OPTIONS]
+    ];
+    const MEDIA_SOURCE_OPTIONS = [["url", "URL"], ["file", "File"], ["html", "HTML"]];
+    const RADAR_MODE_OPTIONS = [["shape", "Multi-node shape"], ["point", "Single node"]];
+    const SPACER_LINE_STYLE_OPTIONS = [["solid", "Solid"], ["dashed", "Dashed"], ["dotted", "Dotted"]];
 
     class ContainerLayoutModel {
       constructor(container) {
@@ -4471,6 +4423,14 @@
       return html`<svg class=${svgClass} viewBox=${viewBox} focusable="false" ...${labelProps}>${title ? html`<title>${title}</title>` : null}${content}</svg>`;
     }
 
+    function IconButton({ icon, title, className = "", ...props }) {
+      return html`
+        <button class=${["icon-button", className].filter(Boolean).join(" ")} type="button" title=${title} aria-label=${props["aria-label"] || title} ...${props}>
+          <${Icon} icon=${icon} />
+        </button>
+      `;
+    }
+
     function RadarPreview({ field }) {
       const radar = new RadarModel(field);
       const { axes, mode, max } = radar;
@@ -4684,14 +4644,28 @@
       `;
     }
 
+    function useLatestRef(value) {
+      const ref = useRef(value);
+      ref.current = value;
+      return ref;
+    }
+
+    function useEventListener(target, type, handler, active = true) {
+      const handlerRef = useLatestRef(handler);
+      useEffect(() => {
+        if (!active) return undefined;
+        const node = typeof target === "function" ? target() : target?.current || target;
+        if (!node?.addEventListener) return undefined;
+        const listener = (event) => handlerRef.current(event);
+        node.addEventListener(type, listener);
+        return () => node.removeEventListener(type, listener);
+      }, [target, type, active]);
+    }
+
     function IroColorPicker({ color, onChange, width = 220 }) {
       const mountRef = useRef(null);
       const pickerRef = useRef(null);
-      const changeRef = useRef(onChange);
-
-      useEffect(() => {
-        changeRef.current = onChange;
-      }, [onChange]);
+      const changeRef = useLatestRef(onChange);
 
       useEffect(() => {
         if (!mountRef.current || !window.iro) return;
@@ -4727,9 +4701,13 @@
       return html`<div class="theme-color-picker-ui" style=${`width: ${width}px; min-height: ${width}px;`} ref=${mountRef}></div>`;
     }
 
-    function ColorPickerModal({ item, value, defaultValue, onChange, onClose }) {
-      const [, label] = item;
-      const [color, setColor] = useState(value);
+    function useEscapeKey(onEscape) {
+      useEventListener(document, "keydown", (event) => {
+        if (event.key === "Escape") onEscape();
+      });
+    }
+
+    function useColorDraft(color) {
       const [hexDraft, setHexDraft] = useState(color);
       const [rgbDraft, setRgbDraft] = useState(hexToRgb(color));
 
@@ -4738,66 +4716,85 @@
         setRgbDraft(hexToRgb(color));
       }, [color]);
 
-      useEffect(() => {
-        function handleKeyDown(event) {
-          if (event.key === "Escape") onClose();
-        }
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-      }, [onClose]);
+      return { hexDraft, setHexDraft, rgbDraft, setRgbDraft };
+    }
 
+    function ModalShell({ title, subtitle, ariaLabel, className = "", bodyClassName = "", body, onClose, onDefault, onDone, defaultLabel = "Use default", doneLabel = "Done" }) {
+      const dialogClass = ["theme-modal", className].filter(Boolean).join(" ");
+      const contentClass = ["theme-modal-body", bodyClassName].filter(Boolean).join(" ");
+
+      useEscapeKey(onClose);
+
+      return html`
+        <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
+          <section class=${dialogClass} role="dialog" aria-modal="true" aria-label=${ariaLabel} onMouseDown=${(event) => event.stopPropagation()}>
+            <div class="theme-modal-head">
+              <div>
+                <h2 class="theme-modal-title">${title}</h2>
+                <p class="theme-modal-subtitle">${subtitle}</p>
+              </div>
+              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Cancel"><${Icon} icon="fa-solid fa-xmark" /></button>
+            </div>
+            <div class=${contentClass}>${body}</div>
+            <div class="theme-modal-foot">
+              ${onDefault ? html`<button class="button" type="button" onClick=${onDefault}>${defaultLabel}</button>` : null}
+              <button class="button" type="button" onClick=${onClose}>Cancel</button>
+              <button class="button primary" type="button" onClick=${onDone}>${doneLabel}</button>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function ColorChannelInputs({ idPrefix, color, hexDraft, rgbDraft, onHexDraft, onRgbDraft, onColor }) {
       function applyHex(raw) {
-        setHexDraft(raw);
+        onHexDraft(raw);
         const next = hexCandidate(raw);
-        if (next) setColor(next);
+        if (next) onColor(next);
       }
 
       function updateRgb(channel, raw) {
         const next = { ...rgbDraft, [channel]: raw };
-        setRgbDraft(next);
+        onRgbDraft(next);
         const r = clampByte(next.r);
         const g = clampByte(next.g);
         const b = clampByte(next.b);
         if (r === null || g === null || b === null) return;
-        setColor(rgbToHex(r, g, b));
+        onColor(rgbToHex(r, g, b));
       }
 
       return html`
-        <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
-          <section class="theme-modal" role="dialog" aria-modal="true" aria-label=${`Edit ${label} color`} onMouseDown=${(event) => event.stopPropagation()}>
-            <div class="theme-modal-head">
-              <div>
-                <h2 class="theme-modal-title">${label}</h2>
-                <p class="theme-modal-subtitle">${color.toUpperCase()}</p>
-              </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Cancel"><${Icon} icon="fa-solid fa-xmark" /></button>
-            </div>
-            <div class="theme-modal-body">
+        <div class="color-input-grid">
+          <${InputProperty} className="theme-modal-field" controlClass=${null} id=${`${idPrefix}HexInput`} label="Hex" value=${hexDraft} onInput=${(event) => applyHex(event.currentTarget.value)} inputProps=${{ spellcheck: false, onBlur: () => onHexDraft(color) }} />
+          <div class="rgb-input-grid">
+            ${["r", "g", "b"].map((channel) => html`
+              <${InputProperty} key=${channel} className="theme-modal-field" controlClass=${null} id=${`${idPrefix}Rgb${channel}`} label=${channel.toUpperCase()} type="number" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} inputProps=${{ min: 0, max: 255, onBlur: () => onRgbDraft(hexToRgb(color)) }} />
+            `)}
+          </div>
+        </div>
+      `;
+    }
+
+    function ColorPickerModal({ item, value, defaultValue, onChange, onClose }) {
+      const [, label] = item;
+      const [color, setColor] = useState(value);
+      const { hexDraft, setHexDraft, rgbDraft, setRgbDraft } = useColorDraft(color);
+
+      return html`
+        <${ModalShell}
+          title=${label}
+          subtitle=${color.toUpperCase()}
+          ariaLabel=${`Edit ${label} color`}
+          onClose=${onClose}
+          onDefault=${() => setColor(defaultValue)}
+          onDone=${() => { onChange(color); onClose(); }}
+          body=${html`
               <div class="theme-modal-picker">
                 <${IroColorPicker} color=${color} onChange=${setColor} width=${220} />
               </div>
-              <div class="color-input-grid">
-                <div class="theme-modal-field">
-                  <label for="themeHexInput">Hex</label>
-                  <input id="themeHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(color)} />
-                </div>
-                <div class="rgb-input-grid">
-                  ${["r", "g", "b"].map((channel) => html`
-                    <div class="theme-modal-field" key=${channel}>
-                      <label for=${`themeRgb${channel}`}>${channel.toUpperCase()}</label>
-                      <input id=${`themeRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(color))} />
-                    </div>
-                  `)}
-                </div>
-              </div>
-            </div>
-            <div class="theme-modal-foot">
-              <button class="button" type="button" onClick=${() => setColor(defaultValue)}>Use default</button>
-              <button class="button" type="button" onClick=${onClose}>Cancel</button>
-              <button class="button primary" type="button" onClick=${() => { onChange(color); onClose(); }}>Done</button>
-            </div>
-          </section>
-        </div>
+              <${ColorChannelInputs} idPrefix="theme" color=${color} hexDraft=${hexDraft} rgbDraft=${rgbDraft} onHexDraft=${setHexDraft} onRgbDraft=${setRgbDraft} onColor=${setColor} />
+          `}
+        />
       `;
     }
 
@@ -4881,25 +4878,11 @@
 
     function CharacterStyleModal({ role, value, defaultValue, onChange, onClose }) {
       const [draft, setDraft] = useState(value);
-      const [hexDraft, setHexDraft] = useState(value.color);
-      const [rgbDraft, setRgbDraft] = useState(hexToRgb(value.color));
-
-      useEffect(() => {
-        setHexDraft(draft.color);
-        setRgbDraft(hexToRgb(draft.color));
-      }, [draft.color]);
+      const { hexDraft, setHexDraft, rgbDraft, setRgbDraft } = useColorDraft(draft.color);
 
       useEffect(() => {
         ensureGoogleFontLoaded(draft.fontFamily);
       }, [draft.fontFamily]);
-
-      useEffect(() => {
-        function handleKeyDown(event) {
-          if (event.key === "Escape") onClose();
-        }
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-      }, [onClose]);
 
       function patchDraft(patch) {
         setDraft((current) => ({ ...current, ...patch }));
@@ -4912,33 +4895,17 @@
         patchDraft({ [key]: Math.max(min, Math.min(max, rounded)) });
       }
 
-      function applyHex(raw) {
-        setHexDraft(raw);
-        const next = hexCandidate(raw);
-        if (next) patchDraft({ color: next });
-      }
-
-      function updateRgb(channel, raw) {
-        const next = { ...rgbDraft, [channel]: raw };
-        setRgbDraft(next);
-        const r = clampByte(next.r);
-        const g = clampByte(next.g);
-        const b = clampByte(next.b);
-        if (r === null || g === null || b === null) return;
-        patchDraft({ color: rgbToHex(r, g, b) });
-      }
-
       return html`
-        <div class="theme-modal-backdrop" role="presentation" onMouseDown=${(event) => { if (event.target === event.currentTarget) onClose(); }}>
-          <section class="theme-modal character-modal" role="dialog" aria-modal="true" aria-label=${`Edit ${role.label} typography`} onMouseDown=${(event) => event.stopPropagation()}>
-            <div class="theme-modal-head">
-              <div>
-                <h2 class="theme-modal-title">${role.label}</h2>
-                <p class="theme-modal-subtitle">${typographySummary(draft)}</p>
-              </div>
-              <button class="modal-close-button" type="button" onClick=${onClose} aria-label="Cancel"><${Icon} icon="fa-solid fa-xmark" /></button>
-            </div>
-            <div class="theme-modal-body character-modal-body">
+        <${ModalShell}
+          title=${role.label}
+          subtitle=${typographySummary(draft)}
+          ariaLabel=${`Edit ${role.label} typography`}
+          className="character-modal"
+          bodyClassName="character-modal-body"
+          onClose=${onClose}
+          onDefault=${() => setDraft(defaultValue)}
+          onDone=${() => { onChange(draft); onClose(); }}
+          body=${html`
               <div class="character-preview-pane">
                 <div class="character-preview-surface">
                   <span class="character-preview-text" style=${typographyStyle(draft)}>${role.sample}</span>
@@ -4947,69 +4914,21 @@
                   <div class="character-color-chip" style=${`--swatch-color: ${draft.color};`} aria-hidden="true"></div>
                   <${IroColorPicker} color=${draft.color} onChange=${(color) => patchDraft({ color })} width=${164} />
                 </div>
-                <div class="color-input-grid">
-                  <div class="theme-modal-field">
-                    <label for="characterHexInput">Hex</label>
-                    <input id="characterHexInput" value=${hexDraft} spellcheck=${false} onInput=${(event) => applyHex(event.currentTarget.value)} onBlur=${() => setHexDraft(draft.color)} />
-                  </div>
-                  <div class="rgb-input-grid">
-                    ${["r", "g", "b"].map((channel) => html`
-                      <div class="theme-modal-field" key=${channel}>
-                        <label for=${`characterRgb${channel}`}>${channel.toUpperCase()}</label>
-                        <input id=${`characterRgb${channel}`} type="number" min="0" max="255" value=${rgbDraft[channel]} onInput=${(event) => updateRgb(channel, event.currentTarget.value)} onBlur=${() => setRgbDraft(hexToRgb(draft.color))} />
-                      </div>
-                    `)}
-                  </div>
-                </div>
+                <${ColorChannelInputs} idPrefix="character" color=${draft.color} hexDraft=${hexDraft} rgbDraft=${rgbDraft} onHexDraft=${setHexDraft} onRgbDraft=${setRgbDraft} onColor=${(color) => patchDraft({ color })} />
               </div>
               <div class="character-controls">
-                <div class="theme-modal-field">
-                  <label>Family</label>
-                  <${FontFamilySearch} value=${draft.fontFamily} onChange=${(fontFamily) => patchDraft({ fontFamily })} sampleText=${role.sample} />
-                </div>
+                <${PropertyFrame} className="theme-modal-field" label="Family" content=${html`<${FontFamilySearch} value=${draft.fontFamily} onChange=${(fontFamily) => patchDraft({ fontFamily })} sampleText=${role.sample} />`} />
                 <div class="character-field-grid">
-                  <div class="theme-modal-field">
-                    <label for="characterSize">Size</label>
-                    <input id="characterSize" type="number" min="8" max="96" value=${draft.size} onInput=${(event) => patchNumber("size", event.currentTarget.value, 8, 96, true)} />
-                  </div>
-                  <div class="theme-modal-field">
-                    <label for="characterLineHeight">Leading</label>
-                    <input id="characterLineHeight" type="number" min="0.8" max="3" step="0.05" value=${draft.lineHeight} onInput=${(event) => patchNumber("lineHeight", event.currentTarget.value, 0.8, 3)} />
-                  </div>
-                  <div class="theme-modal-field">
-                    <label for="characterWeight">Weight</label>
-                    <select id="characterWeight" value=${draft.weight} onChange=${(event) => patchNumber("weight", event.currentTarget.value, 100, 1000, true)}>
-                      ${FONT_WEIGHT_OPTIONS.map((weight) => html`<option value=${weight} key=${weight}>${weight}</option>`)}
-                    </select>
-                  </div>
-                  <div class="theme-modal-field">
-                    <label>Style</label>
-                    <div class="character-segmented" role="group" aria-label="Font style">
-                      ${["normal", "italic"].map((style) => html`
-                        <button class=${draft.style === style ? "active" : ""} type="button" key=${style} onClick=${() => patchDraft({ style })}>${style === "normal" ? "Regular" : "Italic"}</button>
-                      `)}
-                    </div>
-                  </div>
-                  <div class="theme-modal-field">
-                    <label for="characterTracking">Tracking</label>
-                    <input id="characterTracking" type="number" min="0" max="12" step="0.1" value=${draft.letterSpacing} onInput=${(event) => patchNumber("letterSpacing", event.currentTarget.value, 0, 12)} />
-                  </div>
-                  <div class="theme-modal-field">
-                    <label for="characterCase">Case</label>
-                    <select id="characterCase" value=${draft.textTransform} onChange=${(event) => patchDraft({ textTransform: event.currentTarget.value })}>
-                      ${TEXT_TRANSFORM_OPTIONS.map(([option, label]) => html`<option value=${option} key=${option}>${label}</option>`)}
-                    </select>
-                  </div>
+                  <${InputProperty} className="theme-modal-field" controlClass=${null} id="characterSize" label="Size" type="number" value=${draft.size} onInput=${(event) => patchNumber("size", event.currentTarget.value, 8, 96, true)} inputProps=${{ min: 8, max: 96 }} />
+                  <${InputProperty} className="theme-modal-field" controlClass=${null} id="characterLineHeight" label="Leading" type="number" value=${draft.lineHeight} onInput=${(event) => patchNumber("lineHeight", event.currentTarget.value, 0.8, 3)} inputProps=${{ min: 0.8, max: 3, step: 0.05 }} />
+                  <${SelectProperty} className="theme-modal-field" controlClass=${null} id="characterWeight" label="Weight" value=${draft.weight} options=${FONT_WEIGHT_OPTIONS} onChange=${(event) => patchNumber("weight", event.currentTarget.value, 100, 1000, true)} />
+                  <${SegmentedProperty} className="theme-modal-field" label="Style" ariaLabel="Font style" value=${draft.style} options=${[["normal", "Regular"], ["italic", "Italic"]]} onChange=${(style) => patchDraft({ style })} />
+                  <${InputProperty} className="theme-modal-field" controlClass=${null} id="characterTracking" label="Tracking" type="number" value=${draft.letterSpacing} onInput=${(event) => patchNumber("letterSpacing", event.currentTarget.value, 0, 12)} inputProps=${{ min: 0, max: 12, step: 0.1 }} />
+                  <${SelectProperty} className="theme-modal-field" controlClass=${null} id="characterCase" label="Case" value=${draft.textTransform} options=${TEXT_TRANSFORM_OPTIONS} onChange=${(event) => patchDraft({ textTransform: event.currentTarget.value })} />
                 </div>
               </div>
-            </div>
-            <div class="theme-modal-foot">
-              <button class="button" type="button" onClick=${() => setDraft(defaultValue)}>Use default</button>
-              <button class="button" type="button" onClick=${onClose}>Cancel</button>
-              <button class="button primary" type="button" onClick=${() => { onChange(draft); onClose(); }}>Done</button>
-            </div>
-          </section>
-        </div>
+          `}
+        />
       `;
     }
 
@@ -5098,13 +5017,13 @@
     }
 
     function BlockDropPreview({ placement }) {
-      return html`<div class=${`block-drop-preview placement-${placement}`} aria-hidden="true"></div>`;
+      return html`<div class="block-drop-preview" style=${ContainerPlacementModel.previewStyle(placement)} aria-hidden="true"></div>`;
     }
 
     function BlockPlacementZones({ active }) {
       return html`
         <div class=${`block-placement-zones${active ? " is-active" : ""}`} aria-hidden="true">
-          ${CONTAINER_PLACEMENTS.map((placement) => html`<div class=${`block-placement-zone placement-${placement}`} data-block-placement=${placement}></div>`)}
+          ${CONTAINER_PLACEMENTS.map((placement) => html`<div class="block-placement-zone" style=${ContainerPlacementModel.zoneStyle(placement)} data-block-placement=${placement}></div>`)}
         </div>
       `;
     }
@@ -5159,9 +5078,9 @@
       return html`
         <div class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${draggable ? " is-draggable" : ""}`} style=${new ContainerLayoutModel(container).style} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${label} draggable=${draggable} onClick=${handleClick} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
           <div class="container-tools">
-            <button class="icon-button" type="button" onClick=${() => onResetContainer(block.id, container.id)} title="Reset container" aria-label="Reset container"><${Icon} icon="fa-solid fa-rotate-left" /></button>
-            <button class="icon-button" type="button" onClick=${() => onDuplicateContainer(block.id, container.id)} title="Duplicate container" aria-label="Duplicate container"><${Icon} icon="fa-regular fa-copy" /></button>
-            <button class="icon-button danger" type="button" onClick=${() => onDeleteContainer(block.id, container.id)} title="Delete container" aria-label="Delete container"><${Icon} icon="fa-regular fa-trash-can" /></button>
+            <${IconButton} icon="fa-solid fa-rotate-left" title="Reset container" onClick=${() => onResetContainer(block.id, container.id)} />
+            <${IconButton} icon="fa-regular fa-copy" title="Duplicate container" onClick=${() => onDuplicateContainer(block.id, container.id)} />
+            <${IconButton} className="danger" icon="fa-regular fa-trash-can" title="Delete container" onClick=${() => onDeleteContainer(block.id, container.id)} />
           </div>
           <div class="container-elements">
             ${elements.map((element) => html`<div class="container-element" key=${element.id}><${ElementPreview} field=${element} /></div>`)}
@@ -5170,53 +5089,54 @@
       `;
     }
 
-    function ContainerPreviewStack({ containers, className, block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+    function ContainerPreviewStack({ containers, placement, className = `block-preview-stack block-preview-${placement}`, style = "", ...previewProps }) {
       if (!containers.length) return null;
       return html`
-        <div class=${className}>
+        <div class=${className} style=${style}>
           ${containers.map((container) => html`
             <${ContainerPreview}
               key=${container.id}
-              block=${block}
               container=${container}
-              selectedContainerId=${selectedContainerId}
-              onSelectElement=${onSelectElement}
-              onDuplicateContainer=${onDuplicateContainer}
-              onResetContainer=${onResetContainer}
-              onDeleteContainer=${onDeleteContainer}
-              onContainerDragStart=${onContainerDragStart}
-              onContainerDragEnd=${onContainerDragEnd}
+              ...${previewProps}
             />
           `)}
         </div>
       `;
     }
 
-    function MiddleContainerPreviewRow({ layout, block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
-      if (!layout.left.length && !layout.main.length && !layout.right.length) return null;
+    function MiddleContainerPreviewRow({ layout, ...stackProps }) {
+      if (!layout.middlePlacements.length) return null;
       return html`
-        <div class=${`block-preview-middle ${layout.middleLayout}`}>
-          <${ContainerPreviewStack} containers=${layout.left} className="block-preview-stack block-preview-left" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          <${ContainerPreviewStack} containers=${layout.main} className="block-preview-stack block-preview-main" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          <${ContainerPreviewStack} containers=${layout.right} className="block-preview-stack block-preview-right" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+        <div class="block-preview-middle" style=${layout.middleStyle}>
+          ${layout.middlePlacements.map((placement) => html`
+            <${ContainerPreviewStack}
+              key=${placement}
+              containers=${layout[placement]}
+              placement=${placement}
+              className=${`block-preview-stack block-preview-${placement} block-preview-slot`}
+              style=${`grid-area: ${placement};`}
+              ...${stackProps}
+            />
+          `)}
         </div>
       `;
     }
 
     function BlockPreview({ block, selectedContainerId, dropPlacement, dropActive, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
       const layout = blockContainerRegions(block);
+      const stackProps = { block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd };
       return html`
-        <div class=${`block-preview ${layout.middleLayout}${dropPlacement ? " is-container-target target-" + dropPlacement : ""}`}>
-          <${ContainerPreviewStack} containers=${layout.top} className="block-preview-stack block-preview-top" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          <${MiddleContainerPreviewRow} layout=${layout} block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          <${ContainerPreviewStack} containers=${layout.bottom} className="block-preview-stack block-preview-bottom" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+        <div class="block-preview">
+          <${ContainerPreviewStack} containers=${layout.top} placement="top" ...${stackProps} />
+          <${MiddleContainerPreviewRow} layout=${layout} ...${stackProps} />
+          <${ContainerPreviewStack} containers=${layout.bottom} placement="bottom" ...${stackProps} />
           <${BlockPlacementZones} active=${dropActive} />
           ${dropPlacement ? html`<${BlockDropPreview} placement=${dropPlacement} />` : null}
         </div>
       `;
     }
 
-    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, blockDropActive, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, blockDropActive, onCardRef, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
       if (!blocks.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
 
       return blocks.map((block) => {
@@ -5231,6 +5151,7 @@
             dragging=${block.id === draggingBlockId}
             blockDropPlacement=${block.id === blockDropId ? blockDropPlacement : null}
             blockDropActive=${blockDropActive}
+            onCardRef=${onCardRef}
             onSelect=${onSelect}
             onMove=${(direction) => onMove(block.id, direction)}
             onDuplicate=${() => onDuplicate(block.id)}
@@ -5249,7 +5170,7 @@
       });
     }
 
-    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, blockDropActive, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, blockDropActive, onCardRef, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
       const primary = firstBlockElement(block);
       const composite = isCompositeBlock(block);
       const meta = primary && !composite ? typeMeta(primary.type) : { icon: "lucide-component", name: "Block" };
@@ -5270,8 +5191,9 @@
 
       return html`
         <article
-          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropActive ? " is-block-drag-active" : ""}${blockDropPlacement ? " is-container-target target-" + blockDropPlacement : ""}`}
+          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropActive ? " is-block-drag-active" : ""}`}
           data-field-id=${block.id}
+          ref=${(node) => onCardRef?.(block.id, node)}
           onClick=${handleCardClick}
           onDragOver=${onBlockDragOver}
           onDragLeave=${onBlockDragLeave}
@@ -5282,11 +5204,11 @@
               <${Icon} icon=${meta.icon} /><span>${meta.name}</span>
             </button>
             <div class="field-tools">
-              <button class="icon-button" type="button" onClick=${() => onMove(-1)} title="Move up" aria-label="Move up"><${Icon} icon="fa-solid fa-arrow-up" /></button>
-              <button class="icon-button" type="button" onClick=${() => onMove(1)} title="Move down" aria-label="Move down"><${Icon} icon="fa-solid fa-arrow-down" /></button>
-              <button class="icon-button" type="button" onClick=${onReset} title="Reset properties" aria-label="Reset properties"><${Icon} icon="fa-solid fa-rotate-left" /></button>
-              <button class="icon-button" type="button" onClick=${onDuplicate} title="Duplicate" aria-label="Duplicate"><${Icon} icon="fa-regular fa-copy" /></button>
-              <button class="icon-button danger" type="button" onClick=${onDelete} title="Delete" aria-label="Delete"><${Icon} icon="fa-regular fa-trash-can" /></button>
+              <${IconButton} icon="fa-solid fa-arrow-up" title="Move up" onClick=${() => onMove(-1)} />
+              <${IconButton} icon="fa-solid fa-arrow-down" title="Move down" onClick=${() => onMove(1)} />
+              <${IconButton} icon="fa-solid fa-rotate-left" title="Reset properties" onClick=${onReset} />
+              <${IconButton} icon="fa-regular fa-copy" title="Duplicate" onClick=${onDuplicate} />
+              <${IconButton} className="danger" icon="fa-regular fa-trash-can" title="Delete" onClick=${onDelete} />
             </div>
           </div>
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
@@ -5339,6 +5261,181 @@
       };
     }
 
+    function normalizedOption(option) {
+      if (Array.isArray(option)) return { value: option[0], label: option[1] };
+      if (typeof option === "string") return { value: option, label: option };
+      if (typeof option === "number") return { value: option, label: option };
+      return option;
+    }
+
+    function replaceItem(items, index, value) {
+      return items.map((item, itemIndex) => itemIndex === index ? value : item);
+    }
+
+    function PropertyFrame({ id, label, className = "property", content }) {
+      return html`
+        <div class=${className}>
+          ${label ? id ? html`<label for=${id}>${label}</label>` : html`<label>${label}</label>` : null}
+          ${content}
+        </div>
+      `;
+    }
+
+    function InputProperty({ id, label, value, onInput, type = "text", className = "property", controlClass = "control", inputProps = {} }) {
+      return html`
+        <${PropertyFrame}
+          id=${id}
+          label=${label}
+          className=${className}
+          content=${html`<input class=${controlClass} id=${id} type=${type} value=${value} onInput=${onInput} ...${inputProps} />`}
+        />
+      `;
+    }
+
+    function TextareaProperty({ id, label, value, onInput, className = "property", controlClass = "textarea", inputProps = {} }) {
+      return html`
+        <${PropertyFrame}
+          id=${id}
+          label=${label}
+          className=${className}
+          content=${html`<textarea class=${controlClass} id=${id} value=${value} onInput=${onInput} ...${inputProps}></textarea>`}
+        />
+      `;
+    }
+
+    function SelectProperty({ id, label, value, options, onChange, className = "property", controlClass = "control" }) {
+      return html`
+        <${PropertyFrame}
+          id=${id}
+          label=${label}
+          className=${className}
+          content=${html`
+            <select class=${controlClass} id=${id} value=${value} onChange=${onChange}>
+              ${options.map((option) => {
+                const item = normalizedOption(option);
+                return html`<option value=${item.value} key=${item.value}>${item.label}</option>`;
+              })}
+            </select>
+          `}
+        />
+      `;
+    }
+
+    function ToggleRow({ checked, onChange, label }) {
+      return html`
+        <label class="toggle-row">
+          <input type="checkbox" checked=${checked} onChange=${onChange} />
+          <span>${label}</span>
+        </label>
+      `;
+    }
+
+    function SegmentedProperty({ label, value, options, onChange, ariaLabel = label, className = "property" }) {
+      return html`
+        <${PropertyFrame}
+          label=${label}
+          className=${className}
+          content=${html`
+            <div class="character-segmented" role="group" aria-label=${ariaLabel}>
+              ${options.map((option) => {
+                const item = normalizedOption(option);
+                return html`<button class=${value === item.value ? "active" : ""} type="button" key=${item.value} onClick=${() => onChange(item.value)}>${item.label}</button>`;
+              })}
+            </div>
+          `}
+        />
+      `;
+    }
+
+    function RemoveRowButton({ title, onClick }) {
+      return html`<${IconButton} className="danger" icon="fa-solid fa-xmark" title=${title} onClick=${onClick} />`;
+    }
+
+    function EditableList({ title, titleClassName = "", items, rowClassName = "option-row", itemKey = (_, index) => index, renderItem, onRemove, removeTitle = "Remove item", emptyText = "", emptyClass = "calendar-milestone-empty", addLabel, onAdd }) {
+      const titleNode = title
+        ? titleClassName
+          ? html`<div class=${titleClassName}><div class="mini-label">${title}</div></div>`
+          : html`<div class="mini-label">${title}</div>`
+        : null;
+
+      return html`
+        <div class="property">
+          ${titleNode}
+          ${items.length ? items.map((item, index) => {
+            const className = typeof rowClassName === "function" ? rowClassName(item, index) : rowClassName;
+            return html`
+              <div class=${className} key=${itemKey(item, index)}>
+                ${renderItem(item, index)}
+                ${onRemove ? html`<${RemoveRowButton} title=${typeof removeTitle === "function" ? removeTitle(item, index) : removeTitle} onClick=${() => onRemove(item, index)} />` : null}
+              </div>
+            `;
+          }) : emptyText ? html`<div class=${emptyClass}>${emptyText}</div>` : null}
+          ${addLabel && onAdd ? html`
+            <button class="button ghost" type="button" onClick=${onAdd}>
+              <${Icon} icon="fa-solid fa-plus" /><span>${addLabel}</span>
+            </button>
+          ` : null}
+        </div>
+      `;
+    }
+
+    function SettingInput({ id, label, settings, setting, editor, method = "patch", type = "text", coerce = (value) => value, inputProps = {}, extras }) {
+      return html`
+        <${InputProperty}
+          id=${id}
+          label=${label}
+          type=${type}
+          value=${settings[setting]}
+          onInput=${(event) => editor[method]({ [setting]: coerce(event.currentTarget.value) }, extras)}
+          inputProps=${inputProps}
+        />
+      `;
+    }
+
+    function SettingSelect({ id, label, settings, setting, editor, method = "patch", options, extras }) {
+      return html`
+        <${SelectProperty}
+          id=${id}
+          label=${label}
+          value=${settings[setting]}
+          options=${options}
+          onChange=${(event) => editor[method]({ [setting]: event.currentTarget.value }, extras)}
+        />
+      `;
+    }
+
+    function SettingToggle({ label, settings, setting, editor, method = "patch", extras }) {
+      return html`<${ToggleRow} checked=${settings[setting]} onChange=${(event) => editor[method]({ [setting]: event.currentTarget.checked }, extras)} label=${label} />`;
+    }
+
+    function controlConfig(control) {
+      if (control.length === 2) return { id: control[0], setting: control[0], label: control[1] };
+      if (control.length === 3 && Array.isArray(control[2])) return { id: control[0], setting: control[0], label: control[1], options: control[2] };
+      const [id, setting, label, detail = "text", coerceOrProps, props] = control;
+      const config = { id, setting, label };
+      if (Array.isArray(detail)) config.options = detail;
+      else config.type = detail;
+      if (typeof coerceOrProps === "function") config.coerce = coerceOrProps;
+      else if (coerceOrProps) config.inputProps = coerceOrProps;
+      if (props) config.inputProps = props;
+      return config;
+    }
+
+    function SettingControl({ control, settings, editor, method = "patch", extras }) {
+      const config = controlConfig(control);
+      return config.options
+        ? html`<${SettingSelect} ...${config} settings=${settings} editor=${editor} method=${method} extras=${extras} />`
+        : html`<${SettingInput} ...${config} settings=${settings} editor=${editor} method=${method} extras=${extras} />`;
+    }
+
+    function SettingsGrid({ controls, settings, editor, method = "patch", extras }) {
+      return html`
+        <div class="settings-grid">
+          ${controls.map((control) => html`<${SettingControl} key=${control[0]} control=${control} settings=${settings} editor=${editor} method=${method} extras=${extras} />`)}
+        </div>
+      `;
+    }
+
     function Inspector({ schema, selectedField, selectedBlock, selectedContainer, onSchemaChange, onFieldChange, onContainerChange }) {
       if (!selectedField) {
         if (selectedContainer) return html`
@@ -5356,10 +5453,7 @@
         return html`
           <h2 class="panel-title"><${Icon} icon="fa-solid fa-sliders" /><span>Form Details</span></h2>
           <div class="property-stack">
-            <div class="property">
-              <label for="formName">Title</label>
-              <input class="control" id="formName" value=${formDisplayName(schema)} placeholder="Untitled form" onInput=${(event) => onSchemaChange({ settings: { ...schema.settings, name: event.currentTarget.value } })} />
-            </div>
+            <${InputProperty} id="formName" label="Title" value=${formDisplayName(schema)} onInput=${(event) => onSchemaChange({ settings: { ...schema.settings, name: event.currentTarget.value } })} inputProps=${{ placeholder: "Untitled form" }} />
             <div class="radar-mode-note">Select a block to edit its settings.</div>
           </div>
         `;
@@ -5370,14 +5464,8 @@
         <h2 class="panel-title"><${Icon} icon=${meta.icon} /><span>${meta.name}</span></h2>
         <div class="property-stack">
           ${selectedField.type !== "spacer" ? html`
-            <div class="property">
-              <label for="fieldLabel">${selectedField.type === "headline" ? "Heading" : "Label"}</label>
-              <input class="control" id="fieldLabel" value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
-            </div>
-            <div class="property">
-              <label for="fieldDescription">${selectedField.type === "headline" ? "Subhead" : "Description"}</label>
-              <textarea class="textarea" id="fieldDescription" value=${selectedField.description} onInput=${(event) => onFieldChange({ description: event.currentTarget.value })}></textarea>
-            </div>
+            <${InputProperty} id="fieldLabel" label=${selectedField.type === "headline" ? "Heading" : "Label"} value=${selectedField.label} onInput=${(event) => onFieldChange({ label: event.currentTarget.value })} />
+            <${TextareaProperty} id="fieldDescription" label=${selectedField.type === "headline" ? "Subhead" : "Description"} value=${selectedField.description} onInput=${(event) => onFieldChange({ description: event.currentTarget.value })} />
           ` : null}
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
@@ -5385,10 +5473,7 @@
           ${selectedContainer ? html`<${ContainerLayoutSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />` : null}
           <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           ${!NON_REQUIRED_FIELD_TYPES.has(selectedField.type) ? html`
-            <label class="toggle-row">
-              <input type="checkbox" checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} />
-              <span>Required</span>
-            </label>
+            <${ToggleRow} checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} label="Required" />
           ` : null}
         </div>
       `;
@@ -5400,30 +5485,9 @@
       return html`
         <div class="mini-label">Sub-block layout</div>
         <div class="settings-grid">
-          <div class="property">
-            <label for=${`${idPrefix}_horizontalAlignment`}>Horizontal alignment</label>
-            <select class="control" id=${`${idPrefix}_horizontalAlignment`} value=${container.horizontalAlignment} onChange=${(event) => onContainerChange({ horizontalAlignment: event.currentTarget.value })}>
-              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for=${`${idPrefix}_horizontalSize`}>Horizontal size</label>
-            <select class="control" id=${`${idPrefix}_horizontalSize`} value=${container.horizontalSize} onChange=${(event) => onContainerChange({ horizontalSize: event.currentTarget.value })}>
-              ${HORIZONTAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for=${`${idPrefix}_verticalAlignment`}>Vertical alignment</label>
-            <select class="control" id=${`${idPrefix}_verticalAlignment`} value=${container.verticalAlignment} onChange=${(event) => onContainerChange({ verticalAlignment: event.currentTarget.value })}>
-              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for=${`${idPrefix}_verticalSize`}>Vertical size</label>
-            <select class="control" id=${`${idPrefix}_verticalSize`} value=${container.verticalSize} onChange=${(event) => onContainerChange({ verticalSize: event.currentTarget.value })}>
-              ${VERTICAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
+          ${CONTAINER_LAYOUT_CONTROLS.map(([key, label, options]) => html`
+            <${SelectProperty} key=${key} id=${`${idPrefix}_${key}`} label=${label} value=${container[key]} options=${options} onChange=${(event) => onContainerChange({ [key]: event.currentTarget.value })} />
+          `)}
         </div>
       `;
     }
@@ -5431,70 +5495,40 @@
     function OutlineSettings({ field, onFieldChange }) {
       const editor = new FieldSettingsEditor(field, onFieldChange);
       return html`
-        <label class="toggle-row">
-          <input type="checkbox" checked=${field.settings.showLabel} onChange=${(event) => editor.patchChrome("showLabel", event.currentTarget.checked)} />
-          <span>Show label</span>
-        </label>
-        <label class="toggle-row">
-          <input type="checkbox" checked=${field.settings.outline} onChange=${(event) => editor.patchChrome("outline", event.currentTarget.checked)} />
-          <span>Show outline</span>
-        </label>
-        <label class="toggle-row">
-          <input type="checkbox" checked=${field.settings.background} onChange=${(event) => editor.patchChrome("background", event.currentTarget.checked)} />
-          <span>Show background</span>
-        </label>
+        <${ToggleRow} checked=${field.settings.showLabel} onChange=${(event) => editor.patchChrome("showLabel", event.currentTarget.checked)} label="Show label" />
+        <${ToggleRow} checked=${field.settings.outline} onChange=${(event) => editor.patchChrome("outline", event.currentTarget.checked)} label="Show outline" />
+        <${ToggleRow} checked=${field.settings.background} onChange=${(event) => editor.patchChrome("background", event.currentTarget.checked)} label="Show background" />
       `;
     }
 
     function PlaceholderSettings({ field, onFieldChange }) {
       if (!PLACEHOLDER_FIELD_TYPES.has(field.type)) return null;
-      return html`
-        <div class="property">
-          <label for="fieldPlaceholder">Placeholder</label>
-          <input class="control" id="fieldPlaceholder" value=${field.placeholder} onInput=${(event) => onFieldChange({ placeholder: event.currentTarget.value })} />
-        </div>
-      `;
+      return html`<${InputProperty} id="fieldPlaceholder" label="Placeholder" value=${field.placeholder} onInput=${(event) => onFieldChange({ placeholder: event.currentTarget.value })} />`;
     }
 
     function OptionSettings({ field, onFieldChange }) {
       if (!OPTION_FIELD_TYPES.has(field.type)) return null;
       const options = field.options;
       return html`
-        <div class="property">
-          <div class="mini-label">Options</div>
-          ${options.map((option, index) => html`
-            <div class="option-row" key=${index}>
+        <${EditableList}
+          title="Options"
+          items=${options}
+          addLabel=${"Add option"}
+          onAdd=${() => onFieldChange({ options: [...options, "Option " + (options.length + 1)] })}
+          removeTitle="Remove option"
+          onRemove=${(_, index) => onFieldChange({ options: options.filter((__, itemIndex) => itemIndex !== index) })}
+          renderItem=${(option, index) => html`
               <input
                 class="control"
                 value=${option}
                 aria-label=${`Option ${index + 1}`}
-                onInput=${(event) => {
-          const next = [...options];
-          next[index] = event.currentTarget.value;
-          onFieldChange({ options: next });
-        }}
+                onInput=${(event) => onFieldChange({ options: replaceItem(options, index, event.currentTarget.value) })}
               />
-              <button
-                class="icon-button danger"
-                type="button"
-                title="Remove option"
-                aria-label="Remove option"
-                onClick=${() => onFieldChange({ options: options.filter((_, itemIndex) => itemIndex !== index) })}
-              >
-                <${Icon} icon="fa-solid fa-xmark" />
-              </button>
-            </div>
-          `)}
-          <button class="button ghost" type="button" onClick=${() => onFieldChange({ options: [...options, "Option " + (options.length + 1)] })}>
-            <${Icon} icon="fa-solid fa-plus" /><span>Add option</span>
-          </button>
+          `}
+        />
           ${field.type === "checkbox" ? html`
-            <label class="toggle-row">
-              <input type="checkbox" checked=${field.settings.allowCustomOptions} onChange=${(event) => onFieldChange({ settings: { ...field.settings, allowCustomOptions: event.currentTarget.checked } })} />
-              <span>Allow custom options</span>
-            </label>
+            <${ToggleRow} checked=${field.settings.allowCustomOptions} onChange=${(event) => onFieldChange({ settings: { ...field.settings, allowCustomOptions: event.currentTarget.checked } })} label="Allow custom options" />
           ` : null}
-        </div>
       `;
     }
 
@@ -5503,20 +5537,10 @@
         const fileInputId = field.id + "_mediaFile";
 
         return html`
-          <div class="property">
-            <label for="mediaSourceType">Source</label>
-            <select class="control" id="mediaSourceType" value=${settings.sourceType} onChange=${(event) => editor.patchNonData({ sourceType: event.currentTarget.value })}>
-              <option value="url">URL</option>
-              <option value="file">File</option>
-              <option value="html">HTML</option>
-            </select>
-          </div>
+          <${SettingSelect} id="mediaSourceType" label="Source" settings=${settings} setting="sourceType" editor=${editor} method="patchNonData" options=${MEDIA_SOURCE_OPTIONS} />
 
           ${settings.sourceType === "url" ? html`
-            <div class="property">
-              <label for="mediaUrl">Media URL</label>
-              <input class="control" id="mediaUrl" value=${settings.url} placeholder="https://example.com/media.mp4" onInput=${(event) => editor.patchNonData({ url: event.currentTarget.value, dataUrl: "", fileName: "", mimeType: "" })} />
-            </div>
+            <${InputProperty} id="mediaUrl" label="Media URL" value=${settings.url} onInput=${(event) => editor.patchNonData({ url: event.currentTarget.value, dataUrl: "", fileName: "", mimeType: "" })} inputProps=${{ placeholder: "https://example.com/media.mp4" }} />
           ` : null}
 
           ${settings.sourceType === "file" ? html`
@@ -5546,209 +5570,96 @@
           ` : null}
 
           ${settings.sourceType === "html" ? html`
-            <div class="property">
-              <label for="mediaHtml">HTML</label>
-              <textarea class="textarea" id="mediaHtml" value=${settings.html} placeholder="<div>Embedded content</div>" onInput=${(event) => editor.patchNonData({ html: event.currentTarget.value, url: "", dataUrl: "", fileName: "", mimeType: "" })}></textarea>
-            </div>
-            <div class="property">
-              <label for="mediaIframeHeight">HTML height</label>
-              <input class="control" id="mediaIframeHeight" type="number" min="120" max="1200" value=${settings.iframeHeight} onInput=${(event) => editor.patchNonData({ iframeHeight: Number(event.currentTarget.value) })} />
-            </div>
+            <${TextareaProperty} id="mediaHtml" label="HTML" value=${settings.html} onInput=${(event) => editor.patchNonData({ html: event.currentTarget.value, url: "", dataUrl: "", fileName: "", mimeType: "" })} inputProps=${{ placeholder: "<div>Embedded content</div>" }} />
+            <${SettingInput} id="mediaIframeHeight" label="HTML height" type="number" settings=${settings} setting="iframeHeight" editor=${editor} method="patchNonData" coerce=${Number} inputProps=${{ min: 120, max: 1200 }} />
           ` : null}
 
           ${settings.sourceType !== "html" ? html`
-            <div class="property">
-              <label for="mediaAlt">Alt text</label>
-              <input class="control" id="mediaAlt" value=${settings.alt} onInput=${(event) => editor.patchNonData({ alt: event.currentTarget.value })} />
-            </div>
+            <${SettingInput} id="mediaAlt" label="Alt text" settings=${settings} setting="alt" editor=${editor} method="patchNonData" />
           ` : null}
 
-          <div class="property">
-            <label for="mediaCaption">Caption</label>
-            <input class="control" id="mediaCaption" value=${settings.caption} onInput=${(event) => editor.patchNonData({ caption: event.currentTarget.value })} />
-          </div>
+          <${SettingInput} id="mediaCaption" label="Caption" settings=${settings} setting="caption" editor=${editor} method="patchNonData" />
 
-          <div class="settings-grid">
-            <div class="property">
-              <label for="mediaHorizontalAlignment">Horizontal alignment</label>
-              <select class="control" id="mediaHorizontalAlignment" value=${settings.horizontalAlignment} onChange=${(event) => editor.patchNonData({ horizontalAlignment: event.currentTarget.value })}>
-                ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-              </select>
-            </div>
-            <div class="property">
-              <label for="mediaVerticalAlignment">Vertical alignment</label>
-              <select class="control" id="mediaVerticalAlignment" value=${settings.verticalAlignment} onChange=${(event) => editor.patchNonData({ verticalAlignment: event.currentTarget.value })}>
-                ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-              </select>
-            </div>
-          </div>
+          <${SettingsGrid} controls=${MEDIA_LAYOUT_CONTROLS.slice(0, 2)} settings=${settings} editor=${editor} method="patchNonData" />
 
-          <div class="settings-grid">
-            <div class="property">
-              <label for="mediaHorizontalSize">Horizontal size</label>
-              <select class="control" id="mediaHorizontalSize" value=${settings.horizontalSize} onChange=${(event) => editor.patchNonData({ horizontalSize: event.currentTarget.value })}>
-                ${HORIZONTAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-              </select>
-            </div>
-            <div class="property">
-              <label for="mediaScale">Width %</label>
-              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalSize === "stretch"} onInput=${(event) => editor.patchNonData({ scale: Number(event.currentTarget.value) })} />
-            </div>
-          </div>
+          <${SettingsGrid} controls=${[
+            ["mediaHorizontalSize", "horizontalSize", "Horizontal size", HORIZONTAL_SIZE.options],
+            ["mediaScale", "scale", "Width %", "number", Number, { min: 10, max: 100, disabled: settings.horizontalSize === "stretch" }]
+          ]} settings=${settings} editor=${editor} method="patchNonData" />
 
-          <div class="settings-grid">
-            <div class="property">
-              <label for="mediaMaxWidth">Max width</label>
-              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => editor.patchNonData({ maxWidth: event.currentTarget.value })} />
-            </div>
-            <div class="property">
-              <label for="mediaMaxHeight">Max height</label>
-              <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => editor.patchNonData({ maxHeight: Number(event.currentTarget.value) })} />
-            </div>
-          </div>
+          <${SettingsGrid} controls=${[
+            ["mediaMaxWidth", "maxWidth", "Max width", "text", { placeholder: "640px" }],
+            ["mediaMaxHeight", "maxHeight", "Max height", "number", Number, { min: 80, max: 1600 }]
+          ]} settings=${settings} editor=${editor} method="patchNonData" />
 
-          <div class="settings-grid">
-            <div class="property">
-              <label for="mediaPadding">Padding</label>
-              <input class="control" id="mediaPadding" type="number" min="0" max="120" value=${settings.padding} onInput=${(event) => editor.patchNonData({ padding: Number(event.currentTarget.value) })} />
-            </div>
-            <div class="property">
-              <label for="mediaObjectFit">Object fit</label>
-              <select class="control" id="mediaObjectFit" value=${settings.objectFit} onChange=${(event) => editor.patchNonData({ objectFit: event.currentTarget.value })}>
-                <option value="contain">Contain</option>
-                <option value="cover">Cover</option>
-                <option value="fill">Fill</option>
-                <option value="scale-down">Scale down</option>
-              </select>
-            </div>
-          </div>
+          <${SettingsGrid} controls=${[
+            ["mediaPadding", "padding", "Padding", "number", Number, { min: 0, max: 120 }],
+            ["mediaObjectFit", "objectFit", "Object fit", MEDIA_OBJECT_FIT_OPTIONS]
+          ]} settings=${settings} editor=${editor} method="patchNonData" />
         `;
     }
 
     function HeadlineSettingsControls({ field, editor }) {
       const headline = new HeadlineModel(field);
       return html`
-        <div class="settings-grid">
-          <div class="property">
-            <label for="headingHorizontalAlignment">Heading horizontal alignment</label>
-            <select class="control" id="headingHorizontalAlignment" value=${headline.headingHorizontalAlignment} onChange=${(event) => editor.patchNonData({ headingHorizontalAlignment: event.currentTarget.value })}>
-              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for="headingVerticalAlignment">Heading vertical alignment</label>
-            <select class="control" id="headingVerticalAlignment" value=${headline.headingVerticalAlignment} onChange=${(event) => editor.patchNonData({ headingVerticalAlignment: event.currentTarget.value })}>
-              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for="descriptionHorizontalAlignment">Subhead horizontal alignment</label>
-            <select class="control" id="descriptionHorizontalAlignment" value=${headline.descriptionHorizontalAlignment} onChange=${(event) => editor.patchNonData({ descriptionHorizontalAlignment: event.currentTarget.value })}>
-              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-          <div class="property">
-            <label for="descriptionVerticalAlignment">Subhead vertical alignment</label>
-            <select class="control" id="descriptionVerticalAlignment" value=${headline.descriptionVerticalAlignment} onChange=${(event) => editor.patchNonData({ descriptionVerticalAlignment: event.currentTarget.value })}>
-              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
-            </select>
-          </div>
-        </div>
+        <${SettingsGrid} controls=${HEADLINE_ALIGNMENT_CONTROLS} settings=${headline} editor=${editor} method="patchNonData" />
       `;
     }
 
     function MoodMeterSettingsControls({ field, editor }) {
+      const settings = field.settings;
       return html`
-        <div class="settings-grid">
-          <div class="property">
-            <label for="minLabel">Low label</label>
-            <input class="control" id="minLabel" value=${field.settings.minLabel} onInput=${(event) => editor.patch({ minLabel: event.currentTarget.value })} />
-          </div>
-          <div class="property">
-            <label for="maxLabel">High label</label>
-            <input class="control" id="maxLabel" value=${field.settings.maxLabel} onInput=${(event) => editor.patch({ maxLabel: event.currentTarget.value })} />
-          </div>
-        </div>
+        <${SettingsGrid} controls=${[["minLabel", "Low label"], ["maxLabel", "High label"]]} settings=${settings} editor=${editor} />
       `;
     }
 
     function LinearScaleSettingsControls({ field, editor }) {
       const settings = field.settings;
       return html`
-        <div class="settings-grid">
-          <div class="property">
-            <label for="scaleMin">Minimum</label>
-            <input class="control" id="scaleMin" type="number" value=${settings.min} onInput=${(event) => editor.patch({ min: Number(event.currentTarget.value) })} />
-          </div>
-          <div class="property">
-            <label for="scaleMax">Maximum</label>
-            <input class="control" id="scaleMax" type="number" value=${settings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
-          </div>
-          <div class="property">
-            <label for="scaleMinLabel">Low label</label>
-            <input class="control" id="scaleMinLabel" value=${settings.minLabel} onInput=${(event) => editor.patch({ minLabel: event.currentTarget.value })} />
-          </div>
-          <div class="property">
-            <label for="scaleMaxLabel">High label</label>
-            <input class="control" id="scaleMaxLabel" value=${settings.maxLabel} onInput=${(event) => editor.patch({ maxLabel: event.currentTarget.value })} />
-          </div>
-        </div>
+        <${SettingsGrid} controls=${[
+          ["scaleMin", "min", "Minimum", "number", Number],
+          ["scaleMax", "max", "Maximum", "number", Number],
+          ["scaleMinLabel", "minLabel", "Low label"],
+          ["scaleMaxLabel", "maxLabel", "High label"]
+        ]} settings=${settings} editor=${editor} />
       `;
     }
 
     function StarRatingSettingsControls({ field, editor }) {
-      return html`
-        <div class="property">
-          <label for="starMax">Stars</label>
-          <input class="control" id="starMax" type="number" min="3" max="10" value=${field.settings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
-        </div>
-      `;
+      return html`<${SettingInput} id="starMax" label="Stars" type="number" settings=${field.settings} setting="max" editor=${editor} coerce=${Number} inputProps=${{ min: 3, max: 10 }} />`;
     }
 
     function CalendarSettingsControls({ field, editor }) {
       const settings = field.settings;
       return html`
-        <div class="settings-grid">
-          <div class="property">
-            <label for="calendarStartDate">Default start date</label>
-            <input class="control" id="calendarStartDate" type="date" value=${settings.startDate} onInput=${(event) => editor.patch({ startDate: event.currentTarget.value })} />
-          </div>
-          <div class="property">
-            <label for="calendarEndDate">Default end date</label>
-            <input class="control" id="calendarEndDate" type="date" value=${settings.endDate} onInput=${(event) => editor.patch({ endDate: event.currentTarget.value })} />
-          </div>
-        </div>
-        <label class="toggle-row">
-          <input type="checkbox" checked=${settings.allowMilestones} onChange=${(event) => editor.patch({ allowMilestones: event.currentTarget.checked })} />
-          <span>Allow milestones</span>
-        </label>
+        <${SettingsGrid} controls=${[
+          ["calendarStartDate", "startDate", "Default start date", "date"],
+          ["calendarEndDate", "endDate", "Default end date", "date"]
+        ]} settings=${settings} editor=${editor} />
+        <${SettingToggle} settings=${settings} setting="allowMilestones" editor=${editor} label="Allow milestones" />
         ${settings.allowMilestones ? html`
-          <div class="property">
-            <div class="calendar-milestone-editor-head">
-              <div class="mini-label">Milestones</div>
-            </div>
-            ${settings.milestones.length ? settings.milestones.map((item, index) => html`
-              <div class="calendar-milestone-row" key=${item.id || index}>
+          <${EditableList}
+            title="Milestones"
+            titleClassName="calendar-milestone-editor-head"
+            items=${settings.milestones}
+            rowClassName="calendar-milestone-row"
+            itemKey=${(item, index) => item.id || index}
+            emptyText="No milestones yet."
+            addLabel="Add milestone"
+            onAdd=${() => editor.appendListItem("milestones", { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) })}
+            removeTitle="Remove milestone"
+            onRemove=${(_, index) => editor.removeListItem("milestones", index)}
+            renderItem=${(item, index) => html`
                 <input class="control" type="date" value=${item.date} aria-label=${`Milestone ${index + 1} date`} onInput=${(event) => editor.updateListItem("milestones", index, { date: event.currentTarget.value })} />
                 <input class="control" value=${item.label} placeholder="Milestone name" aria-label=${`Milestone ${index + 1} label`} onInput=${(event) => editor.updateListItem("milestones", index, { label: event.currentTarget.value })} />
-                <button class="icon-button danger" type="button" title="Remove milestone" aria-label="Remove milestone" onClick=${() => editor.removeListItem("milestones", index)}><${Icon} icon="fa-solid fa-xmark" /></button>
-              </div>
-            `) : html`<div class="calendar-milestone-empty">No milestones yet.</div>`}
-            <button class="button ghost" type="button" onClick=${() => editor.appendListItem("milestones", { id: uid(), date: "", label: "Milestone " + (settings.milestones.length + 1) })}>
-              <${Icon} icon="fa-solid fa-plus" /><span>Add milestone</span>
-            </button>
-          </div>
+            `}
+          />
         ` : null}
       `;
     }
 
     function MediaUploadSettingsControls({ field, editor }) {
-      return html`
-        <div class="property">
-          <label for="mediaUploadAccept">Accepted types</label>
-          <input class="control" id="mediaUploadAccept" value=${field.settings.accept} placeholder="image/*,video/*,audio/*,.svg,.pdf" onInput=${(event) => editor.patch({ accept: event.currentTarget.value })} />
-        </div>
-      `;
+      return html`<${SettingInput} id="mediaUploadAccept" label="Accepted types" settings=${field.settings} setting="accept" editor=${editor} inputProps=${{ placeholder: "image/*,video/*,audio/*,.svg,.pdf" }} />`;
     }
 
     function RadarSettingsControls({ field, editor }) {
@@ -5761,61 +5672,33 @@
       const midpoint = radar.midpoint;
 
       return html`
-        <div class="property">
-          <label for="radarMode">Mode</label>
-          <select class="control" id="radarMode" value=${settings.mode} onChange=${(event) => editor.patch({ mode: event.currentTarget.value })}>
-            <option value="shape">Multi-node shape</option>
-            <option value="point">Single node</option>
-          </select>
-        </div>
-        <div class="property">
-          <label for="radarMax">Maximum</label>
-          <input class="control" id="radarMax" type="number" min=${RADAR_MIN_VALUE + 1} value=${rawSettings.max} onInput=${(event) => editor.patch({ max: Number(event.currentTarget.value) })} />
-        </div>
+        <${SettingSelect} id="radarMode" label="Mode" settings=${settings} setting="mode" editor=${editor} options=${RADAR_MODE_OPTIONS} />
+        <${SettingInput} id="radarMax" label="Maximum" type="number" settings=${rawSettings} setting="max" editor=${editor} coerce=${Number} inputProps=${{ min: RADAR_MIN_VALUE + 1 }} />
         ${settings.mode === "point" ? html`
           <div class="settings-grid">
-            <div class="property">
-              <label for="radarDefaultAngle">Default angle</label>
-              <input
-                class="control"
-                id="radarDefaultAngle"
-                type="number"
-                min="0"
-                max="359"
-                step="1"
-                value=${rawDefaultPoint.angle}
-                onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, angle: Number(event.currentTarget.value) } })}
-              />
-            </div>
-            <div class="property">
-              <label for="radarDefaultValue">Default value</label>
-              <input
-                class="control"
-                id="radarDefaultValue"
-                type="number"
-                min=${RADAR_MIN_VALUE}
-                max=${settings.max}
-                step="0.1"
-                value=${rawDefaultPoint.value}
-                onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, value: Number(event.currentTarget.value) } })}
-              />
-            </div>
+            <${InputProperty} id="radarDefaultAngle" label="Default angle" type="number" value=${rawDefaultPoint.angle} onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, angle: Number(event.currentTarget.value) } })} inputProps=${{ min: 0, max: 359, step: 1 }} />
+            <${InputProperty} id="radarDefaultValue" label="Default value" type="number" value=${rawDefaultPoint.value} onInput=${(event) => editor.patch({ defaultPoint: { ...rawDefaultPoint, value: Number(event.currentTarget.value) } })} inputProps=${{ min: RADAR_MIN_VALUE, max: settings.max, step: 0.1 }} />
           </div>
           <div class="radar-mode-note">Default position: ${RadarModel.describe(settings.defaultPoint.angle, settings.axes)}</div>
         ` : null}
-        <div class="property">
-          <div class="mini-label">${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}</div>
-          ${displayAxes.map((axis, index) => html`
-            <div class=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"} key=${index}>
+        <${EditableList}
+          title=${settings.mode === "point" ? "Axes" : "Axes and placeholder values"}
+          items=${displayAxes}
+          rowClassName=${settings.mode === "point" ? "option-row radar-axis-only-row" : "option-row radar-axis-row"}
+          addLabel="Add axis"
+          onAdd=${() => editor.patch({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}
+          removeTitle="Remove axis"
+          onRemove=${(_, index) => {
+            const nextAxes = displayAxes.filter((__, itemIndex) => itemIndex !== index);
+            const nextValues = displayValues.filter((__, itemIndex) => itemIndex !== index);
+            editor.patch({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
+          }}
+          renderItem=${(axis, index) => html`
               <input
                 class="control"
                 value=${axis}
                 aria-label=${`Radar axis ${index + 1}`}
-                onInput=${(event) => {
-          const nextAxes = [...displayAxes];
-          nextAxes[index] = event.currentTarget.value;
-          editor.patch({ axes: nextAxes });
-        }}
+                onInput=${(event) => editor.patch({ axes: replaceItem(displayAxes, index, event.currentTarget.value) })}
               />
               ${settings.mode === "shape" ? html`
                 <input
@@ -5825,61 +5708,25 @@
                   max=${settings.max}
                   value=${displayValues[index]}
                   aria-label=${`Radar placeholder value ${index + 1}`}
-                  onInput=${(event) => {
-            const nextValues = [...displayValues];
-            nextValues[index] = Number(event.currentTarget.value);
-            editor.patch({ defaultValues: nextValues });
-          }}
+                  onInput=${(event) => editor.patch({ defaultValues: replaceItem(displayValues, index, Number(event.currentTarget.value)) })}
                 />
               ` : null}
-              <button
-                class="icon-button danger"
-                type="button"
-                title="Remove axis"
-                aria-label="Remove axis"
-                onClick=${() => {
-          const nextAxes = displayAxes.filter((_, itemIndex) => itemIndex !== index);
-          const nextValues = displayValues.filter((_, itemIndex) => itemIndex !== index);
-          editor.patch({ axes: nextAxes.length ? nextAxes : ["Axis 1"], defaultValues: nextAxes.length ? nextValues : [midpoint] });
-        }}
-              >
-                <${Icon} icon="fa-solid fa-xmark" />
-              </button>
-            </div>
-          `)}
-          <button class="button ghost" type="button" onClick=${() => editor.patch({ axes: [...displayAxes, "Axis " + (displayAxes.length + 1)], defaultValues: [...displayValues, midpoint] })}>
-            <${Icon} icon="fa-solid fa-plus" /><span>Add axis</span>
-          </button>
-        </div>
+          `}
+        />
       `;
     }
 
     function SpacerSettingsControls({ field, editor }) {
       const settings = field.settings;
+      const extras = { description: "" };
       return html`
-        <div class="property">
-          <label for="spacerHeight">Height</label>
-          <input class="control" id="spacerHeight" type="number" min="0" max="240" value=${settings.height} onInput=${(event) => editor.patchNonData({ height: Number(event.currentTarget.value) }, { description: "" })} />
-        </div>
-        <label class="toggle-row">
-          <input type="checkbox" checked=${settings.showLine} onChange=${(event) => editor.patchNonData({ showLine: event.currentTarget.checked }, { description: "" })} />
-          <span>Show line</span>
-        </label>
+        <${SettingInput} id="spacerHeight" label="Height" type="number" settings=${settings} setting="height" editor=${editor} method="patchNonData" coerce=${Number} extras=${extras} inputProps=${{ min: 0, max: 240 }} />
+        <${SettingToggle} settings=${settings} setting="showLine" editor=${editor} method="patchNonData" extras=${extras} label="Show line" />
         ${settings.showLine ? html`
-          <div class="settings-grid">
-            <div class="property">
-              <label for="spacerLineThickness">Line thickness</label>
-              <input class="control" id="spacerLineThickness" type="number" min="1" max="12" value=${settings.lineThickness} onInput=${(event) => editor.patchNonData({ lineThickness: Number(event.currentTarget.value) }, { description: "" })} />
-            </div>
-            <div class="property">
-              <label for="spacerLineStyle">Line style</label>
-              <select class="control" id="spacerLineStyle" value=${settings.lineStyle} onChange=${(event) => editor.patchNonData({ lineStyle: event.currentTarget.value }, { description: "" })}>
-                <option value="solid">Solid</option>
-                <option value="dashed">Dashed</option>
-                <option value="dotted">Dotted</option>
-              </select>
-            </div>
-          </div>
+          <${SettingsGrid} controls=${[
+            ["spacerLineThickness", "lineThickness", "Line thickness", "number", Number, { min: 1, max: 12 }],
+            ["spacerLineStyle", "lineStyle", "Line style", SPACER_LINE_STYLE_OPTIONS]
+          ]} settings=${settings} editor=${editor} method="patchNonData" extras=${extras} />
         ` : null}
       `;
     }
@@ -5968,7 +5815,7 @@
         let selectedContainerId = null;
         const blocks = schema.blocks.map((block) => {
           if (block.id !== blockId) return block;
-          const containers = moveContainerIntoPlacement(block.containers, payload.containerId, placement);
+          const containers = ContainerPlacementModel.move(block.containers, payload.containerId, placement);
           const selectedContainer = containers.find((container) => container.id === payload.containerId) || null;
           selectedId = selectedContainer ? firstBlockElement({ containers: [selectedContainer] })?.id || null : null;
           selectedContainerId = selectedContainer?.id || null;
@@ -5987,7 +5834,7 @@
           .filter((block) => block.id !== sourceBlockId)
           .map((block) => {
             if (block.id !== blockId) return block;
-            return { ...block, containers: insertContainerIntoPlacement(block.containers, container, placement) };
+            return { ...block, containers: ContainerPlacementModel.insert(block.containers, container, placement) };
           });
         return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: container.id };
       }
@@ -6041,7 +5888,7 @@
                   };
                 }
                 const containers = block.containers.map((container) => container.id === action.id ? { ...container, ...patch, placement: container.placement } : container);
-                return { ...block, containers: moveContainerIntoPlacement(containers, action.id, patch.placement) };
+                return { ...block, containers: ContainerPlacementModel.move(containers, action.id, patch.placement) };
               })
             }
           };
@@ -6096,7 +5943,7 @@
             const index = block.containers.findIndex((container) => container.id === action.containerId);
             if (index < 0) return block;
             const source = block.containers[index];
-            copy = { ...cloneContainerWithNewIds(source), placement: placementForContainerCopy(block.containers, source.placement) };
+            copy = { ...cloneContainerWithNewIds(source), placement: ContainerPlacementModel.placementForCopy(block.containers, source.placement) };
             const containers = [...block.containers];
             containers.splice(index + 1, 0, copy);
             return { ...block, containers };
@@ -6134,12 +5981,15 @@
       }
     }
 
-    function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, blockDropRectRef }) {
+    function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldCardRefs, fieldRectsRef, dragPayloadRef, blockDropRectRef }) {
       const current = () => stateRef.current;
       const currentSchema = () => current().schema;
       const replaceSchema = (schema) => dispatch({ type: "replace-schema", schema });
       const patchSchema = (patch) => dispatch({ type: "patch-schema", patch });
       const selectField = (id, containerId = null) => dispatch({ type: "select-field", id, containerId });
+      const fieldCardEntries = () => currentSchema().blocks
+        .map((block) => [block.id, fieldCardRefs.current.get(block.id)])
+        .filter(([, card]) => card);
 
       function patchSelectedField(patch) {
         const id = current().selectedId;
@@ -6159,7 +6009,7 @@
       }
 
       function snapshotFieldRects() {
-        fieldRectsRef.current = new Map([...(fieldsRef.current?.querySelectorAll(".field-card") || [])].map((card) => [card.dataset.fieldId, card.getBoundingClientRect()]));
+        fieldRectsRef.current = new Map(fieldCardEntries().map(([id, card]) => [id, card.getBoundingClientRect()]));
       }
 
       function moveField(id, direction) {
@@ -6242,7 +6092,7 @@
 
       function insertionTargetFromPointer(clientY) {
         const list = fieldsRef.current;
-        const cards = [...(list?.querySelectorAll(".field-card") || [])];
+        const cards = fieldCardEntries().map(([, card]) => card);
         const listRect = list?.getBoundingClientRect();
         if (!list || !listRect || !cards.length) {
           const top = list ? parseFloat(getComputedStyle(list).paddingTop) || 0 : 0;
@@ -6285,12 +6135,10 @@
         }
         const x = rect.width ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) : 0.5;
         const y = rect.height ? Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)) : 0.5;
-        if (placementTarget && event.currentTarget.contains(placementTarget)) return { placement: placementTarget.dataset.blockPlacement, x, y };
-        if (x < PLACEMENT_HIT_BANDS.side) return { placement: "left", x, y };
-        if (x > 1 - PLACEMENT_HIT_BANDS.side) return { placement: "right", x, y };
-        if (y < PLACEMENT_HIT_BANDS.edge) return { placement: "top", x, y };
-        if (y > 1 - PLACEMENT_HIT_BANDS.edge) return { placement: "bottom", x, y };
-        return { placement: "main", x, y };
+        const placement = placementTarget && event.currentTarget.contains(placementTarget)
+          ? placementTarget.dataset.blockPlacement
+          : ContainerPlacementModel.placementFromPoint({ x, y });
+        return { placement, x, y };
       }
 
       function containerPlacementFromPointer(event, blockId) {
@@ -6460,36 +6308,23 @@
     }
 
     function useDismissableLayer(open, ref, onDismiss) {
-      const onDismissRef = useRef(onDismiss);
-      useEffect(() => {
-        onDismissRef.current = onDismiss;
-      }, [onDismiss]);
-
-      useEffect(() => {
-        if (!open) return undefined;
-        function handlePointerDown(event) {
-          if (ref.current?.contains(event.target)) return;
-          onDismissRef.current();
-        }
-        function handleKeyDown(event) {
-          if (event.key === "Escape") onDismissRef.current();
-        }
-        window.addEventListener("pointerdown", handlePointerDown);
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-          window.removeEventListener("pointerdown", handlePointerDown);
-          window.removeEventListener("keydown", handleKeyDown);
-        };
-      }, [open, ref]);
+      useEventListener(window, "pointerdown", (event) => {
+        if (ref.current?.contains(event.target)) return;
+        onDismiss();
+      }, open);
+      useEventListener(window, "keydown", (event) => {
+        if (event.key === "Escape") onDismiss();
+      }, open);
     }
 
-    function useFieldListAnimation(fieldsRef, fieldRectsRef, fields) {
+    function useFieldListAnimation(fieldCardRefs, fieldRectsRef, fields) {
       useLayoutEffect(() => {
         const firstRects = fieldRectsRef.current;
         if (!firstRects) return;
         fieldRectsRef.current = null;
-        fieldsRef.current?.querySelectorAll(".field-card").forEach((card) => {
-          const first = firstRects.get(card.dataset.fieldId);
+        fields.forEach((field) => {
+          const card = fieldCardRefs.current.get(field.id);
+          const first = card && firstRects.get(field.id);
           if (!first) return;
           const last = card.getBoundingClientRect();
           const dx = first.left - last.left;
@@ -6510,6 +6345,7 @@
       const stateRef = useRef(builderState);
       const dragStateRef = useRef(dragState);
       const fieldsRef = useRef(null);
+      const fieldCardRefs = useRef(new Map());
       const fieldRectsRef = useRef(null);
       const dragPayloadRef = useRef(null);
       const blockDropRectRef = useRef(null);
@@ -6518,14 +6354,19 @@
       stateRef.current = builderState;
       dragStateRef.current = dragState;
 
-      const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, blockDropRectRef });
+      function registerFieldCard(id, node) {
+        if (node) fieldCardRefs.current.set(id, node);
+        else fieldCardRefs.current.delete(id);
+      }
+
+      const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldCardRefs, fieldRectsRef, dragPayloadRef, blockDropRectRef });
       const selectedBlock = useMemo(() => blockForElement(schema, selectedId), [schema.blocks, selectedId]);
       const selectedContainer = useMemo(() => selectedContainerId ? containerById(schema, selectedContainerId) : null, [schema.blocks, selectedContainerId]);
       const selectedField = useMemo(() => selectedBlock && isCompositeBlock(selectedBlock) && !selectedContainerId ? null : schemaElements(schema).find((field) => field.id === selectedId) || null, [schema.blocks, selectedId, selectedBlock, selectedContainerId]);
 
       useStoredSchema(schema);
       useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
-      useFieldListAnimation(fieldsRef, fieldRectsRef, schema.blocks);
+      useFieldListAnimation(fieldCardRefs, fieldRectsRef, schema.blocks);
 
       const formName = formDisplayName(schema);
       const theme = schema.settings.theme;
@@ -6548,7 +6389,7 @@
           <div class=${`shell${sidebarCollapsed ? " sidebar-collapsed" : ""}`}>
           <header class="topbar">
             <div class="toolbar-actions">
-              <button class="icon-button" type="button" title="Reset form" aria-label="Reset form" onClick=${builder.resetForm}><${Icon} icon="fa-solid fa-rotate-left" /></button>
+              <${IconButton} icon="fa-solid fa-rotate-left" title="Reset form" onClick=${builder.resetForm} />
               <label class="icon-button" for="importSchema" title="Open schema" aria-label="Open schema"><${Icon} icon="fa-regular fa-folder-open" /></label>
               <input class="sr-only" id="importSchema" type="file" accept="application/json,.json" onChange=${builder.importSchema} />
               <input
@@ -6562,7 +6403,7 @@
               />
             </div>
             <div class="top-actions">
-              <button class="icon-button" type="button" title="Preview form" aria-label="Preview form" onClick=${builder.previewForm}><${Icon} icon="fa-solid fa-play" /></button>
+              <${IconButton} icon="fa-solid fa-play" title="Preview form" onClick=${builder.previewForm} />
               <div class="export-menu-wrap" ref=${exportMenuRef}>
                 <button
                   class="button primary"
@@ -6589,16 +6430,12 @@
           </header>
 
           <main class="workspace">
-            <button class="icon-button sidebar-expand-button" type="button" title="Expand sidebar" aria-label="Expand sidebar" aria-hidden=${!sidebarCollapsed} tabIndex=${sidebarCollapsed ? 0 : -1} onClick=${() => setSidebarCollapsed(false)}>
-              <${Icon} icon="fa-solid fa-chevron-right" />
-            </button>
+            <${IconButton} className="sidebar-expand-button" icon="fa-solid fa-chevron-right" title="Expand sidebar" aria-hidden=${!sidebarCollapsed} tabIndex=${sidebarCollapsed ? 0 : -1} onClick=${() => setSidebarCollapsed(false)} />
 
             <aside class="sidebar" aria-label="Form blocks" aria-hidden=${sidebarCollapsed} inert=${sidebarCollapsed ? "" : null}>
               <div class="sidebar-inner">
                 <div class="sidebar-head">
-                  <button class="icon-button" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)}>
-                    <${Icon} icon="fa-solid fa-chevron-left" />
-                  </button>
+                  <${IconButton} icon="fa-solid fa-chevron-left" title="Collapse sidebar" onClick=${() => setSidebarCollapsed(true)} />
                 </div>
                 <${Palette} onAdd=${builder.addField} onDragStart=${builder.beginDrag} onDragEnd=${builder.clearDragState} />
                 <${SidebarSettings} schema=${schema} onSchemaChange=${builder.patchSchema} onOpenColor=${setActiveColorItem} onOpenTypography=${setActiveTypographyRole} />
@@ -6624,6 +6461,7 @@
                     blockDropId=${blockDropId}
                     blockDropPlacement=${blockDropPlacement}
                     blockDropActive=${blockDropActive}
+                    onCardRef=${registerFieldCard}
                     onSelect=${builder.selectField}
                     onMove=${builder.moveField}
                     onDuplicate=${builder.duplicateField}
