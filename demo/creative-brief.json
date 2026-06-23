@@ -1,0 +1,938 @@
+{
+  "createdAt": "2026-06-22T00:00:00.000Z",
+  "updatedAt": "2026-06-22T00:00:00.000Z",
+  "settings": {
+    "name": "Creative Brief",
+    "theme": {
+      "bg": "#f7f5f2",
+      "panel": "#ffffff",
+      "panel2": "#f4f2ef",
+      "ink": "#1f1f1f",
+      "muted": "#5f6366",
+      "line": "#d7d2cb",
+      "accent": "#871f41",
+      "accent2": "#e77724",
+      "accentHighlight": "#f3e8ed",
+      "success": "#2e7d32",
+      "warning": "#946200",
+      "danger": "#b3261e",
+      "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+    },
+    "layout": {
+      "pageMargin": 20,
+      "pagePadding": 16,
+      "fieldSpacing": 10,
+      "fieldPadding": 16
+    },
+    "typography": {
+      "body": {
+        "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "color": "#1f1f1f",
+        "size": 14,
+        "weight": 400,
+        "style": "normal",
+        "lineHeight": 1.45,
+        "letterSpacing": 0,
+        "textTransform": "none"
+      },
+      "heading": {
+        "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "color": "#3d3d3d",
+        "size": 28,
+        "weight": 750,
+        "style": "normal",
+        "lineHeight": 1.2,
+        "letterSpacing": 0,
+        "textTransform": "none"
+      },
+      "description": {
+        "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "color": "#5f6366",
+        "size": 14,
+        "weight": 400,
+        "style": "normal",
+        "lineHeight": 1.5,
+        "letterSpacing": 0,
+        "textTransform": "none"
+      },
+      "label": {
+        "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "color": "#1f1f1f",
+        "size": 16,
+        "weight": 700,
+        "style": "normal",
+        "lineHeight": 1.35,
+        "letterSpacing": 0,
+        "textTransform": "none"
+      }
+    }
+  },
+  "blocks": [
+    {
+      "id": "block_field_header",
+      "containers": [
+        {
+          "id": "container_field_header_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_header",
+              "type": "headline",
+              "label": "Creative Brief",
+              "description": "Last updated: 2026-6-22",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "center",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        },
+        {
+          "id": "container_field_header_media",
+          "placement": "left",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_header_media",
+              "type": "media",
+              "label": "",
+              "description": "",
+              "required": false,
+              "settings": {
+                "sourceType": "file",
+                "url": "",
+                "dataUrl": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyOS41LjEsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA5LjAzIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiDQoJIHZpZXdCb3g9IjAgMCAzNjMuNDc5IDY4LjMwMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzYzLjQ3OSA2OC4zMDI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+DQoJLnN0MHtmaWxsOiM4NzFGNDE7fQ0KCS5zdDF7ZmlsbDojRTc3NzI0O30NCjwvc3R5bGU+DQo8ZyBpZD0iVmlyZ2luaWFfVGVjaF9Ib3Jpem9udGFsXzAwMDAwMTAwMzcxNTcxOTk2NzczNzYzNTEwMDAwMDE4Mzc5NDIxNTM5NTcxMTcyMDI1XyI+DQoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTgxLjE5MywwLjMxM2MtOS4yLDAtMTcuNjYsNS4wNDItMjIuMDM4LDEzLjEzNGwtNS4zOTEsOS45NjNsLTAuNjI2LDEuMTU4TDUyLjUzLDI1LjY5djAuMDAxTDM2LjI0Nyw1NS43ODYNCgkJTDkuNjY2LDYuMTA1aDExLjgyMmw5LjUyLDE3LjY5OWw0Ljk5NCw5LjI4N2w1LjE1Ny05LjE5OGw5Ljk3Mi0xNy43ODhoOC42MmMyLjA4My0yLjMxOSw0LjUxNi00LjI2OSw3LjE5Ni01Ljc5Mkg0Ny43NA0KCQlMMzYuMTA4LDIxLjA2MUwyNC45NDksMC4zMTNIMGwzNi4yMTksNjcuNjk1bDIwLjE2MS0zNy4yNjJsMy4zNDMtNi4xNzhsMC42MjctMS4xNThsMy44NzctNy4xNjUNCgkJYzAuMjExLTAuMzkxLDAuNDM1LTAuNzcyLDAuNjctMS4xNDRjMi41ODctNC4wODgsNi41ODktNy4wMTksMTEuMTY1LTguMjljMS4yNDgtMC4zNDcsMi41MzktMC41NzEsMy44NTUtMC42NjENCgkJYzAuNDM4LTAuMDMsMC44ODEtMC4wNDUsMS4zMjUtMC4wNDVoNTIuNzc4bC01LjMyOSw5LjkzMmgtMjQuNDIzbC0xLjYzNCwzLjA3TDgwLjAzNyw2MS41NjVINjguMDUzbDE5LjgxOS0zNi44MDZsNC41OTctOC41MzgNCgkJSDY4LjY4OGMtMS4zNTgsMi4xNDctMy4zMDIsNS43OTItMy4zMDIsNS43OTJoMTcuMzg3TDU4LjM1OCw2Ny4zNTdoMjUuMTU2bDI0LjIzMi00NS41MjhoMjQuNDA5bDExLjU0NC0yMS41MTZIODEuMTkzeiIvPg0KCTxwYXRoIGNsYXNzPSJzdDEiIGQ9Ik0xNzUuNjY5LDIxLjI2NmMwLDAsMi43MTEtNi4yMjgsNC4wNjItOS4zMjFjMS4zNTEtMy4wOTMsMi43MTItNi4yLDQuMDgzLTkuMzIxDQoJCWMwLjMwOC0wLjcxNCwwLjc4Ny0xLjI3NywxLjQzOC0xLjY5YzAuNjUxLTAuNDEzLDEuMzY5LTAuNjE5LDIuMTUyLTAuNjE5aDMuNDIybC0xMy4xMjEsMzAuMDg0aC00Ljk5N0wxNTkuNTg4LDAuMzE0aDMuNDAxDQoJCWMwLjM3OCwwLDAuNzUxLDAuMDU3LDEuMTIzLDAuMTY5YzAuMzcxLDAuMTExLDAuNzE3LDAuMjcyLDEuMDM5LDAuNDgyYzAuMzIyLDAuMjExLDAuNjA5LDAuNDU1LDAuODYyLDAuNzM1DQoJCWMwLjI1LDAuMjgsMC40NDcsMC41ODksMC41ODcsMC45MjRsOC4xMjQsMTguNjIxbDAuNDc3LDEuMDkxTDE3NS42NjksMjEuMjY2eiIvPg0KCTxyZWN0IHg9IjE5NS40NDYiIHk9IjAuMzE0IiBjbGFzcz0ic3QxIiB3aWR0aD0iNS41MiIgaGVpZ2h0PSIzMC4wODQiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjYyLjc5NiwxNC4yOTZ2MTIuNjE2Yy0wLjc1NywwLjc1Ny0xLjU3NSwxLjM3OS0yLjQ1NywxLjg2OXMtMS44MDUsMC44NzgtMi43NzEsMS4xNjQNCgkJYy0wLjk2NywwLjI4OC0xLjk3MSwwLjQ4NC0zLjAxMywwLjU4OWMtMS4wNDIsMC4xMDUtMi4wOTYsMC4xNTctMy4xNTksMC4xNTdjLTIuMTI3LDAtNC4xMjItMC40MDItNS45ODQtMS4yMDcNCgkJYy0xLjg2MS0wLjgwNS0zLjQ5Mi0xLjktNC44OS0zLjI4NWMtMS40MDEtMS4zODYtMi41MDMtMy4wMDktMy4zMDgtNC44N2MtMC44MDQtMS44NjEtMS4yMDYtMy44NTYtMS4yMDYtNS45ODMNCgkJYzAtMS40MTMsMC4xODEtMi43NzUsMC41NDYtNC4wODRjMC4zNjQtMS4zMDgsMC44ODItMi41MywxLjU1My0zLjY2M2MwLjY3Mi0xLjEzNCwxLjQ3Ny0yLjE2OSwyLjQxNS0zLjEwNw0KCQljMC45MzYtMC45MzksMS45NzUtMS43MzksMy4xMTctMi40MDRjMS4xNC0wLjY2NSwyLjM2NS0xLjE3OSwzLjY3My0xLjU0NEMyNDguNjIsMC4xODIsMjQ5Ljk4MiwwLDI1MS4zOTYsMA0KCQljMS4xMiwwLDIuMjE4LDAuMTI1LDMuMjk2LDAuMzc4YzEuMDc3LDAuMjUxLDIuMTEzLDAuNjE2LDMuMTA3LDEuMDkxYzAuOTkyLDAuNDc3LDEuOTQ0LDEuMDUsMi44NTQsMS43MjENCgkJYzAuOTA5LDAuNjcyLDEuNzU2LDEuNDI4LDIuNTQsMi4yNjhsLTEuMjYsMS4yODFjLTAuMzkxLDAuNDA2LTAuODE1LDAuNzA2LTEuMjcsMC45MDNjLTAuNDU1LDAuMTk2LTAuOTc2LDAuMjkzLTEuNTYzLDAuMjkzDQoJCWMtMC43ODUsMC0xLjQ5OC0wLjIyNC0yLjE0Mi0wLjY3MmMtMC43OTgtMC41NDYtMS42NjItMC45NzMtMi41OTMtMS4yODFjLTAuOTMxLTAuMzA3LTEuOTIxLTAuNDYxLTIuOTctMC40NjENCgkJYy0xLjM0MywwLTIuNjE4LDAuMjU5LTMuODIxLDAuNzc3Yy0xLjIwNCwwLjUxOC0yLjI1MywxLjIyMS0zLjE1LDIuMTA5Yy0wLjg5NCwwLjg4OS0xLjYwNiwxLjkyOS0yLjEzLDMuMTE4DQoJCWMtMC41MjUsMS4xOS0wLjc4OCwyLjQ2NC0wLjc4OCwzLjgyMWMwLDEuMzg1LDAuMjcyLDIuNjc2LDAuODIsMy44NzNjMC41NDUsMS4xOTYsMS4yOCwyLjIzOSwyLjIwMywzLjEyOQ0KCQljMC45MjMsMC44ODksMS45OTgsMS41ODQsMy4yMjIsMi4wODhjMS4yMjQsMC41MDUsMi41MDksMC43NTcsMy44NTIsMC43NTdjMC42NTktMC4wMTQsMS4zMjQtMC4wNywxLjk5NC0wLjE2OA0KCQljMC41NzUtMC4wODQsMS4xOS0wLjIxNywxLjg0Ny0wLjM5OWMwLjY1OC0wLjE4MSwxLjI2LTAuNDQsMS44MDYtMC43NzZ2LTQuMjRjLTAuNTg4LTAuMDE0LTEuMTY1LTAuMDI1LTEuNzMyLTAuMDMxDQoJCWMtMC41NjYtMC4wMDctMS4wNzEtMC4xMTYtMS41MTEtMC4zMjZjLTAuNDQyLTAuMjEtMC43OTUtMC41NjMtMS4wNjEtMS4wNmMtMC4yNjUtMC40OTctMC4zOTgtMS4yMzUtMC4zOTgtMi4yMTR2LTEuNjhIMjYyLjc5NnoiDQoJCS8+DQoJPHJlY3QgeD0iMjcxLjY4MiIgeT0iMC4zMTQiIGNsYXNzPSJzdDEiIHdpZHRoPSI1LjUyMiIgaGVpZ2h0PSIzMC4wODQiLz4NCgk8cGF0aCBjbGFzcz0ic3QxIiBkPSJNMjkxLjc5MSw3Ljg5MnYyMi41MDZoLTUuNVYwLjMxNWg0Ljg0OWMwLjY3MiwwLDEuMjYzLDAuMDk4LDEuNzc0LDAuMjk0YzAuNTExLDAuMTk2LDAuOTE0LDAuNDk3LDEuMjA4LDAuOTAzDQoJCWMyLjEsMi45ODIsMTMuMzcyLDE4LjkxOCwxMy4zNzIsMTguOTE4VjAuMzE1aDUuNXYzMC4wODRoLTUuMTAxTDI5MS43OTEsNy44OTJ6Ii8+DQoJPHJlY3QgeD0iMzIyLjA4IiB5PSIwLjMxNCIgY2xhc3M9InN0MSIgd2lkdGg9IjUuNTIiIGhlaWdodD0iMzAuMDg0Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTM1MC4zMzgsMC4zMTRoLTQuOTc2TDMzMi4yMiwzMC4zOThoMy40MjJjMC4zNzgsMCwwLjc1Mi0wLjA1NiwxLjEyMy0wLjE2OA0KCQljMC4zNzEtMC4xMTEsMC43MTgtMC4yNjgsMS4wNDEtMC40NzJjMC4zMjItMC4yMDMsMC42MDgtMC40NDUsMC44NTktMC43MjVjMC4yNTMtMC4yOCwwLjQ0OC0wLjU4OSwwLjU4Ny0wLjkyM2wxLjc2NC00LjA3M2gwLjAwNA0KCQlsMy4xOC03LjMyNGgwLjAyOGwzLjYyMS04LjQwNGw0LjM5OSwxMC4yMDZoLTIuNDk4Yy0xLjg3LDAtMy41NjEsMS4xMS00LjMwNiwyLjgyNWwtMS4xNzEsMi42OTdoMTAuNDFsMS43ODUsNC4wNzMNCgkJYzAuMzIyLDAuNzEzLDAuODA0LDEuMjczLDEuNDQ3LDEuNjc5YzAuNjQ0LDAuNDA2LDEuMzU4LDAuNjA5LDIuMTQyLDAuNjA5aDMuNDIxTDM1MC4zMzgsMC4zMTR6Ii8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTIxNS41NTIsMzAuMzk4aC01LjVWMC4zMTVoMTEuMjk0YzEuNDU1LDAsMi43NzMsMC4yNzIsMy45NTcsMC44MTljMS4xODIsMC41NDUsMi4xOTMsMS4yNywzLjAzMywyLjE3Mg0KCQljMC44NCwwLjkwMywxLjQ4OSwxLjkyOSwxLjk1MSwzLjA3NmMwLjQ2MiwxLjE0OCwwLjY5MywyLjMyOSwwLjY5MywzLjU0OGMwLDAuODgxLTAuMTE4LDEuNzQzLTAuMzU1LDIuNTgyDQoJCWMtMC4yNCwwLjg0LTAuNTg5LDEuNjMxLTEuMDUxLDIuMzcyYy0wLjQ2MSwwLjc0My0xLjAyOSwxLjQyNS0xLjcsMi4wNDdjLTAuNjczLDAuNjIzLTEuNDQyLDEuMTUxLTIuMzA5LDEuNTg1DQoJCWMxLjQ2OSwyLjAwMiwyLjkzMSwzLjk4NSw0LjM4Nyw1Ljk1MmMxLjQ1NCwxLjk2NiwyLjkyMywzLjk0Myw0LjQwNyw1LjkzMWgtNC4zMDNjLTAuMjkzLDAtMC42MzYtMC4wNjMtMS4wMjgtMC4xODkNCgkJYy0wLjM5My0wLjEyNS0wLjgwMy0wLjMyNi0xLjIyOC0wLjU5OWMtMC40MjgtMC4yNzItMC44NjgtMC42MjYtMS4zMjMtMS4wNTljLTAuNDU0LTAuNDM0LTAuOS0wLjk2Ny0xLjMzNC0xLjU5NmwtNS40NzgtNy4zODkNCgkJaC00LjExNVYzMC4zOTh6IE0yMjEuNTE0LDE0LjA0NGMwLjUzMSwwLDEuMDM5LTAuMTEyLDEuNTIxLTAuMzM1YzAuNDg1LTAuMjI0LDAuOTA0LTAuNTI2LDEuMjYxLTAuOTAzDQoJCWMwLjM1Ny0wLjM3OCwwLjYzOS0wLjgxNiwwLjg0OS0xLjMxM2MwLjIxMS0wLjQ5NywwLjMxNi0xLjAxMSwwLjMxNi0xLjU0M2MwLTAuNTQ3LTAuMTA1LTEuMDY4LTAuMzE2LTEuNTY1DQoJCWMtMC4yMS0wLjQ5Ny0wLjQ5Mi0wLjkzNC0wLjg0OS0xLjMxMWMtMC4zNTgtMC4zNzgtMC43NzYtMC42NzktMS4yNjEtMC45MDNjLTAuNDgyLTAuMjI0LTAuOTktMC4zMzYtMS41MjEtMC4zMzZoLTUuOTYydjguMjA4DQoJCUgyMjEuNTE0eiIvPg0KCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMTYzLjU5Nyw0My4yMTYgMTYzLjU5NywzNy45MDQgMTg2LjgxNywzNy45MDQgMTg2LjgxNyw0My4yMTYgMTc3Ljk3OCw0My4yMTYgMTc3Ljk3OCw2OC4wMDggDQoJCTE3Mi40NTcsNjguMDA4IDE3Mi40NTcsNDMuMjE2IAkiLz4NCgk8cG9seWdvbiBjbGFzcz0ic3QxIiBwb2ludHM9IjIxMC43NSw2OC4wMDggMTkxLjQzNyw2OC4wMDggMTkxLjQzNywzNy45MjUgMjEwLjc1LDM3LjkyNSAyMTAuNzUsNDMuMTk0IDE5Ni45MzYsNDMuMTk0IA0KCQkxOTYuOTM2LDUwLjIwNiAyMDguMTQ3LDUwLjIwNiAyMDguMTQ3LDU1LjQ3NSAxOTYuOTM2LDU1LjQ3NSAxOTYuOTM2LDYyLjc0IDIxMC43NSw2Mi43NCAJIi8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTIxOS44ODYsNTIuOTU2YzAsMS4zNTcsMC4yNjMsMi42MzUsMC43ODcsMy44MzFjMC41MjYsMS4xOTcsMS4yMzgsMi4yNCwyLjE0MiwzLjEyOQ0KCQljMC45MDMsMC44ODksMS45NTMsMS41OTIsMy4xNDksMi4xMDljMS4xOTYsMC41MTgsMi40NzQsMC43NzgsMy44MzEsMC43NzhjMS4wNDksMCwyLjAzOS0wLjE1OCwyLjk3LTAuNDczDQoJCWMwLjkzLTAuMzE0LDEuNzk2LTAuNzQ1LDIuNTk0LTEuMjkxYzAuMzA3LTAuMTk1LDAuNjM5LTAuMzQ5LDAuOTk3LTAuNDYxYzAuMzU3LTAuMTEyLDAuNzMtMC4xNjgsMS4xMjMtMC4xNjgNCgkJYzAuNjI5LDAsMS4xNjUsMC4xMDIsMS42MDYsMC4zMDVjMC40NCwwLjIwMywwLjg1LDAuNDg2LDEuMjI4LDAuODVsMS4yOCwxLjI4MWMtMC43ODMsMC44NC0xLjYzMSwxLjU5NS0yLjU0LDIuMjY3DQoJCWMtMC45MTEsMC42NzItMS44NjUsMS4yNDctMi44NjYsMS43MjJjLTEuMDAxLDAuNDc1LTIuMDM2LDAuODQtMy4xMDcsMS4wOTFjLTEuMDcsMC4yNTItMi4xNjQsMC4zNzgtMy4yODQsMC4zNzgNCgkJYy0yLjEyNywwLTQuMTI2LTAuNDAyLTUuOTkzLTEuMjA3Yy0xLjg2OS0wLjgwNS0zLjUwMy0xLjktNC45MDMtMy4yODZjLTEuMzk5LTEuMzg1LTIuNTAyLTMuMDA5LTMuMzA2LTQuODcNCgkJYy0wLjgwNS0xLjg2Mi0xLjIwOC0zLjg1Ni0xLjIwOC01Ljk4NGMwLTEuNDEzLDAuMTgyLTIuNzc1LDAuNTQ3LTQuMDgzYzAuMzY0LTEuMzA5LDAuODgyLTIuNTMsMS41NTMtMy42NjMNCgkJYzAuNjcyLTEuMTM0LDEuNDc2LTIuMTY5LDIuNDE0LTMuMTA2YzAuOTM5LTAuOTM5LDEuOTc4LTEuNzM5LDMuMTE4LTIuNDA1YzEuMTQxLTAuNjY1LDIuMzY4LTEuMTc5LDMuNjg0LTEuNTQzDQoJCWMxLjMxNi0wLjM2NCwyLjY4LTAuNTQ2LDQuMDk0LTAuNTQ2YzEuMTIsMCwyLjIxNCwwLjEyNywzLjI4NCwwLjM3OGMxLjA3MSwwLjI1MiwyLjEwNywwLjYxNywzLjEwNywxLjA5Mg0KCQljMS4wMDEsMC40NzYsMS45NTUsMS4wNSwyLjg2NiwxLjcyMmMwLjkwOSwwLjY3MSwxLjc1NywxLjQyNywyLjU0LDIuMjY3bC0xLjI4LDEuMjgxYy0wLjM2NSwwLjM2NC0wLjc4MSwwLjY1NC0xLjI1LDAuODcyDQoJCWMtMC40NjksMC4yMTctMC45OTcsMC4zMjUtMS41ODUsMC4zMjVjLTAuNzcxLDAtMS40NzYtMC4yMjQtMi4xMi0wLjY3MmMtMC44MTMtMC41NDYtMS42ODQtMC45NzMtMi42MTQtMS4yODENCgkJYy0wLjkzLTAuMzA4LTEuOTE1LTAuNDYyLTIuOTUtMC40NjJjLTEuMzU4LDAtMi42MzUsMC4yNTktMy44MzEsMC43NzdjLTEuMTk2LDAuNTE3LTIuMjQ2LDEuMjItMy4xNDksMi4xMDkNCgkJYy0wLjkwNCwwLjg4OC0xLjYxNiwxLjkyOS0yLjE0MiwzLjExOEMyMjAuMTQ5LDUwLjMyNSwyMTkuODg2LDUxLjU5OSwyMTkuODg2LDUyLjk1NiIvPg0KCTxwb2x5Z29uIGNsYXNzPSJzdDEiIHBvaW50cz0iMjczLjQ1Miw2OC4wMDggMjY3LjkzMiw2OC4wMDggMjY3LjkzMiw1NS41MzggMjUzLjE1MSw1NS41MzggMjUzLjE1MSw2OC4wMDggMjQ3LjY1LDY4LjAwOCANCgkJMjQ3LjY1LDM3LjkyNSAyNTMuMTUxLDM3LjkyNSAyNTMuMTUxLDUwLjI2OSAyNjcuOTMyLDUwLjI2OSAyNjcuOTMyLDM3LjkyNSAyNzMuNDUyLDM3LjkyNSAJIi8+DQoJPHBhdGggY2xhc3M9InN0MSIgZD0iTTI3OS41MjYsNjIuNzc5Yy0xLjQ0NywwLTIuNjI0LDEuMTc4LTIuNjI0LDIuNjI1YzAsMS40NDgsMS4xNzcsMi42MjYsMi42MjQsMi42MjYNCgkJYzEuNDQ4LDAsMi42MjYtMS4xNzgsMi42MjYtMi42MjZDMjgyLjE1MSw2My45NTYsMjgwLjk3NCw2Mi43NzksMjc5LjUyNiw2Mi43NzkgTTI4MC4xOTYsNjQuNzQyYzAsMC4zNTMtMC4yNTMsMC40MTctMC43NTIsMC40MTcNCgkJaC0wLjM4M3YtMC44MTVoMC41NjdDMjc5Ljg0MSw2NC4zNDUsMjgwLjE5Niw2NC4zOTcsMjgwLjE5Niw2NC43NDIgTTI4MC4wNTksNjUuNjMxYzAuNDM5LTAuMTE4LDAuNjc5LTAuNDMxLDAuNjc5LTAuODg5DQoJCWMwLTAuNjA1LTAuMzMtMC44OTktMS4wMDgtMC44OTloLTEuMjEzdjMuMTAyaDAuNTQzdi0xLjI4M2gwLjM5MmwwLjg0NywxLjI0NGwwLjAyNiwwLjAzOWgwLjYwMQ0KCQljLTAuMzcxLDAuMzM2LTAuODYxLDAuNTQxLTEuNDAxLDAuNTQxYy0xLjE0OCwwLTIuMDgyLTAuOTM1LTIuMDgyLTIuMDgzYzAtMS4xNDgsMC45MzQtMi4wODIsMi4wODItMi4wODJzMi4wODMsMC45MzQsMi4wODMsMi4wODINCgkJYzAsMC42MDItMC4yNTcsMS4xNDUtMC42NjYsMS41MjZMMjgwLjA1OSw2NS42MzF6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==",
+                "mimeType": "image/svg+xml",
+                "fileName": "2C_Horizontal.svg",
+                "alt": "Virginia Tech",
+                "caption": "",
+                "html": "",
+                "iframeHeight": 260,
+                "horizontalAlignment": "center",
+                "verticalAlignment": "center",
+                "horizontalSize": "auto",
+                "scale": 100,
+                "maxWidth": "240px",
+                "maxHeight": 80,
+                "padding": 0,
+                "objectFit": "contain",
+                "showLabel": false,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_prepared_by",
+      "containers": [
+        {
+          "id": "container_field_prepared_by_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_prepared_by",
+              "type": "short_answer",
+              "label": "Prepared by:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_project_details_heading",
+      "containers": [
+        {
+          "id": "container_field_project_details_heading_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_project_details_heading",
+              "type": "headline",
+              "label": "Project details",
+              "description": "",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "top",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_project_name",
+      "containers": [
+        {
+          "id": "container_field_project_name_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_project_name",
+              "type": "short_answer",
+              "label": "Project Name",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_marketing_rep",
+      "containers": [
+        {
+          "id": "container_field_marketing_rep_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_marketing_rep",
+              "type": "short_answer",
+              "label": "Marketing Rep",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_assignment",
+      "containers": [
+        {
+          "id": "container_field_assignment_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_assignment",
+              "type": "long_answer",
+              "label": "The Assignment",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_objectives_kpis",
+      "containers": [
+        {
+          "id": "container_field_objectives_kpis_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_objectives_kpis",
+              "type": "long_answer",
+              "label": "Objectives / KPIs",
+              "description": "",
+              "required": false,
+              "placeholder": "Show appreciation to donors. Drive appreciation among students",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_target_audience",
+      "containers": [
+        {
+          "id": "container_field_target_audience_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_target_audience",
+              "type": "long_answer",
+              "label": "Target Audience",
+              "description": "",
+              "required": false,
+              "placeholder": "All of our communications and messages should support our institutional value proposition: We reimagine the roles of education and technology in every aspect of life to serve as a force for positive change in a world without boundaries.",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_tone_verbal",
+      "containers": [
+        {
+          "id": "container_field_tone_verbal_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_tone_verbal",
+              "type": "checkbox",
+              "label": "Tone - Verbal (Check all that apply)",
+              "description": "Choose specific personality traits of our brand to highlight will help you communicate with a consistent voice.",
+              "required": false,
+              "options": [
+                "Inclusive",
+                "Tenacious",
+                "Courageous",
+                "Earnest",
+                "Adaptable",
+                "Proud"
+              ],
+              "settings": {
+                "allowCustomOptions": false,
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_tone_visual",
+      "containers": [
+        {
+          "id": "container_field_tone_visual_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_tone_visual",
+              "type": "radar",
+              "label": "Tone - Visual (Mark appropriate quadrant)",
+              "description": "Choose the balance for your audience and communication.",
+              "required": false,
+              "settings": {
+                "mode": "point",
+                "max": 5,
+                "axes": [
+                  "Formal",
+                  "Reserved",
+                  "Vibrant",
+                  "Casual"
+                ],
+                "defaultValues": [
+                  3,
+                  3,
+                  3,
+                  3
+                ],
+                "defaultPoint": {
+                  "angle": 0,
+                  "value": 3
+                },
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_key_message",
+      "containers": [
+        {
+          "id": "container_field_key_message_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_key_message",
+              "type": "long_answer",
+              "label": "Key Message",
+              "description": "Should include specifics on how we reimagine the roles of education and/technology.",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_call_to_action",
+      "containers": [
+        {
+          "id": "container_field_call_to_action_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_call_to_action",
+              "type": "long_answer",
+              "label": "Call To Action",
+              "description": "A call to action should be a short, imperative statement that requests a specific action from our target audience.",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_deliverable_details_heading",
+      "containers": [
+        {
+          "id": "container_field_deliverable_details_heading_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_deliverable_details_heading",
+              "type": "headline",
+              "label": "Deliverable Details",
+              "description": "What are the specific marketing deliverables that are needed? Please include all specifications and content needs for each item, deadlines, and any mandatory considerations.",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "top",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_deliverable",
+      "containers": [
+        {
+          "id": "container_field_deliverable_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_deliverable",
+              "type": "checkbox",
+              "label": "Deliverable",
+              "description": "",
+              "required": false,
+              "options": [
+                "Print",
+                "Email",
+                "Social media",
+                "Website",
+                "Video",
+                "Event materials"
+              ],
+              "settings": {
+                "allowCustomOptions": true,
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_specs",
+      "containers": [
+        {
+          "id": "container_field_specs_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_specs",
+              "type": "long_answer",
+              "label": "Specs",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_mandatories_considerations",
+      "containers": [
+        {
+          "id": "container_field_mandatories_considerations_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_mandatories_considerations",
+              "type": "long_answer",
+              "label": "Mandatories & Considerations",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_copywriting_needs",
+      "containers": [
+        {
+          "id": "container_field_copywriting_needs_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_copywriting_needs",
+              "type": "long_answer",
+              "label": "Copywriting Needs:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_production_schedule",
+      "containers": [
+        {
+          "id": "container_field_production_schedule_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_production_schedule",
+              "type": "calendar",
+              "label": "Production Schedule:",
+              "description": "",
+              "required": false,
+              "settings": {
+                "startDate": "",
+                "endDate": "",
+                "allowMilestones": true,
+                "milestones": [
+                  {
+                    "id": "milestone_due_date",
+                    "date": "",
+                    "label": "Due Date"
+                  },
+                  {
+                    "id": "milestone_in_market_date",
+                    "date": "",
+                    "label": "In-Market Date"
+                  },
+                  {
+                    "id": "milestone_deadline",
+                    "date": "",
+                    "label": "Deadline"
+                  }
+                ],
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_budget_heading",
+      "containers": [
+        {
+          "id": "container_field_budget_heading_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_budget_heading",
+              "type": "headline",
+              "label": "Budget",
+              "description": "",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "top",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_budget_source",
+      "containers": [
+        {
+          "id": "container_field_budget_source_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_budget_source",
+              "type": "checkbox",
+              "label": "Budget",
+              "description": "",
+              "required": false,
+              "options": [
+                "State funds",
+                "VTF funds"
+              ],
+              "settings": {
+                "allowCustomOptions": true,
+                "showLabel": false,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_total_budget",
+      "containers": [
+        {
+          "id": "container_field_total_budget_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_total_budget",
+              "type": "number",
+              "label": "Total budget:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_account_code",
+      "containers": [
+        {
+          "id": "container_field_account_code_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_account_code",
+              "type": "short_answer",
+              "label": "Account Code/Activity Code if applicable:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_budget_approval",
+      "containers": [
+        {
+          "id": "container_field_budget_approval_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_budget_approval",
+              "type": "short_answer",
+              "label": "Budget/account approval:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_stakeholders_heading",
+      "containers": [
+        {
+          "id": "container_field_stakeholders_heading_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_stakeholders_heading",
+              "type": "headline",
+              "label": "Project Stakeholders / Approvers",
+              "description": "",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "top",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_stakeholders",
+      "containers": [
+        {
+          "id": "container_field_stakeholders_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_stakeholders",
+              "type": "long_answer",
+              "label": "Stakeholders:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_partner_colleagues",
+      "containers": [
+        {
+          "id": "container_field_partner_colleagues_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_partner_colleagues",
+              "type": "long_answer",
+              "label": "Partner Colleagues:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_field_history_background",
+      "containers": [
+        {
+          "id": "container_field_history_background_main",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_history_background",
+              "type": "long_answer",
+              "label": "History/Background:",
+              "description": "",
+              "required": false,
+              "placeholder": "",
+              "settings": {
+                "showLabel": true,
+                "outline": true,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
