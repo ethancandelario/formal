@@ -1103,9 +1103,9 @@
     .drop-indicator::before {
       content: "";
       width: 100%;
-      height: 1px;
+      height: 2px;
       border-radius: 999px;
-      background: rgba(134, 31, 65, 0.42);
+      background: rgba(134, 31, 65, 0.52);
     }
 
     .field-card {
@@ -3196,11 +3196,12 @@
     const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
     const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "horizontalSize", "scale", "maxWidth", "maxHeight", "padding", "objectFit"];
     const PLACEMENT_HIT_BANDS = { side: 0.42, edge: 0.24 };
+    const CONTAINER_SIBLING_DROP_BAND = 0.20;
     const CONTAINER_PLACEMENT_SLOTS = [
-      { key: "main", middle: true, displace: ["right", "left"], zoneStyle: "grid-column: 2; grid-row: 2;", previewStyle: "inset: 32% 28%;" },
+      { key: "main", middle: true, zoneStyle: "grid-column: 2; grid-row: 2;", previewStyle: "inset: 32% 28%;" },
       { key: "top", zoneStyle: "grid-column: 2; grid-row: 1;", previewStyle: "inset: 0 0 auto; height: min(42%, 110px);", hit: ({ y }) => y < PLACEMENT_HIT_BANDS.edge },
-      { key: "left", middle: true, displace: ["main", "right"], zoneStyle: "grid-column: 1; grid-row: 1 / -1;", previewStyle: "inset: 0 auto 0 0; width: min(42%, 220px);", hit: ({ x }) => x < PLACEMENT_HIT_BANDS.side },
-      { key: "right", middle: true, displace: ["main", "left"], zoneStyle: "grid-column: 3; grid-row: 1 / -1;", previewStyle: "inset: 0 0 0 auto; width: min(42%, 220px);", hit: ({ x }) => x > 1 - PLACEMENT_HIT_BANDS.side },
+      { key: "left", middle: true, zoneStyle: "grid-column: 1; grid-row: 1 / -1;", previewStyle: "inset: 0 auto 0 0; width: min(42%, 220px);", hit: ({ x }) => x < PLACEMENT_HIT_BANDS.side },
+      { key: "right", middle: true, zoneStyle: "grid-column: 3; grid-row: 1 / -1;", previewStyle: "inset: 0 0 0 auto; width: min(42%, 220px);", hit: ({ x }) => x > 1 - PLACEMENT_HIT_BANDS.side },
       { key: "bottom", zoneStyle: "grid-column: 2; grid-row: 3;", previewStyle: "inset: auto 0 0; height: min(42%, 110px);", hit: ({ y }) => y > 1 - PLACEMENT_HIT_BANDS.edge }
     ];
     const CONTAINER_PLACEMENTS = CONTAINER_PLACEMENT_SLOTS.map((slot) => slot.key);
@@ -3302,19 +3303,22 @@
       static regions(block) {
         const regions = Object.fromEntries(CONTAINER_PLACEMENTS.map((placement) => [placement, []]));
         blockContainers(block).forEach((container) => {
-          regions[ContainerPlacementModel.has(container.placement) ? container.placement : "main"].push(container);
+          regions[ContainerPlacementModel.clean(container.placement)].push(container);
         });
-        const middlePlacements = MIDDLE_CONTAINER_PLACEMENTS.filter((placement) => regions[placement].length);
+        const middle = blockContainers(block).filter((container) => ContainerPlacementModel.isMiddle(container.placement));
         return {
           ...regions,
-          middlePlacements,
-          middleStyle: ContainerPlacementModel.middleStyle(middlePlacements)
+          middle,
+          middleStyle: ContainerPlacementModel.middleStyle(middle.length)
         };
       }
 
-      static middleStyle(placements) {
-        const active = placements.length ? placements : ["main"];
-        return `grid-template-columns: repeat(${active.length}, minmax(0, 1fr)); grid-template-areas: "${active.join(" ")}";`;
+      static clean(placement) {
+        return ContainerPlacementModel.has(placement) ? placement : "main";
+      }
+
+      static middleStyle(count) {
+        return `grid-template-columns: repeat(${Math.max(1, count)}, minmax(0, 1fr));`;
       }
 
       static zoneStyle(placement) {
@@ -3329,57 +3333,61 @@
         return CONTAINER_PLACEMENT_HIT_ORDER.find((placement) => ContainerPlacementModel.slot(placement).hit?.(point)) || "main";
       }
 
-      static displacementOrder(targetPlacement) {
-        return ContainerPlacementModel.slot(targetPlacement).displace || [];
+      static firstIndex(containers, predicate) {
+        return containers.findIndex(predicate);
       }
 
-      static openDisplacement(containers, targetPlacement) {
-        const occupiedPlacements = new Set(containers.map((container) => container.placement));
-        return ContainerPlacementModel.displacementOrder(targetPlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
+      static lastIndex(containers, predicate) {
+        for (let index = containers.length - 1; index >= 0; index -= 1) {
+          if (predicate(containers[index])) return index;
+        }
+        return -1;
+      }
+
+      static middleInsertIndex(containers, targetPlacement) {
+        const firstBottom = ContainerPlacementModel.firstIndex(containers, (container) => container.placement === "bottom");
+        const endOfMiddle = firstBottom >= 0 ? firstBottom : containers.length;
+        const firstMiddle = ContainerPlacementModel.firstIndex(containers, (container) => ContainerPlacementModel.isMiddle(container.placement));
+        const lastMiddle = ContainerPlacementModel.lastIndex(containers, (container) => ContainerPlacementModel.isMiddle(container.placement));
+
+        if (targetPlacement === "left") return firstMiddle >= 0 ? firstMiddle : endOfMiddle;
+        if (targetPlacement === "right") return lastMiddle >= 0 ? lastMiddle + 1 : endOfMiddle;
+
+        const firstRight = ContainerPlacementModel.firstIndex(containers, (container) => container.placement === "right");
+        if (firstRight >= 0) return firstRight;
+        return lastMiddle >= 0 ? lastMiddle + 1 : endOfMiddle;
+      }
+
+      static insertIndex(containers, targetPlacement) {
+        const placement = ContainerPlacementModel.clean(targetPlacement);
+        if (ContainerPlacementModel.isMiddle(placement)) return ContainerPlacementModel.middleInsertIndex(containers, placement);
+        if (placement === "top") {
+          const lastTop = ContainerPlacementModel.lastIndex(containers, (container) => container.placement === "top");
+          return lastTop >= 0 ? lastTop + 1 : 0;
+        }
+        const lastBottom = ContainerPlacementModel.lastIndex(containers, (container) => container.placement === "bottom");
+        return lastBottom >= 0 ? lastBottom + 1 : containers.length;
       }
 
       static placementForCopy(containers, sourcePlacement) {
-        return ContainerPlacementModel.isMiddle(sourcePlacement) ? ContainerPlacementModel.openDisplacement(containers, sourcePlacement) : sourcePlacement;
+        return ContainerPlacementModel.clean(sourcePlacement);
       }
 
       static move(containers, containerId, targetPlacement) {
-        if (!ContainerPlacementModel.has(targetPlacement)) return containers;
+        const placement = ContainerPlacementModel.clean(targetPlacement);
         const moved = containers.find((container) => container.id === containerId);
-        if (!moved || moved.placement === targetPlacement) return containers;
-        if (!ContainerPlacementModel.isMiddle(targetPlacement)) {
-          return containers.map((container) => container.id === containerId ? { ...container, placement: targetPlacement } : container);
-        }
-
-        const sourcePlacement = moved.placement;
-        const targetOccupantIds = new Set(containers
-          .filter((container) => container.id !== containerId && container.placement === targetPlacement)
-          .map((container) => container.id));
-
-        return containers.map((container) => {
-          if (container.id === containerId) return { ...container, placement: targetPlacement };
-          if (targetOccupantIds.has(container.id)) return { ...container, placement: sourcePlacement };
-          return container;
-        });
+        if (!moved) return containers;
+        const rest = containers.filter((container) => container.id !== containerId);
+        return insertAt(rest, ContainerPlacementModel.insertIndex(rest, placement), { ...moved, placement });
       }
 
       static insert(containers, container, targetPlacement) {
-        if (!ContainerPlacementModel.has(targetPlacement)) return containers;
-        const nextContainer = { ...container, placement: targetPlacement };
-        if (!ContainerPlacementModel.isMiddle(targetPlacement)) return [...containers, nextContainer];
-
-        const displacedPlacement = ContainerPlacementModel.openDisplacement(containers, targetPlacement);
-        const displacedIds = new Set(containers
-          .filter((item) => item.placement === targetPlacement)
-          .map((item) => item.id));
-        return [
-          ...containers.map((item) => displacedIds.has(item.id) ? { ...item, placement: displacedPlacement } : item),
-          nextContainer
-        ];
+        const placement = ContainerPlacementModel.clean(targetPlacement);
+        return insertAt(containers, ContainerPlacementModel.insertIndex(containers, placement), { ...container, placement });
       }
     }
 
     const blockContainerRegions = (block) => ContainerPlacementModel.regions(block);
-    const isMiddlePlacement = (placement) => ContainerPlacementModel.isMiddle(placement);
 
     function schemaElements(schema) {
       return (schema.blocks || []).flatMap(blockElements);
@@ -4144,15 +4152,6 @@
       return container;
     }
 
-    function assertUniqueMiddlePlacements(containers, path) {
-      const seen = new Map();
-      containers.forEach((container, index) => {
-        if (!isMiddlePlacement(container.placement)) return;
-        if (seen.has(container.placement)) throw new Error(`${path}.containers[${index}].placement duplicates middle slot "${container.placement}".`);
-        seen.set(container.placement, index);
-      });
-    }
-
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
       assertExactKeys(block, ["id", "containers"], path);
@@ -4160,7 +4159,6 @@
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
-      assertUniqueMiddlePlacements(block.containers, path);
       return block;
     }
 
@@ -5247,7 +5245,7 @@
 
     function ContainerPreview({ block, container, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, onSelectElement, onSelectContainer, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd, onContainerDragStart, onContainerDragEnd, onContainerDragOver, onContainerDragLeave, onContainerDrop }) {
       const elements = containerElements(container);
-      const selectedElementInContainer = elements.some((element) => element.id === selectedId);
+      const selectedElementInContainer = container.id === selectedContainerId && elements.some((element) => element.id === selectedId);
       const selected = container.id === selectedContainerId && !selectedElementInContainer;
       const hasSelectedElement = container.id === selectedContainerId && selectedElementInContainer;
       const dropTarget = container.id === containerDropId;
@@ -5313,7 +5311,7 @@
                 block=${block}
                 container=${container}
                 element=${element}
-                selected=${element.id === selectedId}
+                selected=${container.id === selectedContainerId && element.id === selectedId}
                 dragging=${element.id === draggingElementId}
                 onSelectElement=${onSelectElement}
                 onDuplicateElement=${onDuplicateElement}
@@ -5343,16 +5341,13 @@
     }
 
     function MiddleContainerPreviewRow({ layout, ...stackProps }) {
-      if (!layout.middlePlacements.length) return null;
+      if (!layout.middle.length) return null;
       return html`
         <div class="block-preview-middle" style=${layout.middleStyle}>
-          ${layout.middlePlacements.map((placement) => html`
-            <${ContainerPreviewStack}
-              key=${placement}
-              containers=${layout[placement]}
-              placement=${placement}
-              className=${`block-preview-stack block-preview-${placement} block-preview-slot`}
-              style=${`grid-area: ${placement};`}
+          ${layout.middle.map((container) => html`
+            <${ContainerPreview}
+              key=${container.id}
+              container=${container}
               ...${stackProps}
             />
           `)}
@@ -5397,7 +5392,7 @@
             removing=${block.id === removingId}
             dragging=${block.id === draggingBlockId}
             blockDropPlacement=${block.id === blockDropId ? blockDropPlacement : null}
-            blockDropActive=${blockDropActive}
+            blockDropActive=${block.id === blockDropId && blockDropActive}
             onCardRef=${onCardRef}
             onSelect=${onSelect}
             onSelectContainer=${onSelectContainer}
@@ -6554,6 +6549,27 @@
         return dragPayloadRef.current || DragPayloadModel.parse(event.dataTransfer?.getData("text/plain"));
       }
 
+      const emptyDropTarget = {
+        index: null,
+        y: null,
+        blockId: null,
+        blockPlacement: null,
+        containerDropId: null,
+        containerDropIndex: null,
+        containerDropY: null,
+        containerDropHeight: null
+      };
+      const dropTargetKeys = Object.keys(emptyDropTarget);
+
+      function dragStateWithTarget(payload, target = {}) {
+        return { ...payload, ...emptyDropTarget, ...target };
+      }
+
+      function dragStateMatchesTarget(state, payload, target = {}) {
+        const next = dragStateWithTarget(payload, target);
+        return Boolean(state && DragPayloadModel.same(state, payload) && dropTargetKeys.every((key) => state[key] === next[key]));
+      }
+
       function beginDrag(event, payload) {
         const dragState = payload && dragStateFor(payload);
         if (!dragState) return;
@@ -6605,12 +6621,12 @@
         event.preventDefault();
         event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
         const target = insertionTargetFromPointer(event.clientY);
-        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.index === target.index && state.y === target.y ? state : { ...payload, ...target });
+        setDragState((state) => dragStateMatchesTarget(state, payload, target) ? state : dragStateWithTarget(payload, target));
       }
 
       function clearDropTarget(event) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
-        setDragState((state) => state ? { ...state, index: null } : state);
+        setDragState((state) => state ? dragStateWithTarget(state) : state);
       }
 
       function blockPointerPlacement(event, blockId) {
@@ -6650,6 +6666,17 @@
         return { index: rects.length, y: lastRect.bottom - listRect.top + gap, height: lastRect.height };
       }
 
+      function containerSiblingPlacementFromPointer(event, containerId) {
+        const container = containerById(currentSchema(), containerId);
+        if (!container || !ContainerPlacementModel.isMiddle(container.placement)) return null;
+        const rect = event.currentTarget.getBoundingClientRect();
+        if (!rect.width) return null;
+        const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        if (x <= CONTAINER_SIBLING_DROP_BAND) return "left";
+        if (x >= 1 - CONTAINER_SIBLING_DROP_BAND) return "right";
+        return null;
+      }
+
       function updateBlockDropTarget(event, blockId) {
         const payload = payloadFromEvent(event);
         if (!DragPayloadModel.canDropOnBlock(payload, currentSchema().blocks, blockId)) return;
@@ -6657,17 +6684,20 @@
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
-        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.blockId === blockId && state.blockPlacement === blockPlacement ? state : { ...payload, index: null, y: null, blockId, blockPlacement });
+        const target = { blockId, blockPlacement };
+        setDragState((state) => dragStateMatchesTarget(state, payload, target) ? state : dragStateWithTarget(payload, target));
       }
 
       function updateContainerDropTarget(event, blockId, containerId) {
         const payload = payloadFromEvent(event);
         if (!DragPayloadModel.canDropOnContainer(payload, currentSchema().blocks, blockId, containerId)) return;
+        if (containerSiblingPlacementFromPointer(event, containerId) && DragPayloadModel.canDropOnBlock(payload, currentSchema().blocks, blockId)) return;
         const target = containerInsertionTargetFromPointer(event.currentTarget, event.clientY);
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
-        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.containerDropId === containerId && state.containerDropIndex === target.index && state.containerDropY === target.y && state.containerDropHeight === target.height ? state : { ...payload, index: null, y: null, blockId: null, blockPlacement: null, containerDropId: containerId, containerDropIndex: target.index, containerDropY: target.y, containerDropHeight: target.height });
+        const dragTarget = { containerDropId: containerId, containerDropIndex: target.index, containerDropY: target.y, containerDropHeight: target.height };
+        setDragState((state) => dragStateMatchesTarget(state, payload, dragTarget) ? state : dragStateWithTarget(payload, dragTarget));
       }
 
       function clearBlockDropTarget(event, blockId) {
@@ -6676,12 +6706,12 @@
         const inside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
         if (inside) return;
         if (blockDropRectRef.current?.blockId === blockId) blockDropRectRef.current = null;
-        setDragState((state) => state?.blockId === blockId ? { ...state, blockId: null, blockPlacement: null } : state);
+        setDragState((state) => state?.blockId === blockId ? dragStateWithTarget(state) : state);
       }
 
       function clearContainerDropTarget(event, containerId) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
-        setDragState((state) => state?.containerDropId === containerId ? { ...state, containerDropId: null } : state);
+        setDragState((state) => state?.containerDropId === containerId ? dragStateWithTarget(state) : state);
       }
 
       function handleBlockDrop(event, blockId) {
@@ -6702,6 +6732,7 @@
         const payload = payloadFromEvent(event);
         const schema = currentSchema();
         if (!DragPayloadModel.canDropOnContainer(payload, schema.blocks, blockId, containerId)) return;
+        if (containerSiblingPlacementFromPointer(event, containerId) && DragPayloadModel.canDropOnBlock(payload, schema.blocks, blockId)) return;
         event.preventDefault();
         event.stopPropagation();
         const target = dragStateRef.current?.containerDropId === containerId ? dragStateRef.current : containerInsertionTargetFromPointer(event.currentTarget, event.clientY);
@@ -6914,6 +6945,11 @@
 
       useStoredSchema(schema);
       useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
+      useEventListener(window, "dragend", builder.clearDragState, Boolean(dragState));
+      useEventListener(window, "drop", builder.clearDragState, Boolean(dragState));
+      useEventListener(window, "keydown", (event) => {
+        if (event.key === "Escape") builder.clearDragState();
+      }, Boolean(dragState));
       useFieldListAnimation(fieldCardRefs, fieldRectsRef, schema.blocks);
 
       const formName = formDisplayName(schema);

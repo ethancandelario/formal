@@ -571,61 +571,11 @@
     }
 
     .block-middle {
-      /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: "main";
       gap: var(--form-field-spacing);
       min-width: 0;
       align-items: stretch;
-    }
-
-    .block-middle.layout-left-main-right {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-areas: "left main right";
-    }
-
-    .block-middle.layout-left-main {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "left main";
-    }
-
-    .block-middle.layout-main-right {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "main right";
-    }
-
-    .block-middle.layout-left-right {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-areas: "left right";
-    }
-
-    .block-middle.layout-left {
-      grid-template-areas: "left";
-    }
-
-    .block-middle.layout-right {
-      grid-template-areas: "right";
-    }
-
-    .block-left,
-    .block-main,
-    .block-right {
-      width: auto;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .block-left {
-      grid-area: left;
-    }
-
-    .block-main {
-      grid-area: main;
-    }
-
-    .block-right {
-      grid-area: right;
     }
 
     .block-stack,
@@ -1815,12 +1765,6 @@
         flex-direction: column;
       }
 
-      .block-left,
-      .block-main,
-      .block-right {
-        width: 100%;
-      }
-
       .runtime-sidebar {
         position: fixed;
         inset: 0 auto 0 0;
@@ -2456,10 +2400,12 @@
       blockContainers(block).forEach((container) => {
         regions[container.placement].push(container);
       });
-      const middleLayout = MIDDLE_CONTAINER_PLACEMENTS
-        .filter((placement) => regions[placement].length)
-        .join("-") || "main";
-      return { ...regions, middleLayout: `layout-${middleLayout}` };
+      const middle = blockContainers(block).filter((container) => MIDDLE_CONTAINER_PLACEMENTS.includes(container.placement));
+      return {
+        ...regions,
+        middle,
+        middleStyle: `grid-template-columns: repeat(${Math.max(1, middle.length)}, minmax(0, 1fr));`
+      };
     }
 
     function schemaElements(schema) {
@@ -3222,19 +3168,6 @@
       return container;
     }
 
-    function isMiddlePlacement(placement) {
-      return MIDDLE_CONTAINER_PLACEMENTS.includes(placement);
-    }
-
-    function assertUniqueMiddlePlacements(containers, path) {
-      const seen = new Map();
-      containers.forEach((container, index) => {
-        if (!isMiddlePlacement(container.placement)) return;
-        if (seen.has(container.placement)) throw new Error(`${path}.containers[${index}].placement duplicates middle slot "${container.placement}".`);
-        seen.set(container.placement, index);
-      });
-    }
-
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
       assertExactKeys(block, ["id", "containers"], path);
@@ -3242,7 +3175,6 @@
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
-      assertUniqueMiddlePlacements(block.containers, path);
       return block;
     }
 
@@ -4561,12 +4493,18 @@
     }
 
     function RuntimeMiddleContainerRow({ layout, values, invalidIds, onValue }) {
-      if (!layout.left.length && !layout.main.length && !layout.right.length) return null;
+      if (!layout.middle.length) return null;
       return html`
-        <div class=${`block-middle ${layout.middleLayout}`}>
-          <${RuntimeContainerStack} containers=${layout.left} className="block-stack block-left" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-          <${RuntimeContainerStack} containers=${layout.main} className="block-stack block-main" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-          <${RuntimeContainerStack} containers=${layout.right} className="block-stack block-right" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+        <div class="block-middle" style=${layout.middleStyle}>
+          ${layout.middle.map((container) => html`
+            <${RuntimeContainer}
+              key=${container.id}
+              container=${container}
+              values=${values}
+              invalidIds=${invalidIds}
+              onValue=${onValue}
+            />
+          `)}
         </div>
       `;
     }
@@ -4574,7 +4512,7 @@
     function RuntimeBlock({ block, values, invalidIds, onValue }) {
       const layout = blockContainerRegions(block);
       return html`
-        <section class=${`form-block ${layout.middleLayout}`} data-block-id=${block.id}>
+        <section class="form-block" data-block-id=${block.id}>
           <${RuntimeContainerStack} containers=${layout.top} className="block-stack block-top" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
           <${RuntimeMiddleContainerRow} layout=${layout} values=${values} invalidIds=${invalidIds} onValue=${onValue} />
           <${RuntimeContainerStack} containers=${layout.bottom} className="block-stack block-bottom" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
