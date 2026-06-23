@@ -31,15 +31,23 @@ jobs:
         run: |
           set -euo pipefail
 
+          rm -rf _site
           mkdir -p _site
           cp form-builder.html _site/index.html
           cp form-runtime.html _site/form-runtime.html
+
+          demo_manifest="_site/demo-manifest.txt"
+          {
+            echo "# Published demo pages"
+            echo
+          } > "$demo_manifest"
 
           shopt -s nullglob
           for file in demo/*.html; do
             name="$(basename "$file" .html)"
             mkdir -p "_site/$name"
             cp "$file" "_site/$name/index.html"
+            echo "/$name/" >> "$demo_manifest"
           done
 
           touch _site/.nojekyll
@@ -51,6 +59,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+          include-hidden-files: true
 
       - name: Deploy to GitHub Pages
         id: deployment

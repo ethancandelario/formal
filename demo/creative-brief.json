@@ -19,16 +19,16 @@
       "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
     },
     "layout": {
-      "pageMargin": 20,
-      "pagePadding": 16,
-      "fieldSpacing": 10,
-      "fieldPadding": 16
+      "pageMargin": 12,
+      "pagePadding": 10,
+      "fieldSpacing": 7,
+      "fieldPadding": 14
     },
     "typography": {
       "body": {
         "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
         "color": "#1f1f1f",
-        "size": 14,
+        "size": 13,
         "weight": 400,
         "style": "normal",
         "lineHeight": 1.45,
@@ -58,7 +58,7 @@
       "label": {
         "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
         "color": "#1f1f1f",
-        "size": 16,
+        "size": 13,
         "weight": 700,
         "style": "normal",
         "lineHeight": 1.35,
@@ -99,9 +99,9 @@
         },
         {
           "id": "container_field_header_media",
-          "placement": "left",
+          "placement": "right",
           "horizontalAlignment": "left",
-          "verticalAlignment": "top",
+          "verticalAlignment": "center",
           "horizontalSize": "stretch",
           "verticalSize": "auto",
           "elements": [
@@ -121,13 +121,13 @@
                 "caption": "",
                 "html": "",
                 "iframeHeight": 260,
-                "horizontalAlignment": "center",
+                "horizontalAlignment": "right",
                 "verticalAlignment": "center",
                 "horizontalSize": "auto",
                 "scale": 100,
                 "maxWidth": "240px",
                 "maxHeight": 80,
-                "padding": 0,
+                "padding": 10,
                 "objectFit": "contain",
                 "showLabel": false,
                 "outline": false,
@@ -167,11 +167,42 @@
       ]
     },
     {
-      "id": "block_field_project_details_heading",
+      "id": "block_section_intro_divider",
       "containers": [
         {
-          "id": "container_field_project_details_heading_main",
+          "id": "container_section_intro_divider_main",
           "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_section_intro_divider",
+              "type": "spacer",
+              "label": "",
+              "description": "",
+              "required": false,
+              "settings": {
+                "height": 8,
+                "showLine": true,
+                "lineStyle": "solid",
+                "lineThickness": 1,
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_section_project_details",
+      "containers": [
+        {
+          "id": "container_project_details_heading",
+          "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -189,20 +220,15 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": false,
+                "outline": true,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_project_name",
-      "containers": [
+        },
         {
-          "id": "container_field_project_name_main",
-          "placement": "main",
+          "id": "container_project_details_overview",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -217,19 +243,27 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
+                "background": false
+              }
+            },
+            {
+              "id": "field_target_audience",
+              "type": "long_answer",
+              "label": "Target Audience",
+              "description": "",
+              "required": false,
+              "placeholder": "All of our communications and messages should support our institutional value proposition: We reimagine the roles of education and technology in every aspect of life to serve as a force for positive change in a world without boundaries.",
+              "settings": {
+                "showLabel": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_marketing_rep",
-      "containers": [
+        },
         {
-          "id": "container_field_marketing_rep_main",
+          "id": "container_project_details_goals",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -245,20 +279,28 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
+                "background": false
+              }
+            },
+            {
+              "id": "field_objectives_kpis",
+              "type": "long_answer",
+              "label": "Objectives / KPIs",
+              "description": "",
+              "required": false,
+              "placeholder": "Show appreciation to donors. Drive appreciation among students",
+              "settings": {
+                "showLabel": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_assignment",
-      "containers": [
+        },
         {
-          "id": "container_field_assignment_main",
-          "placement": "main",
+          "id": "container_project_details_audience",
+          "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -273,7 +315,7 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -282,67 +324,11 @@
       ]
     },
     {
-      "id": "block_field_objectives_kpis",
+      "id": "block_project_tone",
       "containers": [
         {
-          "id": "container_field_objectives_kpis_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
-            {
-              "id": "field_objectives_kpis",
-              "type": "long_answer",
-              "label": "Objectives / KPIs",
-              "description": "",
-              "required": false,
-              "placeholder": "Show appreciation to donors. Drive appreciation among students",
-              "settings": {
-                "showLabel": true,
-                "outline": true,
-                "background": false
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_target_audience",
-      "containers": [
-        {
-          "id": "container_field_target_audience_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
-            {
-              "id": "field_target_audience",
-              "type": "long_answer",
-              "label": "Target Audience",
-              "description": "",
-              "required": false,
-              "placeholder": "All of our communications and messages should support our institutional value proposition: We reimagine the roles of education and technology in every aspect of life to serve as a force for positive change in a world without boundaries.",
-              "settings": {
-                "showLabel": true,
-                "outline": true,
-                "background": false
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_tone_verbal",
-      "containers": [
-        {
-          "id": "container_field_tone_verbal_main",
-          "placement": "main",
+          "id": "container_project_tone_verbal",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -370,14 +356,9 @@
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_tone_visual",
-      "containers": [
+        },
         {
-          "id": "container_field_tone_visual_main",
+          "id": "container_project_tone_visual",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -419,11 +400,11 @@
       ]
     },
     {
-      "id": "block_field_key_message",
+      "id": "block_project_message_cta",
       "containers": [
         {
-          "id": "container_field_key_message_main",
-          "placement": "main",
+          "id": "container_project_key_message",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -438,19 +419,14 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_call_to_action",
-      "containers": [
+        },
         {
-          "id": "container_field_call_to_action_main",
+          "id": "container_project_call_to_action",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -466,7 +442,7 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -475,11 +451,42 @@
       ]
     },
     {
-      "id": "block_field_deliverable_details_heading",
+      "id": "block_section_deliverables_divider",
       "containers": [
         {
-          "id": "container_field_deliverable_details_heading_main",
+          "id": "container_section_deliverables_divider_main",
           "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_section_deliverables_divider",
+              "type": "spacer",
+              "label": "",
+              "description": "",
+              "required": false,
+              "settings": {
+                "height": 14,
+                "showLine": true,
+                "lineStyle": "solid",
+                "lineThickness": 1,
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_section_deliverable_details",
+      "containers": [
+        {
+          "id": "container_deliverable_details_heading",
+          "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -497,24 +504,19 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": false,
+                "outline": true,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_deliverable",
-      "containers": [
+        },
         {
-          "id": "container_field_deliverable_main",
-          "placement": "main",
+          "id": "container_deliverable_details_needs",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
-          "verticalSize": "auto",
+          "verticalSize": "stretch",
           "elements": [
             {
               "id": "field_deliverable",
@@ -538,42 +540,9 @@
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_specs",
-      "containers": [
+        },
         {
-          "id": "container_field_specs_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
-            {
-              "id": "field_specs",
-              "type": "long_answer",
-              "label": "Specs",
-              "description": "",
-              "required": false,
-              "placeholder": "",
-              "settings": {
-                "showLabel": true,
-                "outline": true,
-                "background": false
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_mandatories_considerations",
-      "containers": [
-        {
-          "id": "container_field_mandatories_considerations_main",
+          "id": "container_deliverable_details_content",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -589,25 +558,10 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_copywriting_needs",
-      "containers": [
-        {
-          "id": "container_field_copywriting_needs_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
+            },
             {
               "id": "field_copywriting_needs",
               "type": "long_answer",
@@ -617,20 +571,15 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_production_schedule",
-      "containers": [
+        },
         {
-          "id": "container_field_production_schedule_main",
-          "placement": "main",
+          "id": "container_deliverable_details_schedule",
+          "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -673,11 +622,42 @@
       ]
     },
     {
-      "id": "block_field_budget_heading",
+      "id": "block_section_budget_divider",
       "containers": [
         {
-          "id": "container_field_budget_heading_main",
+          "id": "container_section_budget_divider_main",
           "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_section_budget_divider",
+              "type": "spacer",
+              "label": "",
+              "description": "",
+              "required": false,
+              "settings": {
+                "height": 14,
+                "showLine": true,
+                "lineStyle": "solid",
+                "lineThickness": 1,
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_section_budget",
+      "containers": [
+        {
+          "id": "container_budget_heading",
+          "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -695,24 +675,19 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": false,
+                "outline": true,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_budget_source",
-      "containers": [
+        },
         {
-          "id": "container_field_budget_source_main",
-          "placement": "main",
+          "id": "container_budget_source",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
-          "verticalSize": "auto",
+          "verticalSize": "stretch",
           "elements": [
             {
               "id": "field_budget_source",
@@ -732,14 +707,9 @@
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_total_budget",
-      "containers": [
+        },
         {
-          "id": "container_field_total_budget_main",
+          "id": "container_budget_amounts",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -755,25 +725,10 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_account_code",
-      "containers": [
-        {
-          "id": "container_field_account_code_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
+            },
             {
               "id": "field_account_code",
               "type": "short_answer",
@@ -783,20 +738,15 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_budget_approval",
-      "containers": [
+        },
         {
-          "id": "container_field_budget_approval_main",
-          "placement": "main",
+          "id": "container_budget_approval",
+          "placement": "right",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -811,7 +761,7 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -820,11 +770,42 @@
       ]
     },
     {
-      "id": "block_field_stakeholders_heading",
+      "id": "block_section_stakeholders_divider",
       "containers": [
         {
-          "id": "container_field_stakeholders_heading_main",
+          "id": "container_section_stakeholders_divider_main",
           "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_section_stakeholders_divider",
+              "type": "spacer",
+              "label": "",
+              "description": "",
+              "required": false,
+              "settings": {
+                "height": 14,
+                "showLine": true,
+                "lineStyle": "solid",
+                "lineThickness": 1,
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "block_section_stakeholders",
+      "containers": [
+        {
+          "id": "container_stakeholders_heading",
+          "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -842,20 +823,15 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": false,
+                "outline": true,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_stakeholders",
-      "containers": [
+        },
         {
-          "id": "container_field_stakeholders_main",
-          "placement": "main",
+          "id": "container_stakeholders_people",
+          "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -870,19 +846,14 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_partner_colleagues",
-      "containers": [
+        },
         {
-          "id": "container_field_partner_colleagues_main",
+          "id": "container_partner_colleagues",
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -898,20 +869,15 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "block_field_history_background",
-      "containers": [
+        },
         {
-          "id": "container_field_history_background_main",
-          "placement": "main",
+          "id": "container_history_background",
+          "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -926,7 +892,7 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
