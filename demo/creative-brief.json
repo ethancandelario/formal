@@ -1,6 +1,6 @@
 {
   "createdAt": "2026-06-22T00:00:00.000Z",
-  "updatedAt": "2026-06-22T00:00:00.000Z",
+  "updatedAt": "2026-06-23T13:58:39.865Z",
   "settings": {
     "name": "Creative Brief",
     "theme": {
@@ -19,10 +19,10 @@
       "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
     },
     "layout": {
-      "pageMargin": 12,
-      "pagePadding": 10,
+      "pageMargin": 15,
+      "pagePadding": 12,
       "fieldSpacing": 7,
-      "fieldPadding": 14
+      "fieldPadding": 15
     },
     "typography": {
       "body": {
@@ -58,7 +58,7 @@
       "label": {
         "fontFamily": "\"Roboto\", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
         "color": "#1f1f1f",
-        "size": 13,
+        "size": 15,
         "weight": 700,
         "style": "normal",
         "lineHeight": 1.35,
@@ -158,37 +158,6 @@
               "placeholder": "",
               "settings": {
                 "showLabel": true,
-                "outline": true,
-                "background": false
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "block_section_intro_divider",
-      "containers": [
-        {
-          "id": "container_section_intro_divider_main",
-          "placement": "main",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "auto",
-          "elements": [
-            {
-              "id": "field_section_intro_divider",
-              "type": "spacer",
-              "label": "",
-              "description": "",
-              "required": false,
-              "settings": {
-                "height": 8,
-                "showLine": true,
-                "lineStyle": "solid",
-                "lineThickness": 1,
-                "showLabel": true,
                 "outline": false,
                 "background": false
               }
@@ -220,7 +189,7 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -504,7 +473,7 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -535,7 +504,7 @@
               "settings": {
                 "allowCustomOptions": true,
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
@@ -586,9 +555,25 @@
           "verticalSize": "auto",
           "elements": [
             {
+              "id": "field_production_schedule_heading",
+              "type": "headline",
+              "label": "Production Schedule",
+              "description": "",
+              "required": false,
+              "settings": {
+                "headingHorizontalAlignment": "left",
+                "headingVerticalAlignment": "center",
+                "descriptionHorizontalAlignment": "left",
+                "descriptionVerticalAlignment": "top",
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            },
+            {
               "id": "field_production_schedule",
               "type": "calendar",
-              "label": "Production Schedule:",
+              "label": "",
               "description": "",
               "required": false,
               "settings": {
@@ -612,8 +597,8 @@
                     "label": "Deadline"
                   }
                 ],
-                "showLabel": true,
-                "outline": true,
+                "showLabel": false,
+                "outline": false,
                 "background": false
               }
             }
@@ -675,42 +660,15 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }
           ]
         },
         {
-          "id": "container_budget_source",
+          "id": "container_budget_total",
           "placement": "left",
-          "horizontalAlignment": "left",
-          "verticalAlignment": "top",
-          "horizontalSize": "stretch",
-          "verticalSize": "stretch",
-          "elements": [
-            {
-              "id": "field_budget_source",
-              "type": "checkbox",
-              "label": "Budget",
-              "description": "",
-              "required": false,
-              "options": [
-                "State funds",
-                "VTF funds"
-              ],
-              "settings": {
-                "allowCustomOptions": true,
-                "showLabel": false,
-                "outline": true,
-                "background": false
-              }
-            }
-          ]
-        },
-        {
-          "id": "container_budget_amounts",
-          "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
           "horizontalSize": "stretch",
@@ -719,7 +677,7 @@
             {
               "id": "field_total_budget",
               "type": "number",
-              "label": "Total budget:",
+              "label": "Total Budget",
               "description": "",
               "required": false,
               "placeholder": "",
@@ -728,11 +686,21 @@
                 "outline": false,
                 "background": false
               }
-            },
+            }
+          ]
+        },
+        {
+          "id": "container_budget_account_code",
+          "placement": "main",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
             {
               "id": "field_account_code",
               "type": "short_answer",
-              "label": "Account Code/Activity Code if applicable:",
+              "label": "Account / Activity Code",
               "description": "",
               "required": false,
               "placeholder": "",
@@ -755,11 +723,38 @@
             {
               "id": "field_budget_approval",
               "type": "short_answer",
-              "label": "Budget/account approval:",
+              "label": "Budget / Account Approval",
               "description": "",
               "required": false,
               "placeholder": "",
               "settings": {
+                "showLabel": true,
+                "outline": false,
+                "background": false
+              }
+            }
+          ]
+        },
+        {
+          "id": "container_budget_source",
+          "placement": "bottom",
+          "horizontalAlignment": "left",
+          "verticalAlignment": "top",
+          "horizontalSize": "stretch",
+          "verticalSize": "auto",
+          "elements": [
+            {
+              "id": "field_budget_source",
+              "type": "checkbox",
+              "label": "Funding Source",
+              "description": "",
+              "required": false,
+              "options": [
+                "State funds",
+                "VTF funds"
+              ],
+              "settings": {
+                "allowCustomOptions": true,
                 "showLabel": true,
                 "outline": false,
                 "background": false
@@ -823,7 +818,7 @@
                 "descriptionHorizontalAlignment": "left",
                 "descriptionVerticalAlignment": "top",
                 "showLabel": true,
-                "outline": true,
+                "outline": false,
                 "background": false
               }
             }

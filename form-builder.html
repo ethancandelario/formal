@@ -1145,6 +1145,10 @@
       box-shadow: none;
     }
 
+    .field-card.is-block-drag-active {
+      overflow: visible;
+    }
+
     .field-type:active,
     .block-container-preview.is-draggable:active {
       cursor: grabbing;
@@ -1210,18 +1214,32 @@
       text-transform: var(--body-text-transform);
     }
 
-    .field-card.with-background .field-card-body {
-      margin: 8px 10px 10px;
-      padding: 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel-2);
-    }
-
     .field-type:focus-visible,
     .field-card-body:focus-visible {
       outline: 3px solid var(--focus-ring);
       outline-offset: 2px;
+    }
+
+    .preview-field {
+      --preview-control-bg: var(--panel-2);
+      display: grid;
+      gap: var(--form-field-spacing);
+      width: 100%;
+      min-width: 0;
+      padding: var(--form-field-padding);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .preview-field.no-outline {
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .preview-field.with-background {
+      --preview-control-bg: var(--bg);
+      background: var(--panel-2);
     }
 
     .field-label {
@@ -1298,14 +1316,14 @@
     .block-preview {
       position: relative;
       display: grid;
-      gap: 10px;
+      gap: var(--form-field-spacing);
       min-width: 0;
     }
 
     .block-preview-middle {
       /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
-      gap: 10px;
+      gap: var(--form-field-spacing);
       min-width: 0;
       align-items: stretch;
     }
@@ -1328,7 +1346,7 @@
 
     .field-card.is-block-drag-active .block-placement-zones {
       display: grid;
-      pointer-events: auto;
+      pointer-events: none;
     }
 
     .block-placement-zone {
@@ -1338,7 +1356,7 @@
 
     .block-preview-stack {
       display: grid;
-      gap: 10px;
+      gap: var(--form-field-spacing);
       min-width: 0;
       align-content: stretch;
       container-type: inline-size;
@@ -1347,15 +1365,14 @@
     .block-container-preview {
       position: relative;
       display: grid;
-      gap: 8px;
+      gap: var(--form-field-spacing);
       width: 100%;
       min-width: 0;
       max-width: 100%;
-      border: 1px solid transparent;
       border-radius: 8px;
-      padding: 10px;
+      padding: 0;
       cursor: default;
-      transition: border-color 140ms ease, background 140ms ease;
+      transition: background 140ms ease, box-shadow 140ms ease;
     }
 
     .block-container-preview.is-draggable {
@@ -1364,13 +1381,23 @@
 
     .block-container-preview:hover,
     .block-container-preview:focus-within {
-      border-color: rgba(134, 31, 65, 0.18);
-      background: rgba(134, 31, 65, 0.035);
+      background: transparent;
+      box-shadow: 0 0 0 1px rgba(134, 31, 65, 0.16);
     }
 
     .block-container-preview.selected {
-      border-color: rgba(134, 31, 65, 0.34);
-      background: rgba(134, 31, 65, 0.06);
+      background: transparent;
+      box-shadow: 0 0 0 2px rgba(134, 31, 65, 0.26);
+    }
+
+    .block-container-preview.has-selected-element {
+      background: transparent;
+      box-shadow: 0 0 0 1px rgba(134, 31, 65, 0.14);
+    }
+
+    .block-container-preview.is-container-drop-target {
+      background: transparent;
+      box-shadow: 0 0 0 2px rgba(134, 31, 65, 0.30);
     }
 
     .block-container-preview:focus-visible {
@@ -1379,14 +1406,81 @@
     }
 
     .container-elements {
+      position: relative;
       display: grid;
-      gap: 10px;
+      gap: var(--form-field-spacing);
       width: 100%;
       min-width: 0;
     }
 
     .container-element {
+      position: relative;
+      display: block;
       width: 100%;
+      min-width: 0;
+      padding: 0;
+      border-radius: 8px;
+      cursor: grab;
+      transition: box-shadow 140ms ease, opacity 140ms ease;
+    }
+
+    .container-element:hover,
+    .container-element:focus-within {
+      box-shadow: 0 0 0 1px rgba(134, 31, 65, 0.16);
+    }
+
+    .container-element.selected {
+      box-shadow: 0 0 0 2px rgba(134, 31, 65, 0.28);
+    }
+
+    .container-element.is-dragging {
+      opacity: 0.45;
+    }
+
+    .container-element:focus-visible {
+      outline: 3px solid var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    .container-element:active {
+      cursor: grabbing;
+    }
+
+    .container-element-actions {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 3px;
+      padding: 2px;
+      border: 1px solid rgba(203, 197, 182, 0.72);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 6px 14px rgba(31, 31, 31, 0.10);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 130ms ease;
+    }
+
+    .container-element-actions .icon-button {
+      width: 28px;
+      min-height: 28px;
+      height: 28px;
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .container-element:hover .container-element-actions,
+    .container-element:focus-within .container-element-actions,
+    .container-element.selected .container-element-actions {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .container-element-body {
       min-width: 0;
     }
 
@@ -1403,8 +1497,6 @@
       transition: opacity 130ms ease;
     }
 
-    .block-container-preview:hover .container-tools,
-    .block-container-preview:focus-within .container-tools,
     .block-container-preview.selected .container-tools {
       opacity: 1;
       pointer-events: auto;
@@ -1420,10 +1512,17 @@
       box-shadow: inset 0 0 0 2px rgba(134, 31, 65, 0.06);
     }
 
+    .container-drop-preview {
+      left: 0;
+      right: 0;
+      z-index: 8;
+      min-height: 38px;
+    }
+
     .preview-line,
     .preview-box {
       border: 1px solid var(--line);
-      background: var(--panel-2);
+      background: var(--preview-control-bg);
       border-radius: 8px;
       color: var(--body-color);
     }
@@ -3308,6 +3407,53 @@
       return (schema.blocks || []).flatMap(blockContainers).find((container) => container.id === containerId) || null;
     }
 
+    function blockForContainer(schema, containerId) {
+      return (schema.blocks || []).find((block) => blockContainers(block).some((container) => container.id === containerId)) || null;
+    }
+
+    function containerLocation(schema, containerId) {
+      for (let blockIndex = 0; blockIndex < (schema.blocks || []).length; blockIndex += 1) {
+        const block = schema.blocks[blockIndex];
+        const containerIndex = blockContainers(block).findIndex((container) => container.id === containerId);
+        if (containerIndex >= 0) return { block, blockIndex, container: blockContainers(block)[containerIndex], containerIndex };
+      }
+      return null;
+    }
+
+    function elementLocation(schema, elementId) {
+      for (let blockIndex = 0; blockIndex < (schema.blocks || []).length; blockIndex += 1) {
+        const block = schema.blocks[blockIndex];
+        const containers = blockContainers(block);
+        for (let containerIndex = 0; containerIndex < containers.length; containerIndex += 1) {
+          const container = containers[containerIndex];
+          const elementIndex = containerElements(container).findIndex((element) => element.id === elementId);
+          if (elementIndex >= 0) {
+            return { block, blockIndex, container, containerIndex, element: containerElements(container)[elementIndex], elementIndex };
+          }
+        }
+      }
+      return null;
+    }
+
+    function removeElementFromBlocks(blocks, containerId, elementId) {
+      return blocks.flatMap((block) => {
+        let changed = false;
+        const containers = blockContainers(block).flatMap((container) => {
+          if (container.id !== containerId) return [container];
+          const elements = containerElements(container).filter((element) => element.id !== elementId);
+          changed = elements.length !== containerElements(container).length;
+          return elements.length ? [{ ...container, elements }] : [];
+        });
+        if (!changed) return [block];
+        return containers.length ? [{ ...block, containers }] : [];
+      });
+    }
+
+    function selectionForElement(schema, elementId) {
+      const location = elementLocation(schema, elementId);
+      return location ? { selectedId: elementId, selectedContainerId: location.container.id } : { selectedId: null, selectedContainerId: null };
+    }
+
     function selectedBlockId(schema, elementId) {
       return blockForElement(schema, elementId)?.id || null;
     }
@@ -4091,6 +4237,12 @@
       const next = [...list];
       const [item] = next.splice(from, 1);
       next.splice(to, 0, item);
+      return next;
+    }
+
+    function insertAt(list, index, item) {
+      const next = [...list];
+      next.splice(DragPayloadModel.clampIndex(index, next.length), 0, item);
       return next;
     }
 
@@ -5020,6 +5172,10 @@
       return html`<div class="block-drop-preview" style=${ContainerPlacementModel.previewStyle(placement)} aria-hidden="true"></div>`;
     }
 
+    function ContainerDropPreview({ y, height }) {
+      return html`<div class="block-drop-preview container-drop-preview" style=${`top: ${Math.round(y)}px; height: ${Math.max(38, Math.round(height))}px;`} aria-hidden="true"></div>`;
+    }
+
     function BlockPlacementZones({ active }) {
       return html`
         <div class=${`block-placement-zones${active ? " is-active" : ""}`} aria-hidden="true">
@@ -5028,31 +5184,83 @@
       `;
     }
 
+    function previewFieldClass(field) {
+      const typeClass = field.type ? ` ${String(field.type).replace(/_/g, "-")}-field` : "";
+      const outlineClass = field.settings.outline ? "" : " no-outline";
+      const backgroundClass = field.settings.background ? " with-background" : "";
+      return `preview-field${typeClass}${outlineClass}${backgroundClass}`;
+    }
+
     function ElementPreview({ field }) {
       const labelText = String(field.label ?? "").trim();
       const visibleLabel = field.settings.showLabel ? labelText : "";
-      if (LABELLESS_PREVIEW_FIELD_TYPES.has(field.type)) return html`<${FieldPreview} field=${field} />`;
-      return html`
+      const content = LABELLESS_PREVIEW_FIELD_TYPES.has(field.type) ? html`<${FieldPreview} field=${field} />` : html`
         ${visibleLabel ? html`<div class="field-label">${visibleLabel}${field.required ? html`<span class="required-mark">*</span>` : null}</div>` : null}
         ${field.description ? html`<p class="field-help">${field.description}</p>` : null}
         <${FieldPreview} field=${field} />
       `;
+      return html`
+        <section class=${previewFieldClass(field)} data-preview-field=${field.id}>
+          ${content}
+        </section>
+      `;
     }
 
-    function ContainerPreview({ block, container, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+    function ContainerElementPreview({ block, container, element, selected, dragging, onSelectElement, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd }) {
+      const meta = typeMeta(element.type);
+      const label = String(element.label || meta.name).trim();
+
+      function handleSelect(event) {
+        event.stopPropagation();
+        onSelectElement(element.id, container.id);
+      }
+
+      function handleKey(event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        event.stopPropagation();
+        onSelectElement(element.id, container.id);
+      }
+
+      function handleDragStart(event) {
+        event.stopPropagation();
+        onElementDragStart(event, { kind: "element", sourceBlockId: block.id, sourceContainerId: container.id, elementId: element.id });
+      }
+
+      function handleDragEnd(event) {
+        event.stopPropagation();
+        onElementDragEnd(event);
+      }
+
+      return html`
+        <div class=${`container-element${selected ? " selected" : ""}${dragging ? " is-dragging" : ""}`} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${`Select ${label}`} draggable=${true} onClick=${handleSelect} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
+          <div class="container-element-body">
+            <${ElementPreview} field=${element} />
+          </div>
+          <div class="container-element-actions" onClick=${(event) => event.stopPropagation()}>
+            <${IconButton} icon="fa-regular fa-copy" title="Duplicate field" onClick=${() => onDuplicateElement(container.id, element.id)} />
+            <${IconButton} className="danger" icon="fa-regular fa-trash-can" title="Delete field" onClick=${() => onDeleteElement(container.id, element.id)} />
+          </div>
+        </div>
+      `;
+    }
+
+    function ContainerPreview({ block, container, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, onSelectElement, onSelectContainer, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd, onContainerDragStart, onContainerDragEnd, onContainerDragOver, onContainerDragLeave, onContainerDrop }) {
       const elements = containerElements(container);
-      const selected = container.id === selectedContainerId;
-      const primary = elements[0];
+      const selectedElementInContainer = elements.some((element) => element.id === selectedId);
+      const selected = container.id === selectedContainerId && !selectedElementInContainer;
+      const hasSelectedElement = container.id === selectedContainerId && selectedElementInContainer;
+      const dropTarget = container.id === containerDropId;
       const draggable = blockContainers(block).length > 1;
-      const label = primary ? `Select ${String(primary.label || typeMeta(primary.type).name).trim()} container` : "Select container";
+      const label = `Select ${elements.length > 1 ? "multi-field " : ""}sub-block layout`;
 
       function selectContainer() {
-        if (primary) onSelectElement(primary.id, container.id);
+        onSelectContainer(container.id);
       }
 
       function handleClick(event) {
         event.stopPropagation();
-        if (event.target?.closest?.(".container-tools")) return;
+        if (event.target?.closest?.(".container-tools, .container-element")) return;
         selectContainer();
       }
 
@@ -5064,7 +5272,7 @@
       }
 
       function handleDragStart(event) {
-        if (!draggable || event.target?.closest?.(".container-tools")) return event.preventDefault();
+        if (!draggable || event.target?.closest?.(".container-tools, .container-element")) return event.preventDefault();
         event.stopPropagation();
         selectContainer();
         onContainerDragStart(event, { kind: "container", sourceBlockId: block.id, containerId: container.id });
@@ -5076,14 +5284,44 @@
       }
 
       return html`
-        <div class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${draggable ? " is-draggable" : ""}`} style=${new ContainerLayoutModel(container).style} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${label} draggable=${draggable} onClick=${handleClick} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
+        <div
+          class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${hasSelectedElement ? " has-selected-element" : ""}${dropTarget ? " is-container-drop-target" : ""}${draggable ? " is-draggable" : ""}`}
+          style=${new ContainerLayoutModel(container).style}
+          role="button"
+          tabIndex="0"
+          aria-pressed=${selected}
+          aria-label=${label}
+          draggable=${draggable}
+          onClick=${handleClick}
+          onKeyDown=${handleKey}
+          onDragStart=${handleDragStart}
+          onDragEnd=${handleDragEnd}
+          onDragOver=${(event) => onContainerDragOver(event, block.id, container.id)}
+          onDragLeave=${(event) => onContainerDragLeave(event, container.id)}
+          onDrop=${(event) => onContainerDrop(event, block.id, container.id)}
+        >
           <div class="container-tools">
             <${IconButton} icon="fa-solid fa-rotate-left" title="Reset container" onClick=${() => onResetContainer(block.id, container.id)} />
             <${IconButton} icon="fa-regular fa-copy" title="Duplicate container" onClick=${() => onDuplicateContainer(block.id, container.id)} />
             <${IconButton} className="danger" icon="fa-regular fa-trash-can" title="Delete container" onClick=${() => onDeleteContainer(block.id, container.id)} />
           </div>
           <div class="container-elements">
-            ${elements.map((element) => html`<div class="container-element" key=${element.id}><${ElementPreview} field=${element} /></div>`)}
+            ${dropTarget && Number.isFinite(containerDropY) && Number.isFinite(containerDropHeight) ? html`<${ContainerDropPreview} y=${containerDropY} height=${containerDropHeight} />` : null}
+            ${elements.map((element, index) => html`
+              <${ContainerElementPreview}
+                key=${element.id}
+                block=${block}
+                container=${container}
+                element=${element}
+                selected=${element.id === selectedId}
+                dragging=${element.id === draggingElementId}
+                onSelectElement=${onSelectElement}
+                onDuplicateElement=${onDuplicateElement}
+                onDeleteElement=${onDeleteElement}
+                onElementDragStart=${onElementDragStart}
+                onElementDragEnd=${onElementDragEnd}
+              />
+            `)}
           </div>
         </div>
       `;
@@ -5122,9 +5360,9 @@
       `;
     }
 
-    function BlockPreview({ block, selectedContainerId, dropPlacement, dropActive, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+    function BlockPreview({ block, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, dropPlacement, dropActive, onSelectElement, onSelectContainer, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd, onContainerDragStart, onContainerDragEnd, onContainerDragOver, onContainerDragLeave, onContainerDrop }) {
       const layout = blockContainerRegions(block);
-      const stackProps = { block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd };
+      const stackProps = { block, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, onSelectElement, onSelectContainer, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd, onContainerDragStart, onContainerDragEnd, onContainerDragOver, onContainerDragLeave, onContainerDrop };
       return html`
         <div class="block-preview">
           <${ContainerPreviewStack} containers=${layout.top} placement="top" ...${stackProps} />
@@ -5136,16 +5374,25 @@
       `;
     }
 
-    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, blockDropActive, onCardRef, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, draggingElementId, blockDropId, blockDropPlacement, blockDropActive, containerDropId, containerDropIndex, containerDropY, containerDropHeight, onCardRef, onSelect, onSelectContainer, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop, onContainerDragOver, onContainerDragLeave, onContainerDrop }) {
       if (!blocks.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
 
       return blocks.map((block) => {
-        const selected = !selectedContainerId && firstBlockElement(block)?.id === selectedId;
+        const selected = Boolean(
+          (selectedId && blockElements(block).some((element) => element.id === selectedId)) ||
+          (selectedContainerId && blockContainers(block).some((container) => container.id === selectedContainerId))
+        );
         return html`
           <${FieldCard}
             key=${block.id}
             block=${block}
+            selectedId=${selectedId}
             selectedContainerId=${selectedContainerId}
+            draggingElementId=${draggingElementId}
+            containerDropId=${containerDropId}
+            containerDropIndex=${containerDropIndex}
+            containerDropY=${containerDropY}
+            containerDropHeight=${containerDropHeight}
             selected=${selected}
             removing=${block.id === removingId}
             dragging=${block.id === draggingBlockId}
@@ -5153,6 +5400,7 @@
             blockDropActive=${blockDropActive}
             onCardRef=${onCardRef}
             onSelect=${onSelect}
+            onSelectContainer=${onSelectContainer}
             onMove=${(direction) => onMove(block.id, direction)}
             onDuplicate=${() => onDuplicate(block.id)}
             onReset=${() => onReset(block.id)}
@@ -5160,23 +5408,29 @@
             onDuplicateContainer=${onDuplicateContainer}
             onResetContainer=${onResetContainer}
             onDeleteContainer=${onDeleteContainer}
+            onMoveElement=${onMoveElement}
+            onMoveElementOut=${onMoveElementOut}
+            onDuplicateElement=${onDuplicateElement}
+            onDeleteElement=${onDeleteElement}
             onDragStart=${onFieldDragStart}
             onDragEnd=${onFieldDragEnd}
             onBlockDragOver=${(event) => onBlockDragOver(event, block.id)}
             onBlockDragLeave=${(event) => onBlockDragLeave(event, block.id)}
             onBlockDrop=${(event) => onBlockDrop(event, block.id)}
+            onContainerDragOver=${onContainerDragOver}
+            onContainerDragLeave=${onContainerDragLeave}
+            onContainerDrop=${onContainerDrop}
           />
         `;
       });
     }
 
-    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, blockDropActive, onCardRef, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldCard({ block, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, selected, removing, dragging, blockDropPlacement, blockDropActive, onCardRef, onSelect, onSelectContainer, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop, onContainerDragOver, onContainerDragLeave, onContainerDrop }) {
       const primary = firstBlockElement(block);
       const composite = isCompositeBlock(block);
       const meta = primary && !composite ? typeMeta(primary.type) : { icon: "lucide-component", name: "Block" };
       const labelText = composite ? "" : String(primary?.label ?? "").trim();
       const selectLabel = `Select ${labelText || meta.name} block`;
-      const hasBackground = blockElements(block).some((element) => element.settings?.background);
       function handleCardClick(event) {
         const target = event.target;
         if (target?.closest?.("button, a, input, textarea, select")) return;
@@ -5191,7 +5445,7 @@
 
       return html`
         <article
-          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropActive ? " is-block-drag-active" : ""}`}
+          class=${`field-card${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropActive ? " is-block-drag-active" : ""}`}
           data-field-id=${block.id}
           ref=${(node) => onCardRef?.(block.id, node)}
           onClick=${handleCardClick}
@@ -5214,15 +5468,31 @@
           <div class="field-card-body" role="button" tabIndex="0" aria-pressed=${selected} aria-label=${selectLabel} onKeyDown=${handleSelectKey}>
             <${BlockPreview}
               block=${block}
+              selectedId=${selectedId}
               selectedContainerId=${selectedContainerId}
+              draggingElementId=${draggingElementId}
+              containerDropId=${containerDropId}
+              containerDropIndex=${containerDropIndex}
+              containerDropY=${containerDropY}
+              containerDropHeight=${containerDropHeight}
               dropPlacement=${blockDropPlacement}
               dropActive=${blockDropActive}
               onSelectElement=${onSelect}
+              onSelectContainer=${onSelectContainer}
               onDuplicateContainer=${onDuplicateContainer}
               onResetContainer=${onResetContainer}
               onDeleteContainer=${onDeleteContainer}
+              onMoveElement=${onMoveElement}
+              onMoveElementOut=${onMoveElementOut}
+              onDuplicateElement=${onDuplicateElement}
+              onDeleteElement=${onDeleteElement}
+              onElementDragStart=${onDragStart}
+              onElementDragEnd=${onDragEnd}
               onContainerDragStart=${onDragStart}
               onContainerDragEnd=${onDragEnd}
+              onContainerDragOver=${onContainerDragOver}
+              onContainerDragLeave=${onContainerDragLeave}
+              onContainerDrop=${onContainerDrop}
             />
           </div>
         </article>
@@ -5470,7 +5740,6 @@
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
-          ${selectedContainer ? html`<${ContainerLayoutSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />` : null}
           <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           ${!NON_REQUIRED_FIELD_TYPES.has(selectedField.type) ? html`
             <${ToggleRow} checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} label="Required" />
@@ -5758,6 +6027,7 @@
         if (payload?.kind === "new" && payload.type) return `new:${payload.type}`;
         if (payload?.kind === "move" && payload.id) return `move:${payload.id}`;
         if (payload?.kind === "container" && payload.sourceBlockId && payload.containerId) return `container:${payload.sourceBlockId}:${payload.containerId}`;
+        if (payload?.kind === "element" && payload.sourceBlockId && payload.sourceContainerId && payload.elementId) return `element:${payload.sourceBlockId}:${payload.sourceContainerId}:${payload.elementId}`;
         return "";
       }
 
@@ -5772,6 +6042,10 @@
         if (kind === "container") {
           const [sourceBlockId, containerId] = target.split(":");
           if (sourceBlockId && containerId) return { kind, sourceBlockId, containerId };
+        }
+        if (kind === "element") {
+          const [sourceBlockId, sourceContainerId, elementId] = target.split(":");
+          if (sourceBlockId && sourceContainerId && elementId) return { kind, sourceBlockId, sourceContainerId, elementId };
         }
         return null;
       }
@@ -5799,14 +6073,29 @@
           const sourceElement = DragPayloadModel.singleElementBlock(sourceBlock);
           return sourceElement ? clone(sourceElement) : null;
         }
+        if (payload?.kind === "element") {
+          const source = elementLocation({ blocks }, payload.elementId);
+          return source ? clone(source.element) : null;
+        }
         return null;
       }
 
       static canDropOnBlock(payload, blocks, blockId) {
         if (payload?.kind === "new") return fieldTypes.some((item) => item.type === payload.type);
         if (payload?.kind === "container") return payload.sourceBlockId === blockId && blocks.some((block) => block.id === blockId && block.containers.some((container) => container.id === payload.containerId));
-        if (payload?.kind !== "move" || payload.id === blockId) return false;
-        return Boolean(DragPayloadModel.singleElementBlock(blocks.find((block) => block.id === payload.id)));
+        if (payload?.kind === "element") return blocks.some((block) => block.id === blockId) && Boolean(elementLocation({ blocks }, payload.elementId));
+        if (payload?.kind === "move" && payload.id !== blockId) return Boolean(DragPayloadModel.singleElementBlock(blocks.find((block) => block.id === payload.id)));
+        return false;
+      }
+
+      static canDropOnContainer(payload, blocks, blockId, containerId) {
+        const targetBlock = blocks.find((block) => block.id === blockId);
+        const hasTarget = targetBlock && blockContainers(targetBlock).some((container) => container.id === containerId);
+        if (!hasTarget) return false;
+        if (payload?.kind === "new") return fieldTypes.some((item) => item.type === payload.type);
+        if (payload?.kind === "element") return Boolean(elementLocation({ blocks }, payload.elementId));
+        if (payload?.kind === "move" && payload.id !== blockId) return Boolean(DragPayloadModel.singleElementBlock(blocks.find((block) => block.id === payload.id)));
+        return false;
       }
 
       static moveContainer(schema, blockId, payload, placement) {
@@ -5817,7 +6106,7 @@
           if (block.id !== blockId) return block;
           const containers = ContainerPlacementModel.move(block.containers, payload.containerId, placement);
           const selectedContainer = containers.find((container) => container.id === payload.containerId) || null;
-          selectedId = selectedContainer ? firstBlockElement({ containers: [selectedContainer] })?.id || null : null;
+          selectedId = null;
           selectedContainerId = selectedContainer?.id || null;
           return { ...block, containers };
         });
@@ -5829,14 +6118,100 @@
         const element = DragPayloadModel.elementFromPayload(payload, schema.blocks);
         if (!element) return null;
         const container = containerFromElements([schemaField(element)], placement);
+        if (payload.kind === "element") {
+          let inserted = false;
+          const blocks = schema.blocks.flatMap((block) => {
+            if (block.id === blockId) {
+              const containers = blockContainers(block).flatMap((item) => {
+                if (item.id !== payload.sourceContainerId) return [item];
+                const elements = containerElements(item).filter((field) => field.id !== payload.elementId);
+                return elements.length ? [{ ...item, elements }] : [];
+              });
+              inserted = true;
+              return [{ ...block, containers: ContainerPlacementModel.insert(containers, container, placement) }];
+            }
+            if (block.id !== payload.sourceBlockId) return [block];
+            const containers = blockContainers(block).flatMap((item) => {
+              if (item.id !== payload.sourceContainerId) return [item];
+              const elements = containerElements(item).filter((field) => field.id !== payload.elementId);
+              return elements.length ? [{ ...item, elements }] : [];
+            });
+            return containers.length ? [{ ...block, containers }] : [];
+          });
+          return inserted ? { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: container.id } : null;
+        }
         const sourceBlockId = payload.kind === "move" ? payload.id : null;
         const blocks = schema.blocks
           .filter((block) => block.id !== sourceBlockId)
           .map((block) => {
             if (block.id !== blockId) return block;
             return { ...block, containers: ContainerPlacementModel.insert(block.containers, container, placement) };
-          });
+        });
         return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: container.id };
+      }
+
+      static addElementToContainer(schema, blockId, containerId, payload, index = null) {
+        if (!DragPayloadModel.canDropOnContainer(payload, schema.blocks, blockId, containerId)) return null;
+        const element = DragPayloadModel.elementFromPayload(payload, schema.blocks);
+        if (!element) return null;
+        if (payload.kind === "element") return DragPayloadModel.moveElementToContainer(schema, containerId, payload, index);
+        const target = containerLocation(schema, containerId);
+        if (!target) return null;
+        const insertionIndex = DragPayloadModel.clampIndex(index, containerElements(target.container).length);
+        const sourceBlockId = payload.kind === "move" ? payload.id : null;
+        let inserted = false;
+        const blocks = schema.blocks
+          .filter((block) => block.id !== sourceBlockId)
+          .map((block) => {
+            if (block.id !== blockId) return block;
+            return {
+              ...block,
+              containers: block.containers.map((container) => {
+                if (container.id !== containerId) return container;
+                inserted = true;
+                return { ...container, elements: insertAt(containerElements(container), insertionIndex, schemaField(element)) };
+              })
+            };
+          });
+        return inserted ? { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: containerId } : null;
+      }
+
+      static moveElementToContainer(schema, containerId, payload, index = null) {
+        const source = elementLocation(schema, payload.elementId);
+        const target = containerLocation(schema, containerId);
+        if (!source || !target) return null;
+        const element = schemaField(clone(source.element));
+        let insertionIndex = DragPayloadModel.clampIndex(index, containerElements(target.container).length);
+        if (source.container.id === containerId && source.elementIndex < insertionIndex) insertionIndex -= 1;
+        const blocks = schema.blocks.flatMap((block) => {
+          let changed = false;
+          const containers = blockContainers(block).flatMap((container) => {
+            const isSource = container.id === source.container.id;
+            const isTarget = container.id === containerId;
+            if (!isSource && !isTarget) return [container];
+            changed = true;
+            let elements = containerElements(container);
+            if (isSource) elements = elements.filter((field) => field.id !== payload.elementId);
+            if (isTarget) elements = insertAt(elements, insertionIndex, element);
+            return elements.length ? [{ ...container, elements }] : [];
+          });
+          if (!changed) return [block];
+          return containers.length ? [{ ...block, containers }] : [];
+        });
+        return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: containerId };
+      }
+
+      static moveElementToIndex(schema, payload, index) {
+        const source = elementLocation(schema, payload.elementId);
+        if (!source) return null;
+        const element = schemaField(clone(source.element));
+        const block = { id: uid("block"), containers: [containerFromElements([element])] };
+        const blocks = removeElementFromBlocks(schema.blocks, source.container.id, payload.elementId);
+        const sourceBlockStillExists = blocks.some((item) => item.id === source.block.id);
+        const rawIndex = DragPayloadModel.clampIndex(index, blocks.length);
+        const insertionIndex = !sourceBlockStillExists && source.blockIndex < rawIndex ? rawIndex - 1 : rawIndex;
+        blocks.splice(DragPayloadModel.clampIndex(insertionIndex, blocks.length), 0, block);
+        return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: block.containers[0].id };
       }
     }
 
@@ -5895,15 +6270,45 @@
         }
         case "select-field":
           return state.selectedId === action.id && state.selectedContainerId === (action.containerId || null) ? state : { ...state, selectedId: action.id, selectedContainerId: action.containerId || null };
+        case "select-container":
+          return state.selectedId === null && state.selectedContainerId === action.containerId ? state : { ...state, selectedId: null, selectedContainerId: action.containerId };
         case "insert-field": {
           const blocks = [...state.schema.blocks];
           blocks.splice(DragPayloadModel.clampIndex(action.index, blocks.length), 0, action.block);
           return { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement(action.block)?.id || state.selectedId, selectedContainerId: null };
         }
+        case "insert-element": {
+          const element = schemaField(action.element);
+          let inserted = false;
+          const blocks = state.schema.blocks.map((block) => ({
+            ...block,
+            containers: block.containers.map((container) => {
+              if (container.id !== action.containerId) return container;
+              inserted = true;
+              return { ...container, elements: [...containerElements(container), element] };
+            })
+          }));
+          return inserted ? { ...state, schema: { ...state.schema, blocks }, selectedId: element.id, selectedContainerId: action.containerId } : state;
+        }
         case "move-field": {
           const from = state.schema.blocks.findIndex((block) => block.id === action.id);
           const to = from + action.direction;
           return from < 0 || to < 0 || to >= state.schema.blocks.length ? state : { ...state, schema: { ...state.schema, blocks: reorder(state.schema.blocks, from, to) } };
+        }
+        case "move-element": {
+          const location = elementLocation(state.schema, action.elementId);
+          if (!location || location.container.id !== action.containerId) return state;
+          const to = location.elementIndex + action.direction;
+          if (to < 0 || to >= containerElements(location.container).length) return state;
+          const blocks = state.schema.blocks.map((block) => block.id === location.block.id
+            ? {
+              ...block,
+              containers: block.containers.map((container) => container.id === action.containerId
+                ? { ...container, elements: reorder(containerElements(container), location.elementIndex, to) }
+                : container)
+            }
+            : block);
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: action.elementId, selectedContainerId: action.containerId };
         }
         case "move-field-to-index": {
           const from = state.schema.blocks.findIndex((block) => block.id === action.id);
@@ -5920,6 +6325,27 @@
           blocks.splice(index + 1, 0, action.copy);
           return { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement(action.copy)?.id || state.selectedId, selectedContainerId: null };
         }
+        case "duplicate-element": {
+          const location = elementLocation(state.schema, action.elementId);
+          if (!location || location.container.id !== action.containerId) return state;
+          const copy = cloneElementWithNewId(location.element);
+          const blocks = state.schema.blocks.map((block) => block.id === location.block.id
+            ? {
+              ...block,
+              containers: block.containers.map((container) => container.id === action.containerId
+                ? {
+                  ...container,
+                  elements: [
+                    ...containerElements(container).slice(0, location.elementIndex + 1),
+                    copy,
+                    ...containerElements(container).slice(location.elementIndex + 1)
+                  ]
+                }
+                : container)
+            }
+            : block);
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: copy.id, selectedContainerId: action.containerId };
+        }
         case "reset-field": {
           const source = state.schema.blocks.find((block) => block.id === action.id);
           if (!source) return state;
@@ -5932,9 +6358,42 @@
           const index = state.schema.blocks.findIndex((block) => block.id === action.id);
           if (index < 0) return { ...state, removingId: null };
           const blocks = state.schema.blocks.filter((block) => block.id !== action.id);
-          const removedSelected = selectedBlockId(state.schema, state.selectedId) === action.id;
+          const removedSelected = selectedBlockId(state.schema, state.selectedId) === action.id || blockForContainer(state.schema, state.selectedContainerId)?.id === action.id;
           const selectedId = removedSelected ? firstBlockElement(blocks[Math.min(index, blocks.length - 1)])?.id || null : state.selectedId;
           return { ...state, schema: { ...state.schema, blocks }, selectedId, selectedContainerId: removedSelected ? null : state.selectedContainerId, removingId: null };
+        }
+        case "move-element-out": {
+          const location = elementLocation(state.schema, action.elementId);
+          if (!location || location.container.id !== action.containerId) return state;
+          const newContainer = containerFromElements([schemaField(clone(location.element))]);
+          const newBlock = { id: uid("block"), containers: [newContainer] };
+          const blocks = removeElementFromBlocks(state.schema.blocks, action.containerId, action.elementId);
+          const sourceBlockIndex = blocks.findIndex((block) => block.id === location.block.id);
+          const insertionIndex = sourceBlockIndex >= 0 ? sourceBlockIndex + 1 : Math.min(location.blockIndex, blocks.length);
+          blocks.splice(insertionIndex, 0, newBlock);
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: action.elementId, selectedContainerId: newContainer.id };
+        }
+        case "delete-element": {
+          const location = elementLocation(state.schema, action.elementId);
+          if (!location || location.container.id !== action.containerId) return state;
+          const blocks = removeElementFromBlocks(state.schema.blocks, action.containerId, action.elementId);
+          let nextSelectedId = state.selectedId;
+          let nextSelectedContainerId = state.selectedContainerId;
+          if (state.selectedId === action.elementId || state.selectedContainerId === action.containerId) {
+            const remainingContainer = containerById({ blocks }, action.containerId);
+            const nextSibling = remainingContainer ? containerElements(remainingContainer)[Math.min(location.elementIndex, containerElements(remainingContainer).length - 1)] : null;
+            if (nextSibling) {
+              nextSelectedId = nextSibling.id;
+              nextSelectedContainerId = action.containerId;
+            } else {
+              const nextBlock = blocks[Math.min(location.blockIndex, blocks.length - 1)] || blocks[blocks.length - 1] || null;
+              const nextElement = firstBlockElement(nextBlock);
+              const selection = nextElement ? selectionForElement({ ...state.schema, blocks }, nextElement.id) : { selectedId: null, selectedContainerId: null };
+              nextSelectedId = selection.selectedId;
+              nextSelectedContainerId = selection.selectedContainerId;
+            }
+          }
+          return { ...state, schema: { ...state.schema, blocks }, selectedId: nextSelectedId, selectedContainerId: nextSelectedContainerId };
         }
         case "duplicate-container": {
           let copy = null;
@@ -5948,7 +6407,7 @@
             containers.splice(index + 1, 0, copy);
             return { ...block, containers };
           });
-          return copy ? { ...state, schema: { ...state.schema, blocks }, selectedId: firstBlockElement({ containers: [copy] })?.id || state.selectedId, selectedContainerId: copy.id } : state;
+          return copy ? { ...state, schema: { ...state.schema, blocks }, selectedId: null, selectedContainerId: copy.id } : state;
         }
         case "reset-container":
           return {
@@ -5987,6 +6446,7 @@
       const replaceSchema = (schema) => dispatch({ type: "replace-schema", schema });
       const patchSchema = (patch) => dispatch({ type: "patch-schema", patch });
       const selectField = (id, containerId = null) => dispatch({ type: "select-field", id, containerId });
+      const selectContainer = (containerId) => dispatch({ type: "select-container", containerId });
       const fieldCardEntries = () => currentSchema().blocks
         .map((block) => [block.id, fieldCardRefs.current.get(block.id)])
         .filter(([, card]) => card);
@@ -5998,14 +6458,18 @@
 
       function patchSelectedContainer(patch) {
         const state = current();
-        const container = state.selectedContainerId
-          ? containerById(currentSchema(), state.selectedContainerId)
-          : containerForElement(currentSchema(), state.selectedId);
+        const container = state.selectedContainerId ? containerById(currentSchema(), state.selectedContainerId) : null;
         if (container) dispatch({ type: "patch-container", id: container.id, patch });
       }
 
-      function addField(type, index = currentSchema().blocks.length) {
-        dispatch({ type: "insert-field", block: blockFromType(type), index });
+      function addField(type, index = null) {
+        const explicitIndex = Number.isInteger(index);
+        const selectedContainerId = current().selectedContainerId;
+        if (!explicitIndex && selectedContainerId) {
+          dispatch({ type: "insert-element", containerId: selectedContainerId, element: elementFromType(type) });
+          return;
+        }
+        dispatch({ type: "insert-field", block: blockFromType(type), index: explicitIndex ? index : currentSchema().blocks.length });
       }
 
       function snapshotFieldRects() {
@@ -6038,6 +6502,22 @@
         dispatch({ type: "duplicate-field", id, copy: cloneBlockWithNewIds(source) });
       }
 
+      function moveElement(containerId, elementId, direction) {
+        dispatch({ type: "move-element", containerId, elementId, direction });
+      }
+
+      function moveElementOut(containerId, elementId) {
+        dispatch({ type: "move-element-out", containerId, elementId });
+      }
+
+      function duplicateElement(containerId, elementId) {
+        dispatch({ type: "duplicate-element", containerId, elementId });
+      }
+
+      function deleteElement(containerId, elementId) {
+        dispatch({ type: "delete-element", containerId, elementId });
+      }
+
       function resetField(id) {
         dispatch({ type: "reset-field", id });
       }
@@ -6066,6 +6546,7 @@
         if (payload.kind === "new") return { ...payload, index: schema.blocks.length };
         if (payload.kind === "move") return { ...payload, index: schema.blocks.findIndex((block) => block.id === payload.id) };
         if (payload.kind === "container") return payload;
+        if (payload.kind === "element") return payload;
         return null;
       }
 
@@ -6079,7 +6560,13 @@
         dragPayloadRef.current = payload;
         event.dataTransfer.setData("text/plain", DragPayloadModel.key(payload));
         event.dataTransfer.effectAllowed = payload.kind === "new" ? "copy" : "move";
-        const card = payload.kind === "container" ? event.currentTarget.closest(".block-container-preview") : payload.kind === "move" ? event.currentTarget.closest(".field-card") : null;
+        const card = payload.kind === "container"
+          ? event.currentTarget.closest(".block-container-preview")
+          : payload.kind === "element"
+            ? event.currentTarget.closest(".container-element")
+            : payload.kind === "move"
+              ? event.currentTarget.closest(".field-card")
+              : null;
         if (card) event.dataTransfer.setDragImage(card, 24, 24);
         setDragState(dragState);
       }
@@ -6114,7 +6601,7 @@
 
       function updateDropTarget(event) {
         const payload = payloadFromEvent(event);
-        if (!payload || !["new", "move"].includes(payload.kind)) return;
+        if (!payload || !["new", "move", "element"].includes(payload.kind)) return;
         event.preventDefault();
         event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
         const target = insertionTargetFromPointer(event.clientY);
@@ -6146,6 +6633,23 @@
         return point.placement;
       }
 
+      function containerInsertionTargetFromPointer(containerNode, clientY) {
+        const list = containerNode.querySelector(".container-elements");
+        const elements = [...(list?.querySelectorAll(".container-element") || [])];
+        if (!list) return { index: 0, y: 0, height: 38 };
+        if (!elements.length) return { index: 0, y: 0, height: 38 };
+        const listRect = list.getBoundingClientRect();
+        const listStyle = window.getComputedStyle(list);
+        const gap = Number.parseFloat(listStyle.rowGap || listStyle.gap) || 0;
+        const rects = elements.map((element) => element.getBoundingClientRect());
+        for (let index = 0; index < rects.length; index += 1) {
+          const rect = rects[index];
+          if (clientY < rect.top + rect.height / 2) return { index, y: rect.top - listRect.top, height: rect.height };
+        }
+        const lastRect = rects[rects.length - 1];
+        return { index: rects.length, y: lastRect.bottom - listRect.top + gap, height: lastRect.height };
+      }
+
       function updateBlockDropTarget(event, blockId) {
         const payload = payloadFromEvent(event);
         if (!DragPayloadModel.canDropOnBlock(payload, currentSchema().blocks, blockId)) return;
@@ -6156,6 +6660,16 @@
         setDragState((state) => state && DragPayloadModel.same(state, payload) && state.blockId === blockId && state.blockPlacement === blockPlacement ? state : { ...payload, index: null, y: null, blockId, blockPlacement });
       }
 
+      function updateContainerDropTarget(event, blockId, containerId) {
+        const payload = payloadFromEvent(event);
+        if (!DragPayloadModel.canDropOnContainer(payload, currentSchema().blocks, blockId, containerId)) return;
+        const target = containerInsertionTargetFromPointer(event.currentTarget, event.clientY);
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = DragPayloadModel.dropEffect(payload);
+        setDragState((state) => state && DragPayloadModel.same(state, payload) && state.containerDropId === containerId && state.containerDropIndex === target.index && state.containerDropY === target.y && state.containerDropHeight === target.height ? state : { ...payload, index: null, y: null, blockId: null, blockPlacement: null, containerDropId: containerId, containerDropIndex: target.index, containerDropY: target.y, containerDropHeight: target.height });
+      }
+
       function clearBlockDropTarget(event, blockId) {
         if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
         const rect = event.currentTarget.getBoundingClientRect();
@@ -6163,6 +6677,11 @@
         if (inside) return;
         if (blockDropRectRef.current?.blockId === blockId) blockDropRectRef.current = null;
         setDragState((state) => state?.blockId === blockId ? { ...state, blockId: null, blockPlacement: null } : state);
+      }
+
+      function clearContainerDropTarget(event, containerId) {
+        if (event.relatedTarget && event.currentTarget.contains(event.relatedTarget)) return;
+        setDragState((state) => state?.containerDropId === containerId ? { ...state, containerDropId: null } : state);
       }
 
       function handleBlockDrop(event, blockId) {
@@ -6179,6 +6698,20 @@
         dispatch({ type: "commit-schema", schema: result.schema, selectedId: result.selectedId, selectedContainerId: result.selectedContainerId });
       }
 
+      function handleContainerDrop(event, blockId, containerId) {
+        const payload = payloadFromEvent(event);
+        const schema = currentSchema();
+        if (!DragPayloadModel.canDropOnContainer(payload, schema.blocks, blockId, containerId)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const target = dragStateRef.current?.containerDropId === containerId ? dragStateRef.current : containerInsertionTargetFromPointer(event.currentTarget, event.clientY);
+        clearDragState();
+        const result = DragPayloadModel.addElementToContainer(schema, blockId, containerId, payload, target.containerDropIndex ?? target.index);
+        if (!result) return;
+        snapshotFieldRects();
+        dispatch({ type: "commit-schema", schema: result.schema, selectedId: result.selectedId, selectedContainerId: result.selectedContainerId });
+      }
+
       function handleDrop(event) {
         event.preventDefault();
         const payload = payloadFromEvent(event);
@@ -6186,6 +6719,13 @@
         clearDragState();
         if (payload?.kind === "new") addField(payload.type, target.index);
         if (payload?.kind === "move") moveFieldToDropIndex(payload.id, target.index);
+        if (payload?.kind === "element") {
+          const result = DragPayloadModel.moveElementToIndex(currentSchema(), payload, target.index);
+          if (result) {
+            snapshotFieldRects();
+            dispatch({ type: "commit-schema", schema: result.schema, selectedId: result.selectedId, selectedContainerId: result.selectedContainerId });
+          }
+        }
       }
 
       async function importSchema(event) {
@@ -6276,14 +6816,19 @@
         clearDropTarget,
         clearSelectionFromCanvas,
         deleteContainer,
+        deleteElement,
         deleteField,
         duplicateContainer,
+        duplicateElement,
         duplicateField,
         exportRuntime,
         exportSchema,
         handleDrop,
         handleBlockDrop,
+        handleContainerDrop,
         importSchema,
+        moveElement,
+        moveElementOut,
         moveField,
         patchSchema,
         patchSelectedContainer,
@@ -6294,7 +6839,10 @@
         resetContainer,
         resetField,
         resetForm,
+        selectContainer,
         selectField,
+        updateContainerDropTarget,
+        clearContainerDropTarget,
         updateDropTarget,
         updateBlockDropTarget
       };
@@ -6360,9 +6908,9 @@
       }
 
       const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldCardRefs, fieldRectsRef, dragPayloadRef, blockDropRectRef });
-      const selectedBlock = useMemo(() => blockForElement(schema, selectedId), [schema.blocks, selectedId]);
+      const selectedBlock = useMemo(() => selectedId ? blockForElement(schema, selectedId) : blockForContainer(schema, selectedContainerId), [schema.blocks, selectedId, selectedContainerId]);
       const selectedContainer = useMemo(() => selectedContainerId ? containerById(schema, selectedContainerId) : null, [schema.blocks, selectedContainerId]);
-      const selectedField = useMemo(() => selectedBlock && isCompositeBlock(selectedBlock) && !selectedContainerId ? null : schemaElements(schema).find((field) => field.id === selectedId) || null, [schema.blocks, selectedId, selectedBlock, selectedContainerId]);
+      const selectedField = useMemo(() => selectedId && (!selectedBlock || !isCompositeBlock(selectedBlock) || selectedContainerId) ? schemaElements(schema).find((field) => field.id === selectedId) || null : null, [schema.blocks, selectedId, selectedBlock, selectedContainerId]);
 
       useStoredSchema(schema);
       useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
@@ -6374,9 +6922,14 @@
       const activeDropIndex = Number.isInteger(dragState?.index) ? dragState.index : null;
       const activeDropY = Number.isFinite(dragState?.y) ? dragState.y : null;
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
+      const draggingElementId = dragState?.kind === "element" ? dragState.elementId : null;
       const blockDropId = dragState?.blockId || null;
       const blockDropPlacement = dragState?.blockPlacement || null;
-      const blockDropActive = Boolean(dragState?.kind && ["new", "move", "container"].includes(dragState.kind));
+      const containerDropId = dragState?.containerDropId || null;
+      const containerDropIndex = Number.isInteger(dragState?.containerDropIndex) ? dragState.containerDropIndex : null;
+      const containerDropY = Number.isFinite(dragState?.containerDropY) ? dragState.containerDropY : null;
+      const containerDropHeight = Number.isFinite(dragState?.containerDropHeight) ? dragState.containerDropHeight : null;
+      const blockDropActive = Boolean(dragState?.kind && ["new", "move", "container", "element"].includes(dragState.kind));
       const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
@@ -6456,6 +7009,11 @@
                     blocks=${schema.blocks}
                     selectedId=${selectedId}
                     selectedContainerId=${selectedContainerId}
+                    draggingElementId=${draggingElementId}
+                    containerDropId=${containerDropId}
+                    containerDropIndex=${containerDropIndex}
+                    containerDropY=${containerDropY}
+                    containerDropHeight=${containerDropHeight}
                     removingId=${removingId}
                     draggingBlockId=${draggingFieldId}
                     blockDropId=${blockDropId}
@@ -6463,6 +7021,7 @@
                     blockDropActive=${blockDropActive}
                     onCardRef=${registerFieldCard}
                     onSelect=${builder.selectField}
+                    onSelectContainer=${builder.selectContainer}
                     onMove=${builder.moveField}
                     onDuplicate=${builder.duplicateField}
                     onReset=${builder.resetField}
@@ -6470,11 +7029,18 @@
                     onDuplicateContainer=${builder.duplicateContainer}
                     onResetContainer=${builder.resetContainer}
                     onDeleteContainer=${builder.deleteContainer}
+                    onMoveElement=${builder.moveElement}
+                    onMoveElementOut=${builder.moveElementOut}
+                    onDuplicateElement=${builder.duplicateElement}
+                    onDeleteElement=${builder.deleteElement}
                     onFieldDragStart=${builder.beginDrag}
                     onFieldDragEnd=${builder.clearDragState}
                     onBlockDragOver=${builder.updateBlockDropTarget}
                     onBlockDragLeave=${builder.clearBlockDropTarget}
                     onBlockDrop=${builder.handleBlockDrop}
+                    onContainerDragOver=${builder.updateContainerDropTarget}
+                    onContainerDragLeave=${builder.clearContainerDropTarget}
+                    onContainerDrop=${builder.handleContainerDrop}
                   />
                   ${listDragActive && activeDropY !== null ? html`<${DropIndicator} y=${activeDropY} />` : null}
                 </div>
