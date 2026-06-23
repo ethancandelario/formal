@@ -1303,23 +1303,106 @@
     }
 
     .block-preview-middle {
+      /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "main";
       gap: 10px;
       min-width: 0;
       align-items: stretch;
     }
 
-    .block-preview.has-left.has-right .block-preview-middle {
-      grid-template-columns: minmax(130px, 0.45fr) minmax(0, 1fr) minmax(130px, 0.45fr);
+    .block-preview-middle.layout-left-main-right {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas: "left main right";
     }
 
-    .block-preview.has-left:not(.has-right) .block-preview-middle {
-      grid-template-columns: minmax(130px, 0.45fr) minmax(0, 1fr);
+    .block-preview-middle.layout-left-main {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "left main";
     }
 
-    .block-preview.has-right:not(.has-left) .block-preview-middle {
-      grid-template-columns: minmax(0, 1fr) minmax(130px, 0.45fr);
+    .block-preview-middle.layout-main-right {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "main right";
+    }
+
+    .block-preview-middle.layout-left-right {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "left right";
+    }
+
+    .block-preview-middle.layout-left {
+      grid-template-areas: "left";
+    }
+
+    .block-preview-middle.layout-right {
+      grid-template-areas: "right";
+    }
+
+    .block-preview-left,
+    .block-preview-main,
+    .block-preview-right {
+      width: auto;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .block-preview-left {
+      grid-area: left;
+    }
+
+    .block-preview-main {
+      grid-area: main;
+    }
+
+    .block-preview-right {
+      grid-area: right;
+    }
+
+    .block-placement-zones {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      display: none;
+      grid-template-columns: 42% minmax(0, 1fr) 42%;
+      grid-template-rows: 24% minmax(0, 1fr) 24%;
+      pointer-events: none;
+    }
+
+    .field-card.is-block-drag-active .block-placement-zones {
+      display: grid;
+      pointer-events: auto;
+    }
+
+    .block-placement-zone {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .block-placement-zone.placement-top {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .block-placement-zone.placement-left {
+      grid-column: 1;
+      grid-row: 1 / -1;
+    }
+
+    .block-placement-zone.placement-main {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .block-placement-zone.placement-right {
+      grid-column: 3;
+      grid-row: 1 / -1;
+    }
+
+    .block-placement-zone.placement-bottom {
+      grid-column: 2;
+      grid-row: 3;
     }
 
     .block-preview-stack {
@@ -1327,6 +1410,7 @@
       gap: 10px;
       min-width: 0;
       align-content: stretch;
+      container-type: inline-size;
     }
 
     .block-container-preview {
@@ -1336,7 +1420,6 @@
       width: 100%;
       min-width: 0;
       max-width: 100%;
-      container-type: inline-size;
       border: 1px solid transparent;
       border-radius: 8px;
       padding: 10px;
@@ -1414,6 +1497,10 @@
     .block-drop-preview.placement-bottom {
       inset: auto 0 0;
       height: min(42%, 110px);
+    }
+
+    .block-drop-preview.placement-main {
+      inset: 32% 28%;
     }
 
     .block-drop-preview.placement-left {
@@ -1996,6 +2083,7 @@
       display: flex;
       width: 100%;
       min-width: 0;
+      box-sizing: border-box;
     }
 
     .media-visual {
@@ -2904,10 +2992,15 @@
     }
 
     @media (max-width: 780px) {
-      .block-preview.has-left .block-preview-middle,
-      .block-preview.has-right .block-preview-middle,
-      .block-preview.has-left.has-right .block-preview-middle {
-        grid-template-columns: 1fr;
+      .block-preview-middle {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .block-preview-left,
+      .block-preview-main,
+      .block-preview-right {
+        width: 100%;
       }
 
       .calendar-preview,
@@ -3097,9 +3190,11 @@
     const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
     const FONT_WEIGHT_OPTIONS = [300, 400, 500, 600, 700, 750, 800, 900];
     const TEXT_TRANSFORM_OPTIONS = [["none", "None"], ["uppercase", "Uppercase"], ["lowercase", "Lowercase"], ["capitalize", "Title Case"]];
-    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
+    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "horizontalSize", "scale", "maxWidth", "maxHeight", "padding", "objectFit"];
     const CONTAINER_PLACEMENTS = ["main", "top", "left", "right", "bottom"];
-    const DEFAULT_BLOCK_ALIGNMENT = { horizontalAlignment: "stretch", verticalAlignment: "top" };
+    const MIDDLE_CONTAINER_PLACEMENTS = ["left", "main", "right"];
+    const PLACEMENT_HIT_BANDS = { side: 0.42, edge: 0.24 };
+    const DEFAULT_CONTAINER_LAYOUT = { horizontalAlignment: "left", verticalAlignment: "top", horizontalSize: "stretch", verticalSize: "auto" };
     const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
     const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
     const NON_REQUIRED_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
@@ -3122,7 +3217,7 @@
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", showLabel: true, outline: true, background: false } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { showLabel: true, outline: true, background: false } } },
       { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", showLabel: true, outline: false, background: false } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", showLabel: true, outline: false, background: false } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: 0, objectFit: "contain", showLabel: true, outline: false, background: false } } },
       { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, showLabel: true, outline: false, background: false } } }
     ];
 
@@ -3145,12 +3240,16 @@
       return { id: uid("field"), type: meta.type, ...clone(meta.defaults) };
     }
 
+    function defaultContainerLayout() {
+      return clone(DEFAULT_CONTAINER_LAYOUT);
+    }
+
     function containerFromElements(elements, placement = "main") {
-      return { id: uid("container"), placement, elements };
+      return { id: uid("container"), placement, ...defaultContainerLayout(elements), elements };
     }
 
     function blockFromType(type) {
-      return { id: uid("block"), ...DEFAULT_BLOCK_ALIGNMENT, containers: [containerFromElements([elementFromType(type)])] };
+      return { id: uid("block"), containers: [containerFromElements([elementFromType(type)])] };
     }
 
     function defaultSchema() {
@@ -3174,6 +3273,67 @@
       return blockContainers(block).flatMap(containerElements);
     }
 
+    function blockContainerRegions(block) {
+      const regions = Object.fromEntries(CONTAINER_PLACEMENTS.map((placement) => [placement, []]));
+      blockContainers(block).forEach((container) => {
+        regions[container.placement].push(container);
+      });
+      const middleLayout = MIDDLE_CONTAINER_PLACEMENTS
+        .filter((placement) => regions[placement].length)
+        .join("-") || "main";
+      return { ...regions, middleLayout: `layout-${middleLayout}` };
+    }
+
+    function isMiddlePlacement(placement) {
+      return MIDDLE_CONTAINER_PLACEMENTS.includes(placement);
+    }
+
+    function moveContainerIntoPlacement(containers, containerId, targetPlacement) {
+      if (!CONTAINER_PLACEMENTS.includes(targetPlacement)) return containers;
+      const moved = containers.find((container) => container.id === containerId);
+      if (!moved || moved.placement === targetPlacement) return containers;
+      if (!isMiddlePlacement(targetPlacement)) {
+        return containers.map((container) => container.id === containerId ? { ...container, placement: targetPlacement } : container);
+      }
+
+      const sourcePlacement = moved.placement;
+      const targetOccupants = containers.filter((container) => container.id !== containerId && container.placement === targetPlacement);
+      const targetOccupantIds = new Set(targetOccupants.map((container) => container.id));
+
+      return containers.map((container) => {
+        if (container.id === containerId) return { ...container, placement: targetPlacement };
+        if (targetOccupantIds.has(container.id)) return { ...container, placement: sourcePlacement };
+        return container;
+      });
+    }
+
+    function middleDisplacementOrder(targetPlacement) {
+      if (targetPlacement === "left") return ["main", "right"];
+      if (targetPlacement === "right") return ["main", "left"];
+      return ["right", "left"];
+    }
+
+    function placementForContainerCopy(containers, sourcePlacement) {
+      if (!isMiddlePlacement(sourcePlacement)) return sourcePlacement;
+      const occupiedPlacements = new Set(containers.map((container) => container.placement));
+      return middleDisplacementOrder(sourcePlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
+    }
+
+    function insertContainerIntoPlacement(containers, container, targetPlacement) {
+      if (!CONTAINER_PLACEMENTS.includes(targetPlacement)) return containers;
+      const nextContainer = { ...container, placement: targetPlacement };
+      if (!isMiddlePlacement(targetPlacement)) return [...containers, nextContainer];
+
+      const occupiedPlacements = new Set(containers.map((item) => item.placement));
+      const displacedPlacement = middleDisplacementOrder(targetPlacement).find((placement) => !occupiedPlacements.has(placement)) || "bottom";
+
+      const displaced = new Set(containers
+        .filter((item) => item.placement === targetPlacement)
+        .map((item) => item.id));
+      const nextContainers = containers.map((item) => displaced.has(item.id) ? { ...item, placement: displacedPlacement } : item);
+      return [...nextContainers, nextContainer];
+    }
+
     function schemaElements(schema) {
       return (schema.blocks || []).flatMap(blockElements);
     }
@@ -3186,6 +3346,18 @@
 
     function blockForElement(schema, elementId) {
       return (schema.blocks || []).find((block) => blockElements(block).some((element) => element.id === elementId)) || null;
+    }
+
+    function containerForElement(schema, elementId) {
+      for (const block of schema.blocks || []) {
+        const container = blockContainers(block).find((item) => containerElements(item).some((element) => element.id === elementId));
+        if (container) return container;
+      }
+      return null;
+    }
+
+    function containerById(schema, containerId) {
+      return (schema.blocks || []).flatMap(blockContainers).find((container) => container.id === containerId) || null;
     }
 
     function selectedBlockId(schema, elementId) {
@@ -3217,7 +3389,8 @@
     }
 
     function resetContainer(container) {
-      return { ...container, elements: containerElements(container).map(resetElement) };
+      const elements = containerElements(container).map(resetElement);
+      return { ...container, ...defaultContainerLayout(elements), elements };
     }
 
     function hexColor(value) {
@@ -3739,11 +3912,13 @@
       assertOneOf(settings.sourceType, ["url", "file", "html"], `${name}.sourceType`);
       ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `${name}.${key}`));
       assertNumberRange(settings.iframeHeight, `${name}.iframeHeight`, 120, 1200, true);
-      assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], `${name}.horizontalAlignment`);
+      assertOneOf(settings.horizontalAlignment, ["left", "center", "right"], `${name}.horizontalAlignment`);
       assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], `${name}.verticalAlignment`);
+      assertOneOf(settings.horizontalSize, ["auto", "stretch"], `${name}.horizontalSize`);
       assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
       assertCssLength(settings.maxWidth, `${name}.maxWidth`);
       assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
+      assertNumberRange(settings.padding, `${name}.padding`, 0, 120, true);
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
@@ -3880,24 +4055,36 @@
 
     function schemaContainer(raw, path) {
       const container = assertObject(raw, path);
-      assertExactKeys(container, ["id", "placement", "elements"], path);
+      assertExactKeys(container, ["id", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
       assertString(container.id, `${path}.id`);
       assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
+      assertOneOf(container.horizontalAlignment, ["left", "center", "right"], `${path}.horizontalAlignment`);
+      assertOneOf(container.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
+      assertOneOf(container.horizontalSize, ["auto", "stretch"], `${path}.horizontalSize`);
+      assertOneOf(container.verticalSize, ["auto", "stretch"], `${path}.verticalSize`);
       assertArray(container.elements, `${path}.elements`);
       if (!container.elements.length) throw new Error(`${path}.elements must contain at least one element.`);
       container.elements.forEach(schemaField);
       return container;
     }
 
+    function assertUniqueMiddlePlacements(containers, path) {
+      const seen = new Map();
+      containers.forEach((container, index) => {
+        if (!isMiddlePlacement(container.placement)) return;
+        if (seen.has(container.placement)) throw new Error(`${path}.containers[${index}].placement duplicates middle slot "${container.placement}".`);
+        seen.set(container.placement, index);
+      });
+    }
+
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
-      assertExactKeys(block, ["id", "horizontalAlignment", "verticalAlignment", "containers"], path);
+      assertExactKeys(block, ["id", "containers"], path);
       assertString(block.id, `${path}.id`);
-      assertOneOf(block.horizontalAlignment, ["left", "center", "right", "stretch"], `${path}.horizontalAlignment`);
-      assertOneOf(block.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
+      assertUniqueMiddlePlacements(block.containers, path);
       return block;
     }
 
@@ -3986,62 +4173,121 @@
       });
     }
 
-    function horizontalAlignmentSetting(value, allowed = ["left", "center", "right"]) {
-      if (!allowed.includes(value)) throw new Error(`Unsupported horizontal alignment: ${value}`);
-      return value;
+    class ChoiceSetting {
+      constructor(name, options) {
+        this.name = name;
+        this.options = options;
+        this.values = options.map((option) => option.value);
+      }
+
+      read(value) {
+        if (!this.values.includes(value)) throw new Error(`Unsupported ${this.name}: ${value}`);
+        return value;
+      }
     }
 
-    function verticalAlignmentSetting(value) {
-      if (!["top", "center", "bottom"].includes(value)) throw new Error(`Unsupported vertical alignment: ${value}`);
-      return value;
+    class AlignmentSetting extends ChoiceSetting {
+      constructor(name, options) {
+        super(name, options);
+      }
+
+      grid(value) {
+        const option = this.option(value);
+        return option.grid;
+      }
+
+      flex(value) {
+        const option = this.option(value);
+        return option.flex;
+      }
+
+      text(value) {
+        const option = this.option(value);
+        return option.text || "center";
+      }
+
+      objectPosition(value) {
+        const option = this.option(value);
+        return option.objectPosition || "center";
+      }
+
+      option(value) {
+        const clean = this.read(value);
+        return this.options.find((option) => option.value === clean);
+      }
     }
 
-    function gridAlignmentValue(value) {
-      if (value === "left" || value === "top") return "start";
-      if (value === "right" || value === "bottom") return "end";
-      return value;
+    class SizeSetting extends ChoiceSetting {
+      constructor(name) {
+        super(name, [
+          { value: "auto", label: "Auto" },
+          { value: "stretch", label: "Stretch" }
+        ]);
+      }
+
+      isStretch(value) {
+        return this.read(value) === "stretch";
+      }
     }
 
-    function blockAlignmentStyle(block) {
-      const horizontal = gridAlignmentValue(horizontalAlignmentSetting(block.horizontalAlignment, ["left", "center", "right", "stretch"]));
-      const vertical = gridAlignmentValue(verticalAlignmentSetting(block.verticalAlignment));
-      return `align-self: ${vertical}; justify-items: ${horizontal}; align-content: ${vertical};`;
+    const HORIZONTAL_ALIGNMENT = new AlignmentSetting("horizontal alignment", [
+      { value: "left", label: "Left", grid: "start", flex: "flex-start", text: "left", objectPosition: "left" },
+      { value: "center", label: "Center", grid: "center", flex: "center", text: "center", objectPosition: "center" },
+      { value: "right", label: "Right", grid: "end", flex: "flex-end", text: "right", objectPosition: "right" }
+    ]);
+    const VERTICAL_ALIGNMENT = new AlignmentSetting("vertical alignment", [
+      { value: "top", label: "Top", grid: "start", flex: "flex-start", objectPosition: "top" },
+      { value: "center", label: "Center", grid: "center", flex: "center", objectPosition: "center" },
+      { value: "bottom", label: "Bottom", grid: "end", flex: "flex-end", objectPosition: "bottom" }
+    ]);
+    const HORIZONTAL_SIZE = new SizeSetting("horizontal size");
+    const VERTICAL_SIZE = new SizeSetting("vertical size");
+
+    class ContainerLayoutModel {
+      constructor(container) {
+        this.horizontalAlignment = HORIZONTAL_ALIGNMENT.read(container.horizontalAlignment);
+        this.verticalAlignment = VERTICAL_ALIGNMENT.read(container.verticalAlignment);
+        this.horizontalSize = HORIZONTAL_SIZE.read(container.horizontalSize);
+        this.verticalSize = VERTICAL_SIZE.read(container.verticalSize);
+      }
+
+      get style() {
+        const horizontalStretch = HORIZONTAL_SIZE.isStretch(this.horizontalSize);
+        const verticalStretch = VERTICAL_SIZE.isStretch(this.verticalSize);
+        const horizontal = horizontalStretch ? "stretch" : HORIZONTAL_ALIGNMENT.grid(this.horizontalAlignment);
+        const vertical = verticalStretch ? "stretch" : VERTICAL_ALIGNMENT.grid(this.verticalAlignment);
+        const width = horizontalStretch ? "100%" : "max-content";
+        const height = verticalStretch ? "100%" : "auto";
+        return `justify-self: ${horizontal}; align-self: ${vertical}; justify-items: stretch; align-content: ${vertical}; width: ${width}; max-width: 100%; height: ${height}; box-sizing: border-box;`;
+      }
     }
 
-    function horizontalFlexValue(value) {
-      if (value === "left") return "flex-start";
-      if (value === "right") return "flex-end";
-      return "center";
-    }
+    class TextAlignmentModel {
+      constructor(horizontal, vertical) {
+        this.horizontal = HORIZONTAL_ALIGNMENT.read(horizontal);
+        this.vertical = VERTICAL_ALIGNMENT.read(vertical);
+      }
 
-    function verticalFlexValue(value) {
-      if (value === "top") return "flex-start";
-      if (value === "bottom") return "flex-end";
-      return "center";
-    }
-
-    function textAlignValue(value) {
-      if (value === "left" || value === "right") return value;
-      return "center";
+      get style() {
+        return `display: flex; justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontal)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.vertical)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontal)};`;
+      }
     }
 
     class HeadlineModel {
       constructor(field) {
         const settings = field.settings;
         this.field = field;
-        this.headingHorizontalAlignment = horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]);
-        this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
-        this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
-        this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
+        this.headingHorizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.headingHorizontalAlignment);
+        this.headingVerticalAlignment = VERTICAL_ALIGNMENT.read(settings.headingVerticalAlignment);
+        this.descriptionHorizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.descriptionHorizontalAlignment);
+        this.descriptionVerticalAlignment = VERTICAL_ALIGNMENT.read(settings.descriptionVerticalAlignment);
         this.showLabel = settings.showLabel;
         this.outline = settings.outline;
         this.background = settings.background;
       }
 
       textStyle(horizontalKey, verticalKey) {
-        const horizontal = this[horizontalKey];
-        const vertical = this[verticalKey];
-        return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+        return new TextAlignmentModel(this[horizontalKey], this[verticalKey]).style;
       }
     }
 
@@ -4060,11 +4306,13 @@
         this.caption = settings.caption;
         this.html = settings.html;
         this.iframeHeight = settings.iframeHeight;
-        this.horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-        this.verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
+        this.horizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.horizontalAlignment);
+        this.verticalAlignment = VERTICAL_ALIGNMENT.read(settings.verticalAlignment);
+        this.horizontalSize = HORIZONTAL_SIZE.read(settings.horizontalSize);
         this.scale = settings.scale;
         this.maxWidth = settings.maxWidth;
         this.maxHeight = settings.maxHeight;
+        this.padding = settings.padding;
         this.objectFit = objectFit;
         this.outline = settings.outline;
         this.background = settings.background;
@@ -4090,20 +4338,19 @@
       }
 
       get alignmentStyle() {
-        const justify = this.horizontalAlignment === "stretch" ? "stretch" : horizontalFlexValue(this.horizontalAlignment);
-        return `justify-content: ${justify}; align-items: ${verticalFlexValue(this.verticalAlignment)}; text-align: ${textAlignValue(this.horizontalAlignment)};`;
+        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding}px;`;
       }
 
       get audioStyle() {
-        return this.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
+        return HORIZONTAL_SIZE.isStretch(this.horizontalSize) ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
       }
 
       visualStyle(extra = "") {
-        const width = this.horizontalAlignment === "stretch" ? "100%" : `${this.scale}%`;
-        const maxWidth = this.maxWidth ? `max-width: ${this.maxWidth};` : "";
+        const width = HORIZONTAL_SIZE.isStretch(this.horizontalSize) ? "100%" : `${this.scale}%`;
+        const maxWidth = !HORIZONTAL_SIZE.isStretch(this.horizontalSize) && this.maxWidth ? `max-width: ${this.maxWidth};` : "";
         const maxHeight = `max-height: ${this.maxHeight}px;`;
-        const positionX = this.horizontalAlignment === "left" || this.horizontalAlignment === "right" ? this.horizontalAlignment : "center";
-        const positionY = this.verticalAlignment === "top" || this.verticalAlignment === "bottom" ? this.verticalAlignment : "center";
+        const positionX = HORIZONTAL_ALIGNMENT.objectPosition(this.horizontalAlignment);
+        const positionY = VERTICAL_ALIGNMENT.objectPosition(this.verticalAlignment);
         return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${this.objectFit}; object-position: ${positionX} ${positionY}; ${extra}`.trim();
       }
     }
@@ -4120,7 +4367,7 @@
             <div class="media-content-wrap" style=${media.alignmentStyle}>
               ${media.html
             ? html`<iframe class="media-embed media-visual" title=${media.title} srcdoc=${media.html} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" style=${media.visualStyle(`height: ${media.iframeHeight}px; max-height: none;`)}></iframe>`
-            : html`<div class="media-placeholder" style=${media.horizontalAlignment === "stretch" ? "width: 100%;" : ""}>Embedded HTML</div>`}
+            : html`<div class="media-placeholder" style=${HORIZONTAL_SIZE.isStretch(media.horizontalSize) ? "width: 100%;" : ""}>Embedded HTML</div>`}
             </div>
             ${media.caption ? html`<p class="media-caption">${media.caption}</p>` : null}
           </div>
@@ -4854,6 +5101,14 @@
       return html`<div class=${`block-drop-preview placement-${placement}`} aria-hidden="true"></div>`;
     }
 
+    function BlockPlacementZones({ active }) {
+      return html`
+        <div class=${`block-placement-zones${active ? " is-active" : ""}`} aria-hidden="true">
+          ${CONTAINER_PLACEMENTS.map((placement) => html`<div class=${`block-placement-zone placement-${placement}`} data-block-placement=${placement}></div>`)}
+        </div>
+      `;
+    }
+
     function ElementPreview({ field }) {
       const labelText = String(field.label ?? "").trim();
       const visibleLabel = field.settings.showLabel ? labelText : "";
@@ -4902,7 +5157,7 @@
       }
 
       return html`
-        <div class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${draggable ? " is-draggable" : ""}`} style=${blockAlignmentStyle(block)} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${label} draggable=${draggable} onClick=${handleClick} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
+        <div class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${draggable ? " is-draggable" : ""}`} style=${new ContainerLayoutModel(container).style} role="button" tabIndex="0" aria-pressed=${selected} aria-label=${label} draggable=${draggable} onClick=${handleClick} onKeyDown=${handleKey} onDragStart=${handleDragStart} onDragEnd=${handleDragEnd}>
           <div class="container-tools">
             <button class="icon-button" type="button" onClick=${() => onResetContainer(block.id, container.id)} title="Reset container" aria-label="Reset container"><${Icon} icon="fa-solid fa-rotate-left" /></button>
             <button class="icon-button" type="button" onClick=${() => onDuplicateContainer(block.id, container.id)} title="Duplicate container" aria-label="Duplicate container"><${Icon} icon="fa-regular fa-copy" /></button>
@@ -4937,28 +5192,31 @@
       `;
     }
 
-    function BlockPreview({ block, selectedContainerId, dropPlacement, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
-      const containers = blockContainers(block);
-      const top = containers.filter((container) => container.placement === "top");
-      const left = containers.filter((container) => container.placement === "left");
-      const main = containers.filter((container) => container.placement === "main");
-      const right = containers.filter((container) => container.placement === "right");
-      const bottom = containers.filter((container) => container.placement === "bottom");
+    function MiddleContainerPreviewRow({ layout, block, selectedContainerId, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+      if (!layout.left.length && !layout.main.length && !layout.right.length) return null;
       return html`
-        <div class=${`block-preview${left.length ? " has-left" : ""}${right.length ? " has-right" : ""}${dropPlacement ? " is-container-target target-" + dropPlacement : ""}`}>
-          <${ContainerPreviewStack} containers=${top} className="block-preview-stack block-preview-top" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          <div class="block-preview-middle">
-            <${ContainerPreviewStack} containers=${left} className="block-preview-stack block-preview-left" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-            <${ContainerPreviewStack} containers=${main} className="block-preview-stack block-preview-main" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-            <${ContainerPreviewStack} containers=${right} className="block-preview-stack block-preview-right" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
-          </div>
-          <${ContainerPreviewStack} containers=${bottom} className="block-preview-stack block-preview-bottom" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+        <div class=${`block-preview-middle ${layout.middleLayout}`}>
+          <${ContainerPreviewStack} containers=${layout.left} className="block-preview-stack block-preview-left" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <${ContainerPreviewStack} containers=${layout.main} className="block-preview-stack block-preview-main" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <${ContainerPreviewStack} containers=${layout.right} className="block-preview-stack block-preview-right" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+        </div>
+      `;
+    }
+
+    function BlockPreview({ block, selectedContainerId, dropPlacement, dropActive, onSelectElement, onDuplicateContainer, onResetContainer, onDeleteContainer, onContainerDragStart, onContainerDragEnd }) {
+      const layout = blockContainerRegions(block);
+      return html`
+        <div class=${`block-preview ${layout.middleLayout}${dropPlacement ? " is-container-target target-" + dropPlacement : ""}`}>
+          <${ContainerPreviewStack} containers=${layout.top} className="block-preview-stack block-preview-top" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <${MiddleContainerPreviewRow} layout=${layout} block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <${ContainerPreviewStack} containers=${layout.bottom} className="block-preview-stack block-preview-bottom" block=${block} selectedContainerId=${selectedContainerId} onSelectElement=${onSelectElement} onDuplicateContainer=${onDuplicateContainer} onResetContainer=${onResetContainer} onDeleteContainer=${onDeleteContainer} onContainerDragStart=${onContainerDragStart} onContainerDragEnd=${onContainerDragEnd} />
+          <${BlockPlacementZones} active=${dropActive} />
           ${dropPlacement ? html`<${BlockDropPreview} placement=${dropPlacement} />` : null}
         </div>
       `;
     }
 
-    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldListContent({ blocks, selectedId, selectedContainerId, removingId, draggingBlockId, blockDropId, blockDropPlacement, blockDropActive, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onFieldDragStart, onFieldDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
       if (!blocks.length) return html`<div class="empty-state"><span>Add some blocks from the sidebar!</span></div>`;
 
       return blocks.map((block) => {
@@ -4972,6 +5230,7 @@
             removing=${block.id === removingId}
             dragging=${block.id === draggingBlockId}
             blockDropPlacement=${block.id === blockDropId ? blockDropPlacement : null}
+            blockDropActive=${blockDropActive}
             onSelect=${onSelect}
             onMove=${(direction) => onMove(block.id, direction)}
             onDuplicate=${() => onDuplicate(block.id)}
@@ -4990,7 +5249,7 @@
       });
     }
 
-    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
+    function FieldCard({ block, selectedContainerId, selected, removing, dragging, blockDropPlacement, blockDropActive, onSelect, onMove, onDuplicate, onReset, onDelete, onDuplicateContainer, onResetContainer, onDeleteContainer, onDragStart, onDragEnd, onBlockDragOver, onBlockDragLeave, onBlockDrop }) {
       const primary = firstBlockElement(block);
       const composite = isCompositeBlock(block);
       const meta = primary && !composite ? typeMeta(primary.type) : { icon: "lucide-component", name: "Block" };
@@ -5011,7 +5270,7 @@
 
       return html`
         <article
-          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropPlacement ? " is-container-target target-" + blockDropPlacement : ""}`}
+          class=${`field-card${hasBackground ? " with-background" : ""}${selected ? " selected" : ""}${removing ? " removing" : ""}${dragging ? " is-dragging" : ""}${blockDropActive ? " is-block-drag-active" : ""}${blockDropPlacement ? " is-container-target target-" + blockDropPlacement : ""}`}
           data-field-id=${block.id}
           onClick=${handleCardClick}
           onDragOver=${onBlockDragOver}
@@ -5035,6 +5294,7 @@
               block=${block}
               selectedContainerId=${selectedContainerId}
               dropPlacement=${blockDropPlacement}
+              dropActive=${blockDropActive}
               onSelectElement=${onSelect}
               onDuplicateContainer=${onDuplicateContainer}
               onResetContainer=${onResetContainer}
@@ -5079,12 +5339,18 @@
       };
     }
 
-    function Inspector({ schema, selectedField, selectedBlock, onSchemaChange, onFieldChange, onBlockChange }) {
+    function Inspector({ schema, selectedField, selectedBlock, selectedContainer, onSchemaChange, onFieldChange, onContainerChange }) {
       if (!selectedField) {
+        if (selectedContainer) return html`
+          <h2 class="panel-title"><${Icon} icon="lucide-component" /><span>Sub-block</span></h2>
+          <div class="property-stack">
+            <${ContainerLayoutSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />
+          </div>
+        `;
         if (selectedBlock) return html`
           <h2 class="panel-title"><${Icon} icon="lucide-component" /><span>Block</span></h2>
           <div class="property-stack">
-            <${BlockSettings} block=${selectedBlock} onBlockChange=${onBlockChange} />
+            <div class="radar-mode-note">Select a sub-block to edit its layout.</div>
           </div>
         `;
         return html`
@@ -5116,7 +5382,7 @@
           <${PlaceholderSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${OptionSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           <${TypeSettings} field=${selectedField} onFieldChange=${onFieldChange} />
-          <${BlockSettings} block=${selectedBlock} onBlockChange=${onBlockChange} />
+          ${selectedContainer ? html`<${ContainerLayoutSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />` : null}
           <${OutlineSettings} field=${selectedField} onFieldChange=${onFieldChange} />
           ${!NON_REQUIRED_FIELD_TYPES.has(selectedField.type) ? html`
             <label class="toggle-row">
@@ -5128,20 +5394,34 @@
       `;
     }
 
-    function BlockSettings({ block, onBlockChange }) {
-      if (!block) return null;
+    function ContainerLayoutSettings({ container, onContainerChange }) {
+      if (!container) return null;
+      const idPrefix = `container_${container.id}`;
       return html`
+        <div class="mini-label">Sub-block layout</div>
         <div class="settings-grid">
           <div class="property">
-            <label for="blockHorizontalAlignment">Sub horizontal alignment</label>
-            <select class="control" id="blockHorizontalAlignment" value=${block.horizontalAlignment} onChange=${(event) => onBlockChange({ horizontalAlignment: event.currentTarget.value })}>
-              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option><option value="stretch">Stretch</option>
+            <label for=${`${idPrefix}_horizontalAlignment`}>Horizontal alignment</label>
+            <select class="control" id=${`${idPrefix}_horizontalAlignment`} value=${container.horizontalAlignment} onChange=${(event) => onContainerChange({ horizontalAlignment: event.currentTarget.value })}>
+              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
           <div class="property">
-            <label for="blockVerticalAlignment">Sub vertical alignment</label>
-            <select class="control" id="blockVerticalAlignment" value=${block.verticalAlignment} onChange=${(event) => onBlockChange({ verticalAlignment: event.currentTarget.value })}>
-              <option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option>
+            <label for=${`${idPrefix}_horizontalSize`}>Horizontal size</label>
+            <select class="control" id=${`${idPrefix}_horizontalSize`} value=${container.horizontalSize} onChange=${(event) => onContainerChange({ horizontalSize: event.currentTarget.value })}>
+              ${HORIZONTAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
+            </select>
+          </div>
+          <div class="property">
+            <label for=${`${idPrefix}_verticalAlignment`}>Vertical alignment</label>
+            <select class="control" id=${`${idPrefix}_verticalAlignment`} value=${container.verticalAlignment} onChange=${(event) => onContainerChange({ verticalAlignment: event.currentTarget.value })}>
+              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
+            </select>
+          </div>
+          <div class="property">
+            <label for=${`${idPrefix}_verticalSize`}>Vertical size</label>
+            <select class="control" id=${`${idPrefix}_verticalSize`} value=${container.verticalSize} onChange=${(event) => onContainerChange({ verticalSize: event.currentTarget.value })}>
+              ${VERTICAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
         </div>
@@ -5292,40 +5572,48 @@
             <div class="property">
               <label for="mediaHorizontalAlignment">Horizontal alignment</label>
               <select class="control" id="mediaHorizontalAlignment" value=${settings.horizontalAlignment} onChange=${(event) => editor.patchNonData({ horizontalAlignment: event.currentTarget.value })}>
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-                <option value="stretch">Stretch</option>
+                ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
               </select>
             </div>
             <div class="property">
               <label for="mediaVerticalAlignment">Vertical alignment</label>
               <select class="control" id="mediaVerticalAlignment" value=${settings.verticalAlignment} onChange=${(event) => editor.patchNonData({ verticalAlignment: event.currentTarget.value })}>
-                <option value="top">Top</option>
-                <option value="center">Center</option>
-                <option value="bottom">Bottom</option>
+                ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
               </select>
             </div>
           </div>
 
           <div class="settings-grid">
             <div class="property">
-              <label for="mediaScale">Scale %</label>
-              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalAlignment === "stretch"} onInput=${(event) => editor.patchNonData({ scale: Number(event.currentTarget.value) })} />
+              <label for="mediaHorizontalSize">Horizontal size</label>
+              <select class="control" id="mediaHorizontalSize" value=${settings.horizontalSize} onChange=${(event) => editor.patchNonData({ horizontalSize: event.currentTarget.value })}>
+                ${HORIZONTAL_SIZE.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
+              </select>
             </div>
             <div class="property">
-              <label for="mediaMaxWidth">Max width</label>
-              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => editor.patchNonData({ maxWidth: event.currentTarget.value })} />
+              <label for="mediaScale">Width %</label>
+              <input class="control" id="mediaScale" type="number" min="10" max="100" value=${settings.scale} disabled=${settings.horizontalSize === "stretch"} onInput=${(event) => editor.patchNonData({ scale: Number(event.currentTarget.value) })} />
             </div>
           </div>
 
           <div class="settings-grid">
             <div class="property">
+              <label for="mediaMaxWidth">Max width</label>
+              <input class="control" id="mediaMaxWidth" value=${settings.maxWidth} placeholder="640px" onInput=${(event) => editor.patchNonData({ maxWidth: event.currentTarget.value })} />
+            </div>
+            <div class="property">
               <label for="mediaMaxHeight">Max height</label>
               <input class="control" id="mediaMaxHeight" type="number" min="80" max="1600" value=${settings.maxHeight} onInput=${(event) => editor.patchNonData({ maxHeight: Number(event.currentTarget.value) })} />
             </div>
+          </div>
+
+          <div class="settings-grid">
             <div class="property">
-              <label for="mediaObjectFit">Fit</label>
+              <label for="mediaPadding">Padding</label>
+              <input class="control" id="mediaPadding" type="number" min="0" max="120" value=${settings.padding} onInput=${(event) => editor.patchNonData({ padding: Number(event.currentTarget.value) })} />
+            </div>
+            <div class="property">
+              <label for="mediaObjectFit">Object fit</label>
               <select class="control" id="mediaObjectFit" value=${settings.objectFit} onChange=${(event) => editor.patchNonData({ objectFit: event.currentTarget.value })}>
                 <option value="contain">Contain</option>
                 <option value="cover">Cover</option>
@@ -5342,35 +5630,27 @@
       return html`
         <div class="settings-grid">
           <div class="property">
-            <label for="headingHorizontalAlignment">Heading horizontal</label>
+            <label for="headingHorizontalAlignment">Heading horizontal alignment</label>
             <select class="control" id="headingHorizontalAlignment" value=${headline.headingHorizontalAlignment} onChange=${(event) => editor.patchNonData({ headingHorizontalAlignment: event.currentTarget.value })}>
-              <option value="left">Left</option>
-              <option value="center">Center</option>
-              <option value="right">Right</option>
+              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
           <div class="property">
-            <label for="headingVerticalAlignment">Heading vertical</label>
+            <label for="headingVerticalAlignment">Heading vertical alignment</label>
             <select class="control" id="headingVerticalAlignment" value=${headline.headingVerticalAlignment} onChange=${(event) => editor.patchNonData({ headingVerticalAlignment: event.currentTarget.value })}>
-              <option value="top">Top</option>
-              <option value="center">Center</option>
-              <option value="bottom">Bottom</option>
+              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
           <div class="property">
-            <label for="descriptionHorizontalAlignment">Subhead horizontal</label>
+            <label for="descriptionHorizontalAlignment">Subhead horizontal alignment</label>
             <select class="control" id="descriptionHorizontalAlignment" value=${headline.descriptionHorizontalAlignment} onChange=${(event) => editor.patchNonData({ descriptionHorizontalAlignment: event.currentTarget.value })}>
-              <option value="left">Left</option>
-              <option value="center">Center</option>
-              <option value="right">Right</option>
+              ${HORIZONTAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
           <div class="property">
-            <label for="descriptionVerticalAlignment">Subhead vertical</label>
+            <label for="descriptionVerticalAlignment">Subhead vertical alignment</label>
             <select class="control" id="descriptionVerticalAlignment" value=${headline.descriptionVerticalAlignment} onChange=${(event) => editor.patchNonData({ descriptionVerticalAlignment: event.currentTarget.value })}>
-              <option value="top">Top</option>
-              <option value="center">Center</option>
-              <option value="bottom">Bottom</option>
+              ${VERTICAL_ALIGNMENT.options.map((option) => html`<option value=${option.value} key=${option.value}>${option.label}</option>`)}
             </select>
           </div>
         </div>
@@ -5688,13 +5968,10 @@
         let selectedContainerId = null;
         const blocks = schema.blocks.map((block) => {
           if (block.id !== blockId) return block;
-          const index = block.containers.findIndex((container) => container.id === payload.containerId);
-          const container = { ...block.containers[index], placement };
-          const containers = [...block.containers];
-          containers.splice(index, 1);
-          containers.push(container);
-          selectedId = firstBlockElement({ containers: [container] })?.id || null;
-          selectedContainerId = container.id;
+          const containers = moveContainerIntoPlacement(block.containers, payload.containerId, placement);
+          const selectedContainer = containers.find((container) => container.id === payload.containerId) || null;
+          selectedId = selectedContainer ? firstBlockElement({ containers: [selectedContainer] })?.id || null : null;
+          selectedContainerId = selectedContainer?.id || null;
           return { ...block, containers };
         });
         return { schema: { ...schema, blocks }, selectedId, selectedContainerId };
@@ -5708,7 +5985,10 @@
         const sourceBlockId = payload.kind === "move" ? payload.id : null;
         const blocks = schema.blocks
           .filter((block) => block.id !== sourceBlockId)
-          .map((block) => block.id === blockId ? { ...block, containers: [...block.containers, container] } : block);
+          .map((block) => {
+            if (block.id !== blockId) return block;
+            return { ...block, containers: insertContainerIntoPlacement(block.containers, container, placement) };
+          });
         return { schema: { ...schema, blocks }, selectedId: element.id, selectedContainerId: container.id };
       }
     }
@@ -5745,8 +6025,27 @@
               }))
             }
           };
-        case "patch-block":
-          return { ...state, schema: { ...state.schema, blocks: state.schema.blocks.map((block) => block.id === action.id ? { ...block, ...action.patch } : block) } };
+        case "patch-container": {
+          const patch = action.patch || {};
+          const hasPlacementPatch = Object.prototype.hasOwnProperty.call(patch, "placement");
+          return {
+            ...state,
+            schema: {
+              ...state.schema,
+              blocks: state.schema.blocks.map((block) => {
+                if (!block.containers.some((container) => container.id === action.id)) return block;
+                if (!hasPlacementPatch) {
+                  return {
+                    ...block,
+                    containers: block.containers.map((container) => container.id === action.id ? { ...container, ...patch } : container)
+                  };
+                }
+                const containers = block.containers.map((container) => container.id === action.id ? { ...container, ...patch, placement: container.placement } : container);
+                return { ...block, containers: moveContainerIntoPlacement(containers, action.id, patch.placement) };
+              })
+            }
+          };
+        }
         case "select-field":
           return state.selectedId === action.id && state.selectedContainerId === (action.containerId || null) ? state : { ...state, selectedId: action.id, selectedContainerId: action.containerId || null };
         case "insert-field": {
@@ -5796,7 +6095,8 @@
             if (block.id !== action.blockId) return block;
             const index = block.containers.findIndex((container) => container.id === action.containerId);
             if (index < 0) return block;
-            copy = cloneContainerWithNewIds(block.containers[index]);
+            const source = block.containers[index];
+            copy = { ...cloneContainerWithNewIds(source), placement: placementForContainerCopy(block.containers, source.placement) };
             const containers = [...block.containers];
             containers.splice(index + 1, 0, copy);
             return { ...block, containers };
@@ -5846,9 +6146,12 @@
         if (id) dispatch({ type: "patch-field", id, patch });
       }
 
-      function patchSelectedBlock(patch) {
-        const block = current().selectedContainerId ? null : blockForElement(currentSchema(), current().selectedId);
-        if (block) dispatch({ type: "patch-block", id: block.id, patch });
+      function patchSelectedContainer(patch) {
+        const state = current();
+        const container = state.selectedContainerId
+          ? containerById(currentSchema(), state.selectedContainerId)
+          : containerForElement(currentSchema(), state.selectedId);
+        if (container) dispatch({ type: "patch-container", id: container.id, patch });
       }
 
       function addField(type, index = currentSchema().blocks.length) {
@@ -5973,18 +6276,26 @@
         setDragState((state) => state ? { ...state, index: null } : state);
       }
 
-      function containerPlacementFromPointer(event, blockId) {
+      function blockPointerPlacement(event, blockId) {
+        const placementTarget = event.target?.closest?.("[data-block-placement]");
         let rect = blockDropRectRef.current?.blockId === blockId ? blockDropRectRef.current : null;
         if (!rect) {
           const measured = (event.currentTarget.querySelector(".field-card-body") || event.currentTarget).getBoundingClientRect();
           rect = blockDropRectRef.current = { blockId, left: measured.left, top: measured.top, width: measured.width, height: measured.height };
         }
-        const x = rect.width ? (event.clientX - rect.left) / rect.width : 1;
-        const y = rect.height ? (event.clientY - rect.top) / rect.height : 0.5;
-        if (x < 0.28) return "left";
-        if (x > 0.72) return "right";
-        if (y < 0.34) return "top";
-        return "bottom";
+        const x = rect.width ? Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)) : 0.5;
+        const y = rect.height ? Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)) : 0.5;
+        if (placementTarget && event.currentTarget.contains(placementTarget)) return { placement: placementTarget.dataset.blockPlacement, x, y };
+        if (x < PLACEMENT_HIT_BANDS.side) return { placement: "left", x, y };
+        if (x > 1 - PLACEMENT_HIT_BANDS.side) return { placement: "right", x, y };
+        if (y < PLACEMENT_HIT_BANDS.edge) return { placement: "top", x, y };
+        if (y > 1 - PLACEMENT_HIT_BANDS.edge) return { placement: "bottom", x, y };
+        return { placement: "main", x, y };
+      }
+
+      function containerPlacementFromPointer(event, blockId) {
+        const point = blockPointerPlacement(event, blockId);
+        return point.placement;
       }
 
       function updateBlockDropTarget(event, blockId) {
@@ -6127,7 +6438,7 @@
         importSchema,
         moveField,
         patchSchema,
-        patchSelectedBlock,
+        patchSelectedContainer,
         patchSelectedField,
         patchTheme,
         patchTypographyRole,
@@ -6208,8 +6519,9 @@
       dragStateRef.current = dragState;
 
       const builder = useBuilderActions({ stateRef, dragStateRef, dispatch: dispatchBuilder, setDragState, setExportMenuOpen, fieldsRef, fieldRectsRef, dragPayloadRef, blockDropRectRef });
-      const selectedBlock = useMemo(() => selectedContainerId ? null : blockForElement(schema, selectedId), [schema.blocks, selectedId, selectedContainerId]);
-      const selectedField = useMemo(() => selectedBlock && isCompositeBlock(selectedBlock) ? null : schemaElements(schema).find((field) => field.id === selectedId) || null, [schema.blocks, selectedId, selectedBlock]);
+      const selectedBlock = useMemo(() => blockForElement(schema, selectedId), [schema.blocks, selectedId]);
+      const selectedContainer = useMemo(() => selectedContainerId ? containerById(schema, selectedContainerId) : null, [schema.blocks, selectedContainerId]);
+      const selectedField = useMemo(() => selectedBlock && isCompositeBlock(selectedBlock) && !selectedContainerId ? null : schemaElements(schema).find((field) => field.id === selectedId) || null, [schema.blocks, selectedId, selectedBlock, selectedContainerId]);
 
       useStoredSchema(schema);
       useDismissableLayer(exportMenuOpen, exportMenuRef, () => setExportMenuOpen(false));
@@ -6223,6 +6535,7 @@
       const draggingFieldId = dragState?.kind === "move" ? dragState.id : null;
       const blockDropId = dragState?.blockId || null;
       const blockDropPlacement = dragState?.blockPlacement || null;
+      const blockDropActive = Boolean(dragState?.kind && ["new", "move", "container"].includes(dragState.kind));
       const listDragActive = dragState?.kind && activeDropIndex !== null;
 
       useEffect(() => {
@@ -6310,6 +6623,7 @@
                     draggingBlockId=${draggingFieldId}
                     blockDropId=${blockDropId}
                     blockDropPlacement=${blockDropPlacement}
+                    blockDropActive=${blockDropActive}
                     onSelect=${builder.selectField}
                     onMove=${builder.moveField}
                     onDuplicate=${builder.duplicateField}
@@ -6334,9 +6648,10 @@
                 schema=${schema}
                 selectedField=${selectedField}
                 selectedBlock=${selectedBlock}
+                selectedContainer=${selectedContainer}
                 onSchemaChange=${builder.patchSchema}
                 onFieldChange=${builder.patchSelectedField}
-                onBlockChange=${builder.patchSelectedBlock}
+                onContainerChange=${builder.patchSelectedContainer}
               />
             </aside>
           </main>

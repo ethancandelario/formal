@@ -571,23 +571,61 @@
     }
 
     .block-middle {
+      /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "main";
       gap: var(--form-field-spacing);
       min-width: 0;
       align-items: stretch;
     }
 
-    .form-block.has-left.has-right .block-middle {
-      grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1fr) minmax(150px, 0.45fr);
+    .block-middle.layout-left-main-right {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas: "left main right";
     }
 
-    .form-block.has-left:not(.has-right) .block-middle {
-      grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1fr);
+    .block-middle.layout-left-main {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "left main";
     }
 
-    .form-block.has-right:not(.has-left) .block-middle {
-      grid-template-columns: minmax(0, 1fr) minmax(150px, 0.45fr);
+    .block-middle.layout-main-right {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "main right";
+    }
+
+    .block-middle.layout-left-right {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "left right";
+    }
+
+    .block-middle.layout-left {
+      grid-template-areas: "left";
+    }
+
+    .block-middle.layout-right {
+      grid-template-areas: "right";
+    }
+
+    .block-left,
+    .block-main,
+    .block-right {
+      width: auto;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .block-left {
+      grid-area: left;
+    }
+
+    .block-main {
+      grid-area: main;
+    }
+
+    .block-right {
+      grid-area: right;
     }
 
     .block-stack,
@@ -598,9 +636,12 @@
       align-content: stretch;
     }
 
+    .block-stack {
+      container-type: inline-size;
+    }
+
     .block-container {
       width: 100%;
-      container-type: inline-size;
     }
 
     .field {
@@ -1615,6 +1656,7 @@
       display: flex;
       width: 100%;
       min-width: 0;
+      box-sizing: border-box;
     }
 
     .media-visual {
@@ -1768,10 +1810,15 @@
         grid-template-columns: 1fr;
       }
 
-      .form-block.has-left .block-middle,
-      .form-block.has-right .block-middle,
-      .form-block.has-left.has-right .block-middle {
-        grid-template-columns: 1fr;
+      .block-middle {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .block-left,
+      .block-main,
+      .block-right {
+        width: 100%;
       }
 
       .runtime-sidebar {
@@ -2323,8 +2370,9 @@
     ];
     const TYPOGRAPHY_ROLE_KEYS = TYPOGRAPHY_ROLES.map((role) => role.key);
     const TYPOGRAPHY_STYLE_KEYS = ["fontFamily", "color", "size", "weight", "style", "lineHeight", "letterSpacing", "textTransform"];
-    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "scale", "maxWidth", "maxHeight", "objectFit"];
+    const MEDIA_SETTING_KEYS = ["sourceType", "url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html", "iframeHeight", "horizontalAlignment", "verticalAlignment", "horizontalSize", "scale", "maxWidth", "maxHeight", "padding", "objectFit"];
     const CONTAINER_PLACEMENTS = ["main", "top", "left", "right", "bottom"];
+    const MIDDLE_CONTAINER_PLACEMENTS = ["left", "main", "right"];
     const PLACEHOLDER_FIELD_TYPES = new Set(["short_answer", "long_answer", "email", "number", "link"]);
     const OPTION_FIELD_TYPES = new Set(["multiple_choice", "checkbox", "poll"]);
     const NON_DATA_FIELD_TYPES = new Set(["headline", "media", "spacer"]);
@@ -2401,6 +2449,17 @@
 
     function blockElements(block) {
       return blockContainers(block).flatMap(containerElements);
+    }
+
+    function blockContainerRegions(block) {
+      const regions = Object.fromEntries(CONTAINER_PLACEMENTS.map((placement) => [placement, []]));
+      blockContainers(block).forEach((container) => {
+        regions[container.placement].push(container);
+      });
+      const middleLayout = MIDDLE_CONTAINER_PLACEMENTS
+        .filter((placement) => regions[placement].length)
+        .join("-") || "main";
+      return { ...regions, middleLayout: `layout-${middleLayout}` };
     }
 
     function schemaElements(schema) {
@@ -3007,11 +3066,13 @@
       assertOneOf(settings.sourceType, ["url", "file", "html"], `${name}.sourceType`);
       ["url", "dataUrl", "mimeType", "fileName", "alt", "caption", "html"].forEach((key) => assertString(settings[key], `${name}.${key}`));
       assertNumberRange(settings.iframeHeight, `${name}.iframeHeight`, 120, 1200, true);
-      assertOneOf(settings.horizontalAlignment, ["left", "center", "right", "stretch"], `${name}.horizontalAlignment`);
+      assertOneOf(settings.horizontalAlignment, ["left", "center", "right"], `${name}.horizontalAlignment`);
       assertOneOf(settings.verticalAlignment, ["top", "center", "bottom"], `${name}.verticalAlignment`);
+      assertOneOf(settings.horizontalSize, ["auto", "stretch"], `${name}.horizontalSize`);
       assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
       assertCssLength(settings.maxWidth, `${name}.maxWidth`);
       assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
+      assertNumberRange(settings.padding, `${name}.padding`, 0, 120, true);
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
@@ -3148,24 +3209,40 @@
 
     function schemaContainer(raw, path) {
       const container = assertObject(raw, path);
-      assertExactKeys(container, ["id", "placement", "elements"], path);
+      assertExactKeys(container, ["id", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
       assertString(container.id, `${path}.id`);
       assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
+      assertOneOf(container.horizontalAlignment, ["left", "center", "right"], `${path}.horizontalAlignment`);
+      assertOneOf(container.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
+      assertOneOf(container.horizontalSize, ["auto", "stretch"], `${path}.horizontalSize`);
+      assertOneOf(container.verticalSize, ["auto", "stretch"], `${path}.verticalSize`);
       assertArray(container.elements, `${path}.elements`);
       if (!container.elements.length) throw new Error(`${path}.elements must contain at least one element.`);
       container.elements.forEach(schemaField);
       return container;
     }
 
+    function isMiddlePlacement(placement) {
+      return MIDDLE_CONTAINER_PLACEMENTS.includes(placement);
+    }
+
+    function assertUniqueMiddlePlacements(containers, path) {
+      const seen = new Map();
+      containers.forEach((container, index) => {
+        if (!isMiddlePlacement(container.placement)) return;
+        if (seen.has(container.placement)) throw new Error(`${path}.containers[${index}].placement duplicates middle slot "${container.placement}".`);
+        seen.set(container.placement, index);
+      });
+    }
+
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
-      assertExactKeys(block, ["id", "horizontalAlignment", "verticalAlignment", "containers"], path);
+      assertExactKeys(block, ["id", "containers"], path);
       assertString(block.id, `${path}.id`);
-      assertOneOf(block.horizontalAlignment, ["left", "center", "right", "stretch"], `${path}.horizontalAlignment`);
-      assertOneOf(block.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
+      assertUniqueMiddlePlacements(block.containers, path);
       return block;
     }
 
@@ -3298,62 +3375,121 @@
       });
     }
 
-    function horizontalAlignmentSetting(value, allowed = ["left", "center", "right"]) {
-      if (!allowed.includes(value)) throw new Error(`Unsupported horizontal alignment: ${value}`);
-      return value;
+    class ChoiceSetting {
+      constructor(name, options) {
+        this.name = name;
+        this.options = options;
+        this.values = options.map((option) => option.value);
+      }
+
+      read(value) {
+        if (!this.values.includes(value)) throw new Error(`Unsupported ${this.name}: ${value}`);
+        return value;
+      }
     }
 
-    function verticalAlignmentSetting(value) {
-      if (!["top", "center", "bottom"].includes(value)) throw new Error(`Unsupported vertical alignment: ${value}`);
-      return value;
+    class AlignmentSetting extends ChoiceSetting {
+      constructor(name, options) {
+        super(name, options);
+      }
+
+      grid(value) {
+        const option = this.option(value);
+        return option.grid;
+      }
+
+      flex(value) {
+        const option = this.option(value);
+        return option.flex;
+      }
+
+      text(value) {
+        const option = this.option(value);
+        return option.text || "center";
+      }
+
+      objectPosition(value) {
+        const option = this.option(value);
+        return option.objectPosition || "center";
+      }
+
+      option(value) {
+        const clean = this.read(value);
+        return this.options.find((option) => option.value === clean);
+      }
     }
 
-    function gridAlignmentValue(value) {
-      if (value === "left" || value === "top") return "start";
-      if (value === "right" || value === "bottom") return "end";
-      return value;
+    class SizeSetting extends ChoiceSetting {
+      constructor(name) {
+        super(name, [
+          { value: "auto", label: "Auto" },
+          { value: "stretch", label: "Stretch" }
+        ]);
+      }
+
+      isStretch(value) {
+        return this.read(value) === "stretch";
+      }
     }
 
-    function blockAlignmentStyle(block) {
-      const horizontal = gridAlignmentValue(horizontalAlignmentSetting(block.horizontalAlignment, ["left", "center", "right", "stretch"]));
-      const vertical = gridAlignmentValue(verticalAlignmentSetting(block.verticalAlignment));
-      return `align-self: ${vertical}; justify-items: ${horizontal}; align-content: ${vertical};`;
+    const HORIZONTAL_ALIGNMENT = new AlignmentSetting("horizontal alignment", [
+      { value: "left", label: "Left", grid: "start", flex: "flex-start", text: "left", objectPosition: "left" },
+      { value: "center", label: "Center", grid: "center", flex: "center", text: "center", objectPosition: "center" },
+      { value: "right", label: "Right", grid: "end", flex: "flex-end", text: "right", objectPosition: "right" }
+    ]);
+    const VERTICAL_ALIGNMENT = new AlignmentSetting("vertical alignment", [
+      { value: "top", label: "Top", grid: "start", flex: "flex-start", objectPosition: "top" },
+      { value: "center", label: "Center", grid: "center", flex: "center", objectPosition: "center" },
+      { value: "bottom", label: "Bottom", grid: "end", flex: "flex-end", objectPosition: "bottom" }
+    ]);
+    const HORIZONTAL_SIZE = new SizeSetting("horizontal size");
+    const VERTICAL_SIZE = new SizeSetting("vertical size");
+
+    class ContainerLayoutModel {
+      constructor(container) {
+        this.horizontalAlignment = HORIZONTAL_ALIGNMENT.read(container.horizontalAlignment);
+        this.verticalAlignment = VERTICAL_ALIGNMENT.read(container.verticalAlignment);
+        this.horizontalSize = HORIZONTAL_SIZE.read(container.horizontalSize);
+        this.verticalSize = VERTICAL_SIZE.read(container.verticalSize);
+      }
+
+      get style() {
+        const horizontalStretch = HORIZONTAL_SIZE.isStretch(this.horizontalSize);
+        const verticalStretch = VERTICAL_SIZE.isStretch(this.verticalSize);
+        const horizontal = horizontalStretch ? "stretch" : HORIZONTAL_ALIGNMENT.grid(this.horizontalAlignment);
+        const vertical = verticalStretch ? "stretch" : VERTICAL_ALIGNMENT.grid(this.verticalAlignment);
+        const width = horizontalStretch ? "100%" : "max-content";
+        const height = verticalStretch ? "100%" : "auto";
+        return `justify-self: ${horizontal}; align-self: ${vertical}; justify-items: stretch; align-content: ${vertical}; width: ${width}; max-width: 100%; height: ${height}; box-sizing: border-box;`;
+      }
     }
 
-    function horizontalFlexValue(value) {
-      if (value === "left") return "flex-start";
-      if (value === "right") return "flex-end";
-      return "center";
-    }
+    class TextAlignmentModel {
+      constructor(horizontal, vertical) {
+        this.horizontal = HORIZONTAL_ALIGNMENT.read(horizontal);
+        this.vertical = VERTICAL_ALIGNMENT.read(vertical);
+      }
 
-    function verticalFlexValue(value) {
-      if (value === "top") return "flex-start";
-      if (value === "bottom") return "flex-end";
-      return "center";
-    }
-
-    function textAlignValue(value) {
-      if (value === "left" || value === "right") return value;
-      return "center";
+      get style() {
+        return `display: flex; justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontal)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.vertical)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontal)};`;
+      }
     }
 
     class HeadlineModel {
       constructor(field) {
         const settings = field.settings;
         this.field = field;
-        this.headingHorizontalAlignment = horizontalAlignmentSetting(settings.headingHorizontalAlignment, ["left", "center", "right"]);
-        this.headingVerticalAlignment = verticalAlignmentSetting(settings.headingVerticalAlignment);
-        this.descriptionHorizontalAlignment = horizontalAlignmentSetting(settings.descriptionHorizontalAlignment, ["left", "center", "right"]);
-        this.descriptionVerticalAlignment = verticalAlignmentSetting(settings.descriptionVerticalAlignment);
+        this.headingHorizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.headingHorizontalAlignment);
+        this.headingVerticalAlignment = VERTICAL_ALIGNMENT.read(settings.headingVerticalAlignment);
+        this.descriptionHorizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.descriptionHorizontalAlignment);
+        this.descriptionVerticalAlignment = VERTICAL_ALIGNMENT.read(settings.descriptionVerticalAlignment);
         this.showLabel = settings.showLabel;
         this.outline = settings.outline;
         this.background = settings.background;
       }
 
       textStyle(horizontalKey, verticalKey) {
-        const horizontal = this[horizontalKey];
-        const vertical = this[verticalKey];
-        return `display: flex; justify-content: ${horizontalFlexValue(horizontal)}; align-items: ${verticalFlexValue(vertical)}; text-align: ${textAlignValue(horizontal)};`;
+        return new TextAlignmentModel(this[horizontalKey], this[verticalKey]).style;
       }
     }
 
@@ -3372,11 +3508,13 @@
         this.caption = settings.caption;
         this.html = settings.html;
         this.iframeHeight = settings.iframeHeight;
-        this.horizontalAlignment = horizontalAlignmentSetting(settings.horizontalAlignment, ["left", "center", "right", "stretch"]);
-        this.verticalAlignment = verticalAlignmentSetting(settings.verticalAlignment);
+        this.horizontalAlignment = HORIZONTAL_ALIGNMENT.read(settings.horizontalAlignment);
+        this.verticalAlignment = VERTICAL_ALIGNMENT.read(settings.verticalAlignment);
+        this.horizontalSize = HORIZONTAL_SIZE.read(settings.horizontalSize);
         this.scale = settings.scale;
         this.maxWidth = settings.maxWidth;
         this.maxHeight = settings.maxHeight;
+        this.padding = settings.padding;
         this.objectFit = objectFit;
         this.outline = settings.outline;
         this.background = settings.background;
@@ -3402,20 +3540,19 @@
       }
 
       get alignmentStyle() {
-        const justify = this.horizontalAlignment === "stretch" ? "stretch" : horizontalFlexValue(this.horizontalAlignment);
-        return `justify-content: ${justify}; align-items: ${verticalFlexValue(this.verticalAlignment)}; text-align: ${textAlignValue(this.horizontalAlignment)};`;
+        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding}px;`;
       }
 
       get audioStyle() {
-        return this.horizontalAlignment === "stretch" ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
+        return HORIZONTAL_SIZE.isStretch(this.horizontalSize) ? "width: 100%;" : `width: ${this.scale}%; ${this.maxWidth ? `max-width: ${this.maxWidth};` : ""}`;
       }
 
       visualStyle(extra = "") {
-        const width = this.horizontalAlignment === "stretch" ? "100%" : `${this.scale}%`;
-        const maxWidth = this.maxWidth ? `max-width: ${this.maxWidth};` : "";
+        const width = HORIZONTAL_SIZE.isStretch(this.horizontalSize) ? "100%" : `${this.scale}%`;
+        const maxWidth = !HORIZONTAL_SIZE.isStretch(this.horizontalSize) && this.maxWidth ? `max-width: ${this.maxWidth};` : "";
         const maxHeight = `max-height: ${this.maxHeight}px;`;
-        const positionX = this.horizontalAlignment === "left" || this.horizontalAlignment === "right" ? this.horizontalAlignment : "center";
-        const positionY = this.verticalAlignment === "top" || this.verticalAlignment === "bottom" ? this.verticalAlignment : "center";
+        const positionX = HORIZONTAL_ALIGNMENT.objectPosition(this.horizontalAlignment);
+        const positionY = VERTICAL_ALIGNMENT.objectPosition(this.verticalAlignment);
         return `width: ${width}; ${maxWidth} ${maxHeight} object-fit: ${this.objectFit}; object-position: ${positionX} ${positionY}; ${extra}`.trim();
       }
     }
@@ -3456,7 +3593,7 @@
 
     function UploadedMediaPreview({ value, label }) {
       if (!value?.dataUrl) return null;
-      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", scale: 100, maxWidth: "", maxHeight: 360, objectFit: "contain", showLabel: true, outline: true, background: false } }} />`;
+      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: 0, objectFit: "contain", showLabel: true, outline: true, background: false } }} />`;
     }
 
     function clamp(value, min, max) {
@@ -4390,9 +4527,9 @@
       return (RUNTIME_FIELD_RENDERERS[field.type] || renderTextInputRuntimeField)(model, value, onValue);
     }
 
-    function RuntimeContainer({ block, container, values, invalidIds, onValue }) {
+    function RuntimeContainer({ container, values, invalidIds, onValue }) {
       return html`
-        <div class=${`block-container placement-${container.placement}`} style=${blockAlignmentStyle(block)} data-container-id=${container.id}>
+        <div class=${`block-container placement-${container.placement}`} style=${new ContainerLayoutModel(container).style} data-container-id=${container.id}>
           ${container.elements.map((field) => html`
             <${RuntimeField}
               key=${field.id}
@@ -4406,14 +4543,13 @@
       `;
     }
 
-    function RuntimeContainerStack({ block, containers, className, values, invalidIds, onValue }) {
+    function RuntimeContainerStack({ containers, className, values, invalidIds, onValue }) {
       if (!containers.length) return null;
       return html`
         <div class=${className}>
           ${containers.map((container) => html`
             <${RuntimeContainer}
               key=${container.id}
-              block=${block}
               container=${container}
               values=${values}
               invalidIds=${invalidIds}
@@ -4424,22 +4560,24 @@
       `;
     }
 
-    function RuntimeBlock({ block, values, invalidIds, onValue }) {
-      const containers = blockContainers(block);
-      const top = containers.filter((container) => container.placement === "top");
-      const left = containers.filter((container) => container.placement === "left");
-      const main = containers.filter((container) => container.placement === "main");
-      const right = containers.filter((container) => container.placement === "right");
-      const bottom = containers.filter((container) => container.placement === "bottom");
+    function RuntimeMiddleContainerRow({ layout, values, invalidIds, onValue }) {
+      if (!layout.left.length && !layout.main.length && !layout.right.length) return null;
       return html`
-        <section class=${`form-block${left.length ? " has-left" : ""}${right.length ? " has-right" : ""}`} data-block-id=${block.id}>
-          <${RuntimeContainerStack} block=${block} containers=${top} className="block-stack block-top" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-          <div class="block-middle">
-            <${RuntimeContainerStack} block=${block} containers=${left} className="block-stack block-left" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-            <${RuntimeContainerStack} block=${block} containers=${main.length ? main : containers.filter((container) => !["top", "left", "right", "bottom"].includes(container.placement))} className="block-stack block-main" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-            <${RuntimeContainerStack} block=${block} containers=${right} className="block-stack block-right" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
-          </div>
-          <${RuntimeContainerStack} block=${block} containers=${bottom} className="block-stack block-bottom" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+        <div class=${`block-middle ${layout.middleLayout}`}>
+          <${RuntimeContainerStack} containers=${layout.left} className="block-stack block-left" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          <${RuntimeContainerStack} containers=${layout.main} className="block-stack block-main" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          <${RuntimeContainerStack} containers=${layout.right} className="block-stack block-right" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+        </div>
+      `;
+    }
+
+    function RuntimeBlock({ block, values, invalidIds, onValue }) {
+      const layout = blockContainerRegions(block);
+      return html`
+        <section class=${`form-block ${layout.middleLayout}`} data-block-id=${block.id}>
+          <${RuntimeContainerStack} containers=${layout.top} className="block-stack block-top" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          <${RuntimeMiddleContainerRow} layout=${layout} values=${values} invalidIds=${invalidIds} onValue=${onValue} />
+          <${RuntimeContainerStack} containers=${layout.bottom} className="block-stack block-bottom" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
         </section>
       `;
     }
