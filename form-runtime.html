@@ -570,6 +570,12 @@
       align-content: start;
     }
 
+    .form-block.with-outline {
+      outline: 1px solid var(--line);
+      outline-offset: 0;
+      border-radius: 8px;
+    }
+
     .block-middle {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -592,6 +598,12 @@
 
     .block-container {
       width: 100%;
+    }
+
+    .block-container.with-outline {
+      outline: 1px solid var(--line);
+      outline-offset: 0;
+      border-radius: 8px;
     }
 
     .field {
@@ -816,10 +828,35 @@
       outline-offset: 2px;
     }
 
+    .choice-row.choice-placeholder {
+      color: var(--muted);
+      font-style: italic;
+      opacity: 0.72;
+    }
+
+    .choice-placeholder-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 20px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-style: inherit;
+      outline: none;
+    }
+
     .choice-list > .button {
       justify-self: start;
       min-height: 34px;
       margin-top: 4px;
+    }
+
+    @media print {
+      .choice-empty-editor {
+        display: none !important;
+      }
     }
 
     .poll-grid,
@@ -2299,7 +2336,10 @@
       danger: "#b3261e",
       fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
+    const BOX_EDGES = [["top", "Top"], ["right", "Right"], ["bottom", "Bottom"], ["left", "Left"]];
     const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
+    const DEFAULT_BLOCK_SETTINGS = { outline: false };
+    const DEFAULT_CONTAINER_SETTINGS = { outline: false };
     const DEFAULT_TYPOGRAPHY = {
       body: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 14, weight: 400, style: "normal", lineHeight: 1.45, letterSpacing: 0, textTransform: "none" },
       heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
@@ -2962,6 +3002,12 @@
       assertOneOf(style.textTransform, ["none", "uppercase", "lowercase", "capitalize"], `${name}.textTransform`);
     }
 
+    function assertEdgeValues(values, name, max) {
+      assertObject(values, name);
+      assertExactKeys(values, BOX_EDGES.map(([edge]) => edge), name);
+      BOX_EDGES.forEach(([edge]) => assertNumberRange(values[edge], `${name}.${edge}`, 0, max, true));
+    }
+
     function assertAppearanceSettings(settings) {
       assertObject(settings.layout, "schema.settings.layout");
       assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
@@ -3018,7 +3064,7 @@
       assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
       assertCssLength(settings.maxWidth, `${name}.maxWidth`);
       assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
-      assertNumberRange(settings.padding, `${name}.padding`, 0, 120, true);
+      assertEdgeValues(settings.padding, `${name}.padding`, 120);
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
@@ -3155,8 +3201,11 @@
 
     function schemaContainer(raw, path) {
       const container = assertObject(raw, path);
-      assertExactKeys(container, ["id", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
+      assertExactKeys(container, ["id", "settings", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
       assertString(container.id, `${path}.id`);
+      assertObject(container.settings, `${path}.settings`);
+      assertExactKeys(container.settings, Object.keys(DEFAULT_CONTAINER_SETTINGS), `${path}.settings`);
+      assertBoolean(container.settings.outline, `${path}.settings.outline`);
       assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
       assertOneOf(container.horizontalAlignment, ["left", "center", "right"], `${path}.horizontalAlignment`);
       assertOneOf(container.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
@@ -3168,10 +3217,17 @@
       return container;
     }
 
+    function assertBlockSettings(settings, path) {
+      assertObject(settings, path);
+      assertExactKeys(settings, Object.keys(DEFAULT_BLOCK_SETTINGS), path);
+      assertBoolean(settings.outline, `${path}.outline`);
+    }
+
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
-      assertExactKeys(block, ["id", "containers"], path);
+      assertExactKeys(block, ["id", "settings", "containers"], path);
       assertString(block.id, `${path}.id`);
+      assertBlockSettings(block.settings, `${path}.settings`);
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
@@ -3472,7 +3528,7 @@
       }
 
       get alignmentStyle() {
-        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding}px;`;
+        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding.top}px ${this.padding.right}px ${this.padding.bottom}px ${this.padding.left}px;`;
       }
 
       get audioStyle() {
@@ -3525,7 +3581,7 @@
 
     function UploadedMediaPreview({ value, label }) {
       if (!value?.dataUrl) return null;
-      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: 0, objectFit: "contain", showLabel: true, outline: true, background: false } }} />`;
+      return html`<${MediaPreview} field=${{ label, settings: { sourceType: "file", dataUrl: value.dataUrl, mimeType: value.type || "", fileName: value.name || "", alt: value.name || label, caption: value.name || "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: { top: 0, right: 0, bottom: 0, left: 0 }, objectFit: "contain", showLabel: true, outline: true, background: false } }} />`;
     }
 
     function clamp(value, min, max) {
@@ -4194,6 +4250,7 @@
       const rawCustomOptions = value && typeof value === "object" && !Array.isArray(value) && Array.isArray(value.customOptions) ? value.customOptions : [];
       const customOptions = uniqueOptions([...rawCustomOptions, ...rawSelected.filter((option) => !isSchemaOption(option))]);
       const selected = uniqueOptions(rawSelected.map((option) => canonicalOption(option, customOptions)));
+      const emptyCustomList = !field.options.length && !customOptions.length;
 
       function canonicalOption(label, customOptionList = customOptions, ignoredCustomIndex = -1) {
         return field.options.find((option) => optionMatches(option, label))
@@ -4312,7 +4369,31 @@
         `;
       }
 
+      function emptyOptionEditor() {
+        if (!field.settings.allowCustomOptions || !emptyCustomList) return null;
+        const editing = editingOption?.kind === "new";
+        return html`
+          <div class=${`choice-row choice-empty-editor${editing ? "" : " choice-placeholder"}`} data-export-hidden="true">
+            <input type="checkbox" checked=${editing} disabled=${!editing} tabIndex="-1" aria-hidden=${editing ? null : "true"} onChange=${cancelEdit} />
+            <input
+              class=${editing ? "control" : "choice-placeholder-input"}
+              ref=${editInputRef}
+              value=${optionDraft}
+              placeholder="Add option"
+              aria-label=${`New ${model.accessibleName} option`}
+              onFocus=${() => {
+                if (!editing) startNewOption();
+              }}
+              onInput=${(event) => setOptionDraft(event.currentTarget.value)}
+              onBlur=${commitEdit}
+              onKeyDown=${draftKey}
+            />
+          </div>
+        `;
+      }
+
       return model.grouped("choice-list", html`
+        ${emptyOptionEditor()}
         ${field.options.map((option, index) => html`
           <label class="choice-row" key=${`${option}_${index}`}>
             <input type="checkbox" value=${option} checked=${selected.some((item) => optionMatches(item, option))} onChange=${(event) => optionChecked(option, event.currentTarget.checked)} />
@@ -4320,8 +4401,8 @@
           </label>
         `)}
         ${customOptions.map(editableCustomOption)}
-        ${newOptionEditor()}
-        ${field.settings.allowCustomOptions && !editingOption ? html`
+        ${emptyCustomList ? null : newOptionEditor()}
+        ${field.settings.allowCustomOptions && !editingOption && !emptyCustomList ? html`
           <button class="button ghost" type="button" data-export-hidden="true" title="Add option" aria-label="Add option" onClick=${startNewOption}>
             <${Icon} icon="fa-solid fa-plus" /><span>Add option</span>
           </button>
@@ -4461,7 +4542,7 @@
 
     function RuntimeContainer({ container, values, invalidIds, onValue }) {
       return html`
-        <div class=${`block-container placement-${container.placement}`} style=${new ContainerLayoutModel(container).style} data-container-id=${container.id}>
+        <div class=${`block-container placement-${container.placement}${container.settings.outline ? " with-outline" : ""}`} style=${new ContainerLayoutModel(container).style} data-container-id=${container.id}>
           ${container.elements.map((field) => html`
             <${RuntimeField}
               key=${field.id}
@@ -4512,7 +4593,7 @@
     function RuntimeBlock({ block, values, invalidIds, onValue }) {
       const layout = blockContainerRegions(block);
       return html`
-        <section class="form-block" data-block-id=${block.id}>
+        <section class=${`form-block${block.settings.outline ? " with-outline" : ""}`} data-block-id=${block.id}>
           <${RuntimeContainerStack} containers=${layout.top} className="block-stack block-top" values=${values} invalidIds=${invalidIds} onValue=${onValue} />
           <${RuntimeMiddleContainerRow} layout=${layout} values=${values} invalidIds=${invalidIds} onValue=${onValue} />
           <${RuntimeContainerStack} containers=${layout.bottom} className="block-stack block-bottom" values=${values} invalidIds=${invalidIds} onValue=${onValue} />

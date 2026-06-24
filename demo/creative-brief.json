@@ -70,9 +70,15 @@
   "blocks": [
     {
       "id": "block_field_header",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_field_header_main",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -99,6 +105,9 @@
         },
         {
           "id": "container_field_header_media",
+          "settings": {
+            "outline": false
+          },
           "placement": "right",
           "horizontalAlignment": "left",
           "verticalAlignment": "center",
@@ -127,7 +136,12 @@
                 "scale": 100,
                 "maxWidth": "240px",
                 "maxHeight": 80,
-                "padding": 10,
+                "padding": {
+                  "top": 10,
+                  "right": 10,
+                  "bottom": 10,
+                  "left": 10
+                },
                 "objectFit": "contain",
                 "showLabel": false,
                 "outline": false,
@@ -140,9 +154,15 @@
     },
     {
       "id": "block_field_prepared_by",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_field_prepared_by_main",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -168,9 +188,15 @@
     },
     {
       "id": "block_section_project_details",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_project_details_heading",
+          "settings": {
+            "outline": false
+          },
           "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -197,6 +223,9 @@
         },
         {
           "id": "container_project_details_overview",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -233,6 +262,9 @@
         },
         {
           "id": "container_project_details_goals",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -269,6 +301,9 @@
         },
         {
           "id": "container_project_details_audience",
+          "settings": {
+            "outline": false
+          },
           "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -294,9 +329,15 @@
     },
     {
       "id": "block_project_tone",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_project_tone_verbal",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -328,6 +369,9 @@
         },
         {
           "id": "container_project_tone_visual",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -370,9 +414,15 @@
     },
     {
       "id": "block_project_message_cta",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_project_key_message",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -396,6 +446,9 @@
         },
         {
           "id": "container_project_call_to_action",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -421,9 +474,15 @@
     },
     {
       "id": "block_section_deliverables_divider",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_section_deliverables_divider_main",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -452,9 +511,15 @@
     },
     {
       "id": "block_section_deliverable_details",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_deliverable_details_heading",
+          "settings": {
+            "outline": false
+          },
           "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -481,6 +546,9 @@
         },
         {
           "id": "container_deliverable_details_needs",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -512,6 +580,9 @@
         },
         {
           "id": "container_deliverable_details_content",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -548,6 +619,9 @@
         },
         {
           "id": "container_deliverable_details_schedule",
+          "settings": {
+            "outline": false
+          },
           "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -608,9 +682,15 @@
     },
     {
       "id": "block_section_budget_divider",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_section_budget_divider_main",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -639,9 +719,15 @@
     },
     {
       "id": "block_section_budget",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_budget_heading",
+          "settings": {
+            "outline": false
+          },
           "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -668,6 +754,9 @@
         },
         {
           "id": "container_budget_total",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -691,6 +780,9 @@
         },
         {
           "id": "container_budget_account_code",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -714,6 +806,9 @@
         },
         {
           "id": "container_budget_approval",
+          "settings": {
+            "outline": false
+          },
           "placement": "right",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -737,6 +832,9 @@
         },
         {
           "id": "container_budget_source",
+          "settings": {
+            "outline": false
+          },
           "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -766,9 +864,15 @@
     },
     {
       "id": "block_section_stakeholders_divider",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_section_stakeholders_divider_main",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -797,9 +901,15 @@
     },
     {
       "id": "block_section_stakeholders",
+      "settings": {
+        "outline": false
+      },
       "containers": [
         {
           "id": "container_stakeholders_heading",
+          "settings": {
+            "outline": false
+          },
           "placement": "top",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -826,6 +936,9 @@
         },
         {
           "id": "container_stakeholders_people",
+          "settings": {
+            "outline": false
+          },
           "placement": "left",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -849,6 +962,9 @@
         },
         {
           "id": "container_partner_colleagues",
+          "settings": {
+            "outline": false
+          },
           "placement": "main",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",
@@ -872,6 +988,9 @@
         },
         {
           "id": "container_history_background",
+          "settings": {
+            "outline": false
+          },
           "placement": "bottom",
           "horizontalAlignment": "left",
           "verticalAlignment": "top",

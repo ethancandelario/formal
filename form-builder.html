@@ -1320,6 +1320,18 @@
       min-width: 0;
     }
 
+    .block-preview.with-outline {
+      outline: 1px solid var(--line);
+      outline-offset: 0;
+      border-radius: 8px;
+    }
+
+    .block-container-preview.with-outline {
+      outline: 1px solid var(--line);
+      outline-offset: 0;
+      border-radius: 8px;
+    }
+
     .block-preview-middle {
       /* Middle placements are positional; sizing belongs to the container. */
       display: grid;
@@ -1549,6 +1561,12 @@
       align-items: center;
       gap: 8px;
       color: var(--body-color);
+    }
+
+    .choice-row.choice-placeholder {
+      color: var(--muted);
+      font-style: italic;
+      opacity: 0.72;
     }
 
     .choice-dot,
@@ -2317,6 +2335,20 @@
     .icon-button:hover {
       background: var(--panel-2);
       border-color: #cbc5b6;
+    }
+
+    .button:disabled,
+    .icon-button:disabled {
+      opacity: 0.46;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button:disabled:hover,
+    .icon-button:disabled:hover {
+      background: #ffffff;
+      border-color: var(--line);
+      color: var(--ink);
     }
 
     .button:focus-visible,
@@ -3165,7 +3197,11 @@
       danger: "#b3261e",
       fontFamily: '"Roboto", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     };
+    const BOX_EDGES = [["top", "Top"], ["right", "Right"], ["bottom", "Bottom"], ["left", "Left"]];
+    const DEFAULT_MEDIA_PADDING = { top: 0, right: 0, bottom: 0, left: 0 };
     const DEFAULT_LAYOUT = { pageMargin: 20, pagePadding: 16, fieldSpacing: 10, fieldPadding: 16 };
+    const DEFAULT_BLOCK_SETTINGS = { outline: false };
+    const DEFAULT_CONTAINER_SETTINGS = { outline: false };
     const DEFAULT_TYPOGRAPHY = {
       body: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 14, weight: 400, style: "normal", lineHeight: 1.45, letterSpacing: 0, textTransform: "none" },
       heading: { fontFamily: DEFAULT_THEME.fontFamily, color: DEFAULT_THEME.ink, size: 26, weight: 750, style: "normal", lineHeight: 1.2, letterSpacing: 0, textTransform: "none" },
@@ -3231,7 +3267,7 @@
       { type: "media_upload", name: "Media upload", icon: "lucide-upload", category: "input", defaults: { label: "Media upload", description: "", required: false, settings: { accept: "image/*,video/*,audio/*,.svg,.pdf", showLabel: true, outline: true, background: false } } },
       { type: "link", name: "Link", icon: "fa-solid fa-link", category: "input", defaults: { label: "Link", description: "", required: false, placeholder: "https://example.com", settings: { showLabel: true, outline: true, background: false } } },
       { type: "headline", name: "Headline", icon: "lucide-heading", category: "design", defaults: { label: "Heading", description: "", required: false, settings: { headingHorizontalAlignment: "left", headingVerticalAlignment: "top", descriptionHorizontalAlignment: "left", descriptionVerticalAlignment: "top", showLabel: true, outline: false, background: false } } },
-      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: 0, objectFit: "contain", showLabel: true, outline: false, background: false } } },
+      { type: "media", name: "Media", icon: "fa-regular fa-file-video", category: "design", defaults: { label: "", description: "", required: false, settings: { sourceType: "url", url: "", dataUrl: "", mimeType: "", fileName: "", alt: "", caption: "", html: "", iframeHeight: 260, horizontalAlignment: "center", verticalAlignment: "center", horizontalSize: "auto", scale: 100, maxWidth: "", maxHeight: 360, padding: clone(DEFAULT_MEDIA_PADDING), objectFit: "contain", showLabel: true, outline: false, background: false } } },
       { type: "spacer", name: "Spacer", icon: "fa-solid fa-grip-lines", category: "design", defaults: { label: "", description: "", required: false, settings: { height: 32, showLine: false, lineStyle: "solid", lineThickness: 1, showLabel: true, outline: false, background: false } } }
     ];
 
@@ -3258,12 +3294,24 @@
       return clone(DEFAULT_CONTAINER_LAYOUT);
     }
 
+    function defaultContainerSettings() {
+      return clone(DEFAULT_CONTAINER_SETTINGS);
+    }
+
     function containerFromElements(elements, placement = "main") {
-      return { id: uid("container"), placement, ...defaultContainerLayout(elements), elements };
+      return { id: uid("container"), settings: defaultContainerSettings(), placement, ...defaultContainerLayout(elements), elements };
+    }
+
+    function defaultBlockSettings() {
+      return clone(DEFAULT_BLOCK_SETTINGS);
+    }
+
+    function blockFromContainers(containers) {
+      return { id: uid("block"), settings: defaultBlockSettings(), containers };
     }
 
     function blockFromType(type) {
-      return { id: uid("block"), containers: [containerFromElements([elementFromType(type)])] };
+      return blockFromContainers([containerFromElements([elementFromType(type)])]);
     }
 
     function defaultSchema() {
@@ -3492,7 +3540,7 @@
 
     function resetContainer(container) {
       const elements = containerElements(container).map(resetElement);
-      return { ...container, ...defaultContainerLayout(elements), elements };
+      return { ...container, settings: defaultContainerSettings(), ...defaultContainerLayout(elements), elements };
     }
 
     function hexColor(value) {
@@ -3964,6 +4012,12 @@
       assertOneOf(style.textTransform, TEXT_TRANSFORM_OPTIONS.map(([value]) => value), `${name}.textTransform`);
     }
 
+    function assertEdgeValues(values, name, max) {
+      assertObject(values, name);
+      assertExactKeys(values, BOX_EDGES.map(([edge]) => edge), name);
+      BOX_EDGES.forEach(([edge]) => assertNumberRange(values[edge], `${name}.${edge}`, 0, max, true));
+    }
+
     function assertAppearanceSettings(settings) {
       assertObject(settings.layout, "schema.settings.layout");
       assertExactKeys(settings.layout, Object.keys(DEFAULT_LAYOUT), "schema.settings.layout");
@@ -4020,7 +4074,7 @@
       assertNumberRange(settings.scale, `${name}.scale`, 10, 100);
       assertCssLength(settings.maxWidth, `${name}.maxWidth`);
       assertNumberRange(settings.maxHeight, `${name}.maxHeight`, 80, 1600, true);
-      assertNumberRange(settings.padding, `${name}.padding`, 0, 120, true);
+      assertEdgeValues(settings.padding, `${name}.padding`, 120);
       assertOneOf(settings.objectFit, ["contain", "cover", "fill", "scale-down"], `${name}.objectFit`);
     }
 
@@ -4139,8 +4193,11 @@
 
     function schemaContainer(raw, path) {
       const container = assertObject(raw, path);
-      assertExactKeys(container, ["id", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
+      assertExactKeys(container, ["id", "settings", "placement", "horizontalAlignment", "verticalAlignment", "horizontalSize", "verticalSize", "elements"], path);
       assertString(container.id, `${path}.id`);
+      assertObject(container.settings, `${path}.settings`);
+      assertExactKeys(container.settings, Object.keys(DEFAULT_CONTAINER_SETTINGS), `${path}.settings`);
+      assertBoolean(container.settings.outline, `${path}.settings.outline`);
       assertOneOf(container.placement, CONTAINER_PLACEMENTS, `${path}.placement`);
       assertOneOf(container.horizontalAlignment, ["left", "center", "right"], `${path}.horizontalAlignment`);
       assertOneOf(container.verticalAlignment, ["top", "center", "bottom"], `${path}.verticalAlignment`);
@@ -4152,10 +4209,17 @@
       return container;
     }
 
+    function assertBlockSettings(settings, path) {
+      assertObject(settings, path);
+      assertExactKeys(settings, Object.keys(DEFAULT_BLOCK_SETTINGS), path);
+      assertBoolean(settings.outline, `${path}.outline`);
+    }
+
     function schemaBlock(raw, path) {
       const block = assertObject(raw, path);
-      assertExactKeys(block, ["id", "containers"], path);
+      assertExactKeys(block, ["id", "settings", "containers"], path);
       assertString(block.id, `${path}.id`);
+      assertBlockSettings(block.settings, `${path}.settings`);
       assertArray(block.containers, `${path}.containers`);
       if (!block.containers.length) throw new Error(`${path}.containers must contain at least one container.`);
       block.containers.forEach((container, index) => schemaContainer(container, `${path}.containers[${index}]`));
@@ -4440,7 +4504,7 @@
       }
 
       get alignmentStyle() {
-        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding}px;`;
+        return `justify-content: ${HORIZONTAL_ALIGNMENT.flex(this.horizontalAlignment)}; align-items: ${VERTICAL_ALIGNMENT.flex(this.verticalAlignment)}; text-align: ${HORIZONTAL_ALIGNMENT.text(this.horizontalAlignment)}; padding: ${this.padding.top}px ${this.padding.right}px ${this.padding.bottom}px ${this.padding.left}px;`;
       }
 
       get audioStyle() {
@@ -4540,6 +4604,16 @@
         viewBox: "0 0 24 24",
         className: "svg-icon-stroke",
         content: () => html`<path d="M6 12h12"></path><path d="M6 20V4"></path><path d="M18 20V4"></path>`
+      },
+      "lucide-undo-2": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path>`
+      },
+      "lucide-redo-2": {
+        viewBox: "0 0 24 24",
+        className: "svg-icon-stroke",
+        content: () => html`<path d="m15 14 5-5-5-5"></path><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"></path>`
       },
       "lucide-upload": {
         viewBox: "0 0 24 24",
@@ -4714,8 +4788,14 @@
       `;
     }
 
-    function choicePreview(field, markerClass) {
-      return html`<div class="choice-preview">${field.options.map((option) => html`<div class="choice-row" key=${option}><span class=${markerClass}></span><span>${option}</span></div>`)}</div>`;
+    function choicePreview(field, markerClass, emptyText = "") {
+      return html`
+        <div class="choice-preview">
+          ${field.options.length
+            ? field.options.map((option) => html`<div class="choice-row" key=${option}><span class=${markerClass}></span><span>${option}</span></div>`)
+            : emptyText ? html`<div class="choice-row choice-placeholder" data-export-hidden="true"><span class=${markerClass}></span><span>${emptyText}</span></div>` : null}
+        </div>
+      `;
     }
 
     const FIELD_PREVIEW_RENDERERS = {
@@ -4727,7 +4807,7 @@
       calendar: (field) => html`<${CalendarPreview} field=${field} />`,
       long_answer: (field) => html`<div class="preview-box">${field.placeholder}</div>`,
       multiple_choice: (field) => choicePreview(field, "choice-dot"),
-      checkbox: (field) => choicePreview(field, "choice-square"),
+      checkbox: (field) => choicePreview(field, "choice-square", field.settings.allowCustomOptions ? "Add option" : ""),
       poll: (field) => html`<div class="pill-preview">${field.options.map((option) => html`<span key=${option}>${option}</span>`)}</div>`,
       mood_meter: (field) => html`
         <div class="meter-preview">
@@ -5283,7 +5363,7 @@
 
       return html`
         <div
-          class=${`block-container-preview placement-${container.placement}${selected ? " selected" : ""}${hasSelectedElement ? " has-selected-element" : ""}${dropTarget ? " is-container-drop-target" : ""}${draggable ? " is-draggable" : ""}`}
+          class=${`block-container-preview placement-${container.placement}${container.settings.outline ? " with-outline" : ""}${selected ? " selected" : ""}${hasSelectedElement ? " has-selected-element" : ""}${dropTarget ? " is-container-drop-target" : ""}${draggable ? " is-draggable" : ""}`}
           style=${new ContainerLayoutModel(container).style}
           role="button"
           tabIndex="0"
@@ -5359,7 +5439,7 @@
       const layout = blockContainerRegions(block);
       const stackProps = { block, selectedId, selectedContainerId, draggingElementId, containerDropId, containerDropIndex, containerDropY, containerDropHeight, onSelectElement, onSelectContainer, onDuplicateContainer, onResetContainer, onDeleteContainer, onMoveElement, onMoveElementOut, onDuplicateElement, onDeleteElement, onElementDragStart, onElementDragEnd, onContainerDragStart, onContainerDragEnd, onContainerDragOver, onContainerDragLeave, onContainerDrop };
       return html`
-        <div class="block-preview">
+        <div class=${`block-preview${block.settings.outline ? " with-outline" : ""}`}>
           <${ContainerPreviewStack} containers=${layout.top} placement="top" ...${stackProps} />
           <${MiddleContainerPreviewRow} layout=${layout} ...${stackProps} />
           <${ContainerPreviewStack} containers=${layout.bottom} placement="bottom" ...${stackProps} />
@@ -5701,17 +5781,19 @@
       `;
     }
 
-    function Inspector({ schema, selectedField, selectedBlock, selectedContainer, onSchemaChange, onFieldChange, onContainerChange }) {
+    function Inspector({ schema, selectedField, selectedBlock, selectedContainer, onSchemaChange, onFieldChange, onContainerChange, onBlockChange }) {
       if (!selectedField) {
         if (selectedContainer) return html`
           <h2 class="panel-title"><${Icon} icon="lucide-component" /><span>Sub-block</span></h2>
           <div class="property-stack">
+            <${ContainerAppearanceSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />
             <${ContainerLayoutSettings} container=${selectedContainer} onContainerChange=${onContainerChange} />
           </div>
         `;
         if (selectedBlock) return html`
           <h2 class="panel-title"><${Icon} icon="lucide-component" /><span>Block</span></h2>
           <div class="property-stack">
+            <${BlockAppearanceSettings} block=${selectedBlock} onBlockChange=${onBlockChange} />
             <div class="radar-mode-note">Select a sub-block to edit its layout.</div>
           </div>
         `;
@@ -5740,6 +5822,26 @@
             <${ToggleRow} checked=${selectedField.required} onChange=${(event) => onFieldChange({ required: event.currentTarget.checked })} label="Required" />
           ` : null}
         </div>
+      `;
+    }
+
+    function BlockAppearanceSettings({ block, onBlockChange }) {
+      if (!block) return null;
+      return html`
+        <div class="mini-label">Block</div>
+        <${ToggleRow} checked=${block.settings.outline} onChange=${(event) => onBlockChange({ outline: event.currentTarget.checked })} label="Show outline" />
+      `;
+    }
+
+    function ContainerAppearanceSettings({ container, onContainerChange }) {
+      if (!container || containerElements(container).length < 2) return null;
+      return html`
+        <div class="mini-label">Sub-block</div>
+        <${ToggleRow}
+          checked=${container.settings.outline}
+          onChange=${(event) => onContainerChange({ settings: { ...container.settings, outline: event.currentTarget.checked } })}
+          label="Show outline"
+        />
       `;
     }
 
@@ -5856,10 +5958,24 @@
             ["mediaMaxHeight", "maxHeight", "Max height", "number", Number, { min: 80, max: 1600 }]
           ]} settings=${settings} editor=${editor} method="patchNonData" />
 
-          <${SettingsGrid} controls=${[
-            ["mediaPadding", "padding", "Padding", "number", Number, { min: 0, max: 120 }],
-            ["mediaObjectFit", "objectFit", "Object fit", MEDIA_OBJECT_FIT_OPTIONS]
-          ]} settings=${settings} editor=${editor} method="patchNonData" />
+          <div class="property">
+            <div class="mini-label">Padding</div>
+            <div class="settings-grid">
+              ${BOX_EDGES.map(([edge, label]) => html`
+                <${InputProperty}
+                  key=${edge}
+                  id=${`mediaPadding${label}`}
+                  label=${label}
+                  type="number"
+                  value=${settings.padding[edge]}
+                  onInput=${(event) => editor.patchNonData({ padding: { ...settings.padding, [edge]: Number(event.currentTarget.value) } })}
+                  inputProps=${{ min: 0, max: 120 }}
+                />
+              `)}
+            </div>
+          </div>
+
+          <${SettingSelect} id="mediaObjectFit" label="Object fit" settings=${settings} setting="objectFit" editor=${editor} method="patchNonData" options=${MEDIA_OBJECT_FIT_OPTIONS} />
         `;
     }
 
@@ -6200,7 +6316,7 @@
         const source = elementLocation(schema, payload.elementId);
         if (!source) return null;
         const element = schemaField(clone(source.element));
-        const block = { id: uid("block"), containers: [containerFromElements([element])] };
+        const block = blockFromContainers([containerFromElements([element])]);
         const blocks = removeElementFromBlocks(schema.blocks, source.container.id, payload.elementId);
         const sourceBlockStillExists = blocks.some((item) => item.id === source.block.id);
         const rawIndex = DragPayloadModel.clampIndex(index, blocks.length);
@@ -6212,10 +6328,56 @@
 
     function initialBuilderState() {
       const schema = loadInitialSchema();
-      return { schema, selectedId: firstBlockElement(schema.blocks[0])?.id || null, selectedContainerId: null, removingId: null };
+      return { schema, selectedId: firstBlockElement(schema.blocks[0])?.id || null, selectedContainerId: null, removingId: null, past: [], future: [] };
     }
 
-    function builderReducer(state, action) {
+    const HISTORY_LIMIT = 80;
+    const HISTORY_ACTIONS = new Set([
+      "replace-schema",
+      "commit-schema",
+      "patch-schema",
+      "patch-field",
+      "patch-block",
+      "patch-container",
+      "insert-field",
+      "insert-element",
+      "move-field",
+      "move-element",
+      "move-field-to-index",
+      "duplicate-field",
+      "duplicate-element",
+      "reset-field",
+      "remove-field",
+      "move-element-out",
+      "delete-element",
+      "duplicate-container",
+      "reset-container",
+      "delete-container"
+    ]);
+
+    function historySnapshot(state) {
+      return { schema: state.schema, selectedId: state.selectedId, selectedContainerId: state.selectedContainerId };
+    }
+
+    function historyChanged(before, after) {
+      return before.schema !== after.schema || before.selectedId !== after.selectedId || before.selectedContainerId !== after.selectedContainerId;
+    }
+
+    function withHistory(before, after) {
+      if (!historyChanged(before, after)) return after;
+      return {
+        ...after,
+        removingId: null,
+        past: [...before.past, historySnapshot(before)].slice(-HISTORY_LIMIT),
+        future: []
+      };
+    }
+
+    function restoreHistoryState(state, snapshot, past, future) {
+      return { ...state, ...snapshot, removingId: null, past, future };
+    }
+
+    function builderReducerWithoutHistory(state, action) {
       switch (action.type) {
         case "replace-schema":
           return { schema: action.schema, selectedId: firstBlockElement(action.schema.blocks[0])?.id || null, selectedContainerId: null, removingId: null };
@@ -6263,6 +6425,16 @@
             }
           };
         }
+        case "patch-block":
+          return {
+            ...state,
+            schema: {
+              ...state.schema,
+              blocks: state.schema.blocks.map((block) => block.id === action.id
+                ? { ...block, settings: { ...block.settings, ...action.patch } }
+                : block)
+            }
+          };
         case "select-field":
           return state.selectedId === action.id && state.selectedContainerId === (action.containerId || null) ? state : { ...state, selectedId: action.id, selectedContainerId: action.containerId || null };
         case "select-container":
@@ -6344,7 +6516,7 @@
         case "reset-field": {
           const source = state.schema.blocks.find((block) => block.id === action.id);
           if (!source) return state;
-          const reset = { ...source, containers: source.containers.map(resetContainer) };
+          const reset = { ...source, settings: defaultBlockSettings(), containers: source.containers.map(resetContainer) };
           return { ...state, schema: { ...state.schema, blocks: state.schema.blocks.map((block) => block.id === action.id ? reset : block) }, selectedId: firstBlockElement(reset)?.id || state.selectedId, selectedContainerId: null };
         }
         case "mark-removing":
@@ -6361,7 +6533,7 @@
           const location = elementLocation(state.schema, action.elementId);
           if (!location || location.container.id !== action.containerId) return state;
           const newContainer = containerFromElements([schemaField(clone(location.element))]);
-          const newBlock = { id: uid("block"), containers: [newContainer] };
+          const newBlock = blockFromContainers([newContainer]);
           const blocks = removeElementFromBlocks(state.schema.blocks, action.containerId, action.elementId);
           const sourceBlockIndex = blocks.findIndex((block) => block.id === location.block.id);
           const insertionIndex = sourceBlockIndex >= 0 ? sourceBlockIndex + 1 : Math.min(location.blockIndex, blocks.length);
@@ -6435,6 +6607,21 @@
       }
     }
 
+    function builderReducer(state, action) {
+      if (action.type === "undo") {
+        if (!state.past.length) return state;
+        const previous = state.past[state.past.length - 1];
+        return restoreHistoryState(state, previous, state.past.slice(0, -1), [historySnapshot(state), ...state.future].slice(0, HISTORY_LIMIT));
+      }
+      if (action.type === "redo") {
+        if (!state.future.length) return state;
+        const next = state.future[0];
+        return restoreHistoryState(state, next, [...state.past, historySnapshot(state)].slice(-HISTORY_LIMIT), state.future.slice(1));
+      }
+      const next = builderReducerWithoutHistory(state, action);
+      return HISTORY_ACTIONS.has(action.type) ? withHistory(state, next) : next;
+    }
+
     function useBuilderActions({ stateRef, dragStateRef, dispatch, setDragState, setExportMenuOpen, fieldsRef, fieldCardRefs, fieldRectsRef, dragPayloadRef, blockDropRectRef }) {
       const current = () => stateRef.current;
       const currentSchema = () => current().schema;
@@ -6442,6 +6629,8 @@
       const patchSchema = (patch) => dispatch({ type: "patch-schema", patch });
       const selectField = (id, containerId = null) => dispatch({ type: "select-field", id, containerId });
       const selectContainer = (containerId) => dispatch({ type: "select-container", containerId });
+      const undo = () => dispatch({ type: "undo" });
+      const redo = () => dispatch({ type: "redo" });
       const fieldCardEntries = () => currentSchema().blocks
         .map((block) => [block.id, fieldCardRefs.current.get(block.id)])
         .filter(([, card]) => card);
@@ -6455,6 +6644,12 @@
         const state = current();
         const container = state.selectedContainerId ? containerById(currentSchema(), state.selectedContainerId) : null;
         if (container) dispatch({ type: "patch-container", id: container.id, patch });
+      }
+
+      function patchSelectedBlock(patch) {
+        const state = current();
+        const block = state.selectedId ? blockForElement(state.schema, state.selectedId) : blockForContainer(state.schema, state.selectedContainerId);
+        if (block) dispatch({ type: "patch-block", id: block.id, patch });
       }
 
       function addField(type, index = null) {
@@ -6862,6 +7057,7 @@
         moveElementOut,
         moveField,
         patchSchema,
+        patchSelectedBlock,
         patchSelectedContainer,
         patchSelectedField,
         patchTheme,
@@ -6872,10 +7068,12 @@
         resetForm,
         selectContainer,
         selectField,
+        undo,
         updateContainerDropTarget,
         clearContainerDropTarget,
         updateDropTarget,
-        updateBlockDropTarget
+        updateBlockDropTarget,
+        redo
       };
     }
 
@@ -6915,7 +7113,7 @@
 
     function BuilderApp() {
       const [builderState, dispatchBuilder] = useReducer(builderReducer, null, initialBuilderState);
-      const { schema, selectedId, selectedContainerId, removingId } = builderState;
+      const { schema, selectedId, selectedContainerId, removingId, past, future } = builderState;
       const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
       const [dragState, setDragState] = useState(null);
       const [activeColorItem, setActiveColorItem] = useState(null);
@@ -6950,6 +7148,16 @@
       useEventListener(window, "keydown", (event) => {
         if (event.key === "Escape") builder.clearDragState();
       }, Boolean(dragState));
+      useEventListener(window, "keydown", (event) => {
+        const key = String(event.key || "").toLowerCase();
+        const command = event.ctrlKey || event.metaKey;
+        if (!command || event.altKey || key !== "z" && key !== "y") return;
+        const target = event.target;
+        if (target?.closest?.("input, textarea, select, [contenteditable='true']")) return;
+        event.preventDefault();
+        if (key === "y" || event.shiftKey) builder.redo();
+        else builder.undo();
+      });
       useFieldListAnimation(fieldCardRefs, fieldRectsRef, schema.blocks);
 
       const formName = formDisplayName(schema);
@@ -6967,6 +7175,8 @@
       const containerDropHeight = Number.isFinite(dragState?.containerDropHeight) ? dragState.containerDropHeight : null;
       const blockDropActive = Boolean(dragState?.kind && ["new", "move", "container", "element"].includes(dragState.kind));
       const listDragActive = dragState?.kind && activeDropIndex !== null;
+      const canUndo = past.length > 0;
+      const canRedo = future.length > 0;
 
       useEffect(() => {
         ensureGoogleFontLoaded(theme.fontFamily);
@@ -6990,6 +7200,8 @@
                 aria-label="Form title"
                 onInput=${(event) => builder.patchSchema({ settings: { name: event.currentTarget.value } })}
               />
+              <${IconButton} icon="lucide-undo-2" title="Undo" disabled=${!canUndo} onClick=${builder.undo} />
+              <${IconButton} icon="lucide-redo-2" title="Redo" disabled=${!canRedo} onClick=${builder.redo} />
             </div>
             <div class="top-actions">
               <${IconButton} icon="fa-solid fa-play" title="Preview form" onClick=${builder.previewForm} />
@@ -7092,6 +7304,7 @@
                 onSchemaChange=${builder.patchSchema}
                 onFieldChange=${builder.patchSelectedField}
                 onContainerChange=${builder.patchSelectedContainer}
+                onBlockChange=${builder.patchSelectedBlock}
               />
             </aside>
           </main>
